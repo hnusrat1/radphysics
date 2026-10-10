@@ -210,3 +210,10 @@ From M1 on, analysis/m1.py reports, beside the batch standard error:
 Statistical targets, run-to-run comparisons and the primary-fluence check use `sem_conservative`. Quantities without a second estimate (β, spectra, s_w,air) keep the batch standard error.
 
 Effect: the main run's D/Φ₀ relative uncertainty is 0.093% (target 0.1%, met). Its primary-fluence deficit against the tracking μ is 1.9σ instead of 4.4σ. **[Humza]** Confirm this policy.
+
+Outcome (2026-10-10 21:44 UTC): the replicate agrees with the main run.
+- D/Φ₀: z = +0.04.
+- Primary fluence, tracking μ: 1.1732 MeV z = +1.36, 1.3325 MeV z = −0.03.
+- The replicate's own primary fluence is 0.9996 ± 0.0006.
+
+The runs are pooled (20 batches, 2.4 × 10⁸ histories); the pooled primary fluence is 0.9992 ± 0.0005 (−1.7σ). The main run's deficit was a chance fluctuation, made to look significant by its unusually small batch spread (D023). The replicate's batch spread matches its history-by-history variance (ratio 1.06).
