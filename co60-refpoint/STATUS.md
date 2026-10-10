@@ -29,7 +29,7 @@ The analytic primary-fluence check came out 0.12% low (−1.9σ on counting stat
 | M1-R0-option4-rep2 | replicate, new seeds (D022) | 10 × 1.2 × 10⁷ | pending |
 | M1-R0-option4-S2-5keV | check S2: 5 keV thresholds | 10 × 6 × 10⁶ | 1.5 h |
 | M1-R0-option4-S1-half | check S1: r 0.5 cm, t 0.1 cm | 10 × 9 × 10⁶ | 1.4 h |
-| M1-R0-option4-pdd | central-axis depth dose, PDD(5) | 10 × 6 × 10⁶ | pending |
+| M1-R0-option4-pdd | central-axis depth dose, PDD(5) | 10 × 6 × 10⁶ | 1.4 h |
 | M1-vrcheck-analog | no variance reduction | 10 × 6 × 10⁶ | 1.2 h |
 | M1-thinslab-option4-v2 | thin-slab track-length test | 10 × 4 × 10⁵ | 3 min |
 | M1-check-transmission | tracking μ by transmission (TestEm13) | 2 × 2 × 10⁷ photons | 4 min |
@@ -60,7 +60,7 @@ Uncertainties are 1σ standard errors of the mean: the larger of the batch sprea
 | 5 | dose from electrons set in motion by scattered photons | 18.8% |
 | 5 | s_w,air (Spencer–Attix, Δ = 10 keV): ICRU 37 / ICRU 90 / Geant4 / PEGS4 matched | 1.1331 / 1.1268 / 1.1385 / 1.1259 |
 
-PDD(5) and d_max: pending (M1-R0-option4-pdd).
+PDD(5) = 81.53 ± 0.26% and d_max = 0.78 ± 0.05 cm (M1-R0-option4-pdd: 1 mm slabs within r < 1 cm; d_max from a parabola through the slabs around the peak). The dose is flat to within about 0.5% from 0.45 to 0.95 cm, so d_max is poorly defined. There is no external value to compare yet: refs.yaml `pdd5` is null until a published value is entered.
 
 The ICRU 37-basis s_w,air, 1.1331, agrees with the TRS-398 value in refs.yaml (1.133, not yet verified).
 
