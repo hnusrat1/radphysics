@@ -95,8 +95,10 @@ The ICRU 37-basis s_w,air, 1.1331, agrees with the TRS-398 value in refs.yaml (1
   | check is-on-prodgeom | photon only | importance | r 1, t 0.2 | 1.0005 ± 0.0011 |
   | check is-off | photon only | none | r 4, t 1 | 1.0005 ± 0.0004 |
   | check is-on | photon only | importance | r 4, t 1 | 0.9998 ± 0.0004 |
-  | check full-r4 | full | none | r 4, t 1 | pending |
+  | check full-r4 | full | none | r 4, t 1 | 1.0007 ± 0.0004 |
   | thin slab | full | none | r 4, t 0.05 at 0.5 cm | 0.9995 ± 0.0007 |
+
+  Full transport and photon-only agree in the same geometry (full-r4 against is-off: +0.02%, 0.4σ), so electron transport does not touch the primary photons.
 
   "Photon only" stops electrons in their first step (`/process/em/lowestElectronEnergy 2 MeV`); TestEm13 shows this parameter leaves photon transmission unchanged (identical counts with identical seeds). Also ruled out: null interactions turning primaries into scattered photons (none among 10⁵ sampled interactions; the 12 scattered photons at exact line energy are Rayleigh), history counting, and the collision estimator, which shows the same deficit as the track-length estimator in the main run.
 
