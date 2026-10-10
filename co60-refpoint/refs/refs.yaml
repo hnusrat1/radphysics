@@ -172,3 +172,56 @@
   used_in: [Layer 5 kerma]
   entered_on: 2026-10-10
   verified_by_humza: false
+
+- key: classical_electron_radius_cm
+  quantity: classical electron radius r_e
+  value: 2.8179403262e-13
+  unit: cm
+  source: CODATA 2018 recommended values (NIST)
+  entered_from: recall
+  used_in: [analysis/stopping.py]
+  entered_on: 2026-10-10
+  verified_by_humza: false
+
+- key: avogadro_constant
+  quantity: Avogadro constant N_A
+  value: 6.02214076e+23
+  unit: 1/mol
+  source: SI (2019 redefinition), exact
+  entered_from: recall
+  used_in: [analysis/stopping.py]
+  entered_on: 2026-10-10
+  verified_by_humza: false
+
+- key: joule_per_MeV
+  quantity: energy conversion 1 MeV in joules (elementary charge times 1e6)
+  value: 1.602176634e-13
+  unit: J/MeV
+  source: SI (2019 redefinition), exact
+  entered_from: recall
+  used_in: [analysis/m1.py dose conversion]
+  entered_on: 2026-10-10
+  verified_by_humza: false
+
+- key: egsnrc_density_effect_tables
+  quantity: density-effect corrections and I values for water (ICRU 37 and ICRU 90 variants) and dry air
+  value: null
+  unit: dimensionless
+  source: >-
+    EGSnrc v2026 HEN_HOUSE/pegs4/density_corrections/compounds/{water_liquid, water_icru90,
+    air_dry_nearsealevel}.density, computed with ESTAR; header I values 75.0, 78.0 and 85.666 eV
+  entered_from: source_code
+  used_in: [analysis/stopping.py]
+  notes: water_icru90.density is computed for rho = 0.998 g/cm3; G4_WATER has 1.000 g/cm3.
+  entered_on: 2026-10-10
+  verified_by_humza: false
+
+- key: oxygen_k_binding_geant4_eV
+  quantity: oxygen K-shell binding energy as tabulated in Geant4
+  value: 543.1
+  unit: eV
+  source: geant4 v11.4.3, source/materials/src/G4AtomicShells.cc line 107 (fBindingEnergies, O)
+  entered_from: source_code
+  used_in: [analysis/validity.py energy-balance tolerance]
+  entered_on: 2026-10-10
+  verified_by_humza: false

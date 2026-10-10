@@ -213,8 +213,8 @@ void RunAction::WriteTables() const
   const G4Material* mats[2] = {nist->FindOrBuildMaterial("G4_WATER"), nist->FindOrBuildMaterial("G4_AIR")};
   const auto* e = G4Electron::Definition();
   const auto* gamma = G4Gamma::Definition();
-  const int n = 300;
-  const G4double lo = std::log(1. * keV), hi = std::log(2. * MeV);
+  const int n = 400;
+  const G4double lo = std::log(100. * eV), hi = std::log(2. * MeV);
 
   std::ofstream os(c.outputFile);
   os << std::setprecision(std::numeric_limits<double>::max_digits10);
@@ -228,15 +228,36 @@ void RunAction::WriteTables() const
     const G4double massUnit = MeV * cm2 / g;
     os << "    \"" << mat->GetName() << "\": {\"density_g_cm3\": " << rho / (g / cm3)
        << ", \"imean_eV\": " << mat->GetIonisation()->GetMeanExcitationEnergy() / eV
-       << ", \"electron_density_per_cm3\": " << mat->GetElectronDensity() * cm3 << ",\n      \"electron\": [\n";
+       << ", \"electron_density_per_cm3\": " << mat->GetElectronDensity() * cm3 << ", \"elements\": [";
+    for (size_t k = 0; k < mat->GetNumberOfElements(); ++k) {
+      const G4Element* el = mat->GetElement(static_cast<G4int>(k));
+      os << (k ? ", " : "") << "{\"Z\": " << el->GetZ() << ", \"A_g_mol\": " << el->GetA() / (g / mole)
+         << ", \"mass_fraction\": " << mat->GetFractionVector()[k] << "}";
+    }
+    os << "],\n      \"electron\": [\n";
     for (int i = 0; i <= n; ++i) {
       const G4double en = std::exp(lo + (hi - lo) * i / n);
       const G4double sCol = calc.ComputeDEDX(en, e, "eIoni", mat, en) / rho / massUnit;
       const G4double l10 = calc.ComputeDEDX(en, e, "eIoni", mat, 10. * keV) / rho / massUnit;
       const G4double l5 = calc.ComputeDEDX(en, e, "eIoni", mat, 5. * keV) / rho / massUnit;
       const G4double sRad = calc.ComputeDEDX(en, e, "eBrem", mat, en) / rho / massUnit;
+      // Density-effect correction used by the Bethe-type models, x = log10(beta gamma)
+      const G4double tau = en / CLHEP::electron_mass_c2;
+      const G4double x = std::log10(std::sqrt(tau * (tau + 2.)));
+      const G4double delta = mat->GetIonisation()->DensityCorrection(x);
       os << "        {\"E\": " << en / MeV << ", \"S_col\": " << sCol << ", \"L_10keV\": " << l10
-         << ", \"L_5keV\": " << l5 << ", \"S_rad\": " << sRad << "}" << (i < n ? ",\n" : "\n");
+         << ", \"L_5keV\": " << l5 << ", \"S_rad\": " << sRad << ", \"delta\": " << delta << "}"
+         << (i < n ? ",\n" : "\n");
+    }
+    // Density-effect correction on a wide grid (1 keV to 10 GeV) for building
+    // matched EGSnrc density-correction files (DECISIONS D015).
+    os << "      ],\n      \"density_effect\": [\n";
+    for (int i = 0; i <= 200; ++i) {
+      const G4double en = std::exp(std::log(1. * keV) + (std::log(10. * GeV) - std::log(1. * keV)) * i / 200.);
+      const G4double tau = en / CLHEP::electron_mass_c2;
+      const G4double x = std::log10(std::sqrt(tau * (tau + 2.)));
+      os << "        {\"E\": " << en / MeV << ", \"delta\": " << mat->GetIonisation()->DensityCorrection(x) << "}"
+         << (i < 200 ? ",\n" : "\n");
     }
     os << "      ],\n      \"photon\": [\n";
     std::vector<G4double> energies;

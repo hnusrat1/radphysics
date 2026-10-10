@@ -154,6 +154,11 @@ def main():
         manifest["spec"] = spec
         manifest["bins_file"] = str(BINS.relative_to(STUDY_ROOT))
         manifest["executable"] = args.exe
+        sidecar = Path(args.exe + ".commit")
+        if sidecar.exists():
+            # Frozen production binary: the source commit it was built from, which
+            # can differ from HEAD at run time.
+            manifest["executable_source_commit"] = sidecar.read_text().strip()
         manifest["batches"] = []
         manifest["started_utc"] = utc_now()
     done = {b["batch"] for b in manifest["batches"]}

@@ -79,3 +79,60 @@ Commits are authored and committed as Humza Nusrat, without co-author trailers, 
 
 The first standard_opt4 Fano run (10 × 340 000 events) gave 1.0016 ± 0.0011, a deviation at 1.4σ. Thirty more batches with new seeds were run (`M0-fano-opt4-ext`, about 1.6 h in the container) and pooled with the first run.
 Reason: at ±0.11% the test could not tell a 0.1% transport artifact from zero, and 0.1% is the plan's statistical target for D/Φ₀. Pooling is valid because every batch has the same number of events and the same settings. Both runs are kept and reported separately as well as pooled.
+
+## D012. Comparison bin grid (2026-10-10, approved by Humza at the M0 gate)
+
+Electron comparison grid: edges 0.010, 0.050, 0.100, ..., 1.200 MeV, so the first bin is 40 keV wide, plus one overflow bin 1.20 to 1.40 MeV. The overflow bin holds photoelectrons from the 1.3325 MeV line (about 1.33 MeV), which would otherwise be dropped silently. Photon and cos θ grids as in the plan. All edges are listed explicitly in `config/bins.yaml`. The Monte Carlo scores photons in 10 keV bins, electrons in 1 keV bins and cos θ in 40 bins. Every comparison edge is an edge of these grids, so rebinning is exact. The 1 keV electron grid also serves the Spencer-Attix integral at Δ = 10 keV.
+
+## D013. Compute host for M1 (2026-10-10, delegated by Humza: "you figure it out")
+
+M1 runs in the 4-core cloud container used for M0, with no separately billed compute. Each production run fits in a few hours there once variance reduction is applied (D016). The MacBook remains the reference machine for any future rerun; the install scripts and run specs reproduce every run.
+
+## D014. Compton validity checks with bound electrons (2026-10-10, approved by Humza at the M0 gate)
+
+All three production lists sample Compton scattering from bound electrons with Doppler broadening. The free-electron rule "recoil electron energy ≤ Compton edge" therefore fails for a small fraction of correct Monte Carlo events. The study reports two checks:
+
+1. **Strict free-electron check**, as in the plan. Its failure rate is reported for the Monte Carlo reference and for every AI condition, so an AI failure rate is read against the Monte Carlo rate, not against zero.
+2. **Bound-electron check**, the pass/fail rule for physical validity. A Compton event is valid if:
+   - (a) energy is conserved within the binding energy of the most tightly bound shell of the target (oxygen K shell; value from the Geant4 atomic data, recorded in refs.yaml);
+   - (b) the recoil electron energy does not exceed the free-electron edge by more than a tolerance δ_C;
+   - (c) the scattered photon energy matches the Compton formula for its angle within δ_C.
+
+   δ_C is taken from the Monte Carlo event sample as the largest excess seen there, rounded up to the next 10 keV, and is reported. It is frozen before any AI event is scored.
+
+The same per-event checks apply to Monte Carlo and AI events.
+
+## D015. Water definition for the B0 benchmark (2026-10-10, delegated by Humza)
+
+EGSnrc will use PEGS4 data generated for water matched to G4_WATER rather than the standard `521icru.pegs4dat`:
+- same elemental composition by mass (from Geant4 11.4.3 G4NistMaterialBuilder);
+- ρ = 1.000 g/cm³;
+- I = 78.0 eV;
+- AE = 0.521 MeV, AP = 0.010 MeV (10 keV kinetic thresholds);
+- density-effect correction computed by PEGS4 for these I and ρ.
+
+Reason: with standard ICRU 37 water (I = 75 eV) the stopping-power difference alone could move s_w,air by a few tenths of a percent, near the 0.5% investigation threshold. That would make the benchmark test the data rather than the transport. Air is treated the same way (G4_AIR composition and I = 85.7 eV). Stopping powers from the matched PEGS4 data are compared with Geant4's for the same materials before any B0 run, and the residual difference is reported. B0 runs themselves stay in M2.
+
+## D016. Variance reduction in co60app (2026-10-10)
+
+Analog transport cannot reach the plan's 0.1% target on D/Φ₀ in reasonable time. At R0 the per-history relative standard deviation of the dose is 48.7, so 0.1% needs 2.4 × 10⁹ histories, about 40 hours on 4 cores. Two unbiased techniques are used:
+
+1. **Electron Russian roulette.** An electron born outside a region of interest (ROI) around the scoring volume survives with probability p = 0.05 and then carries weight 1/p.
+   - The ROI extends 1.2 × the CSDA range of a 1.3325 MeV electron in water beyond every scored region. The application computes that range from the production physics (6.18 mm) and refuses to run if the ROI is too small; the factor 1.2 covers range straggling.
+   - Survivors are transported normally, so their bremsstrahlung, which can reach the point, is kept with the right weight.
+   - Positrons, photons, and electrons that descend from interactions in the scoring volume (needed for collision kerma) are never rouletted.
+2. **Photon importance sampling.** Geant4's G4ImportanceBiasing runs in a parallel world of nested cylinders around the scoring volume, with importances 2, 8 and 32 relative to the rest of the world. Photons are split on entering a more important cell and rouletted on leaving it. The parallel world has no material and does not change the mass geometry or the physics.
+
+Every tally is weighted. Measured efficiency, 1/(σ²T) for the dose:
+
+| Setup | Efficiency |
+|---|---|
+| Analog | 4.8 |
+| Roulette only | 10.5 |
+| Roulette and importance sampling | 119 |
+
+The layout was chosen from five tested layouts by this figure of merit. The implementation is checked by an analog run at matched settings (`M1-vrcheck-analog`) and by the thin-slab and analytic primary-fluence tests. The event sample records each interaction's weight; with importance sampling the weights inside the innermost cell are 1/32, apart from rare photons that come from rouletted electrons.
+
+## D017. Development runs (2026-10-10)
+
+Short runs made while debugging co60app ran in the session scratch directory and are not archived; they used code that was never committed. Every run that informs a result is made from committed code through `mc/tools/run_co60.py` and archived under `mc/runs/`. Runs made before their code was committed were moved to `mc/runs/_archived/` with a reason and rerun.

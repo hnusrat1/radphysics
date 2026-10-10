@@ -1,0 +1,380 @@
+"""M1 analysis: all five layers at R0 from co60app batch outputs, with checks.
+
+Every observable is computed per batch; the reported value is the batch mean
+and the uncertainty is the standard error of the mean over batches (STUDY_PLAN
+Section 4.1, at least 10 independent batches). Ratios are formed per batch so
+that correlations are carried correctly.
+
+Usage:
+  python analysis/m1.py            # writes analysis/results/M1_results.json and figures
+"""
+
+import json
+import math
+import sys
+from pathlib import Path
+
+import numpy as np
+import yaml
+
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT))
+
+from analysis.kinematics import compton_edge  # noqa: E402
+from analysis.primary import fluence_cylinder_average, g4_mu_water  # noqa: E402
+from analysis.refs import ref_value  # noqa: E402
+from analysis.stopping import bases, spencer_attix  # noqa: E402
+
+RUNS = ROOT / "mc" / "runs"
+OUT = ROOT / "analysis" / "results"
+J_PER_MEV = ref_value("joule_per_MeV")
+BINS = yaml.safe_load(open(ROOT / "config" / "bins.yaml"))
+TABLES = RUNS / "M1-tables-option4" / "batch_00" / "output.json"
+
+CAT_PRIMARY, CAT_SCATTERED = [0, 1], [2, 3]
+PROCS = ["compt", "phot", "conv", "Rayl", "other"]
+
+
+# ---------------------------------------------------------------- loading
+def load_batches(run_id):
+    files = sorted((RUNS / run_id).glob("batch_*/output.json"))
+    return [json.load(open(f)) for f in files]
+
+
+def tally(b, name):
+    t = b["tallies"][name]
+    return np.array(t["data"]).reshape(t["dims"])
+
+
+def strip(a):
+    """Drop the underflow and overflow entries of the last axis."""
+    return a[..., 1:-1]
+
+
+def rebin(a, factor):
+    """Sum consecutive groups of `factor` bins along the last axis."""
+    n = a.shape[-1] // factor
+    return a[..., : n * factor].reshape(*a.shape[:-1], n, factor).sum(-1)
+
+
+def rebin_edges(a, fine_lo, fine_width, edges):
+    """Sum fine bins (lower edge fine_lo, width fine_width) into arbitrary coarse edges (exact on the grid)."""
+    idx = np.rint((np.asarray(edges) - fine_lo) / fine_width).astype(int)
+    return np.stack([a[..., i0:i1].sum(-1) for i0, i1 in zip(idx[:-1], idx[1:])], -1)
+
+
+def safe_div(a, b):
+    return np.divide(a, b, out=np.zeros_like(np.asarray(a, dtype=float)), where=np.asarray(b) != 0)
+
+
+# ---------------------------------------------------------------- per-batch observables
+def observables(b, sp, tables_json=TABLES):
+    n = b["histories"]
+    g, src = b["geometry"], b["source"]
+    vol, mass, phi0 = g["scoring_volume_cm3"], g["scoring_mass_g"], src["phi0_per_history_cm-2"]
+    norm = 1.0 / (vol * n * phi0)               # track length (cm) -> fluence per unit Phi0
+    gy = J_PER_MEV / (mass * 1e-3) / n / phi0   # MeV deposited -> Gy cm^2 per unit Phi0
+    s = b["scalars"]
+    o = {}
+
+    # Layer 1: photons arriving at the point
+    pf = strip(tally(b, "photon_fluence")) * norm                    # (4, 140) per 10 keV bin
+    o["L1_photon_fluence_10keV"] = {"primary": pf[CAT_PRIMARY].sum(0), "scattered": pf[CAT_SCATTERED].sum(0),
+                                    "scattered_source": pf[2], "secondary_photons": pf[3], "total": pf.sum(0)}
+    ph_edges = BINS["comparison"]["photon_energy"]["edges"]
+    o["L1_photon_fluence_comparison"] = {k: rebin_edges(v, 0.0, 0.01, ph_edges)
+                                         for k, v in o["L1_photon_fluence_10keV"].items()}
+    tl = tally(b, "photon_track_length")
+    ef = tally(b, "photon_energy_fluence")
+    o["L1_fluence_total_per_phi0"] = tl.sum() * norm
+    o["L1_fluence_primary_per_phi0"] = tl[CAT_PRIMARY].sum() * norm
+    o["L1_scattered_fraction_fluence"] = tl[CAT_SCATTERED].sum() / tl.sum()
+    o["L1_scattered_fraction_energy_fluence"] = ef[CAT_SCATTERED].sum() / ef.sum()
+    o["L1_secondary_photon_fraction_fluence"] = tl[3] / tl.sum()
+    o["L1_mean_energy_all_MeV"] = ef.sum() / tl.sum()
+    o["L1_mean_energy_primary_MeV"] = ef[CAT_PRIMARY].sum() / tl[CAT_PRIMARY].sum()
+    o["L1_mean_energy_scattered_MeV"] = ef[CAT_SCATTERED].sum() / tl[CAT_SCATTERED].sum()
+    ang = tally(b, "photon_angular")
+    o["L1_angular_primary"] = rebin(ang[CAT_PRIMARY].sum(0), 4) / ang[CAT_PRIMARY].sum()
+    o["L1_angular_scattered"] = rebin(ang[CAT_SCATTERED].sum(0), 4) / ang[CAT_SCATTERED].sum()
+    o["L1_angular_scattered_fine"] = ang[CAT_SCATTERED].sum(0) / ang[CAT_SCATTERED].sum()
+    # Primary fluence per line against exp(-mu d) / (Omega R^2), averaged over the volume
+    for line, cat in (("line1", 0), ("line2", 1)):
+        mu, _ = g4_mu_water(tables_json, src[f"{line}_MeV"])
+        frac = s[f"histories_{line}"] / n
+        expected = frac * fluence_cylinder_average(g["scoring_radius"], g["scoring_thickness"],
+                                                   g["scoring_depth"], src["ssd"], src["solid_angle_sr"], mu)
+        o[f"L1_primary_{line}_measured_over_analytic"] = tl[cat] / (vol * n) / expected
+        o[f"L1_primary_{line}_per_phi0"] = tl[cat] * norm
+
+    # Layer 2: photon interactions in the scoring volume
+    inter = tally(b, "interactions")
+    etr = tally(b, "interaction_energy_transfer")
+    for label, cats in (("all", [0, 1, 2, 3]), ("primary", CAT_PRIMARY), ("scattered", CAT_SCATTERED)):
+        o[f"L2_fraction_{label}"] = inter[cats].sum(0) / inter[cats].sum()
+        o[f"L2_etr_fraction_{label}"] = etr[cats].sum(0) / etr[cats].sum()
+    o["L2_scattered_share_of_interactions"] = inter[CAT_SCATTERED].sum() / inter.sum()
+    o["L2_interactions_per_g_per_phi0"] = inter.sum() / (mass * n * phi0)
+    # Interactions per unit primary track length = mu(line) by process (consistency with the cross sections)
+    for line, cat in (("line1", 0), ("line2", 1)):
+        o[f"L2_mu_measured_{line}_cm-1"] = inter[cat] / tl[cat]
+
+    # Layer 3: electrons and positrons set in motion
+    isp = strip(tally(b, "initial_spectrum"))                         # (5 proc, 4 cat, 2 part, 1400) per 1 keV
+    icount = tally(b, "initial_count")
+    ienergy = tally(b, "initial_energy")
+    per_mass = 1.0 / (mass * n * phi0)
+    o["L3_spectrum_10keV"] = {
+        "all": rebin(isp.sum((0, 1)), 10).sum(0) * per_mass,
+        "compton": rebin(isp[0].sum(0)[0], 10) * per_mass,
+        "photoelectric": rebin(isp[1].sum(0)[0], 10) * per_mass,
+        "pair_electron": rebin(isp[2].sum(0)[0], 10) * per_mass,
+        "pair_positron": rebin(isp[2].sum(0)[1], 10) * per_mass,
+        "parent_primary": rebin(isp[:, CAT_PRIMARY].sum((0, 1)), 10).sum(0) * per_mass,
+        "parent_scattered": rebin(isp[:, CAT_SCATTERED].sum((0, 1)), 10).sum(0) * per_mass,
+    }
+    el_edges = BINS["comparison"]["electron_energy"]["edges"]
+    o["L3_spectrum_comparison"] = {k: rebin_edges(v, 0.0, 0.01, el_edges)
+                                   for k, v in o["L3_spectrum_10keV"].items()}
+    o["L3_mean_T_all_MeV"] = ienergy.sum() / icount.sum()
+    o["L3_mean_T_electrons_MeV"] = ienergy[..., 0].sum() / icount[..., 0].sum()
+    o["L3_mean_T_compton_MeV"] = ienergy[0].sum() / icount[0].sum()
+    o["L3_mean_T_parent_primary_MeV"] = ienergy[:, CAT_PRIMARY].sum() / icount[:, CAT_PRIMARY].sum()
+    o["L3_mean_T_parent_scattered_MeV"] = ienergy[:, CAT_SCATTERED].sum() / icount[:, CAT_SCATTERED].sum()
+    o["L3_count_fraction_by_process"] = icount.sum((1, 2)) / icount.sum()
+    o["L3_positron_fraction"] = icount[..., 1].sum() / icount.sum()
+    icos = tally(b, "initial_cos")                                    # (5, 2, 40)
+    o["L3_cos_all"] = rebin(icos.sum((0, 1)), 4) / icos.sum()
+    o["L3_cos_parent_primary"] = rebin(icos[:, 0].sum(0), 4) / icos[:, 0].sum()
+    o["L3_cos_parent_scattered"] = rebin(icos[:, 1].sum(0), 4) / icos[:, 1].sum()
+    for line, cat, e in (("line1", 0, src["line1_MeV"]), ("line2", 1, src["line2_MeV"])):
+        h = isp[0, cat, 0]
+        edge_bin = int(compton_edge(e) / 0.001)
+        o[f"L3_compton_{line}_fraction_above_free_edge"] = h[edge_bin + 1:].sum() / h.sum()
+        nz = np.nonzero(h)[0]
+        o[f"L3_compton_{line}_max_T_MeV"] = (nz.max() + 1) * 0.001 if nz.size else 0.0
+
+    # Layer 4: electrons slowing down
+    el = strip(tally(b, "electron_fluence"))                           # (1400) per 1 keV
+    eld = strip(tally(b, "electron_fluence_delta"))
+    pos = strip(tally(b, "positron_fluence"))
+    elp = strip(tally(b, "electron_fluence_by_parent"))
+    above = slice(10, None)
+    o["L4_electron_fluence_10keV_per_MeV"] = rebin(el, 10) * norm / 0.010
+    o["L4_delta_fluence_10keV_per_MeV"] = rebin(eld, 10) * norm / 0.010
+    o["L4_positron_fluence_10keV_per_MeV"] = rebin(pos, 10) * norm / 0.010
+    o["L4_electron_fluence_comparison"] = rebin_edges(el, 0.0, 0.001, el_edges) * norm
+    o["L4_electron_fluence_above_10keV_per_phi0"] = el[above].sum() * norm
+    o["L4_delta_fraction_above_10keV"] = eld[above].sum() / el[above].sum()
+    o["L4_positron_to_electron_fluence"] = pos[above].sum() / el[above].sum()
+    o["L4_parent_scattered_fraction"] = elp[1, above].sum() / elp[:, above].sum()
+    o["L4_mean_energy_above_10keV_MeV"] = (np.sum(el[above] * (np.arange(1400)[above] + 0.5) * 0.001)
+                                           / el[above].sum())
+    eang = tally(b, "electron_angular")
+    o["L4_angular"] = rebin(eang, 4) / eang.sum()
+    o["L4_angular_fine"] = eang / eang.sum()
+    loss = tally(b, "charged_energy_loss")
+    o["L4_radiative_to_collision"] = loss[0, 1] / loss[0, 0]
+
+    # Layer 5: energy deposited
+    d = s["edep"] * gy
+    k = s["kerma_energy_transfer"] * gy
+    kcol = (s["kerma_energy_transfer"] - s["kcol_radiative_loss"]) * gy
+    o["L5_D_over_phi0_Gy_cm2"] = d
+    o["L5_K_over_phi0_Gy_cm2"] = k
+    o["L5_Kcol_over_phi0_Gy_cm2"] = kcol
+    o["L5_beta"] = d / kcol
+    o["L5_g"] = s["kcol_radiative_loss"] / s["kerma_energy_transfer"]
+    ed = tally(b, "edep_by_parent")                                    # (5 parent, 3 particle)
+    o["L5_dose_fraction_parent_scattered"] = ed[[2, 3]].sum() / ed.sum()
+    o["L5_dose_fraction_parent_scattered_source"] = ed[2].sum() / ed.sum()
+    o["L5_dose_fraction_parent_secondary_photon"] = ed[3].sum() / ed.sum()
+    o["L5_dose_fraction_photon_local"] = ed[:, 0].sum() / ed.sum()
+    o["L5_dose_fraction_unknown_parent"] = ed[4].sum() / ed.sum()
+    o["L5_D_rel_sem_history_by_history"] = math.sqrt(max(s["edep_sq"] / n - (s["edep"] / n) ** 2, 0) / n) / (
+        s["edep"] / n)
+    for name, basis in sp.items():
+        sa = spencer_attix(el, 0.010, basis["water"], basis["air"])
+        o[f"L5_s_w_air_{name}"] = sa["s_w_air"]
+        o[f"L5_track_end_share_water_{name}"] = sa["water_track_end"] / (sa["water_integral"] + sa["water_track_end"])
+        # Spencer-Attix dose to water from the scored fluence, against the scored dose
+        d_sa = (sa["water_integral"] + sa["water_track_end"]) / (vol * n) * J_PER_MEV * 1e3 / phi0
+        o[f"L5_D_SpencerAttix_over_D_{name}"] = d_sa / d
+        sa_ep = spencer_attix(el + pos, 0.010, basis["water"], basis["air"])
+        o[f"L5_s_w_air_{name}_with_positrons"] = sa_ep["s_w_air"]
+    return o
+
+
+# ---------------------------------------------------------------- combination
+def combine(per_batch):
+    """Mean and standard error over batches, recursively for dicts and arrays."""
+    first = per_batch[0]
+    if isinstance(first, dict):
+        return {k: combine([p[k] for p in per_batch]) for k in first}
+    a = np.array(per_batch, dtype=float)
+    n = a.shape[0]
+    mean = a.mean(0)
+    sem = a.std(0, ddof=1) / np.sqrt(n) if n > 1 else np.full_like(mean, np.nan)
+    return {"mean": mean, "sem": sem, "n_batches": n}
+
+
+def analyse_run(run_id, sp):
+    batches = load_batches(run_id)
+    if not batches:
+        return None
+    per = [observables(b, sp) for b in batches]
+    res = combine(per)
+    res["_meta"] = {
+        "run_id": run_id,
+        "batches": len(batches),
+        "histories_total": int(sum(b["histories"] for b in batches)),
+        "wall_time_s_total": float(sum(b["wall_time_s"] for b in batches)),
+        "physics": batches[0]["physics"],
+        "geometry": batches[0]["geometry"],
+        "source": batches[0]["source"],
+        "cuts_g4_water": batches[0]["cuts_g4_water"],
+        "em_parameters": batches[0]["em_parameters"],
+        "variance_reduction": batches[0]["variance_reduction"],
+        "energy_balance_max_abs_MeV": max(b["energy_balance_max_abs_MeV"] for b in batches),
+        "untagged_tracks": sum(b["scalars"]["untagged_tracks"] for b in batches),
+        "geant4_version": batches[0]["geant4_version"],
+    }
+    return res
+
+
+def compare(a, b, keys):
+    """Difference b - a for scalar keys, in units of the combined standard error."""
+    out = {}
+    for k in keys:
+        if k not in a or k not in b:
+            continue
+        ma, sa = float(a[k]["mean"]), float(a[k]["sem"])
+        mb, sb = float(b[k]["mean"]), float(b[k]["sem"])
+        comb = math.hypot(sa, sb)
+        out[k] = {"reference": ma, "reference_sem": sa, "variant": mb, "variant_sem": sb,
+                  "rel_diff": mb / ma - 1 if ma else None, "z": (mb - ma) / comb if comb else None}
+    return out
+
+
+def compare_spectrum(a, b, path):
+    """Chi-square of two binned spectra (same normalization), bins with content in both."""
+    def get(r):
+        x = r
+        for p in path:
+            x = x[p]
+        return np.asarray(x["mean"]), np.asarray(x["sem"])
+    ma, sa = get(a)
+    mb, sb = get(b)
+    ok = (sa > 0) & (sb > 0)
+    chi2 = float(np.sum(((ma - mb)[ok]) ** 2 / (sa[ok] ** 2 + sb[ok] ** 2)))
+    return {"chi2": chi2, "ndf": int(ok.sum()), "chi2_per_ndf": chi2 / max(int(ok.sum()), 1)}
+
+
+def targets(res):
+    """Statistical targets of STUDY_PLAN Section 4.1."""
+    def rel(k):
+        return float(res[k]["sem"] / abs(res[k]["mean"]))
+
+    def worst_bin(mean, sem):
+        mean, sem = np.asarray(mean), np.asarray(sem)
+        big = mean >= 0.01 * mean.sum()
+        return float(np.max(sem[big] / mean[big])) if big.any() else None
+
+    spectra = {
+        "photon fluence, 10 keV bins": res["L1_photon_fluence_10keV"]["total"],
+        "photon fluence, comparison grid": res["L1_photon_fluence_comparison"]["total"],
+        "electron fluence, 10 keV bins": res["L4_electron_fluence_10keV_per_MeV"],
+        "electron fluence, comparison grid": res["L4_electron_fluence_comparison"],
+        "initial electron spectrum, 10 keV bins": res["L3_spectrum_10keV"]["all"],
+        "initial electron spectrum, comparison grid": res["L3_spectrum_comparison"]["all"],
+    }
+    out = {
+        "D_over_phi0": {"target": 0.001, "achieved": rel("L5_D_over_phi0_Gy_cm2")},
+        "beta": {"target": 0.002, "achieved": rel("L5_beta")},
+    }
+    for name, sp in spectra.items():
+        out[f"worst bin >= 1% of total: {name}"] = {"target": 0.01, "achieved": worst_bin(sp["mean"], sp["sem"])}
+    for v in out.values():
+        v["met"] = v["achieved"] is not None and v["achieved"] <= v["target"]
+    return out
+
+
+def pdd(run_id):
+    """PDD(5) = 100 D(5 cm) / D(d_max) per batch, D(5 cm) over 4.9-5.1 cm, D_max from a parabola near the peak."""
+    vals, dmax_depths, profiles = [], [], []
+    for b in load_batches(run_id):
+        dz = strip(tally(b, "depth_edep"))                             # 100 slabs of 1 mm
+        z = (np.arange(dz.size) + 0.5) * 0.1
+        i = int(np.argmax(dz))
+        lo, hi = max(i - 3, 0), min(i + 4, dz.size)
+        c = np.polyfit(z[lo:hi], dz[lo:hi], 2)
+        zmax = -c[1] / (2 * c[0])
+        dmax = np.polyval(c, zmax)
+        d5 = dz[49:51].mean()
+        vals.append(100 * d5 / dmax)
+        dmax_depths.append(zmax)
+        profiles.append(dz / dmax * 100)
+    if not vals:
+        return None
+    v, zz, pr = np.array(vals), np.array(dmax_depths), np.array(profiles)
+    n = len(v)
+    return {"PDD5": {"mean": v.mean(), "sem": v.std(ddof=1) / np.sqrt(n), "n_batches": n},
+            "d_max_cm": {"mean": zz.mean(), "sem": zz.std(ddof=1) / np.sqrt(n), "n_batches": n},
+            "profile_percent": {"mean": pr.mean(0), "sem": pr.std(0, ddof=1) / np.sqrt(n), "n_batches": n},
+            "depth_cm": (np.arange(pr.shape[1]) + 0.5) * 0.1}
+
+
+def to_jsonable(x):
+    if isinstance(x, dict):
+        return {k: to_jsonable(v) for k, v in x.items()}
+    if isinstance(x, (list, tuple)):
+        return [to_jsonable(v) for v in x]
+    if isinstance(x, np.ndarray):
+        return [to_jsonable(v) for v in x.tolist()]
+    if isinstance(x, (np.floating, float)):
+        return None if not np.isfinite(x) else float(x)
+    if isinstance(x, (np.integer,)):
+        return int(x)
+    return x
+
+
+SCALAR_KEYS_S = [
+    "L5_D_over_phi0_Gy_cm2", "L5_K_over_phi0_Gy_cm2", "L5_Kcol_over_phi0_Gy_cm2", "L5_beta", "L5_g",
+    "L5_s_w_air_icru37", "L5_s_w_air_icru90", "L5_s_w_air_geant4", "L5_dose_fraction_parent_scattered",
+    "L4_electron_fluence_above_10keV_per_phi0", "L4_delta_fraction_above_10keV", "L4_radiative_to_collision",
+    "L4_mean_energy_above_10keV_MeV", "L1_fluence_total_per_phi0", "L1_scattered_fraction_fluence",
+    "L1_mean_energy_all_MeV", "L3_mean_T_all_MeV",
+]
+
+
+def main():
+    OUT.mkdir(parents=True, exist_ok=True)
+    sp = bases(TABLES)
+    runs = {k: analyse_run(k, sp) for k in ("M1-R0-option4", "M1-R0-option4-S2-5keV", "M1-R0-option4-S1-half",
+                                           "M1-vrcheck-analog", "M1-thinslab-option4")}
+    main_res = runs["M1-R0-option4"]
+    result = {"runs": {k: v for k, v in runs.items() if v is not None}}
+    if main_res:
+        result["targets"] = targets(main_res)
+        for label, key, layers in (("S2_cut_independence", "M1-R0-option4-S2-5keV", None),
+                                   ("S1_volume_size", "M1-R0-option4-S1-half", None),
+                                   ("vr_check_analog", "M1-vrcheck-analog", None)):
+            other = runs.get(key)
+            if other:
+                result[label] = {
+                    "scalars": compare(main_res, other, SCALAR_KEYS_S),
+                    "electron_fluence_shape": compare_spectrum(main_res, other, ["L4_electron_fluence_comparison"]),
+                    "photon_fluence_shape": compare_spectrum(main_res, other,
+                                                             ["L1_photon_fluence_comparison", "total"]),
+                }
+    p = pdd("M1-R0-option4-pdd")
+    if p:
+        result["pdd"] = p
+    result["stopping_power_bases"] = {k: {kk: vv for kk, vv in v.items() if kk in ("I_water_eV", "I_air_eV", "source")}
+                                      for k, v in sp.items()}
+    json.dump(to_jsonable(result), open(OUT / "M1_results.json", "w"), indent=1)
+    print(f"wrote {OUT / 'M1_results.json'}")
+
+
+if __name__ == "__main__":
+    main()

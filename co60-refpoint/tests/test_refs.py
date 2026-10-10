@@ -18,3 +18,5 @@ def test_entries_complete():
         assert not missing, f"{key} missing {missing}"
         assert entry["entered_from"] in ENTERED_FROM, key
         assert isinstance(entry["verified_by_humza"], bool), key
+        # YAML 1.1 reads 6.02e23 (no exponent sign) as a string; values must be numbers or null.
+        assert entry["value"] is None or isinstance(entry["value"], (int, float)), key
