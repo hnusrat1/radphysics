@@ -1,0 +1,261 @@
+run_id: M1-thinslab-option4-v2
+purpose: 'Required test (STUDY_PLAN Section 8): track-length estimator on a thin slab against the analytic
+  uncollided fluence. Scoring cylinder radius 4 cm, thickness 0.05 cm, centred at 0.5 cm depth, no variance
+  reduction. v2: production configuration with the general gamma process off (DECISIONS D019).'
+created_utc: '2026-10-10T12:39:52Z'
+git:
+  commit: 8eda68783c4644ce1852364bbfaad06e14743e4d
+  dirty: true
+machine:
+  hostname: vm
+  platform: Linux-6.18.44-fc-v114-x86_64-with-glibc2.39
+  cpu: Intel(R) Xeon(R) Processor @ 2.80GHz
+  logical_cpus: 4
+  compiler: c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+geant4:
+  version: 11.4.3
+  prefix: /opt/geant4/11.4.3
+  features: "Known Features:\n staticlibs[no]\n multithreading[yes]\n smartstack[no]\n php_as_hp[no]\n\
+    \ clhep[yes]\n expat[no]\n zlib[yes]\n gdml[no]\n ptl[yes]\n usolids[no]\n freetype[no]\n hdf5[no]\n\
+    \ g3tog4[no]\n qt[no]\n motif[no]\n raytracer-x11[no]\n opengl-x11[no]\n openinventor[no]\n vtk[no]"
+  datasets:
+    G4NDL:
+      envvar: G4NEUTRONHPDATA
+      path: /opt/geant4/data/G4NDL4.7.1
+      env_value: null
+    G4EMLOW:
+      envvar: G4LEDATA
+      path: /opt/geant4/data/G4EMLOW8.8
+      env_value: null
+    PhotonEvaporation:
+      envvar: G4LEVELGAMMADATA
+      path: /opt/geant4/data/PhotonEvaporation6.1.2
+      env_value: null
+    RadioactiveDecay:
+      envvar: G4RADIOACTIVEDATA
+      path: /opt/geant4/data/RadioactiveDecay6.1.2
+      env_value: null
+    G4PARTICLEXS:
+      envvar: G4PARTICLEXSDATA
+      path: /opt/geant4/data/G4PARTICLEXS4.2
+      env_value: null
+    G4PII:
+      envvar: G4PIIDATA
+      path: /opt/geant4/data/G4PII1.3
+      env_value: null
+    RealSurface:
+      envvar: G4REALSURFACEDATA
+      path: /opt/geant4/data/RealSurface2.2
+      env_value: null
+    G4SAIDDATA:
+      envvar: G4SAIDXSDATA
+      path: /opt/geant4/data/G4SAIDDATA2.0
+      env_value: null
+    G4ABLA:
+      envvar: G4ABLADATA
+      path: /opt/geant4/data/G4ABLA3.3
+      env_value: null
+    G4INCL:
+      envvar: G4INCLDATA
+      path: /opt/geant4/data/G4INCL1.3
+      env_value: null
+    G4ENSDFSTATE:
+      envvar: G4ENSDFSTATEDATA
+      path: /opt/geant4/data/G4ENSDFSTATE3.0
+      env_value: null
+    G4CHANNELING:
+      envvar: G4CHANNELINGDATA
+      path: /opt/geant4/data/G4CHANNELING2.0
+      env_value: null
+spec_file: mc/geant4/runspecs/M1-thinslab-option4-v2.yaml
+spec:
+  run_id: M1-thinslab-option4-v2
+  purpose: 'Required test (STUDY_PLAN Section 8): track-length estimator on a thin slab against the analytic
+    uncollided fluence. Scoring cylinder radius 4 cm, thickness 0.05 cm, centred at 0.5 cm depth, no variance
+    reduction. v2: production configuration with the general gamma process off (DECISIONS D019).'
+  physics: option4
+  threads: 4
+  batches: 10
+  histories_per_batch: 400000
+  seed_base: 6011
+  geometry:
+    scoring_radius_cm: 4.0
+    scoring_thickness_cm: 0.05
+    scoring_depth_cm: 0.5
+  cuts:
+    electron_threshold_keV: 10
+    gamma_threshold_keV: 10
+  russian_roulette:
+    enabled: false
+  pre_init_commands:
+  - /process/em/UseGeneralProcess false
+  depth_scan: false
+  event_sample_per_batch: 0
+bins_file: config/bins.yaml
+executable: /opt/build/co60app/co60app.production
+executable_source_commit: 8eda68783c4644ce1852364bbfaad06e14743e4d
+batches:
+- batch: 0
+  seeds:
+  - 6011001
+  - 6011002
+  exit_code: 0
+  wall_s: 16.8
+  command: /opt/build/co60app/co60app.production run.mac option4 4
+  histories: 400000
+  D_over_phi0_Gy_cm2: 6.100222729098018e-12
+  D_rel_sem_history_by_history: 0.026265508331833626
+  energy_balance_max_abs_MeV: 1.0825758692267762e-16
+  untagged_tracks: 0
+- batch: 1
+  seeds:
+  - 6011003
+  - 6011004
+  exit_code: 0
+  wall_s: 16.8
+  command: /opt/build/co60app/co60app.production run.mac option4 4
+  histories: 400000
+  D_over_phi0_Gy_cm2: 6.01151162445903e-12
+  D_rel_sem_history_by_history: 0.02631250743971914
+  energy_balance_max_abs_MeV: 1.0825758692267762e-16
+  untagged_tracks: 0
+- batch: 2
+  seeds:
+  - 6011005
+  - 6011006
+  exit_code: 0
+  wall_s: 16.1
+  command: /opt/build/co60app/co60app.production run.mac option4 4
+  histories: 400000
+  D_over_phi0_Gy_cm2: 6.087816802726553e-12
+  D_rel_sem_history_by_history: 0.025968734065379827
+  energy_balance_max_abs_MeV: 1.0825758692267762e-16
+  untagged_tracks: 0
+- batch: 3
+  seeds:
+  - 6011007
+  - 6011008
+  exit_code: 0
+  wall_s: 16.8
+  command: /opt/build/co60app/co60app.production run.mac option4 4
+  histories: 400000
+  D_over_phi0_Gy_cm2: 6.164245417004404e-12
+  D_rel_sem_history_by_history: 0.026097299861088757
+  energy_balance_max_abs_MeV: 1.0825758692267762e-16
+  untagged_tracks: 0
+- batch: 4
+  seeds:
+  - 6011009
+  - 6011010
+  exit_code: 0
+  wall_s: 16.3
+  command: /opt/build/co60app/co60app.production run.mac option4 4
+  histories: 400000
+  D_over_phi0_Gy_cm2: 5.968627662152736e-12
+  D_rel_sem_history_by_history: 0.026344851517175027
+  energy_balance_max_abs_MeV: 1.0825758692267762e-16
+  untagged_tracks: 0
+- batch: 5
+  seeds:
+  - 6011011
+  - 6011012
+  exit_code: 0
+  wall_s: 17.1
+  command: /opt/build/co60app/co60app.production run.mac option4 4
+  histories: 400000
+  D_over_phi0_Gy_cm2: 6.283901157945743e-12
+  D_rel_sem_history_by_history: 0.02551572835819934
+  energy_balance_max_abs_MeV: 1.0825758692267762e-16
+  untagged_tracks: 0
+- batch: 6
+  seeds:
+  - 6011013
+  - 6011014
+  exit_code: 0
+  wall_s: 16.3
+  command: /opt/build/co60app/co60app.production run.mac option4 4
+  histories: 400000
+  D_over_phi0_Gy_cm2: 5.984783108592402e-12
+  D_rel_sem_history_by_history: 0.02637730783725157
+  energy_balance_max_abs_MeV: 4.121279625945995e-05
+  untagged_tracks: 0
+- batch: 7
+  seeds:
+  - 6011015
+  - 6011016
+  exit_code: 0
+  wall_s: 15.5
+  command: /opt/build/co60app/co60app.production run.mac option4 4
+  histories: 400000
+  D_over_phi0_Gy_cm2: 5.812695556669122e-12
+  D_rel_sem_history_by_history: 0.026148114363627125
+  energy_balance_max_abs_MeV: 1.0825758692267762e-16
+  untagged_tracks: 0
+- batch: 8
+  seeds:
+  - 6011017
+  - 6011018
+  exit_code: 0
+  wall_s: 17.1
+  command: /opt/build/co60app/co60app.production run.mac option4 4
+  histories: 400000
+  D_over_phi0_Gy_cm2: 5.734580979689176e-12
+  D_rel_sem_history_by_history: 0.026976173296286942
+  energy_balance_max_abs_MeV: 1.0825758692267762e-16
+  untagged_tracks: 0
+- batch: 9
+  seeds:
+  - 6011019
+  - 6011020
+  exit_code: 0
+  wall_s: 15.3
+  command: /opt/build/co60app/co60app.production run.mac option4 4
+  histories: 400000
+  D_over_phi0_Gy_cm2: 5.957630338913798e-12
+  D_rel_sem_history_by_history: 0.02624342845035226
+  energy_balance_max_abs_MeV: 1.0825758692267762e-16
+  untagged_tracks: 0
+started_utc: '2026-10-10T12:39:52Z'
+geant4_physics_printout:
+  em_models:
+    gamma phot:
+    - LivermorePhElectric (0 eV - 100 TeV)
+    gamma compt:
+    - LowEPComptonModel (0 eV - 20 MeV)
+    - KleinNishina (20 MeV - 100 TeV)
+    gamma conv:
+    - BetheHeitler5D (0 eV - 100 TeV)
+    gamma Rayl:
+    - LivermoreRayleigh (0 eV - 100 TeV)
+    e- msc:
+    - GoudsmitSaunderson (0 eV - 100 MeV)
+    - WentzelVIUni (100 MeV - 100 TeV)
+    e- eIoni:
+    - PenIoni (0 eV - 100 keV)
+    - MollerBhabha (100 keV - 100 TeV)
+    e- eBrem:
+    - eBremSB (0 eV - 1 GeV)
+    - eBremLPM (1 GeV - 100 TeV)
+    e- ePairProd:
+    - ePairProd (0 eV - 100 TeV)
+    e- CoulombScat:
+    - eCoulombScattering (100 MeV - 100 TeV)
+    e+ msc:
+    - GoudsmitSaunderson (0 eV - 100 MeV)
+    - WentzelVIUni (100 MeV - 100 TeV)
+    e+ eIoni:
+    - PenIoni (0 eV - 100 keV)
+    - MollerBhabha (100 keV - 100 TeV)
+    e+ eBrem:
+    - eBremSB (0 eV - 1 GeV)
+    - eBremLPM (1 GeV - 100 TeV)
+    e+ ePairProd:
+    - ePairProd (0 eV - 100 TeV)
+    e+ annihil:
+    - eplusTo2or3gamma (0 eV - 100 TeV)
+    e+ CoulombScat:
+    - eCoulombScattering (100 MeV - 100 TeV)
+  g4_water_range_cuts: gamma 1 mm e- 8.24701 um e+ 8.33478 um proton 8.24701 um
+  g4_water_energy_thresholds: gamma 2.93547 keV e- 10 keV e+ 10 keV proton 824.701 eV
+finished_utc: '2026-10-10T12:42:51Z'
+wall_time_s: 164.1

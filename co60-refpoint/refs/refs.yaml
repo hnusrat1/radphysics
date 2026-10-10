@@ -225,3 +225,18 @@
   used_in: [analysis/validity.py energy-balance tolerance]
   entered_on: 2026-10-10
   verified_by_humza: false
+
+- key: xcom_elemental_cross_sections_egsnrc
+  quantity: XCOM photon cross sections per element (incoherent, photoelectric, pair, triplet, coherent)
+  value: null
+  unit: barn/atom
+  source: >-
+    EGSnrc v2026 HEN_HOUSE/data/xcom_{compton,photo,pair,triplet,rayleigh}.data, described in the EGSnrc
+    manual (PIRS-701) as XCOM data (Berger and Hubbell); the files carry no provenance header
+  entered_from: source_code
+  used_in: [analysis/xcom.py, Layer 1 analytic primary-fluence check]
+  notes: >-
+    Water mu/rho from these files: 0.065163 (1.1732 MeV), 0.061066 (1.3325 MeV) cm2/g, computed by
+    analysis/xcom.py. Not a substitute for the NIST table values in nist_mu_rho_water until Humza checks them.
+  entered_on: 2026-10-10
+  verified_by_humza: false

@@ -25,6 +25,7 @@ from analysis.primary import fluence_cylinder_average, g4_mu_water  # noqa: E402
 from analysis.refs import ref_value  # noqa: E402
 from analysis.events import summarize as summarize_events  # noqa: E402
 from analysis.stopping import bases, spencer_attix  # noqa: E402
+from analysis.xcom import water_mu_rho  # noqa: E402
 
 RUNS = ROOT / "mc" / "runs"
 OUT = ROOT / "analysis" / "results"
@@ -108,6 +109,11 @@ def observables(b, sp, tables_json=TABLES):
                                                    g["scoring_depth"], src["ssd"], src["solid_angle_sr"], mu)
         o[f"L1_primary_{line}_measured_over_analytic"] = tl[cat] / (vol * n) / expected
         o[f"L1_primary_{line}_per_phi0"] = tl[cat] * norm
+        # Same check with mu from the XCOM elemental cross sections (independent of Geant4's models)
+        mu_x = float(water_mu_rho(np.array([src[f"{line}_MeV"]]), tables_json)["total"][0]) * g["water_density_g_cm3"]
+        expected_x = frac * fluence_cylinder_average(g["scoring_radius"], g["scoring_thickness"],
+                                                     g["scoring_depth"], src["ssd"], src["solid_angle_sr"], mu_x)
+        o[f"L1_primary_{line}_measured_over_analytic_xcom"] = tl[cat] / (vol * n) / expected_x
 
     # Layer 2: photon interactions in the scoring volume
     inter = tally(b, "interactions")
