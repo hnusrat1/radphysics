@@ -1,0 +1,174 @@
+# Every external number used by the study.
+#
+# Rule (STUDY_PLAN Section 10.1): a value stays verified_by_humza: false until
+# Humza checks it against the cited source. Code that reads a value from this
+# file must not treat an unverified value as final.
+#
+# entered_from records how the value got here:
+#   plan          stated in STUDY_PLAN.md
+#   source_code   read from a pinned code release (file and line given)
+#   recall        typed from memory of the cited source; the source itself was
+#                 not reachable from the build environment. Check these first.
+#   null value    not yet entered; source identified only.
+
+- key: co60_line_1_energy
+  quantity: Co-60 gamma line energy used in R0
+  value: 1.1732
+  unit: MeV
+  source: STUDY_PLAN.md Section 2 (R0 definition)
+  entered_from: plan
+  used_in: [R0 source, Compton edge test]
+  entered_on: 2026-10-10
+  verified_by_humza: false
+
+- key: co60_line_2_energy
+  quantity: Co-60 gamma line energy used in R0
+  value: 1.3325
+  unit: MeV
+  source: STUDY_PLAN.md Section 2 (R0 definition)
+  entered_from: plan
+  used_in: [R0 source, Compton edge test]
+  entered_on: 2026-10-10
+  verified_by_humza: false
+
+- key: co60_line_1_energy_evaluated
+  quantity: Co-60 gamma line energy, evaluated nuclear data
+  value: 1.173228
+  unit: MeV
+  source: NNDC ENSDF or LNHB/DDEP Co-60 evaluation
+  table: Co-60 beta-minus decay gamma table
+  entered_from: recall
+  used_in: []
+  notes: Not used by R0, which uses the 4-digit plan values. Listed so the rounding can be judged.
+  entered_on: 2026-10-10
+  verified_by_humza: false
+
+- key: co60_line_2_energy_evaluated
+  quantity: Co-60 gamma line energy, evaluated nuclear data
+  value: 1.332492
+  unit: MeV
+  source: NNDC ENSDF or LNHB/DDEP Co-60 evaluation
+  table: Co-60 beta-minus decay gamma table
+  entered_from: recall
+  used_in: []
+  notes: Not used by R0. See co60_line_1_energy_evaluated.
+  entered_on: 2026-10-10
+  verified_by_humza: false
+
+- key: electron_rest_energy
+  quantity: electron rest energy m_e c^2
+  value: 0.51099895000
+  unit: MeV
+  source: CODATA 2018 recommended values (NIST)
+  entered_from: recall
+  used_in: [analysis/kinematics.py]
+  notes: STUDY_PLAN Layer 3 uses 0.511 MeV. The Compton edges change by less than 1 eV between the two.
+  entered_on: 2026-10-10
+  verified_by_humza: false
+
+- key: electron_rest_energy_geant4
+  quantity: electron rest energy as compiled into Geant4 11.4.3 (CLHEP electron_mass_c2)
+  value: 0.510998910
+  unit: MeV
+  source: geant4 v11.4.3, source/externals/clhep/include/CLHEP/Units/PhysicalConstants.h line 80
+  entered_from: source_code
+  used_in: []
+  notes: CODATA 2006 value. Differs from CODATA 2018 by 4e-8 relative; negligible here.
+  entered_on: 2026-10-10
+  verified_by_humza: false
+
+- key: water_mean_excitation_energy_geant4
+  quantity: mean excitation energy I assigned to G4_WATER
+  value: 78.0
+  unit: eV
+  source: geant4 v11.4.3, source/materials/src/G4NistMaterialBuilder.cc line 712
+  entered_from: source_code
+  used_in: [R0 phantom]
+  notes: Confirm from the runtime material printout of each production run (manifest field).
+  entered_on: 2026-10-10
+  verified_by_humza: false
+
+- key: water_mean_excitation_energy_icru37
+  quantity: mean excitation energy of liquid water
+  value: 75.0
+  unit: eV
+  source: ICRU Report 37 (1984)
+  entered_from: recall
+  used_in: []
+  notes: EGSnrc 521icru.pegs4dat water is built on ICRU 37 data. Relevant to the B0 benchmark and open decision 5.
+  entered_on: 2026-10-10
+  verified_by_humza: false
+
+- key: water_mean_excitation_energy_icru90
+  quantity: mean excitation energy of liquid water
+  value: 78.0
+  unit: eV
+  source: ICRU Report 90 (2016)
+  entered_from: recall
+  used_in: []
+  notes: EGSnrc v2026 ships HEN_HOUSE/pegs4/density_corrections/compounds/water_icru90.density with I = 78 eV and rho = 0.998 g/cm3 (header line of that file).
+  entered_on: 2026-10-10
+  verified_by_humza: false
+
+- key: s_w_air_co60_trs398
+  quantity: Spencer-Attix water-to-air stopping-power ratio for Co-60
+  value: 1.133
+  unit: dimensionless
+  source: IAEA TRS-398 (2000)
+  table: to be identified by Humza
+  entered_from: plan
+  used_in: [Layer 5 sanity check]
+  notes: Based on ICRU 37 stopping powers. STUDY_PLAN says ICRU 90 data shift this by a few tenths of a percent.
+  entered_on: 2026-10-10
+  verified_by_humza: false
+
+- key: beta_co60_beyond_dmax
+  quantity: beta = D/K_col for Co-60 beyond d_max
+  value: null
+  unit: dimensionless
+  source: STUDY_PLAN.md Section 3 ("slightly above 1, on the order of 0.5%"); primary source to be identified
+  entered_from: plan
+  used_in: [Layer 5 sanity check]
+  entered_on: 2026-10-10
+  verified_by_humza: false
+
+- key: pdd5_co60_ssd100_10x10
+  quantity: percent depth dose at 5 cm, Co-60, SSD 100 cm, 10 x 10 cm2
+  value: null
+  unit: percent
+  source: BJR Supplement 25 (1996), Co-60 central-axis depth-dose table
+  entered_from: null
+  used_in: [Section 4.3 comparison]
+  entered_on: 2026-10-10
+  verified_by_humza: false
+
+- key: nist_mu_rho_water
+  quantity: mass attenuation coefficient of liquid water at 1.1732 and 1.3325 MeV
+  value: null
+  unit: cm2/g
+  source: NIST XCOM, or Hubbell and Seltzer, NISTIR 5632, water table
+  entered_from: null
+  used_in: [Layer 1 analytic primary fluence check, interpolation test]
+  notes: physics.nist.gov is not reachable from the build environment. Table values need entry on a machine with access; the interpolation scheme (log-log between grid points) is an M1 decision.
+  entered_on: 2026-10-10
+  verified_by_humza: false
+
+- key: nist_mu_en_rho_water
+  quantity: mass energy-absorption coefficient of liquid water at 1.1732 and 1.3325 MeV
+  value: null
+  unit: cm2/g
+  source: Hubbell and Seltzer, NISTIR 5632, water table
+  entered_from: null
+  used_in: [Layer 5 collision kerma]
+  entered_on: 2026-10-10
+  verified_by_humza: false
+
+- key: nist_mu_tr_rho_water
+  quantity: mass energy-transfer coefficient of liquid water at 1.1732 and 1.3325 MeV
+  value: null
+  unit: cm2/g
+  source: to be identified (NISTIR 5632 tabulates mu/rho and mu_en/rho only)
+  entered_from: null
+  used_in: [Layer 5 kerma]
+  entered_on: 2026-10-10
+  verified_by_humza: false

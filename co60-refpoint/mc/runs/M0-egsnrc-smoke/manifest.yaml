@@ -1,0 +1,35 @@
+run_id: M0-egsnrc-smoke
+purpose: EGSnrc installation check
+created_utc: '2026-10-10T05:36:02Z'
+git:
+  commit: ad02e5cbe4fb279bde3337c9c990a13300ce4902
+  dirty: true
+machine:
+  hostname: vm
+  platform: Linux-6.18.44-fc-v114-x86_64-with-glibc2.39
+  cpu: Intel(R) Xeon(R) Processor @ 2.80GHz
+  logical_cpus: 4
+  compiler: c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+egsnrc:
+  hen_house: /opt/EGSnrc/HEN_HOUSE/
+  egs_home: /opt/EGSnrc/egs_home/
+  egs_config: /opt/EGSnrc/HEN_HOUSE/specs/linux.conf
+  commit: bd49a47aae3938f49f4100b8e018091861408b19
+  describe: v2026
+cases:
+- name: tutor1
+  command: tutor1 -p tutor_data
+  pegs4_data: tutor_data
+  histories: null
+  exit_code: 0
+  finished_simulation: true
+  wall_s: 0.07
+- name: dosrznrc_template
+  command: dosrznrc -i dosrznrc_template -p 521icru
+  pegs4_data: 521icru
+  histories: 100
+  exit_code: 0
+  finished_simulation: true
+  wall_s: 0.19
+started_utc: '2026-10-10T05:36:02Z'
+finished_utc: '2026-10-10T05:36:03Z'

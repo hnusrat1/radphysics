@@ -1,0 +1,789 @@
+================================================================================
+EGSnrc version 4 for x86_64-unknown-linux-gnu          Sat Oct 10 05:36:02 2026
+================================================================================
+configuration............................................linux
+configuration time.......................................2026-10-10 05:22:46 UTC
+app compile time.........................................2026-10-10 05:25:31 UTC
+git commit hash..........................................bd49a47
+application..............................................dosrznrc
+pegs file................................................521icru on HEN_HOUSE
+using host...............................................vm
+input file...............................................dosrznrc_template
+output file(s)...........................................dosrznrc_template
+================================================================================
+
+
+ *******************************************************************************
+
+          Sat Oct 10 05:36:02 2026
+
+ *******************************************************************************
+
+ *                               ************                                  *
+ *                               *          *                                  *
+ *                               * DOSRZnrc *                                  *
+ *                               *          *                                  *
+ *                               ************                                  *
+
+   Developed by National Research Council of Canada
+     on linux
+
+ Number of planar regions      = 200
+ Number of cylindrical regions=  60
+
+
+
+ DOSRZnrc(EGSnrc)   ON linux 
+
+ 
+ 
+ *** INPUT CARD I01 ***
+TITLE: dosrznrc_template--depth dose in H2O due to Cobalt beam                        
+ 
+ *** INPUT CARD IO2 ***
+
+ DO NOT TRACK(0) OR TRACK(>0) EVERY INTERACTION:                          0
+ DO NOT STORE(0) OR STORE(1,2) INITIAL RANDOM #s:                         0
+ FIRST RUN(0),RESUMED(1),ANALYZE(3),start-RNS(4),parallel(5):             0
+ OUTPUT OPTION (1 THRU 4):                                                2
+ STORE DATA(0) OR NOT(1):                                                 0
+ CSDA CALCULATION(1) OR NOT(0)                                            0
+
+
+ ******DOSE SCORING BOUNDARIES******
+ NZDMIN,NZDMAX,NRDMIN,NRDMAX:     1,   61,    0,   60
+
+ 
+
+ *** INPUT CARD MC1 ***
+
+ # OF HISTORIES:                                                    100
+ 1st initial random number seed:                                      1
+ 2nd initial random number seed:                                      3
+ MAXIMUM CPU TIME ALLOWED:                                      90.00HRS
+ SCORING OPTION IFULL(0,1,2,3):                                       0
+ STATISTICAL ACCURACY DESIRED:                                 0.0000%
+ KERMA WILL(1) or WILL NOT(0) be scored:                    0
+ *** INPUT CARD CGM1 ***
+ TERSE(0), RAPID(1) OR DETAILED(2) INPUT:                             0
+
+ *** CARD CGM2A *** (Input groups of slabs) 
+ Number of planar slabs:                                             60
+ Geometrical Z-plane coordinates:
+    0.0000    1.0000    2.0000    3.0000    4.0000    5.0000
+    6.0000    7.0000    8.0000    9.0000   10.0000   12.0000
+   14.0000   16.0000   18.0000   20.0000   22.0000   24.0000
+   26.0000   28.0000   30.0000   32.0000   34.0000   36.0000
+   38.0000   40.0000   42.0000   44.0000   46.0000   48.0000
+   50.0000   52.0000   54.0000   56.0000   58.0000   60.0000
+   62.0000   64.0000   66.0000   68.0000   70.0000   72.0000
+   74.0000   76.0000   78.0000   80.0000   82.0000   84.0000
+   86.0000   88.0000   90.0000   92.0000   94.0000   96.0000
+   98.0000  100.0000  102.0000  104.0000  106.0000  108.0000
+  110.0000
+ 
+ *** INPUT CARD CG3 ***
+ Number of concentric rings:                                          5
+ Ring radius # 1:                                              1.0000 cm
+ Ring radius # 2:                                              2.0000 cm
+ Ring radius # 3:                                              5.0000 cm
+ Ring radius # 4:                                             10.0000 cm
+ Ring radius # 5:                                            100.0000 cm
+
+ *** INPUT CARD M1 ***
+ Number of media(<= 10):                                              2
+
+ *** INPUT CARD M2 ***
+ MEDIUM #1:                                           H2O521ICRU              
+ MEDIUM #2:                                           AIR521ICRU              
+
+ *** INPUT CARD M3 ***
+
+ # of geometrical zones =                                           301
+ REGION(  1) = MATERIAL( 0) (VACUUM)
+ ZPLANE(  1),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE(  1),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE(  1),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE(  1),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE(  1),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE(  2),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE(  2),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE(  2),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE(  2),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE(  2),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE(  3),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE(  3),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE(  3),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE(  3),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE(  3),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE(  4),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE(  4),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE(  4),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE(  4),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE(  4),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE(  5),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE(  5),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE(  5),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE(  5),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE(  5),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE(  6),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE(  6),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE(  6),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE(  6),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE(  6),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE(  7),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE(  7),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE(  7),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE(  7),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE(  7),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE(  8),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE(  8),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE(  8),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE(  8),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE(  8),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE(  9),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE(  9),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE(  9),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE(  9),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE(  9),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 10),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 10),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 10),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 10),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 10),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 11),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 11),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 11),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 11),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 11),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 12),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 12),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 12),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 12),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 12),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 13),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 13),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 13),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 13),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 13),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 14),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 14),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 14),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 14),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 14),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 15),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 15),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 15),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 15),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 15),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 16),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 16),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 16),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 16),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 16),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 17),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 17),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 17),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 17),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 17),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 18),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 18),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 18),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 18),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 18),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 19),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 19),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 19),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 19),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 19),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 20),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 20),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 20),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 20),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 20),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 21),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 21),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 21),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 21),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 21),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 22),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 22),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 22),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 22),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 22),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 23),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 23),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 23),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 23),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 23),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 24),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 24),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 24),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 24),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 24),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 25),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 25),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 25),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 25),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 25),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 26),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 26),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 26),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 26),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 26),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 27),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 27),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 27),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 27),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 27),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 28),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 28),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 28),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 28),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 28),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 29),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 29),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 29),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 29),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 29),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 30),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 30),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 30),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 30),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 30),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 31),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 31),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 31),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 31),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 31),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 32),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 32),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 32),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 32),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 32),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 33),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 33),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 33),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 33),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 33),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 34),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 34),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 34),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 34),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 34),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 35),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 35),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 35),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 35),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 35),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 36),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 36),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 36),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 36),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 36),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 37),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 37),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 37),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 37),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 37),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 38),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 38),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 38),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 38),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 38),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 39),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 39),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 39),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 39),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 39),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 40),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 40),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 40),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 40),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 40),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 41),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 41),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 41),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 41),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 41),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 42),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 42),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 42),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 42),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 42),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 43),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 43),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 43),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 43),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 43),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 44),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 44),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 44),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 44),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 44),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 45),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 45),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 45),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 45),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 45),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 46),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 46),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 46),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 46),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 46),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 47),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 47),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 47),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 47),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 47),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 48),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 48),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 48),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 48),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 48),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 49),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 49),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 49),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 49),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 49),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 50),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 50),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 50),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 50),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 50),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 51),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 51),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 51),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 51),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 51),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 52),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 52),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 52),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 52),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 52),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 53),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 53),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 53),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 53),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 53),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 54),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 54),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 54),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 54),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 54),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 55),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 55),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 55),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 55),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 55),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 56),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 56),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 56),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 56),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 56),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 57),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 57),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 57),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 57),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 57),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 58),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 58),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 58),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 58),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 58),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 59),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 59),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 59),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 59),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 59),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 60),RADIUS(  1) = MATERIAL( 1)
+ ZPLANE( 60),RADIUS(  2) = MATERIAL( 1)
+ ZPLANE( 60),RADIUS(  3) = MATERIAL( 1)
+ ZPLANE( 60),RADIUS(  4) = MATERIAL( 1)
+ ZPLANE( 60),RADIUS(  5) = MATERIAL( 1)
+ ZPLANE( 11),RADIUS(  1) = MATERIAL( 2)
+ 
+
+===> MAX. SCORING CYLINDER # RESET TO:      5
+
+ *** Source inputs read by srcrz ***
+
+ charge of the incident beam (-1,0,1 [& 2 with source 21]),
+ source configuration
+      (0) parallel beam incident from the front:(0),radius(cm)
+                      incident direction cosines (U,V,W)
+   or (1) point source on axis incident from the front(1)
+                      source to front face distance,radius(cm)
+   or (2) broad parallel beam incident from the front(2)
+                      no configuration input necessary,unit area beam
+   or (3) uniform isotropically radiating disk(3)
+                      min,max radius, min,max Z
+   or (4) axial fluence for various beam radii
+                      radius of central axis region
+   or (10) parallel beam incident from the side(10)
+                   half-width,half-height of beam at center(cm)
+   or (11) point source incident from the side(11)
+           source to center distance(cm)
+half-width,half-height of beam at center(cm)
+   or (12) point source incident from off axis(12)
+                       perpendicular distance off central axis(cm)
+                       perpendicular distance from front face(cm)
+   or (13) broad parallel beam incident from any angle:(13)
+                      incident direction cosines (U,V,W)
+   or (14) point source on axisfrom front but restricted:(14),
+                      source to front face dist, outer,inner radius(cm)
+   or (20) parallel beam incident from the front with radial distribution
+   or (21)full phase-space on front: each particle read from unit 42
+                  file MODE (0. = default, 2. with ZLAST as well),
+                      NRCYCL, IPARALLEL, PARNUM
+   or (22)full phase-space from any angle: each particle read from unit 42
+                      file MODE (0. = default, 2. with ZLAST aswell),
+                      distance from centre of source plane to point of
+                      rotation, angle of rotation about Z axis, Z offset
+                      of point of rotation, NRCYCL, IPARALLEL, PARNUM,
+                      X offset of source, Y offset of source.
+   or (23) BEAM treatment headsimulation from any angle: name of BEAM
+                      simulation (eg BEAM_accelname), name of BEAM input
+         file (no .egsinp extension), name of BEAM pegs data
+                    (no .pegs4dat extension), min. and max. weights of
+                      particles to use (defaults to -1e30- 1e30),
+                      distance from centre of BEAM scoring plane to point of
+                      rotation, angle of rotation about Z axis, Z offset
+                      of point of rotation, X offset of source, Y offset
+  of source.
+
+
+  IQIN            0
+         SRCRZ read:    0    0     5.00000     0.00000     0.00000     1.00000
+
+ Electric charge of the source:                                       0
+ Parallel beam incident from the front(+ve Z-axis)
+ Radius of beam at the front face of the target:               5.0000 cm
+ X-axis direction cosine:                                      0.0000
+ Y-axis direction cosine:                                      0.0000
+ Z-axis direction cosine:                                      1.0000
+
+ *** INPUT CARD TC1 ***
+ MONOENERGETIC BEAM:
+
+ KINETIC ENERGY OF THE INCIDENT BEAM:                          1.2500
+ 
+ 
+
+***************** Warning: 
+File /opt/EGSnrc/egs_home/dosrznrc/egsrun_17609_dosrznrc_template_vm/dosrznrc_template.errors
+ is already opened and connected to unit  15
+ Will not try to re-open this file, assuming it has been opened
+ by specifying it in the .io file.
+
+
+
+ Bound Compton start region
+  Setting all to            3
+ Rayleigh start region
+  Setting all to            1
+ Relaxations start region
+  Setting all to            1
+ PE sampling start region
+  Setting all to            1
+
+================================================================================
+
+                   Electron/Photon transport parameter
+
+================================================================================
+
+ Photon cross sections                                      xcom
+ Compton cross sections                                     default
+ Photon transport cutoff(MeV)                                    0.1000E-01
+ Pair angular sampling                                       SIM
+ Pair cross sections                                         BH 
+ Triplet production                                          OFF
+ Bound Compton scattering                                    NOREJ         
+ Radiative Compton corrections                               OFF           
+ Rayleigh scattering                                         ON            
+ Atomic relaxations                                          EADL          
+ Photoelectron angular sampling                              ON            
+
+ Electron transport cutoff(MeV)                               0.5210
+ Bremsstrahlung cross sections                              BH  
+ Bremsstrahlung angular sampling                             KM 
+ Spin effects                                                On
+ Electron Impact Ionization                                  Off
+ Maxium electron step in cm (SMAX)                               0.1000E+11
+ Maximum fractional energy loss/step (ESTEPE)                0.2500
+ Maximum 1st elastic moment/step (XIMAX)                     0.5000
+ Boundary crossing algorithm                                 EXACT     
+ Skin-depth for boundary crossing (MFP)                      3.000    
+ Electron-step algorithm                                     PRESTA-II 
+
+================================================================================
+
+
+ BREMSSTRAHLUNG SPLITTING OFF(0) OR ON(1):                            0
+EACH BREMSSTRAHLUNG SPLIT INTO:                                       1
+
+ CHARGED PARTICLE RUSSIAN ROULETT OFF(0) OR ON(1):                    0
+ PROBABILITY OF SURVIVAL:                                      1.0000
+
+ WITHOUT(0) OR WITH(1) RANGE REJECTION:                               0
+ ESAVEIN CUTOFF VALUE FOR regional RANGE REJECTION :           0.0000 MeV
+
+ *** INPUT CARD TC2C ***
+ RUSSIAN ROULETTE WILL NOT BE PLAYED
+
+ NO PATHLENGTH BIASING TO BE DONE
+
+ *** INPUT CARD TC3 ***
+
+ FORCED PHOTON INTERACTIONS IN EFFECT FROM  1 TO  1 # INTERACTIONS
+
+ 
+ No cross section enhancement
+
+ *** INPUT for plotting ***
+
+PLOTTING WILL BE DONE
+
+
+ *** INPUT which types of plots ***
+
+ NO LINEPRINTER PLOTS WILL BE DRAWN
+
+ Files will be prepared for external plotter
+
+ *** INPUT type of plot ***
+
+ POINT PLOT(1)/HISTOGRAM(2)/BOTH(3) WILL BE PREPARED: 2
+
+ *** INPUT which plots to do ***
+PLOTTING RADIAL ZONE   1
+PLOTTING RADIAL ZONE   2
+ 
+PLOTTING PLANAR ZONE  10
+ 
+
+ ********* SUCCESSFUL INPUT ACCOMPLISHED *********
+ 
+ 
+ 
+ 
+ 
+
+ CALL TO HATCH AT  05:36:03
+ ===> Photonuclear flag:   0
+ RAYLEIGH OPTION REQUESTED FOR MEDIUM NUMBER  1
+
+ RAYLEIGH OPTION REQUESTED FOR MEDIUM NUMBER  2
+
+ Found medium with gas pressure
+
+***************** Warning: 
+ IN HATCH: REQUESTED RAYLEIGH OPTION FOR MEDIUM  2
+ BUT RAYLEIGH DATA NOT INCLUDED IN PEGS4 FILE.
+ Rayleigh data available for medium  1 in PEGS4 data set.
+
+(Re)-initializing photon cross sections with files from the series: xcom
+
+ Compton cross sections: default
+ Using Compton cross sections from /opt/EGSnrc/HEN_HOUSE/data/compton_sigma.data
+ Working on medium   1 ... 
+  ->  100 atomic ff values computed!
+      preparing data for Rayleigh sampling ... done
+
+OK
+ Working on medium   2 ... 
+  ->  100 atomic ff values computed!
+      preparing data for Rayleigh sampling ... done
+
+OK
+
+Reading screened Rutherford MS data ...............  done 
+
+
+Reading spin data base from /opt/EGSnrc/HEN_HOUSE/data/spinms.data
+EGSnrc spin data, version 2.0   
+Data generated on a machine with 1234 endianess
+The endianess of this CPU is 1234
+Ranges:      1.00   100.00  0.30054  1.00000
+
+
+  medium    1 .....................  done
+  medium    2 .....................  done
+  
+  Medium            1  sige =    6.3784170227787529        6.1807995067678911       monotone =  F F
+  Medium            2  sige =    6.4595132015164030        6.2354615343201143       monotone =  F F
+  
+  Initializing tmxs for estepe =   0.25000000000000000       and ximax =   0.50000000000000000     
+  
+
+Bound Compton scattering requested, reading data ......  Done
+
+ Initializing Bound Compton scattering ......
+ Medium   1 has   5 shells: 
+   1    1   1  0.20000 0.116E+03     0.014
+   2   17   1  0.20000 0.155E+02     0.543
+   3   18   2  0.20000 0.793E+02     0.024
+   4   19   3  0.20000 0.479E+02     0.014
+   5   20   4  0.20000 0.479E+02     0.014
+ Medium   2 has  18 shells: 
+   1   10   1  0.00004 0.210E+02     0.285
+   2   11   2  0.00004 0.110E+03     0.011
+   3   12   3  0.00004 0.669E+02     0.011
+   4   13   1  0.21603 0.178E+02     0.410
+   5   14   2  0.21603 0.921E+02     0.015
+   6   15   3  0.21603 0.558E+02     0.014
+   7   16   4  0.10801 0.558E+02     0.014
+   8   17   1  0.05805 0.155E+02     0.543
+   9   18   2  0.05805 0.793E+02     0.024
+  10   19   3  0.05805 0.479E+02     0.014
+  11   20   4  0.05805 0.479E+02     0.014
+  12   72   1  0.00129 0.671E+01     3.203
+  13   73   2  0.00129 0.271E+02     0.326
+  14   74   3  0.00129 0.142E+02     0.251
+  15   75   4  0.00257 0.142E+02     0.249
+  16   76   5  0.00129 0.889E+02     0.029
+  17   77   6  0.00129 0.606E+02     0.016
+  18   78   7  0.00257 0.606E+02     0.016
+ ...... Done.
+
+Output from subroutine EDGSET:
+==============================
+ Atomic relaxations requested! 
+
+ Reading simplified photo-absorption data ..... Done
+
+ Reading simplified relaxation data ..... Done
+
+ Reading parametrized XCOM photo cross section data ..... Done
+
+ Reading EADL relaxation data ......
+  Z =   1 has  1 shells
+  Z =   8 has  4 shells
+  Z =   6 has  4 shells
+  Z =   7 has  4 shells
+  Z =  18 has  7 shells
+ ...... Done.
+
+EGSnrc SUCCESSFULLY 'HATCHED' FOR     2 MEDIA.
+
+ HATCH COMPLETED AT 05:36:03
+
+ ********* Initializing front parallel beam for photons *******
+
+
+ *******************************************************************************
+
+                   EXECUTION INFORMATION AND WARNING MESSAGES
+
+ *******************************************************************************
+
+ USING DOSRZnrc(EGSnrc)   
+
+ ********* NEW INPUT FILE *********
+
+
+ BATCH #  time-elapsed  total cputime  ratio  time of day  peak region stats(%)
+
+     1          0.0            0.0      0.00    05:36:03          99.900
+     2          0.0            0.0      1.16    05:36:03          99.900
+     3          0.0            0.0      0.89    05:36:03          99.900
+     4          0.0            0.0      1.04    05:36:03          99.900
+     5          0.0            0.0      0.94    05:36:03          99.900
+     6          0.0            0.0      1.04    05:36:03          99.900
+     7          0.0            0.0      1.05    05:36:03          99.900
+     8          0.0            0.0      1.05    05:36:03          99.900
+     9          0.0            0.0      1.06    05:36:03          99.900
+    10          0.0            0.0      0.98    05:36:03          99.900
+
+ *********DESIRED STATISTICAL ACCURACY OF  0.000% NOT REACHED*********
+ STATS IN PEAK DOSE REGION= 99.900 % AFTER 10 BATCHES
+
+********* FINAL RANDOM NUMBER STATE: ixx jxx =   62  95  *********
+
+ Finished simulations: elapsed,cputime,ratio=      0.0     0.0(= 0.00h)    0.98
+
+ cputime per history =   0.00012 sec. number of historiesper  hour =   29481591.
+
+ OMEG =   0.000E+00( 99.9%)
+
+
+ End of run          Sat Oct 10 05:36:03 2026
+
+ *******************************************************************************
+ *******************************************************************************
+
+  If you are not trying to reset transport parameters,                         
+  ignore all the output until the message                                      
+  ******************** end input transport parameter ***********************   
+                                                                               
+ ***************ERROR***************                                           
+ >>scale L EII cross-sections<< NOT FOUND                                      
+ END OF DELIMETER: MC TRANSPORT PARAMETER                                      
+ ***************ERROR***************                                           
+ >>Compton cross sections<< NOT FOUND                                          
+ END OF DELIMETER: MC TRANSPORT PARAMETER                                      
+ ***************ERROR***************                                           
+ >>Electric Field<< NOT FOUND                                                  
+ END OF DELIMETER: MC TRANSPORT PARAMETER                                      
+ ***************ERROR***************                                           
+ >>Magnetic Field<< NOT FOUND                                                  
+ END OF DELIMETER: MC TRANSPORT PARAMETER                                      
+ ***************ERROR***************                                           
+ >>EM ESTEPE<< NOT FOUND                                                       
+ END OF DELIMETER: MC TRANSPORT PARAMETER                                      
+ ***************ERROR***************                                           
+ >>Photonuclear attenuation<< NOT FOUND                                        
+ END OF DELIMETER: MC TRANSPORT PARAMETER                                      
+ ***************ERROR***************                                           
+ >>Photonuclear cross sections<< NOT FOUND                                     
+ END OF DELIMETER: MC TRANSPORT PARAMETER                                      
+ ***************ERROR***************                                           
+ >>Set ECUT<< NOT FOUND                                                        
+ END OF DELIMETER: MC TRANSPORT PARAMETER                                      
+ ***************ERROR***************                                           
+ >>Set ECUT start region<< NOT FOUND                                           
+ END OF DELIMETER: MC TRANSPORT PARAMETER                                      
+ ***************ERROR***************                                           
+ >>Set ECUT stop region<< NOT FOUND                                            
+ END OF DELIMETER: MC TRANSPORT PARAMETER                                      
+ ***************ERROR***************                                           
+ >>Set PCUT<< NOT FOUND                                                        
+ END OF DELIMETER: MC TRANSPORT PARAMETER                                      
+ ***************ERROR***************                                           
+ >>Set PCUT start region<< NOT FOUND                                           
+ END OF DELIMETER: MC TRANSPORT PARAMETER                                      
+ ***************ERROR***************                                           
+ >>Set PCUT stop region<< NOT FOUND                                            
+ END OF DELIMETER: MC TRANSPORT PARAMETER                                      
+ ***************ERROR***************                                           
+ >>Set SMAX<< NOT FOUND                                                        
+ END OF DELIMETER: MC TRANSPORT PARAMETER                                      
+ ***************ERROR***************                                           
+ >>Set SMAX start region<< NOT FOUND                                           
+ END OF DELIMETER: MC TRANSPORT PARAMETER                                      
+ ***************ERROR***************                                           
+ >>Set SMAX stop region<< NOT FOUND                                            
+ END OF DELIMETER: MC TRANSPORT PARAMETER                                      
+                                                                               
+  ******************** end input transport parameter ***********************   
+                                                                               
+                                                                               
+                                                                               
+  *************************************************                            
+  ********* SUCCESSFUL INPUT ACCOMPLISHED *********                            
+  *************************************************                            
+                                                                               
+                                                                               
+
+
+================================================================================
+Finished simulation
+
+  Elapsed time:                    0.2 s (  0.000 h)
+  CPU time:                        0.2 s (  0.000 h)
+  Ratio:                          1.070
+
+
+End of run                                             Sat Oct 10 05:36:03 2026
+================================================================================
