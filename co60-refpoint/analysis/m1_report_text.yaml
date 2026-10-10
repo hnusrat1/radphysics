@@ -83,24 +83,24 @@ findings:
       The depth scan shows the dose 2–3.7% high just in front of the scoring cylinder and 1.5–2.3% low just
       behind it, in water on both sides. Moving the cylinder to 8 cm moves the pattern. Far from both
       cylinders the two depth scans agree to 0.1%. Inside the cylinder, the dose agrees with the boundary-free
-      dose at the same depth to about 0.5%; a longer run tightens that bound. The likely cause is the electron
+      dose at the same depth (row in the checks table, from a run with the main run's variance reduction and
+      the cylinder moved to 8 cm). The likely cause is the electron
       step limit near boundaries (GS multiple scattering, SafetyPlus), which moves energy deposition without
       creating any. How to score from M2 on is a gate question.
-  - title: "Primary fluence 0.12% below the analytic value in the main run"
-    warn: true
+  - title: "A primary-fluence fluctuation that looked like a 4σ effect"
+    warn: false
     body: >-
-      Against exp(−μs)/(ΩR²) with the attenuation coefficient Geant4 uses in tracking, the main run gives 0.9988,
-      1.9σ low on counting statistics. Eight diagnostic runs (photon-only and full transport, with and without
-      importance sampling, two scoring geometries) and a transmission measurement of μ found no cause; every
-      other run agrees with 1 within 2σ. The main run's batches scatter less than their history variance allows,
-      which first made the deficit look like 4.4σ (DECISIONS D023). A replicate with new seeds decides whether
-      it is chance; the pooling rule was fixed in advance (D022).
+      The main run's primary fluence came out 0.12% below the analytic value, and its batch spread made that look
+      like 4σ. Eight diagnostic runs and a transmission measurement of μ found no cause. The main run's batches
+      agreed with each other better than their history variance allows, so its error bar was too small (DECISIONS
+      D023). A replicate with new seeds, pooled by a rule fixed before it finished (D022), came out normal; the
+      pooled value is in the checks table.
   - title: "Ten-batch error bars can be too small"
     warn: false
     body: >-
       The standard error from 10 batches is itself uncertain by about ±24%, and in the main run it came out 0.4–0.7
       of the history-by-history value. Reported uncertainties are now the larger of the two where both exist
-      (DECISIONS D023); with that, D/Φ<sub>0</sub> is known to 0.093%, inside the 0.1% target.
+      (DECISIONS D023), and the statistical targets are checked against that larger error.
 
 decisions:
   - title: "s_w,air reference basis for M4 scoring"
@@ -112,7 +112,7 @@ decisions:
   - title: "Fano +0.16 ± 0.06%"
     body: "Accept as a bound on interface artifacts now, or wait for the step-size diagnostics, which run after production."
   - title: "Scoring-volume boundary"
-    body: "Keep the mass-geometry scoring cylinder, or score in a parallel world or by position from M2 on; decide once the boundary-free run bounds the effect on D at R0."
+    body: "D at R0 is unaffected within the bound in the checks table, but the dose next to the cylinder is distorted by up to ±3%. Keep the mass-geometry scoring cylinder for M2 onward, or score in a parallel world or by position?"
   - title: "refs.yaml"
     body: "All external values, including TRS-398's 1.133 and the constants used for normalisation, are still unverified."
 
