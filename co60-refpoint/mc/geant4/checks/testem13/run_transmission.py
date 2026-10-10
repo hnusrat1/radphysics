@@ -16,6 +16,9 @@ from pathlib import Path
 
 import yaml
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "tools"))
+from manifest import base_manifest, utc_now, write_yaml  # noqa: E402
+
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[3]
 EXE = "/opt/build/examples/TestEm13-opt4/build/TestEm13"
@@ -49,6 +52,12 @@ def main(run_id, n):
                               "mu_measured_cm-1": mu, "mu_measured_sem_cm-1": mu_sem,
                               "calculator_terms_as_printed": calc_terms}
     yaml.safe_dump(res, open(out / "results.yaml", "w"), sort_keys=False)
+    m = base_manifest(run_id, "Tracking attenuation coefficient of G4_WATER at the Co-60 lines by transmission "
+                              "(TestEm13 with G4EmStandardPhysics_option4, general gamma process off)")
+    m.update({"executable": EXE, "build_script": "mc/geant4/checks/testem13/build.sh",
+              "photons_per_line": n, "thickness_cm": THICK_CM, "seeds": {"line1": [7001, 7002], "line2": [7003, 7004]},
+              "finished_utc": utc_now()})
+    write_yaml(out / "manifest.yaml", m)
     print(yaml.safe_dump(res, sort_keys=False))
 
 

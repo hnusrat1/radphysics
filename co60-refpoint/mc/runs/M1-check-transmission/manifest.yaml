@@ -1,0 +1,82 @@
+run_id: M1-check-transmission
+purpose: Tracking attenuation coefficient of G4_WATER at the Co-60 lines by transmission (TestEm13 with
+  G4EmStandardPhysics_option4, general gamma process off)
+created_utc: '2026-10-10T18:06:06Z'
+git:
+  commit: 940ea4d011119f7d4cca5806f1e59e56f3a024fd
+  dirty: true
+machine:
+  hostname: vm
+  platform: Linux-6.18.44-fc-v114-x86_64-with-glibc2.39
+  cpu: Intel(R) Xeon(R) Processor @ 2.80GHz
+  logical_cpus: 4
+  compiler: c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+geant4:
+  version: 11.4.3
+  prefix: /opt/geant4/11.4.3
+  features: "Known Features:\n staticlibs[no]\n multithreading[yes]\n smartstack[no]\n php_as_hp[no]\n\
+    \ clhep[yes]\n expat[no]\n zlib[yes]\n gdml[no]\n ptl[yes]\n usolids[no]\n freetype[no]\n hdf5[no]\n\
+    \ g3tog4[no]\n qt[no]\n motif[no]\n raytracer-x11[no]\n opengl-x11[no]\n openinventor[no]\n vtk[no]"
+  datasets:
+    G4NDL:
+      envvar: G4NEUTRONHPDATA
+      path: /opt/geant4/data/G4NDL4.7.1
+      env_value: null
+    G4EMLOW:
+      envvar: G4LEDATA
+      path: /opt/geant4/data/G4EMLOW8.8
+      env_value: null
+    PhotonEvaporation:
+      envvar: G4LEVELGAMMADATA
+      path: /opt/geant4/data/PhotonEvaporation6.1.2
+      env_value: null
+    RadioactiveDecay:
+      envvar: G4RADIOACTIVEDATA
+      path: /opt/geant4/data/RadioactiveDecay6.1.2
+      env_value: null
+    G4PARTICLEXS:
+      envvar: G4PARTICLEXSDATA
+      path: /opt/geant4/data/G4PARTICLEXS4.2
+      env_value: null
+    G4PII:
+      envvar: G4PIIDATA
+      path: /opt/geant4/data/G4PII1.3
+      env_value: null
+    RealSurface:
+      envvar: G4REALSURFACEDATA
+      path: /opt/geant4/data/RealSurface2.2
+      env_value: null
+    G4SAIDDATA:
+      envvar: G4SAIDXSDATA
+      path: /opt/geant4/data/G4SAIDDATA2.0
+      env_value: null
+    G4ABLA:
+      envvar: G4ABLADATA
+      path: /opt/geant4/data/G4ABLA3.3
+      env_value: null
+    G4INCL:
+      envvar: G4INCLDATA
+      path: /opt/geant4/data/G4INCL1.3
+      env_value: null
+    G4ENSDFSTATE:
+      envvar: G4ENSDFSTATEDATA
+      path: /opt/geant4/data/G4ENSDFSTATE3.0
+      env_value: null
+    G4CHANNELING:
+      envvar: G4CHANNELINGDATA
+      path: /opt/geant4/data/G4CHANNELING2.0
+      env_value: null
+executable: /opt/build/examples/TestEm13-opt4/build/TestEm13
+build_script: mc/geant4/checks/testem13/build.sh
+photons_per_line: 20000000
+thickness_cm: 5.0
+seeds:
+  line1:
+  - 7001
+  - 7002
+  line2:
+  - 7003
+  - 7004
+run_utc: 2026-10-10T14:37Z to 14:41Z
+note: Manifest written after the run (the first version of run_transmission.py did not write one); git
+  state below is at the time of writing, the run itself used commit e56a18c's script.
