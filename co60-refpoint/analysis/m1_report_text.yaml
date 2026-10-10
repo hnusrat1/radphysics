@@ -41,7 +41,9 @@ layer5: >-
   on four stopping-power bases.
 
 pdd_note: >-
-  Dose maximum and PDD(5) come from a separate run with a central-axis depth scan (M1-R0-option4-pdd).
+  Dose maximum and PDD(5) come from a separate run with a central-axis depth scan (M1-R0-option4-pdd). The bump
+  at 4.5–4.8 cm and the dip at 5.2–5.6 cm are a transport artifact of the scoring cylinder's boundary at
+  4.9 and 5.1 cm; it moves with the cylinder and does not show inside it (see Findings).
 
 checks_intro: >-
   Statistical targets from STUDY_PLAN Section 4.1 and the validation checks. Every row is computed from the
@@ -75,6 +77,15 @@ findings:
       Geant4 ends an electron in one step: the dose rebuilt from that fluence is 6.4% too high. Spreading it as
       1/L(E) closes to 0.06%. Layer 4 uses the CSDA-weighted estimator; the linear one is reported alongside
       (DECISIONS D020). On s<sub>w,air</sub> the two differ by 0.008%.
+  - title: "The scoring cylinder's boundary distorts the dose next to it"
+    warn: true
+    body: >-
+      The depth scan shows the dose 2–3.7% high just in front of the scoring cylinder and 1.5–2.3% low just
+      behind it, in water on both sides. Moving the cylinder to 8 cm moves the pattern. Far from both
+      cylinders the two depth scans agree to 0.1%. Inside the cylinder, the dose agrees with the boundary-free
+      dose at the same depth to about 0.5%; a longer run tightens that bound. The likely cause is the electron
+      step limit near boundaries (GS multiple scattering, SafetyPlus), which moves energy deposition without
+      creating any. How to score from M2 on is a gate question.
   - title: "Primary fluence 0.12% below the analytic value in the main run"
     warn: true
     body: >-
@@ -100,6 +111,8 @@ decisions:
     body: "CSDA-weighted spectrum as the reference, linear estimator reported alongside."
   - title: "Fano +0.16 ± 0.06%"
     body: "Accept as a bound on interface artifacts now, or wait for the step-size diagnostics, which run after production."
+  - title: "Scoring-volume boundary"
+    body: "Keep the mass-geometry scoring cylinder, or score in a parallel world or by position from M2 on; decide once the boundary-free run bounds the effect on D at R0."
   - title: "refs.yaml"
     body: "All external values, including TRS-398's 1.133 and the constants used for normalisation, are still unverified."
 

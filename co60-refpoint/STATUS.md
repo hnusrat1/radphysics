@@ -34,6 +34,7 @@ The analytic primary-fluence check came out 0.12% low (−1.9σ on counting stat
 | M1-thinslab-option4-v2 | thin-slab track-length test | 10 × 4 × 10⁵ | 3 min |
 | M1-check-transmission | tracking μ by transmission (TestEm13) | 2 × 2 × 10⁷ photons | 4 min |
 | M1-check-primary-* | primary-fluence diagnostics (5 runs) | see below | 5 h total |
+| M1-check-pdd-cyl8, -ext | depth scan with the cylinder at 8 cm (boundary-free dose at 5 cm) | 4 × 3 × 10⁶, 12 × 3 × 10⁶ | 0.3 h, pending |
 | M1-tables-option4-v2 | stopping powers, δ, cross sections from the production physics | — | — |
 
 The compute ran in this 4-core container (D013).
@@ -103,6 +104,11 @@ The ICRU 37-basis s_w,air, 1.1331, agrees with the TRS-398 value in refs.yaml (1
   "Photon only" stops electrons in their first step (`/process/em/lowestElectronEnergy 2 MeV`); TestEm13 shows this parameter leaves photon transmission unchanged (identical counts with identical seeds). Also ruled out: null interactions turning primaries into scattered photons (none among 10⁵ sampled interactions; the 12 scattered photons at exact line energy are Rayleigh), history counting, and the collision estimator, which shows the same deficit as the track-length estimator in the main run.
 
   What looked like a 4.4σ effect is 1.9σ. The main run's batches agree with each other better than their history variance allows (D023). The replicate decides; the rule for pooling it was set in advance (D022).
+- **The scoring cylinder's boundary distorts the dose near it, not inside it.** The PDD run's 1 mm depth slabs (r < 1 cm) show the dose 2–3.7% high 1.5–4.5 mm in front of the scoring cylinder (4.9–5.1 cm) and 1.5–2.3% low 1.5–4.5 mm behind it. Every batch shows it (11σ). Water is on both sides of the boundary, so this is a transport artifact.
+
+  A run with the cylinder moved to 8 cm (`M1-check-pdd-cyl8`) moves the pattern with it. Far from both cylinders the two depth scans agree to 0.9987 ± 0.0008 per history. Inside the cylinder, the dose with the boundary against the boundary-free dose at the same depth is 1.007 ± 0.005 (4.9–5.0 cm) and 0.992 ± 0.013 (5.0–5.1 cm). So D at R0 is not visibly affected, but this bound (about 0.5%) is five times wider than D/Φ₀'s statistical uncertainty. An extension of the boundary-free run (`M1-check-pdd-cyl8-ext`) tightens it (pending).
+
+  Likely mechanism: with GS multiple scattering and the SafetyPlus step limit, electron steps shrink as electrons approach a boundary (geometry factor 2.5, range factor 0.08), while far from boundaries they reach 0.2 × the range. A step-length-dependent displacement of the energy deposition then piles up in front of the boundary and leaves a deficit behind it. Energy is moved, not created. PDD(5) uses the dose inside the cylinder and D_max far from it, so it is affected only within the bound above.
 - **Spectrum comparisons were not shape comparisons.** The first χ² between run spectra compared absolute fluences per Φ₀, so S1's +0.43% overall normalization showed up as χ² 66/25. The analysis now reports the normalization ratio and a shape χ² (each spectrum scaled to unit sum) separately. Spectra carry only batch errors, which D023 shows can be too small in the main run.
 - **Batch standard errors can be too small (D023).** See the previous item. Targets and comparisons now use the larger of the batch and history-based errors.
 - **Geant4's water stopping power differs from the Bethe formula at low energy.** In option4, water's collision stopping power is above Bethe–Møller (I = 78 eV, same density effect) by 2.5% at 12 keV, 1.7% at 100 keV and 0.9% at 200 keV, and within 0.4% above 0.5 MeV. Air agrees within 0.1%. Option4 uses the Penelope ionisation model below 100 keV (`PenIoni`, then `MollerBhabha`). Geant4 smooths the dE/dx table across the model boundary, carrying the 1.7% offset at 100 keV as 1.7% × (100 keV/E) above it. That accounts for the 0.85% at 200 keV and 0.34% at 500 keV. So the Geant4-basis s_w,air (1.1385) is 1.0% above the ICRU 90 basis (1.1268). PEGS4 media built with Geant4's I, density, composition and density effect give 1.1259 (`mc/egsnrc/b0/`, D015).
@@ -115,7 +121,8 @@ The ICRU 37-basis s_w,air, 1.1331, agrees with the TRS-398 value in refs.yaml (1
 2. **Uncertainty policy (D023).** Use the larger of the batch and history-based standard errors.
 3. **Layer 4 estimator (D020).** CSDA-weighted as the reference, linear reported.
 4. **Fano result.** Production +0.16 ± 0.06%; the step-size diagnostics will not finish before this gate. Accept as a bound on interface artifacts, or wait for them?
-5. **refs.yaml.** All entries unverified, including the TRS-398 s_w,air, the Co-60 line energies and the constants used in normalisation.
+5. **Scoring-volume boundary (above).** Keep the scoring cylinder as a mass-geometry daughter, which limits steps exactly at its surface and is the plan's design? Or, for M2 onward, score in a parallel world or by position, so that it does not alter electron stepping? Tighter msc stepping is the other option, at higher CPU cost. Recommendation: decide after the extension run bounds the effect on D at R0.
+6. **refs.yaml.** All entries unverified, including the TRS-398 s_w,air, the Co-60 line energies and the constants used in normalisation.
 
 ### Next, after approval (M2)
 

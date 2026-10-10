@@ -1,0 +1,209 @@
+run_id: M1-check-pdd-cyl8
+purpose: 'Diagnostic for the dose bump in front of the scoring cylinder in M1-R0-option4-pdd (+3% at 4.5-4.8
+  cm): identical spec with the scoring cylinder moved to 8 cm depth. If the bump moves with it, the cylinder''s
+  boundary causes it.'
+created_utc: '2026-10-10T20:04:13Z'
+git:
+  commit: 3b5398d4075ee7f8abb7ca816d1bb3813653390c
+  dirty: true
+machine:
+  hostname: vm
+  platform: Linux-6.18.44-fc-v114-x86_64-with-glibc2.39
+  cpu: Intel(R) Xeon(R) Processor @ 2.80GHz
+  logical_cpus: 4
+  compiler: c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+geant4:
+  version: 11.4.3
+  prefix: /opt/geant4/11.4.3
+  features: "Known Features:\n staticlibs[no]\n multithreading[yes]\n smartstack[no]\n php_as_hp[no]\n\
+    \ clhep[yes]\n expat[no]\n zlib[yes]\n gdml[no]\n ptl[yes]\n usolids[no]\n freetype[no]\n hdf5[no]\n\
+    \ g3tog4[no]\n qt[no]\n motif[no]\n raytracer-x11[no]\n opengl-x11[no]\n openinventor[no]\n vtk[no]"
+  datasets:
+    G4NDL:
+      envvar: G4NEUTRONHPDATA
+      path: /opt/geant4/data/G4NDL4.7.1
+      env_value: null
+    G4EMLOW:
+      envvar: G4LEDATA
+      path: /opt/geant4/data/G4EMLOW8.8
+      env_value: null
+    PhotonEvaporation:
+      envvar: G4LEVELGAMMADATA
+      path: /opt/geant4/data/PhotonEvaporation6.1.2
+      env_value: null
+    RadioactiveDecay:
+      envvar: G4RADIOACTIVEDATA
+      path: /opt/geant4/data/RadioactiveDecay6.1.2
+      env_value: null
+    G4PARTICLEXS:
+      envvar: G4PARTICLEXSDATA
+      path: /opt/geant4/data/G4PARTICLEXS4.2
+      env_value: null
+    G4PII:
+      envvar: G4PIIDATA
+      path: /opt/geant4/data/G4PII1.3
+      env_value: null
+    RealSurface:
+      envvar: G4REALSURFACEDATA
+      path: /opt/geant4/data/RealSurface2.2
+      env_value: null
+    G4SAIDDATA:
+      envvar: G4SAIDXSDATA
+      path: /opt/geant4/data/G4SAIDDATA2.0
+      env_value: null
+    G4ABLA:
+      envvar: G4ABLADATA
+      path: /opt/geant4/data/G4ABLA3.3
+      env_value: null
+    G4INCL:
+      envvar: G4INCLDATA
+      path: /opt/geant4/data/G4INCL1.3
+      env_value: null
+    G4ENSDFSTATE:
+      envvar: G4ENSDFSTATEDATA
+      path: /opt/geant4/data/G4ENSDFSTATE3.0
+      env_value: null
+    G4CHANNELING:
+      envvar: G4CHANNELINGDATA
+      path: /opt/geant4/data/G4CHANNELING2.0
+      env_value: null
+spec_file: mc/geant4/runspecs/M1-check-pdd-cyl8.yaml
+spec:
+  run_id: M1-check-pdd-cyl8
+  purpose: 'Diagnostic for the dose bump in front of the scoring cylinder in M1-R0-option4-pdd (+3% at
+    4.5-4.8 cm): identical spec with the scoring cylinder moved to 8 cm depth. If the bump moves with
+    it, the cylinder''s boundary causes it.'
+  physics: option4
+  threads: 4
+  batches: 4
+  histories_per_batch: 3000000
+  seed_base: 6251
+  geometry:
+    scoring_radius_cm: 1.0
+    scoring_thickness_cm: 0.2
+    scoring_depth_cm: 8.0
+  source:
+    ssd_cm: 100.0
+    field_cm:
+    - 10.0
+    - 10.0
+  cuts:
+    electron_threshold_keV: 10
+    gamma_threshold_keV: 10
+  russian_roulette:
+    enabled: true
+    survival: 0.05
+    roi_cm:
+    - 1.8
+    - -1.0
+    - 10.8
+  importance_cells_cm:
+  - - 8.0
+    - -1.0
+    - 16.0
+    - 2
+  - - 3.0
+    - -1.0
+    - 11.6
+    - 8
+  pre_init_commands:
+  - /process/em/UseGeneralProcess false
+  depth_scan: true
+  event_sample_per_batch: 0
+bins_file: config/bins.yaml
+executable: /opt/build/co60app/co60app.production
+executable_source_commit: 8eda68783c4644ce1852364bbfaad06e14743e4d
+batches:
+- batch: 0
+  seeds:
+  - 6251001
+  - 6251002
+  exit_code: 0
+  wall_s: 238.5
+  command: /opt/build/co60app/co60app.production run.mac option4 4 --importance
+  histories: 3000000
+  D_over_phi0_Gy_cm2: 4.745078256069409e-12
+  D_rel_sem_history_by_history: 0.011301659258274232
+  energy_balance_max_abs_MeV: 1.9961418945557696e-05
+  untagged_tracks: 0
+- batch: 1
+  seeds:
+  - 6251003
+  - 6251004
+  exit_code: 0
+  wall_s: 235.8
+  command: /opt/build/co60app/co60app.production run.mac option4 4 --importance
+  histories: 3000000
+  D_over_phi0_Gy_cm2: 4.758767231111214e-12
+  D_rel_sem_history_by_history: 0.011344523304487788
+  energy_balance_max_abs_MeV: 5.034706934003985e-05
+  untagged_tracks: 0
+- batch: 2
+  seeds:
+  - 6251005
+  - 6251006
+  exit_code: 0
+  wall_s: 241.2
+  command: /opt/build/co60app/co60app.production run.mac option4 4 --importance
+  histories: 3000000
+  D_over_phi0_Gy_cm2: 4.827627218143809e-12
+  D_rel_sem_history_by_history: 0.011317650730077494
+  energy_balance_max_abs_MeV: 3.771492155535405e-05
+  untagged_tracks: 0
+- batch: 3
+  seeds:
+  - 6251007
+  - 6251008
+  exit_code: 0
+  wall_s: 241.1
+  command: /opt/build/co60app/co60app.production run.mac option4 4 --importance
+  histories: 3000000
+  D_over_phi0_Gy_cm2: 4.721036311935785e-12
+  D_rel_sem_history_by_history: 0.011442876446744979
+  energy_balance_max_abs_MeV: 4.1302405493715e-05
+  untagged_tracks: 0
+started_utc: '2026-10-10T20:04:13Z'
+geant4_physics_printout:
+  em_models:
+    gamma phot:
+    - LivermorePhElectric (0 eV - 100 TeV)
+    gamma compt:
+    - LowEPComptonModel (0 eV - 20 MeV)
+    - KleinNishina (20 MeV - 100 TeV)
+    gamma conv:
+    - BetheHeitler5D (0 eV - 100 TeV)
+    gamma Rayl:
+    - LivermoreRayleigh (0 eV - 100 TeV)
+    e- msc:
+    - GoudsmitSaunderson (0 eV - 100 MeV)
+    - WentzelVIUni (100 MeV - 100 TeV)
+    e- eIoni:
+    - PenIoni (0 eV - 100 keV)
+    - MollerBhabha (100 keV - 100 TeV)
+    e- eBrem:
+    - eBremSB (0 eV - 1 GeV)
+    - eBremLPM (1 GeV - 100 TeV)
+    e- ePairProd:
+    - ePairProd (0 eV - 100 TeV)
+    e- CoulombScat:
+    - eCoulombScattering (100 MeV - 100 TeV)
+    e+ msc:
+    - GoudsmitSaunderson (0 eV - 100 MeV)
+    - WentzelVIUni (100 MeV - 100 TeV)
+    e+ eIoni:
+    - PenIoni (0 eV - 100 keV)
+    - MollerBhabha (100 keV - 100 TeV)
+    e+ eBrem:
+    - eBremSB (0 eV - 1 GeV)
+    - eBremLPM (1 GeV - 100 TeV)
+    e+ ePairProd:
+    - ePairProd (0 eV - 100 TeV)
+    e+ annihil:
+    - eplusTo2or3gamma (0 eV - 100 TeV)
+    e+ CoulombScat:
+    - eCoulombScattering (100 MeV - 100 TeV)
+  g4_water_range_cuts: gamma 1 mm e- 8.24701 um e+ 8.33478 um proton 8.24701 um
+  g4_water_energy_thresholds: gamma 2.93547 keV e- 10 keV e+ 10 keV proton 824.701 eV
+  roi_check: buffer needed 7.41703 mm (1.2 x CSDA range 6.18086 mm of 1.3325 MeV e- in G4_WATER)
+finished_utc: '2026-10-10T20:20:16Z'
+wall_time_s: 956.6

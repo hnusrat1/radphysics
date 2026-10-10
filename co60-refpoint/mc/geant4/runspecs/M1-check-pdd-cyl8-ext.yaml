@@ -1,0 +1,22 @@
+run_id: M1-check-pdd-cyl8-ext
+purpose: >-
+  Diagnostic for the dose bump in front of the scoring cylinder in M1-R0-option4-pdd (+3% at 4.5-4.8 cm):
+  identical spec with the scoring cylinder moved to 8 cm depth. If the bump moves with it, the cylinder's
+  boundary causes it.
+  Extension: same spec, new seeds, 12 more batches, pooled with M1-check-pdd-cyl8 to bound the effect of the
+  cylinder on the dose inside it (boundary-free dose at 4.9-5.1 cm from this run's depth scan).
+physics: option4
+threads: 4
+batches: 12
+histories_per_batch: 3000000
+seed_base: 6252
+geometry: {scoring_radius_cm: 1.0, scoring_thickness_cm: 0.2, scoring_depth_cm: 8.0}
+source: {ssd_cm: 100.0, field_cm: [10.0, 10.0]}
+cuts: {electron_threshold_keV: 10, gamma_threshold_keV: 10}
+russian_roulette: {enabled: true, survival: 0.05, roi_cm: [1.8, -1.0, 10.8]}
+importance_cells_cm:
+  - [8.0, -1.0, 16.0, 2]
+  - [3.0, -1.0, 11.6, 8]
+pre_init_commands: ['/process/em/UseGeneralProcess false']   # DECISIONS D019
+depth_scan: true
+event_sample_per_batch: 0
