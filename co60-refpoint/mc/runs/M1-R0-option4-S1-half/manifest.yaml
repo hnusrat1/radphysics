@@ -1,0 +1,209 @@
+run_id: M1-R0-option4-S1-half
+purpose: 'Check S1 (scoring volume size, STUDY_PLAN Section 2): as M1-R0-option4 with the scoring cylinder
+  halved in both dimensions (radius 0.5 cm, thickness 0.1 cm), same centre.'
+created_utc: '2026-10-10T17:15:51Z'
+git:
+  commit: cfb3a78264c9800efad26cd9751b4779cd21ce4f
+  dirty: true
+machine:
+  hostname: vm
+  platform: Linux-6.18.44-fc-v114-x86_64-with-glibc2.39
+  cpu: Intel(R) Xeon(R) Processor @ 2.80GHz
+  logical_cpus: 4
+  compiler: c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+geant4:
+  version: 11.4.3
+  prefix: /opt/geant4/11.4.3
+  features: "Known Features:\n staticlibs[no]\n multithreading[yes]\n smartstack[no]\n php_as_hp[no]\n\
+    \ clhep[yes]\n expat[no]\n zlib[yes]\n gdml[no]\n ptl[yes]\n usolids[no]\n freetype[no]\n hdf5[no]\n\
+    \ g3tog4[no]\n qt[no]\n motif[no]\n raytracer-x11[no]\n opengl-x11[no]\n openinventor[no]\n vtk[no]"
+  datasets:
+    G4NDL:
+      envvar: G4NEUTRONHPDATA
+      path: /opt/geant4/data/G4NDL4.7.1
+      env_value: null
+    G4EMLOW:
+      envvar: G4LEDATA
+      path: /opt/geant4/data/G4EMLOW8.8
+      env_value: null
+    PhotonEvaporation:
+      envvar: G4LEVELGAMMADATA
+      path: /opt/geant4/data/PhotonEvaporation6.1.2
+      env_value: null
+    RadioactiveDecay:
+      envvar: G4RADIOACTIVEDATA
+      path: /opt/geant4/data/RadioactiveDecay6.1.2
+      env_value: null
+    G4PARTICLEXS:
+      envvar: G4PARTICLEXSDATA
+      path: /opt/geant4/data/G4PARTICLEXS4.2
+      env_value: null
+    G4PII:
+      envvar: G4PIIDATA
+      path: /opt/geant4/data/G4PII1.3
+      env_value: null
+    RealSurface:
+      envvar: G4REALSURFACEDATA
+      path: /opt/geant4/data/RealSurface2.2
+      env_value: null
+    G4SAIDDATA:
+      envvar: G4SAIDXSDATA
+      path: /opt/geant4/data/G4SAIDDATA2.0
+      env_value: null
+    G4ABLA:
+      envvar: G4ABLADATA
+      path: /opt/geant4/data/G4ABLA3.3
+      env_value: null
+    G4INCL:
+      envvar: G4INCLDATA
+      path: /opt/geant4/data/G4INCL1.3
+      env_value: null
+    G4ENSDFSTATE:
+      envvar: G4ENSDFSTATEDATA
+      path: /opt/geant4/data/G4ENSDFSTATE3.0
+      env_value: null
+    G4CHANNELING:
+      envvar: G4CHANNELINGDATA
+      path: /opt/geant4/data/G4CHANNELING2.0
+      env_value: null
+spec_file: mc/geant4/runspecs/M1-R0-option4-S1-half.yaml
+spec:
+  run_id: M1-R0-option4-S1-half
+  purpose: 'Check S1 (scoring volume size, STUDY_PLAN Section 2): as M1-R0-option4 with the scoring cylinder
+    halved in both dimensions (radius 0.5 cm, thickness 0.1 cm), same centre.'
+  physics: option4
+  threads: 4
+  batches: 10
+  histories_per_batch: 9000000
+  seed_base: 6104
+  geometry:
+    scoring_radius_cm: 0.5
+    scoring_thickness_cm: 0.1
+    scoring_depth_cm: 5.0
+  source:
+    ssd_cm: 100.0
+    field_cm:
+    - 10.0
+    - 10.0
+  cuts:
+    electron_threshold_keV: 10
+    gamma_threshold_keV: 10
+  russian_roulette:
+    enabled: true
+    survival: 0.05
+    roi_cm:
+    - 1.3
+    - 4.2
+    - 5.8
+  importance_cells_cm:
+  - - 8.0
+    - -1.0
+    - 14.0
+    - 2
+  - - 4.0
+    - 2.0
+    - 8.0
+    - 8
+  - - 2.0
+    - 3.8
+    - 6.2
+    - 48
+  pre_init_commands:
+  - /process/em/UseGeneralProcess false
+  depth_scan: false
+  event_sample_per_batch: 0
+bins_file: config/bins.yaml
+executable: /opt/build/co60app/co60app.production
+executable_source_commit: 8eda68783c4644ce1852364bbfaad06e14743e4d
+batches:
+- batch: 0
+  seeds:
+  - 6104001
+  - 6104002
+  exit_code: 0
+  wall_s: 489.7
+  command: /opt/build/co60app/co60app.production run.mac option4 4 --importance
+  histories: 9000000
+  D_over_phi0_Gy_cm2: 5.429273855309232e-12
+  D_rel_sem_history_by_history: 0.00658658720040021
+  energy_balance_max_abs_MeV: 3.626302206183318e-05
+  untagged_tracks: 0
+- batch: 1
+  seeds:
+  - 6104003
+  - 6104004
+  exit_code: 0
+  wall_s: 477.3
+  command: /opt/build/co60app/co60app.production run.mac option4 4 --importance
+  histories: 9000000
+  D_over_phi0_Gy_cm2: 5.358906028307688e-12
+  D_rel_sem_history_by_history: 0.006596860091423452
+  energy_balance_max_abs_MeV: 0.00039443545360584586
+  untagged_tracks: 0
+- batch: 2
+  seeds:
+  - 6104005
+  - 6104006
+  exit_code: 0
+  wall_s: 485.0
+  command: /opt/build/co60app/co60app.production run.mac option4 4 --importance
+  histories: 9000000
+  D_over_phi0_Gy_cm2: 5.382395793570249e-12
+  D_rel_sem_history_by_history: 0.006603370627401361
+  energy_balance_max_abs_MeV: 7.002796621047302e-05
+  untagged_tracks: 0
+- batch: 3
+  seeds:
+  - 6104007
+  - 6104008
+  exit_code: 0
+  wall_s: 486.5
+  command: /opt/build/co60app/co60app.production run.mac option4 4 --importance
+  histories: 9000000
+  D_over_phi0_Gy_cm2: 5.404858442943447e-12
+  D_rel_sem_history_by_history: 0.006590470106774426
+  energy_balance_max_abs_MeV: 0.0005577938149741168
+  untagged_tracks: 0
+started_utc: '2026-10-10T17:15:51Z'
+geant4_physics_printout:
+  em_models:
+    gamma phot:
+    - LivermorePhElectric (0 eV - 100 TeV)
+    gamma compt:
+    - LowEPComptonModel (0 eV - 20 MeV)
+    - KleinNishina (20 MeV - 100 TeV)
+    gamma conv:
+    - BetheHeitler5D (0 eV - 100 TeV)
+    gamma Rayl:
+    - LivermoreRayleigh (0 eV - 100 TeV)
+    e- msc:
+    - GoudsmitSaunderson (0 eV - 100 MeV)
+    - WentzelVIUni (100 MeV - 100 TeV)
+    e- eIoni:
+    - PenIoni (0 eV - 100 keV)
+    - MollerBhabha (100 keV - 100 TeV)
+    e- eBrem:
+    - eBremSB (0 eV - 1 GeV)
+    - eBremLPM (1 GeV - 100 TeV)
+    e- ePairProd:
+    - ePairProd (0 eV - 100 TeV)
+    e- CoulombScat:
+    - eCoulombScattering (100 MeV - 100 TeV)
+    e+ msc:
+    - GoudsmitSaunderson (0 eV - 100 MeV)
+    - WentzelVIUni (100 MeV - 100 TeV)
+    e+ eIoni:
+    - PenIoni (0 eV - 100 keV)
+    - MollerBhabha (100 keV - 100 TeV)
+    e+ eBrem:
+    - eBremSB (0 eV - 1 GeV)
+    - eBremLPM (1 GeV - 100 TeV)
+    e+ ePairProd:
+    - ePairProd (0 eV - 100 TeV)
+    e+ annihil:
+    - eplusTo2or3gamma (0 eV - 100 TeV)
+    e+ CoulombScat:
+    - eCoulombScattering (100 MeV - 100 TeV)
+  g4_water_range_cuts: gamma 1 mm e- 8.24701 um e+ 8.33478 um proton 8.24701 um
+  g4_water_energy_thresholds: gamma 2.93547 keV e- 10 keV e+ 10 keV proton 824.701 eV
+  roi_check: buffer needed 7.41703 mm (1.2 x CSDA range 6.18086 mm of 1.3325 MeV e- in G4_WATER)
