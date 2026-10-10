@@ -74,3 +74,8 @@ Python 3.13 virtual environment with versions pinned in `env/requirements.txt`. 
 ## D010. Commit authorship (2026-10-10)
 
 Commits are authored and committed as Humza Nusrat, without co-author trailers, per STUDY_PLAN Section 10.7.
+
+## D011. Extension of the Fano run (2026-10-10)
+
+The first standard_opt4 Fano run (10 × 340 000 events) gave 1.0016 ± 0.0011, a deviation at 1.4σ. Thirty more batches with new seeds were run (`M0-fano-opt4-ext`, about 1.6 h in the container) and pooled with the first run.
+Reason: at ±0.11% the test could not tell a 0.1% transport artifact from zero, and 0.1% is the plan's statistical target for D/Φ₀. Pooling is valid because every batch has the same number of events and the same settings. Both runs are kept and reported separately as well as pooled.

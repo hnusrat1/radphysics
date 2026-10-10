@@ -1,0 +1,767 @@
+run_id: M0-fano-opt4-ext
+purpose: 'Fano cavity test, standard_opt4 extension: 30 more batches to resolve the +0.16% (1.4 sigma)
+  deviation of M0-fano-opt4'
+created_utc: '2026-10-10T06:19:11Z'
+git:
+  commit: f0e532391d017d8a2967934cdfb07d9c5d249861
+  dirty: true
+machine:
+  hostname: vm
+  platform: Linux-6.18.44-fc-v114-x86_64-with-glibc2.39
+  cpu: Intel(R) Xeon(R) Processor @ 2.80GHz
+  logical_cpus: 4
+  compiler: c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+geant4:
+  version: 11.4.3
+  prefix: /opt/geant4/11.4.3
+  features: "Known Features:\n staticlibs[no]\n multithreading[yes]\n smartstack[no]\n php_as_hp[no]\n\
+    \ clhep[yes]\n expat[no]\n zlib[yes]\n gdml[no]\n ptl[yes]\n usolids[no]\n freetype[no]\n hdf5[no]\n\
+    \ g3tog4[no]\n qt[no]\n motif[no]\n raytracer-x11[no]\n opengl-x11[no]\n openinventor[no]\n vtk[no]"
+  datasets:
+    G4NDL:
+      envvar: G4NEUTRONHPDATA
+      path: /opt/geant4/data/G4NDL4.7.1
+      env_value: null
+    G4EMLOW:
+      envvar: G4LEDATA
+      path: /opt/geant4/data/G4EMLOW8.8
+      env_value: null
+    PhotonEvaporation:
+      envvar: G4LEVELGAMMADATA
+      path: /opt/geant4/data/PhotonEvaporation6.1.2
+      env_value: null
+    RadioactiveDecay:
+      envvar: G4RADIOACTIVEDATA
+      path: /opt/geant4/data/RadioactiveDecay6.1.2
+      env_value: null
+    G4PARTICLEXS:
+      envvar: G4PARTICLEXSDATA
+      path: /opt/geant4/data/G4PARTICLEXS4.2
+      env_value: null
+    G4PII:
+      envvar: G4PIIDATA
+      path: /opt/geant4/data/G4PII1.3
+      env_value: null
+    RealSurface:
+      envvar: G4REALSURFACEDATA
+      path: /opt/geant4/data/RealSurface2.2
+      env_value: null
+    G4SAIDDATA:
+      envvar: G4SAIDXSDATA
+      path: /opt/geant4/data/G4SAIDDATA2.0
+      env_value: null
+    G4ABLA:
+      envvar: G4ABLADATA
+      path: /opt/geant4/data/G4ABLA3.3
+      env_value: null
+    G4INCL:
+      envvar: G4INCLDATA
+      path: /opt/geant4/data/G4INCL1.3
+      env_value: null
+    G4ENSDFSTATE:
+      envvar: G4ENSDFSTATEDATA
+      path: /opt/geant4/data/G4ENSDFSTATE3.0
+      env_value: null
+    G4CHANNELING:
+      envvar: G4CHANNELINGDATA
+      path: /opt/geant4/data/G4CHANNELING2.0
+      env_value: null
+application:
+  name: fanoCavity (Geant4 extended/medical example, unmodified)
+  executable: /opt/build/examples/fanoCavity/fanoCavity
+  physics_constructor: standard_opt4
+  production_cut: 10 km for gamma, e-, e+ (example default, CSDA)
+  compton_cross_section_factor: 1000
+  beam: gamma, 1.25 MeV, uniform over the wall radius, normal incidence
+  geometry: wall G4_WATER 5 mm each side, cavity G4_WATER at 1 mg/cm3, 2 mm thick, radius 1 cm
+  extra_macro_commands: []
+statistics:
+  batches: 30
+  events_per_batch: 340000
+  threads: 4
+  total_events: 10200000
+batches:
+- ratio: 1.00693
+  ratio_err: 0.00341
+  mass_energy_transfer_cm2_g: 29.8672
+  dose_over_energy_fluence_cm2_g: 30.0743
+  mean_secondary_energy_keV: 588.2722
+  mean_secondary_energy_rel_err_pct: 0.0112
+  g4_water_imean_eV: 78.0
+  g4_user_s: 732.26
+  g4_real_s: 197.466761
+  process_calls:
+    compt: 23968554
+    Transportation: 6577194
+    msc: 221111004
+    eIoni: 148564539
+    conv: 7
+    annihil: 2
+    phot: 2
+  batch: 0
+  seeds:
+  - 4103001
+  - 4103002
+  exit_code: 0
+  wall_s: 197.7
+- ratio: 1.00141
+  ratio_err: 0.00334
+  mass_energy_transfer_cm2_g: 29.8619
+  dose_over_energy_fluence_cm2_g: 29.9041
+  mean_secondary_energy_keV: 588.1691
+  mean_secondary_energy_rel_err_pct: 0.0112
+  g4_water_imean_eV: 78.0
+  g4_user_s: 717.94
+  g4_real_s: 190.974257
+  process_calls:
+    compt: 23983007
+    Transportation: 6572528
+    msc: 220995875
+    eIoni: 148631893
+    conv: 11
+    annihil: 3
+    phot: 1
+  batch: 1
+  seeds:
+  - 4103003
+  - 4103004
+  exit_code: 0
+  wall_s: 191.3
+- ratio: 1.00011
+  ratio_err: 0.0033
+  mass_energy_transfer_cm2_g: 29.8685
+  dose_over_energy_fluence_cm2_g: 29.8719
+  mean_secondary_energy_keV: 588.2979
+  mean_secondary_energy_rel_err_pct: 0.0112
+  g4_water_imean_eV: 78.0
+  g4_user_s: 742.02
+  g4_real_s: 196.640529
+  process_calls:
+    compt: 23977414
+    Transportation: 6569686
+    msc: 221043267
+    eIoni: 148746249
+    conv: 5
+    phot: 1
+  batch: 2
+  seeds:
+  - 4103005
+  - 4103006
+  exit_code: 0
+  wall_s: 196.8
+- ratio: 1.002
+  ratio_err: 0.00332
+  mass_energy_transfer_cm2_g: 29.8618
+  dose_over_energy_fluence_cm2_g: 29.9214
+  mean_secondary_energy_keV: 588.1661
+  mean_secondary_energy_rel_err_pct: 0.0112
+  g4_water_imean_eV: 78.0
+  g4_user_s: 711.68
+  g4_real_s: 188.916381
+  process_calls:
+    compt: 23978617
+    Transportation: 6569087
+    msc: 221088920
+    eIoni: 148635418
+    conv: 8
+    phot: 1
+  batch: 3
+  seeds:
+  - 4103007
+  - 4103008
+  exit_code: 0
+  wall_s: 189.1
+- ratio: 0.99758
+  ratio_err: 0.00337
+  mass_energy_transfer_cm2_g: 29.8626
+  dose_over_energy_fluence_cm2_g: 29.7903
+  mean_secondary_energy_keV: 588.1824
+  mean_secondary_energy_rel_err_pct: 0.0112
+  g4_water_imean_eV: 78.0
+  g4_user_s: 713.95
+  g4_real_s: 189.300486
+  process_calls:
+    compt: 23990082
+    Transportation: 6574732
+    msc: 221288302
+    eIoni: 148635135
+    conv: 9
+  batch: 4
+  seeds:
+  - 4103009
+  - 4103010
+  exit_code: 0
+  wall_s: 189.5
+- ratio: 0.99717
+  ratio_err: 0.00315
+  mass_energy_transfer_cm2_g: 29.8603
+  dose_over_energy_fluence_cm2_g: 29.7757
+  mean_secondary_energy_keV: 588.1363
+  mean_secondary_energy_rel_err_pct: 0.0112
+  g4_water_imean_eV: 78.0
+  g4_user_s: 711.19
+  g4_real_s: 189.157126
+  process_calls:
+    compt: 23973426
+    Transportation: 6577009
+    msc: 221068951
+    eIoni: 148636331
+    conv: 7
+    phot: 3
+  batch: 5
+  seeds:
+  - 4103011
+  - 4103012
+  exit_code: 0
+  wall_s: 189.4
+- ratio: 1.00234
+  ratio_err: 0.00337
+  mass_energy_transfer_cm2_g: 29.8663
+  dose_over_energy_fluence_cm2_g: 29.9363
+  mean_secondary_energy_keV: 588.2561
+  mean_secondary_energy_rel_err_pct: 0.0112
+  g4_water_imean_eV: 78.0
+  g4_user_s: 716.2
+  g4_real_s: 190.182559
+  process_calls:
+    compt: 23975777
+    Transportation: 6582163
+    msc: 221283489
+    eIoni: 148566188
+    conv: 8
+    annihil: 3
+  batch: 6
+  seeds:
+  - 4103013
+  - 4103014
+  exit_code: 0
+  wall_s: 190.4
+- ratio: 0.99831
+  ratio_err: 0.00329
+  mass_energy_transfer_cm2_g: 29.8619
+  dose_over_energy_fluence_cm2_g: 29.8115
+  mean_secondary_energy_keV: 588.1691
+  mean_secondary_energy_rel_err_pct: 0.0112
+  g4_water_imean_eV: 78.0
+  g4_user_s: 731.28
+  g4_real_s: 193.850031
+  process_calls:
+    compt: 23977849
+    Transportation: 6572575
+    msc: 220991019
+    eIoni: 148659846
+    conv: 7
+    phot: 1
+  batch: 7
+  seeds:
+  - 4103015
+  - 4103016
+  exit_code: 0
+  wall_s: 194.1
+- ratio: 1.00004
+  ratio_err: 0.00333
+  mass_energy_transfer_cm2_g: 29.8687
+  dose_over_energy_fluence_cm2_g: 29.8699
+  mean_secondary_energy_keV: 588.3023
+  mean_secondary_energy_rel_err_pct: 0.0112
+  g4_water_imean_eV: 78.0
+  g4_user_s: 717.26
+  g4_real_s: 190.398716
+  process_calls:
+    compt: 23967850
+    Transportation: 6581612
+    msc: 221104504
+    eIoni: 148615159
+    conv: 7
+    annihil: 1
+    phot: 1
+  batch: 8
+  seeds:
+  - 4103017
+  - 4103018
+  exit_code: 0
+  wall_s: 190.6
+- ratio: 1.00675
+  ratio_err: 0.00348
+  mass_energy_transfer_cm2_g: 29.8624
+  dose_over_energy_fluence_cm2_g: 30.0639
+  mean_secondary_energy_keV: 588.1782
+  mean_secondary_energy_rel_err_pct: 0.0112
+  g4_water_imean_eV: 78.0
+  g4_user_s: 741.77
+  g4_real_s: 196.577052
+  process_calls:
+    compt: 23966226
+    Transportation: 6584970
+    msc: 221154532
+    eIoni: 148406007
+    conv: 3
+    annihil: 1
+  batch: 9
+  seeds:
+  - 4103019
+  - 4103020
+  exit_code: 0
+  wall_s: 196.8
+- ratio: 1.00226
+  ratio_err: 0.00335
+  mass_energy_transfer_cm2_g: 29.864
+  dose_over_energy_fluence_cm2_g: 29.9315
+  mean_secondary_energy_keV: 588.211
+  mean_secondary_energy_rel_err_pct: 0.0112
+  g4_water_imean_eV: 78.0
+  g4_user_s: 738.89
+  g4_real_s: 195.94156
+  process_calls:
+    compt: 23977618
+    Transportation: 6581107
+    msc: 221289559
+    eIoni: 148547404
+    conv: 6
+    phot: 1
+  batch: 10
+  seeds:
+  - 4103021
+  - 4103022
+  exit_code: 0
+  wall_s: 196.1
+- ratio: 1.00527
+  ratio_err: 0.00339
+  mass_energy_transfer_cm2_g: 29.8657
+  dose_over_energy_fluence_cm2_g: 30.023
+  mean_secondary_energy_keV: 588.2438
+  mean_secondary_energy_rel_err_pct: 0.0112
+  g4_water_imean_eV: 78.0
+  g4_user_s: 749.99
+  g4_real_s: 198.637444
+  process_calls:
+    compt: 23970100
+    Transportation: 6583350
+    msc: 221182689
+    eIoni: 148582835
+    conv: 7
+    phot: 1
+  batch: 11
+  seeds:
+  - 4103023
+  - 4103024
+  exit_code: 0
+  wall_s: 198.8
+- ratio: 0.99888
+  ratio_err: 0.0034
+  mass_energy_transfer_cm2_g: 29.8627
+  dose_over_energy_fluence_cm2_g: 29.8292
+  mean_secondary_energy_keV: 588.1852
+  mean_secondary_energy_rel_err_pct: 0.0112
+  g4_water_imean_eV: 78.0
+  g4_user_s: 729.52
+  g4_real_s: 193.436433
+  process_calls:
+    compt: 23984683
+    Transportation: 6577814
+    msc: 221066374
+    eIoni: 148709791
+    conv: 10
+    phot: 2
+    annihil: 1
+  batch: 12
+  seeds:
+  - 4103025
+  - 4103026
+  exit_code: 0
+  wall_s: 193.6
+- ratio: 0.99533
+  ratio_err: 0.00324
+  mass_energy_transfer_cm2_g: 29.8603
+  dose_over_energy_fluence_cm2_g: 29.7208
+  mean_secondary_energy_keV: 588.1373
+  mean_secondary_energy_rel_err_pct: 0.0112
+  g4_water_imean_eV: 78.0
+  g4_user_s: 726.36
+  g4_real_s: 192.807541
+  process_calls:
+    compt: 23983942
+    Transportation: 6577090
+    msc: 221096911
+    eIoni: 148617421
+    conv: 14
+    annihil: 4
+  batch: 13
+  seeds:
+  - 4103027
+  - 4103028
+  exit_code: 0
+  wall_s: 193.0
+- ratio: 1.00248
+  ratio_err: 0.00338
+  mass_energy_transfer_cm2_g: 29.8681
+  dose_over_energy_fluence_cm2_g: 29.9422
+  mean_secondary_energy_keV: 588.2903
+  mean_secondary_energy_rel_err_pct: 0.0112
+  g4_water_imean_eV: 78.0
+  g4_user_s: 723.64
+  g4_real_s: 192.102589
+  process_calls:
+    compt: 23988249
+    Transportation: 6576761
+    msc: 221237603
+    eIoni: 148673061
+    conv: 6
+    phot: 1
+  batch: 14
+  seeds:
+  - 4103029
+  - 4103030
+  exit_code: 0
+  wall_s: 192.3
+- ratio: 1.00338
+  ratio_err: 0.0034
+  mass_energy_transfer_cm2_g: 29.8642
+  dose_over_energy_fluence_cm2_g: 29.9652
+  mean_secondary_energy_keV: 588.2134
+  mean_secondary_energy_rel_err_pct: 0.0112
+  g4_water_imean_eV: 78.0
+  g4_user_s: 731.79
+  g4_real_s: 193.83884
+  process_calls:
+    compt: 23969322
+    Transportation: 6574426
+    msc: 220965958
+    eIoni: 148534358
+    conv: 9
+    annihil: 2
+    phot: 1
+  batch: 15
+  seeds:
+  - 4103031
+  - 4103032
+  exit_code: 0
+  wall_s: 194.1
+- ratio: 1.00141
+  ratio_err: 0.00333
+  mass_energy_transfer_cm2_g: 29.8666
+  dose_over_energy_fluence_cm2_g: 29.9088
+  mean_secondary_energy_keV: 588.2613
+  mean_secondary_energy_rel_err_pct: 0.0112
+  g4_water_imean_eV: 78.0
+  g4_user_s: 721.24
+  g4_real_s: 191.12029
+  process_calls:
+    compt: 23978303
+    Transportation: 6568897
+    msc: 221007616
+    eIoni: 148670423
+    conv: 11
+    annihil: 1
+  batch: 16
+  seeds:
+  - 4103033
+  - 4103034
+  exit_code: 0
+  wall_s: 191.3
+- ratio: 0.99709
+  ratio_err: 0.00323
+  mass_energy_transfer_cm2_g: 29.8605
+  dose_over_energy_fluence_cm2_g: 29.7738
+  mean_secondary_energy_keV: 588.1418
+  mean_secondary_energy_rel_err_pct: 0.0112
+  g4_water_imean_eV: 78.0
+  g4_user_s: 749.76
+  g4_real_s: 199.008327
+  process_calls:
+    compt: 23974900
+    Transportation: 6573602
+    msc: 220983545
+    eIoni: 148585870
+    conv: 6
+    annihil: 1
+  batch: 17
+  seeds:
+  - 4103035
+  - 4103036
+  exit_code: 0
+  wall_s: 199.2
+- ratio: 1.00504
+  ratio_err: 0.00334
+  mass_energy_transfer_cm2_g: 29.8603
+  dose_over_energy_fluence_cm2_g: 30.0109
+  mean_secondary_energy_keV: 588.1366
+  mean_secondary_energy_rel_err_pct: 0.0112
+  g4_water_imean_eV: 78.0
+  g4_user_s: 731.5
+  g4_real_s: 194.791431
+  process_calls:
+    compt: 23971426
+    Transportation: 6569594
+    msc: 220898271
+    eIoni: 148694576
+    conv: 7
+    annihil: 1
+    phot: 2
+  batch: 18
+  seeds:
+  - 4103037
+  - 4103038
+  exit_code: 0
+  wall_s: 195.0
+- ratio: 1.00047
+  ratio_err: 0.00335
+  mass_energy_transfer_cm2_g: 29.8691
+  dose_over_energy_fluence_cm2_g: 29.8833
+  mean_secondary_energy_keV: 588.3112
+  mean_secondary_energy_rel_err_pct: 0.0112
+  g4_water_imean_eV: 78.0
+  g4_user_s: 759.06
+  g4_real_s: 201.183744
+  process_calls:
+    compt: 23982280
+    Transportation: 6579454
+    msc: 221195661
+    eIoni: 148695795
+    conv: 10
+    annihil: 2
+  batch: 19
+  seeds:
+  - 4103039
+  - 4103040
+  exit_code: 0
+  wall_s: 201.4
+- ratio: 1.00392
+  ratio_err: 0.00335
+  mass_energy_transfer_cm2_g: 29.8659
+  dose_over_energy_fluence_cm2_g: 29.9831
+  mean_secondary_energy_keV: 588.2478
+  mean_secondary_energy_rel_err_pct: 0.0112
+  g4_water_imean_eV: 78.0
+  g4_user_s: 721.04
+  g4_real_s: 191.626897
+  process_calls:
+    compt: 23970734
+    Transportation: 6578016
+    msc: 221099834
+    eIoni: 148614058
+    conv: 6
+    annihil: 3
+    phot: 1
+  batch: 20
+  seeds:
+  - 4103041
+  - 4103042
+  exit_code: 0
+  wall_s: 191.9
+- ratio: 1.00539
+  ratio_err: 0.00338
+  mass_energy_transfer_cm2_g: 29.8689
+  dose_over_energy_fluence_cm2_g: 30.03
+  mean_secondary_energy_keV: 588.3058
+  mean_secondary_energy_rel_err_pct: 0.0112
+  g4_water_imean_eV: 78.0
+  g4_user_s: 715.39
+  g4_real_s: 190.137817
+  process_calls:
+    compt: 23970342
+    Transportation: 6579780
+    msc: 221171859
+    eIoni: 148524301
+    conv: 9
+    phot: 2
+  batch: 21
+  seeds:
+  - 4103043
+  - 4103044
+  exit_code: 0
+  wall_s: 190.3
+- ratio: 0.99603
+  ratio_err: 0.00328
+  mass_energy_transfer_cm2_g: 29.8641
+  dose_over_energy_fluence_cm2_g: 29.7455
+  mean_secondary_energy_keV: 588.2121
+  mean_secondary_energy_rel_err_pct: 0.0112
+  g4_water_imean_eV: 78.0
+  g4_user_s: 733.28
+  g4_real_s: 194.844043
+  process_calls:
+    compt: 23972763
+    Transportation: 6573167
+    msc: 220937610
+    eIoni: 148580299
+    conv: 7
+    annihil: 2
+    phot: 1
+  batch: 22
+  seeds:
+  - 4103045
+  - 4103046
+  exit_code: 0
+  wall_s: 195.1
+- ratio: 0.99992
+  ratio_err: 0.00338
+  mass_energy_transfer_cm2_g: 29.8674
+  dose_over_energy_fluence_cm2_g: 29.865
+  mean_secondary_energy_keV: 588.2771
+  mean_secondary_energy_rel_err_pct: 0.0112
+  g4_water_imean_eV: 78.0
+  g4_user_s: 740.1
+  g4_real_s: 196.538002
+  process_calls:
+    compt: 23973990
+    Transportation: 6569165
+    msc: 221041496
+    eIoni: 148603550
+    conv: 10
+    annihil: 3
+  batch: 23
+  seeds:
+  - 4103047
+  - 4103048
+  exit_code: 0
+  wall_s: 196.7
+- ratio: 0.99968
+  ratio_err: 0.00337
+  mass_energy_transfer_cm2_g: 29.8623
+  dose_over_energy_fluence_cm2_g: 29.8529
+  mean_secondary_energy_keV: 588.1769
+  mean_secondary_energy_rel_err_pct: 0.0112
+  g4_water_imean_eV: 78.0
+  g4_user_s: 734.01
+  g4_real_s: 194.552335
+  process_calls:
+    compt: 23982903
+    Transportation: 6575091
+    msc: 221118545
+    eIoni: 148581484
+    conv: 10
+    annihil: 1
+    phot: 2
+  batch: 24
+  seeds:
+  - 4103049
+  - 4103050
+  exit_code: 0
+  wall_s: 194.8
+- ratio: 1.00942
+  ratio_err: 0.00345
+  mass_energy_transfer_cm2_g: 29.863
+  dose_over_energy_fluence_cm2_g: 30.1443
+  mean_secondary_energy_keV: 588.1901
+  mean_secondary_energy_rel_err_pct: 0.0112
+  g4_water_imean_eV: 78.0
+  g4_user_s: 732.64
+  g4_real_s: 194.310123
+  process_calls:
+    compt: 23974418
+    Transportation: 6573831
+    msc: 221004098
+    eIoni: 148691377
+    conv: 7
+    annihil: 2
+  batch: 25
+  seeds:
+  - 4103051
+  - 4103052
+  exit_code: 0
+  wall_s: 194.5
+- ratio: 1.00925
+  ratio_err: 0.00355
+  mass_energy_transfer_cm2_g: 29.8689
+  dose_over_energy_fluence_cm2_g: 30.1452
+  mean_secondary_energy_keV: 588.3072
+  mean_secondary_energy_rel_err_pct: 0.0112
+  g4_water_imean_eV: 78.0
+  g4_user_s: 716.34
+  g4_real_s: 190.190547
+  process_calls:
+    compt: 23982365
+    Transportation: 6586008
+    msc: 221320245
+    eIoni: 148658582
+    conv: 12
+    annihil: 3
+    phot: 1
+  batch: 26
+  seeds:
+  - 4103053
+  - 4103054
+  exit_code: 0
+  wall_s: 190.4
+- ratio: 1.00042
+  ratio_err: 0.00331
+  mass_energy_transfer_cm2_g: 29.8623
+  dose_over_energy_fluence_cm2_g: 29.8748
+  mean_secondary_energy_keV: 588.1766
+  mean_secondary_energy_rel_err_pct: 0.0112
+  g4_water_imean_eV: 78.0
+  g4_user_s: 740.18
+  g4_real_s: 196.249215
+  process_calls:
+    compt: 23968826
+    Transportation: 6567609
+    msc: 220776444
+    eIoni: 148577016
+    conv: 10
+    annihil: 1
+  batch: 27
+  seeds:
+  - 4103055
+  - 4103056
+  exit_code: 0
+  wall_s: 196.5
+- ratio: 0.99793
+  ratio_err: 0.00329
+  mass_energy_transfer_cm2_g: 29.8647
+  dose_over_energy_fluence_cm2_g: 29.8028
+  mean_secondary_energy_keV: 588.2238
+  mean_secondary_energy_rel_err_pct: 0.0112
+  g4_water_imean_eV: 78.0
+  g4_user_s: 717.43
+  g4_real_s: 190.760567
+  process_calls:
+    compt: 23972873
+    Transportation: 6572281
+    msc: 220966174
+    eIoni: 148632019
+    conv: 8
+    phot: 1
+    annihil: 1
+  batch: 28
+  seeds:
+  - 4103057
+  - 4103058
+  exit_code: 0
+  wall_s: 190.9
+- ratio: 1.00039
+  ratio_err: 0.00328
+  mass_energy_transfer_cm2_g: 29.8565
+  dose_over_energy_fluence_cm2_g: 29.8683
+  mean_secondary_energy_keV: 588.063
+  mean_secondary_energy_rel_err_pct: 0.0112
+  g4_water_imean_eV: 78.0
+  g4_user_s: 711.01
+  g4_real_s: 188.671276
+  process_calls:
+    compt: 23977675
+    Transportation: 6573710
+    msc: 220958223
+    eIoni: 148518555
+    conv: 7
+    annihil: 2
+    phot: 1
+  batch: 29
+  seeds:
+  - 4103059
+  - 4103060
+  exit_code: 0
+  wall_s: 188.9
+started_utc: '2026-10-10T06:19:11Z'
+finished_utc: '2026-10-10T07:56:03Z'
+wall_time_s: 5811.2
+summary:
+  n_batches_ok: 30
+  ratio_mean: 1.001553
+  ratio_sem_from_batch_spread: 0.000677
+  ratio_sem_from_example_estimate: 0.000611
+  deviation_from_1_percent: 0.1553
+  deviation_in_sigma_batch: 2.3
+  mean_secondary_energy_keV_mean: 588.2147
+  mass_energy_transfer_cm2_g_mean: 29.86424
+  g4_water_imean_eV: 78.0
