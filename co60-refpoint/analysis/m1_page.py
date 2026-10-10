@@ -356,7 +356,7 @@ def render(r, m, n, data_json, text, fano, v, pm, sci, rel, sig):
     <a href="#checks"><span class="k">✓</span><span>Checks and targets</span></a>
     <a href="#fano"><span class="k">F</span><span>Fano diagnostics</span></a>
     <a href="#findings"><span class="k">!</span><span>Findings</span></a>
-    <a href="#decide"><span class="k">?</span><span>Decisions for the gate</span></a>
+    <a href="#decide"><span class="k">?</span><span>Decisions at the gate</span></a>
   </nav>
 </aside>
 <main>
@@ -497,7 +497,7 @@ def render(r, m, n, data_json, text, fano, v, pm, sci, rel, sig):
 </section>
 
 <section id="decide">
-  <div class="sec-head"><span class="k">Gate</span><h2>Decisions for the M1 gate</h2></div>
+  <div class="sec-head"><span class="k">Gate</span><h2>Decisions taken at the M1 gate</h2></div>
   <ol class="decide">{decide}</ol>
 </section>
 

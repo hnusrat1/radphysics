@@ -476,7 +476,7 @@ def boundary_check():
         return strip(tally(b, "depth_edep"))[sel].sum() / b["histories"] * gy_per_mev / (math.pi * 1.0**2 * width)
 
     estimates = {}
-    for run_id in ("M1-check-boundary-free-R0", "M1-check-pdd-cyl8"):
+    for run_id in ("M1-check-boundary-free-R0+M1-check-boundary-free-R0-ext", "M1-check-pdd-cyl8"):
         bs = load_batches(run_id)
         if len(bs) >= 2:
             v = np.array([r0_from_depth(b) for b in bs])

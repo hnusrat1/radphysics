@@ -89,7 +89,7 @@ void RunAction::CheckRoi() const
   msg << "ROI must extend at least 1.2 x CSDA range (" << buffer / mm << " mm) beyond every scored region";
   G4bool ok = c.roiRadius >= c.scoringRadius + buffer && c.roiZmin <= zLo - buffer && c.roiZmax >= zHi + buffer;
   if (c.depthScan) {
-    ok = ok && c.roiRadius >= c.depthRadius + buffer && c.roiZmin <= c.depth.min && c.roiZmax >= c.depth.max + buffer;
+    ok = ok && c.roiRadius >= c.depthRadius + buffer && c.roiZmin <= c.depth.min - buffer && c.roiZmax >= c.depth.max + buffer;
   }
   if (!ok) G4Exception("RunAction", "CO60-ROI", FatalException, msg.str().c_str());
   G4cout << "ROI check passed: buffer needed " << buffer / mm << " mm (1.2 x CSDA range " << csda / mm << " mm of "

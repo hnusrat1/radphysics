@@ -1,6 +1,6 @@
 # Status
 
-## M1. Monte Carlo reference at R0 (2026-10-10). Waiting for Humza's review.
+## M1. Monte Carlo reference at R0 (2026-10-10). Reviewed at the gate; decisions D024–D026. One approved extension run in progress.
 
 ### Summary
 
@@ -8,7 +8,7 @@ The Geant4 reference for all five layers at R0 is done: G4EmStandardPhysics_opti
 
 - **Dose.** D/Φ₀ = 5.35838 × 10⁻¹² Gy cm² ± 0.066%.
 - **β.** β = D/K_col = 1.0045 ± 0.0006.
-- **s_w,air.** The Spencer–Attix ratio (Δ = 10 keV) is 1.1331 on the ICRU 37 stopping-power basis, 1.1268 on ICRU 90 and 1.1385 on Geant4's own stopping powers. The 1% spread between bases is far larger than the statistics. Which basis the AI answers are scored against is a gate question.
+- **s_w,air.** Scoring reference (D024): ICRU 90 basis, with ICRU 37 alongside. The Spencer–Attix ratio (Δ = 10 keV) is 1.1331 on the ICRU 37 stopping-power basis, 1.1268 on ICRU 90 and 1.1385 on Geant4's own stopping powers. The 1% spread between bases is far larger than the statistics.
 
 Problems found and fixed or bounded:
 - **Two Geant4 problems that would have biased results (fixed).** Rayleigh scattering of primaries is missing in option4's general gamma process (D019). The plan's linear track-length estimator gives the wrong electron fluence at low energy (D020).
@@ -123,19 +123,28 @@ The ICRU 37-basis s_w,air, 1.1331, agrees with the TRS-398 value in refs.yaml (1
   - Geant4 smooths the dE/dx table across the model boundary, carrying the 1.7% offset at 100 keV as 1.7% × (100 keV/E) above it. That accounts for the 0.85% at 200 keV and 0.34% at 500 keV.
   - So the Geant4-basis s_w,air (1.1385) is 1.0% above the ICRU 90 basis (1.1268). PEGS4 media built with Geant4's I, density, composition and density effect give 1.1259 (`mc/egsnrc/b0/`, D015).
 - **Two slips in my own process management.** Twice a `pkill -f` pattern matched my own shell, and once a waiting script as well. No simulation ran with a wrong configuration. The only run lost was a 2-minute-old extension, archived as `mc/runs/_archived/M1-check-pdd-cyl8-ext-stopped/` with its reason. Processes are now stopped by PID only.
-- **The ROI check has no buffer on the near side of a depth scan.** `RunAction::CheckRoi` requires the ROI to start at or before the start of the depth scan, but not 1.2 × the CSDA range before it. That is harmless for scans from the surface (the PDD run) but would allow roulette bias for a scan starting inside the phantom. `M1-check-boundary-free-R0` satisfies the buffer by its spec (ROI from 4.1 cm, scan from 4.9 cm). To fix in the code before M2.
+- **The ROI check has no buffer on the near side of a depth scan.** `RunAction::CheckRoi` requires the ROI to start at or before the start of the depth scan, but not 1.2 × the CSDA range before it. That is harmless for scans from the surface (the PDD run) but would allow roulette bias for a scan starting inside the phantom. `M1-check-boundary-free-R0` satisfies the buffer by its spec (ROI from 4.1 cm, scan from 4.9 cm). Fixed in the source for M2 (D025); the frozen M1 production binary is unchanged, and every M1 spec satisfies the stricter check.
 - **Still running at the gate.** The photon-only check with mass-geometry importance (`M1-check-primary-ismass-prodgeom`, D021) and the Fano step-size diagnostics. Neither affects the M1 numbers; their results are added when they finish.
 - **Fano diagnostics starved of CPU.** They run at the lowest priority behind production, and one batch took 4 h. They will finish overnight.
 - **Importance-ratio warning in S1.** S1's inner cell has importance 48 against 8 outside, a ratio of 6. Geant4 warns once (GeomBias1001) when the ratio is outside [0.25, 4]. The algorithm handles any ratio fairly: split into ⌊6⌋ = 6 copies of weight w/6. The warning has no effect on results.
 
-### Open questions for Humza at this gate
+### Decisions at the gate (2026-10-10)
 
-1. **s_w,air basis for scoring AI answers.** The study's MC spectrum gives 1.1331 (ICRU 37), 1.1268 (ICRU 90), 1.1385 (Geant4). AI answers will most likely quote the TRS-398 value. Score against the ICRU 37 basis (protocol-consistent), the ICRU 90 basis (current data), or report against both?
-2. **Scoring-volume boundary.** D at R0 is 0.9974 ± 0.0017 of the boundary-free dose: no significant effect, but not excluded at the few-tenths-of-a-percent level, and the dose next to any mass-geometry boundary is distorted by up to ±3%. Options: quote D at R0 with a boundary systematic of this size; or run the boundary-free configuration longer to tighten it. For M2 onward, keep the scoring cylinder in the mass geometry (as the plan has it), or score in a parallel world or by position so that it does not alter electron stepping? This matters most for the code comparison in M2, if EGSnrc's geometry boundaries behave differently.
-3. **Uncertainty policy (D023).** Use the larger of the batch and history-based standard errors.
-4. **Layer 4 estimator (D020).** CSDA-weighted as the reference, linear reported.
-5. **Fano result.** Production +0.16 ± 0.06%; the step-size diagnostics finish overnight. Accept as a bound on interface artifacts, or wait for them?
-6. **refs.yaml.** All entries are unverified, including the TRS-398 s_w,air, the Co-60 line energies and the constants used in normalisation. A published PDD(5) for Co-60, 10 × 10 cm², SSD 100 cm would give the depth dose an external check.
+Humza approved all recommendations:
+
+1. **s_w,air scoring reference (D024).** ICRU 90 basis primary, ICRU 37 reported alongside; the Geant4 basis is not used for scoring.
+2. **Scoring-volume boundary (D025).** D at R0 is quoted from the cylinder with the boundary effect as a systematic. A 20-batch extension of the boundary-free run is in progress to tighten the bound to about 0.1%. From M2, dose at R0 is scored by position, with no geometry boundary within an electron range.
+3. **Uncertainty policy (D023).** Approved.
+4. **Layer 4 estimator (D020).** CSDA-weighted is the reference; approved.
+5. **Fano (D026).** +0.16% accepted as a bound; step-size diagnostics are reviewed before M2 production. M2 runs use at least 20 batches.
+6. **refs.yaml (D026).** Humza verifies, in order:
+   1. line energies;
+   2. TRS-398 s_w,air (and whether its 2024 revision uses ICRU 90);
+   3. I-values;
+   4. normalisation constants;
+   5. the rest.
+
+   A published PDD(5) is to be added.
 
 ### Next, after approval (M2)
 

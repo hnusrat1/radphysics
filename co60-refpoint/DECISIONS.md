@@ -176,7 +176,7 @@ co60app scores both estimators:
 - the plan's linear estimator, as `electron_fluence` etc.;
 - the CSDA-weighted estimator, as `electron_fluence_csda` etc.
 
-Analysis uses the CSDA-weighted spectrum for Layer 4 and for s_w,air and reports the linear one alongside. On s_w,air the two differ by less than 0.03%. **[Humza]** Confirm the CSDA-weighted spectrum as the Layer 4 reference.
+Analysis uses the CSDA-weighted spectrum for Layer 4 and for s_w,air and reports the linear one alongside. On s_w,air the two differ by less than 0.03%. **Approved by Humza at the M1 gate (2026-10-10).**
 
 ## D021. Mass-geometry importance sampling, built as an alternative (2026-10-10)
 
@@ -196,6 +196,14 @@ Rule, written before the replicate finishes:
 - If the replicate agrees with the main run within 3 combined standard errors on D/Φ₀ and on the primary fluence ratio, the two are pooled (20 batches) for every R0 result, and both are also reported separately.
 - If they disagree on either, they are not pooled; both are reported, and the difference is treated as an unresolved systematic until explained.
 
+Outcome (2026-10-10 21:44 UTC): the replicate agrees with the main run.
+- D/Φ₀: z = +0.04.
+- Primary fluence, tracking μ: 1.1732 MeV z = +1.36, 1.3325 MeV z = −0.03.
+- The replicate's own primary fluence is 0.9996 ± 0.0006.
+
+The runs are pooled (20 batches, 2.4 × 10⁸ histories); the pooled primary fluence is 0.9992 ± 0.0005 (−1.7σ). The main run's deficit was a chance fluctuation, made to look significant by its unusually small batch spread (D023). The replicate's batch spread matches its history-by-history variance (ratio 1.06).
+
+
 ## D023. Uncertainties: the larger of the batch spread and a second estimate (2026-10-10)
 
 The plan's uncertainty is the standard error over at least 10 independent batches. With 10 batches that estimate is itself uncertain by about ±24% (1σ), and it can come out far too small by chance.
@@ -209,11 +217,48 @@ From M1 on, analysis/m1.py reports, beside the batch standard error:
 
 Statistical targets, run-to-run comparisons and the primary-fluence check use `sem_conservative`. Quantities without a second estimate (β, spectra, s_w,air) keep the batch standard error.
 
-Effect: the main run's D/Φ₀ relative uncertainty is 0.093% (target 0.1%, met). Its primary-fluence deficit against the tracking μ is 1.9σ instead of 4.4σ. **[Humza]** Confirm this policy.
+Effect: the main run's D/Φ₀ relative uncertainty is 0.093% (target 0.1%, met). Its primary-fluence deficit against the tracking μ is 1.9σ instead of 4.4σ. **Approved by Humza at the M1 gate (2026-10-10).**
 
-Outcome (2026-10-10 21:44 UTC): the replicate agrees with the main run.
-- D/Φ₀: z = +0.04.
-- Primary fluence, tracking μ: 1.1732 MeV z = +1.36, 1.3325 MeV z = −0.03.
-- The replicate's own primary fluence is 0.9996 ± 0.0006.
+## D024. s_w,air reference for scoring AI answers: ICRU 90 primary, ICRU 37 alongside (2026-10-10, M1 gate)
 
-The runs are pooled (20 batches, 2.4 × 10⁸ histories); the pooled primary fluence is 0.9992 ± 0.0005 (−1.7σ). The main run's deficit was a chance fluctuation, made to look significant by its unusually small batch spread (D023). The replicate's batch spread matches its history-by-history variance (ratio 1.06).
+Decided by Humza at the M1 gate, on my recommendation, before any AI answer exists.
+
+AI answers for s_w,air at R0 are scored against the Spencer–Attix value (Δ = 10 keV) from the Monte Carlo electron spectrum:
+- primary: ICRU 90 stopping powers (I = 78 eV);
+- reported alongside: ICRU 37 stopping powers (I = 75 eV).
+
+Reasons:
+- ICRU 90 is the current reference data, and its I-value matches the water in the Geant4 transport, so spectrum and stopping powers are consistent.
+- Many models will quote the TRS-398 value, which rests on ICRU 37. Reporting the distance to both separates "quoted the protocol" from "got the physics wrong".
+- The Geant4-basis value is not used for scoring: it reflects option4's Penelope ionisation model below 100 keV, not reference data.
+- To check: whether the 2024 revision of TRS-398 adopted ICRU 90. If it did, ICRU 90 is also the protocol-consistent choice.
+
+This is part of the scoring definition and freezes with it at M4 (plan rule 3).
+
+## D025. Scoring-volume boundary: systematic on D now, boundary-free dose scoring from M2 (2026-10-10, M1 gate)
+
+Decided by Humza at the M1 gate, on my recommendation.
+
+- **M1.** D at R0 is quoted from the scoring cylinder, with the boundary effect bounded by the boundary-free runs (`M1-check-boundary-free-R0` plus the 20-batch extension `-ext`, pooled) as a systematic. If the pooled ratio stays consistent with 1, the systematic is its uncertainty; if it does not, D at R0 is corrected to the boundary-free value and the correction is reported.
+- **M2 onward.** Dose at R0 is scored by position with no geometry boundary within an electron range of R0. The scoring cylinder stays for quantities that need volume-limited steps (fluence spectra, interaction records), and those are checked once against a boundary-free variant.
+
+Reasons:
+- The dose next to a mass-geometry boundary is distorted by up to ±3% in water–water geometry (STATUS M1), from the electron step limit near boundaries.
+- EGSnrc crosses boundaries with its own algorithm. A boundary at the scoring volume would mix boundary handling into the code-to-code comparison of M2.
+
+Before M2, `RunAction::CheckRoi` also requires the 1.2 × CSDA buffer in front of a depth scan (it previously required only that the ROI start at or before the scan).
+
+## D026. Fano result, M2 batch count, refs.yaml verification order (2026-10-10, M1 gate)
+
+Decided by Humza at the M1 gate, on my recommendation.
+
+- **Fano +0.16 ± 0.06%** is accepted as a bound on interface artifacts. The step-size diagnostics (range factor 0.04, step function 0.05 / 1 µm) are reviewed before M2 production. If the deviation shrinks with tighter stepping, M2 production uses the tighter setting, and the boundary artifact is re-measured with it.
+- **M2 production** uses at least 20 batches per run, so that the batch standard error is itself better determined (D023).
+- **refs.yaml** is verified by Humza in this order:
+  1. Co-60 line energies;
+  2. TRS-398 s_w,air (and whether its 2024 revision uses ICRU 90);
+  3. I-values;
+  4. constants used in normalisation;
+  5. the remaining entries, `recall` entries first.
+
+  A published PDD(5) for Co-60, 10 × 10 cm², SSD 100 cm is to be added as an external check of the depth dose.
