@@ -23,6 +23,7 @@ sys.path.insert(0, str(ROOT))
 from analysis.kinematics import compton_edge  # noqa: E402
 from analysis.primary import fluence_cylinder_average, g4_mu_water  # noqa: E402
 from analysis.refs import ref_value  # noqa: E402
+from analysis.events import summarize as summarize_events  # noqa: E402
 from analysis.stopping import bases, spencer_attix  # noqa: E402
 
 RUNS = ROOT / "mc" / "runs"
@@ -155,11 +156,20 @@ def observables(b, sp, tables_json=TABLES):
         nz = np.nonzero(h)[0]
         o[f"L3_compton_{line}_max_T_MeV"] = (nz.max() + 1) * 0.001 if nz.size else 0.0
 
-    # Layer 4: electrons slowing down
-    el = strip(tally(b, "electron_fluence"))                           # (1400) per 1 keV
-    eld = strip(tally(b, "electron_fluence_delta"))
-    pos = strip(tally(b, "positron_fluence"))
-    elp = strip(tally(b, "electron_fluence_by_parent"))
+    # Layer 4: electrons slowing down. The CSDA-weighted estimator (DECISIONS D020)
+    # is the reference; the plan's linear-loss estimator is reported alongside.
+    csda = "electron_fluence_csda" in b["tallies"]
+    sfx = "_csda" if csda else ""
+    el = strip(tally(b, "electron_fluence" + sfx))                     # (1400) per 1 keV
+    eld = strip(tally(b, "electron_fluence_delta" + sfx))
+    pos = strip(tally(b, "positron_fluence" + sfx))
+    elp = strip(tally(b, "electron_fluence_by_parent" + sfx))
+    el_lin = strip(tally(b, "electron_fluence"))
+    pos_lin = strip(tally(b, "positron_fluence"))
+    o["L4_estimator"] = 1.0 if csda else 0.0
+    o["L4lin_electron_fluence_10keV_per_MeV"] = rebin(el_lin, 10) * norm / 0.010
+    o["L4lin_to_csda_fluence_10_20keV"] = el_lin[10:20].sum() / el[10:20].sum()
+    o["L4lin_to_csda_fluence_above_100keV"] = el_lin[100:].sum() / el[100:].sum()
     above = slice(10, None)
     o["L4_electron_fluence_10keV_per_MeV"] = rebin(el, 10) * norm / 0.010
     o["L4_delta_fluence_10keV_per_MeV"] = rebin(eld, 10) * norm / 0.010
@@ -206,6 +216,7 @@ def observables(b, sp, tables_json=TABLES):
     l_mid = np.exp(np.interp(np.log(mid), np.log(te), np.log(lv)))
     d_cont = np.sum((el + pos) * l_mid) / (vol * n) * J_PER_MEV * 1e3 / phi0
     o["L5_D_continuous_over_D"] = d_cont / d
+    o["L5_D_continuous_over_D_linear"] = (np.sum((el_lin + pos_lin) * l_mid) / (vol * n) * J_PER_MEV * 1e3 / phi0) / d
     for name, basis in sp.items():
         sa = spencer_attix(el, 0.010, basis["water"], basis["air"])
         o[f"L5_s_w_air_{name}"] = sa["s_w_air"]
@@ -215,6 +226,7 @@ def observables(b, sp, tables_json=TABLES):
         o[f"L5_D_SpencerAttix_over_D_{name}"] = d_sa / d
         sa_ep = spencer_attix(el + pos, 0.010, basis["water"], basis["air"])
         o[f"L5_s_w_air_{name}_with_positrons"] = sa_ep["s_w_air"]
+        o[f"L5_s_w_air_{name}_linear_estimator"] = spencer_attix(el_lin, 0.010, basis["water"], basis["air"])["s_w_air"]
     return o
 
 
@@ -354,7 +366,7 @@ def to_jsonable(x):
 SCALAR_KEYS_S = [
     "L5_D_over_phi0_Gy_cm2", "L5_K_over_phi0_Gy_cm2", "L5_Kcol_over_phi0_Gy_cm2", "L5_beta", "L5_g",
     "L5_s_w_air_icru37", "L5_s_w_air_icru90", "L5_s_w_air_geant4", "L5_s_w_air_pegs4",
-    "L5_D_continuous_over_D", "L5_dose_fraction_parent_scattered",
+    "L5_D_continuous_over_D", "L5_D_SpencerAttix_over_D_geant4", "L5_dose_fraction_parent_scattered",
     "L4_electron_fluence_above_10keV_per_phi0", "L4_delta_fraction_above_10keV", "L4_radiative_to_collision",
     "L4_mean_energy_above_10keV_MeV", "L1_fluence_total_per_phi0", "L1_scattered_fraction_fluence",
     "L1_mean_energy_all_MeV", "L3_mean_T_all_MeV",
@@ -365,7 +377,7 @@ def main():
     OUT.mkdir(parents=True, exist_ok=True)
     sp = bases(TABLES, PEGS4_DIR)
     runs = {k: analyse_run(k, sp) for k in ("M1-R0-option4", "M1-R0-option4-S2-5keV", "M1-R0-option4-S1-half",
-                                           "M1-vrcheck-analog", "M1-thinslab-option4")}
+                                           "M1-vrcheck-analog", "M1-thinslab-option4-v2")}
     main_res = runs["M1-R0-option4"]
     result = {"runs": {k: v for k, v in runs.items() if v is not None}}
     if main_res:
@@ -381,6 +393,9 @@ def main():
                     "photon_fluence_shape": compare_spectrum(main_res, other,
                                                              ["L1_photon_fluence_comparison", "total"]),
                 }
+    ev = summarize_events(RUNS / "M1-R0-option4")
+    if ev:
+        result["event_sample"] = ev
     p = pdd("M1-R0-option4-pdd")
     if p:
         result["pdd"] = p

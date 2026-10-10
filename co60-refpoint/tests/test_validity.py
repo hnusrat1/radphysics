@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 
 from analysis.kinematics import ELECTRON_REST_ENERGY as ME
 from analysis.kinematics import compton_edge, compton_scattered_energy
@@ -41,11 +42,14 @@ def test_pair_below_threshold_fails_and_rest_mass_is_counted():
     assert r["energy"][1] and r["valid"][1]
 
 
-def test_doppler_tolerance_rounds_up():
-    e = np.array([1.25, 1.25])
-    th = np.array([1.0, np.pi])
+def test_doppler_tolerance_is_a_percentile_rounded_up():
+    e = np.full(1000, 1.25)
+    th = np.linspace(0.1, np.pi, 1000)
     e_out, t = free_compton(e, th)
-    t = t + np.array([0.0, 0.013])
-    tol = doppler_tolerance(["compt", "compt"], e, e_out - np.array([0, 0.013]), np.cos(th), t)
-    assert abs(tol["delta_c"] - 0.02) < 1e-12
-    assert tol["fraction_above_edge"] == 0.5
+    shift = np.zeros(1000)
+    shift[-1] = 0.013                      # one event 13 keV off; the 99.9th percentile sits below it
+    tol = doppler_tolerance(["compt"] * 1000, e, e_out - shift, np.cos(th), t + shift)
+    assert 0.0 < tol["delta_c"] <= 0.02
+    assert tol["fraction_above_edge"] == pytest.approx(0.001)
+    tol_max = doppler_tolerance(["compt"] * 1000, e, e_out - shift, np.cos(th), t + shift, percentile=100)
+    assert tol_max["delta_c"] == pytest.approx(0.02)

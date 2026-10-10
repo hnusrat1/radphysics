@@ -98,7 +98,7 @@ All three production lists sample Compton scattering from bound electrons with D
    - (b) the recoil electron energy does not exceed the free-electron edge by more than a tolerance δ_C;
    - (c) the scattered photon energy matches the Compton formula for its angle within δ_C.
 
-   δ_C is taken from the Monte Carlo event sample as the largest excess seen there, rounded up to the next 10 keV, and is reported. It is frozen before any AI event is scored.
+   δ_C is the 99.9th percentile of the Compton departure from free-electron kinematics in the Monte Carlo event sample, rounded up to the next 10 keV. It is frozen before any AI event is scored. The departure is the larger of |E_out − E_KN(θ)| and the recoil energy above the edge. (Amended 2026-10-10: the maximum departure was first proposed; at 134 keV it would make the check too weak to matter. The Monash Compton model's Doppler tail reaches that far.) The Monte Carlo's own failure rate under the bound rules is therefore about 0.1% by construction, and AI failure rates are read against it.
 
 The same per-event checks apply to Monte Carlo and AI events.
 

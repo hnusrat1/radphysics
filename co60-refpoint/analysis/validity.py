@@ -68,20 +68,29 @@ def check_events(process, e_in, e_out, cos_scatter, t_e, t_pos=None, delta_c=0.0
             "pair_threshold": threshold_ok, "photoelectric": phot_ok, "valid": valid}
 
 
-def doppler_tolerance(process, e_in, e_out, cos_scatter, t_e, step=0.010):
-    """delta_c from a Monte Carlo sample: largest Compton departure from free-electron kinematics, rounded up."""
+def doppler_tolerance(process, e_in, e_out, cos_scatter, t_e, step=0.010, percentile=99.9):
+    """delta_c from a Monte Carlo sample (DECISIONS D014).
+
+    For each Compton event the departure from free-electron kinematics is the larger of
+    |E_out - E_KN(theta)| and the recoil energy above the Compton edge. delta_c is the
+    given percentile of that departure, rounded up to the next `step`.
+    """
     process = np.asarray(process)
     c = process == "compt"
     e_in, e_out, cos_s, t_e = _arr(e_in)[c], _arr(e_out)[c], _arr(cos_scatter)[c], _arr(t_e)[c]
     alive = np.isfinite(e_out) & (e_out > 0)
-    angle_dev = np.abs(e_out[alive] - compton_scattered_energy(e_in[alive], np.arccos(np.clip(cos_s[alive], -1, 1))))
+    angle_dev = np.zeros_like(e_in)
+    angle_dev[alive] = np.abs(e_out[alive] - compton_scattered_energy(e_in[alive],
+                                                                       np.arccos(np.clip(cos_s[alive], -1, 1))))
     edge_excess = t_e - compton_edge(e_in)
-    worst = max(angle_dev.max(initial=0.0), edge_excess.max(initial=0.0))
+    departure = np.maximum(angle_dev, edge_excess)
+    q = float(np.percentile(departure, percentile)) if departure.size else 0.0
     return {
-        "delta_c": float(np.ceil(worst / step) * step) if worst > 0 else step,
-        "max_angle_deviation": float(angle_dev.max(initial=0.0)),
-        "angle_deviation_p99": float(np.percentile(angle_dev, 99)) if angle_dev.size else 0.0,
-        "max_edge_excess": float(edge_excess.max(initial=0.0)),
+        "delta_c": float(np.ceil(q / step) * step) if q > 0 else step,
+        "percentile": percentile,
+        "departure_percentiles_keV": {str(p): float(1000 * np.percentile(departure, p)) for p in (50, 90, 99, 99.9, 100)}
+        if departure.size else {},
+        "max_edge_excess_keV": float(1000 * edge_excess.max(initial=0.0)),
         "fraction_above_edge": float(np.mean(edge_excess > 0)) if edge_excess.size else 0.0,
         "n_compton": int(c.sum()),
     }

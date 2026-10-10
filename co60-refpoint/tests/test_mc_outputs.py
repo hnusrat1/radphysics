@@ -15,20 +15,38 @@ ROOT = Path(__file__).resolve().parent.parent
 RUNS = ROOT / "mc" / "runs"
 TABLES = RUNS / "M1-tables-option4-v2" / "batch_00" / "output.json"
 THIN = RUNS / "M1-thinslab-option4"
+THIN_V2 = RUNS / "M1-thinslab-option4-v2"
+R0 = RUNS / "M1-R0-option4"
 PEGS4 = ROOT / "mc" / "egsnrc" / "b0"
 
 needs_thin = pytest.mark.skipif(not (THIN / "batch_00" / "output.json").exists(), reason="thin-slab run not present")
 needs_tables = pytest.mark.skipif(not TABLES.exists(), reason="tables run not present")
 
 
-@needs_thin
 @needs_tables
-def test_track_length_estimator_thin_slab_matches_uncollided_fluence():
+@pytest.mark.parametrize("run", [THIN, THIN_V2], ids=["general-process-on", "production-config"])
+def test_track_length_estimator_thin_slab_matches_uncollided_fluence(run):
     # STUDY_PLAN Section 8: track-length estimator on a thin slab against the analytic uncollided fluence.
-    res = primary_check(THIN, TABLES)
+    if len(list(run.glob("batch_*/output.json"))) < 10:
+        pytest.skip(f"{run.name} not complete")
+    res = primary_check(run, TABLES)
     for line in ("line1", "line2"):
         assert abs(res[line]["z"]) < 3.0, res[line]
         assert abs(res[line]["rel_diff"]) < 0.003, res[line]
+
+
+@needs_tables
+def test_fluence_to_dose_closure_on_production_run():
+    # The continuous energy loss rebuilt from the CSDA-weighted electron fluence must
+    # match the scored dose (DECISIONS D020); the linear estimator is known not to.
+    batches = sorted(R0.glob("batch_*/output.json"))
+    if not batches:
+        pytest.skip("production run not present")
+    from analysis.m1 import observables
+    sp = bases(TABLES, PEGS4)
+    o = observables(json.load(open(batches[0])), sp)
+    assert o["L5_D_continuous_over_D"] == pytest.approx(1.0, abs=0.01)
+    assert o["L5_D_continuous_over_D_linear"] > 1.03
 
 
 @needs_thin
