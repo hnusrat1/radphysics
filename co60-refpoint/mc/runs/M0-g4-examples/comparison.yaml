@@ -1,0 +1,36 @@
+note: Stochastic results compared with the shipped reference outputs. z = (this - reference)/combined
+  sigma. TestEm0 is deterministic and its 32 result lines match the reference exactly. The fanoCavity
+  Compton cross section line (63.464 cm2/g with factor 1000) matches exactly.
+comparisons:
+- quantity: B1 dose, 6 MeV gamma
+  unit: pGy
+  reference: 433.616
+  reference_sigma: 12.3902
+  this_build: 427.378
+  this_build_sigma: 12.2674
+  sigma_source: B1 'rms' printout
+  z: -0.36
+- quantity: B1 dose, 210 MeV proton
+  unit: nGy
+  reference: 49.4373
+  reference_sigma: 0.463568
+  this_build: 50.1208
+  this_build_sigma: 0.462538
+  sigma_source: B1 'rms' printout
+  z: 1.04
+- quantity: fanoCavity (Dose/EnergyFluence)/Mass_energy_transfer
+  unit: '1'
+  reference: 0.95514
+  reference_sigma: 0.02609
+  this_build: 0.97362
+  this_build_sigma: 0.03375
+  sigma_source: example estimate
+  z: 0.43
+- quantity: fanoCavity mean energy of secondary e-
+  unit: keV
+  reference: 588.4922
+  reference_sigma: 0.605558
+  this_build: 587.6705
+  this_build_sigma: 0.605888
+  sigma_source: example estimate
+  z: -0.96

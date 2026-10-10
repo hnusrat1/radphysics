@@ -1,0 +1,117 @@
+run_id: M0-fano-opt4-pilot
+purpose: Fano cavity test, throughput pilot for standard_opt4
+created_utc: '2026-10-10T05:44:03Z'
+git:
+  commit: e5a784265952fbfb60d2653bf223f841a6504359
+  dirty: true
+machine:
+  hostname: vm
+  platform: Linux-6.18.44-fc-v114-x86_64-with-glibc2.39
+  cpu: Intel(R) Xeon(R) Processor @ 2.80GHz
+  logical_cpus: 4
+  compiler: c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+geant4:
+  version: 11.4.3
+  prefix: /opt/geant4/11.4.3
+  features: "Known Features:\n staticlibs[no]\n multithreading[yes]\n smartstack[no]\n php_as_hp[no]\n\
+    \ clhep[yes]\n expat[no]\n zlib[yes]\n gdml[no]\n ptl[yes]\n usolids[no]\n freetype[no]\n hdf5[no]\n\
+    \ g3tog4[no]\n qt[no]\n motif[no]\n raytracer-x11[no]\n opengl-x11[no]\n openinventor[no]\n vtk[no]"
+  datasets:
+    G4NDL:
+      envvar: G4NEUTRONHPDATA
+      path: /opt/geant4/data/G4NDL4.7.1
+      env_value: null
+    G4EMLOW:
+      envvar: G4LEDATA
+      path: /opt/geant4/data/G4EMLOW8.8
+      env_value: null
+    PhotonEvaporation:
+      envvar: G4LEVELGAMMADATA
+      path: /opt/geant4/data/PhotonEvaporation6.1.2
+      env_value: null
+    RadioactiveDecay:
+      envvar: G4RADIOACTIVEDATA
+      path: /opt/geant4/data/RadioactiveDecay6.1.2
+      env_value: null
+    G4PARTICLEXS:
+      envvar: G4PARTICLEXSDATA
+      path: /opt/geant4/data/G4PARTICLEXS4.2
+      env_value: null
+    G4PII:
+      envvar: G4PIIDATA
+      path: /opt/geant4/data/G4PII1.3
+      env_value: null
+    RealSurface:
+      envvar: G4REALSURFACEDATA
+      path: /opt/geant4/data/RealSurface2.2
+      env_value: null
+    G4SAIDDATA:
+      envvar: G4SAIDXSDATA
+      path: /opt/geant4/data/G4SAIDDATA2.0
+      env_value: null
+    G4ABLA:
+      envvar: G4ABLADATA
+      path: /opt/geant4/data/G4ABLA3.3
+      env_value: null
+    G4INCL:
+      envvar: G4INCLDATA
+      path: /opt/geant4/data/G4INCL1.3
+      env_value: null
+    G4ENSDFSTATE:
+      envvar: G4ENSDFSTATEDATA
+      path: /opt/geant4/data/G4ENSDFSTATE3.0
+      env_value: null
+    G4CHANNELING:
+      envvar: G4CHANNELINGDATA
+      path: /opt/geant4/data/G4CHANNELING2.0
+      env_value: null
+application:
+  name: fanoCavity (Geant4 extended/medical example, unmodified)
+  executable: /opt/build/examples/fanoCavity/fanoCavity
+  physics_constructor: standard_opt4
+  production_cut: 10 km for gamma, e-, e+ (example default, CSDA)
+  compton_cross_section_factor: 1000
+  beam: gamma, 1.25 MeV, uniform over the wall radius, normal incidence
+  geometry: wall G4_WATER 5 mm each side, cavity G4_WATER at 1 mg/cm3, 2 mm thick, radius 1 cm
+  extra_macro_commands: []
+statistics:
+  batches: 1
+  events_per_batch: 20000
+  threads: 4
+  total_events: 20000
+batches:
+- ratio: 0.99618
+  ratio_err: 0.01305
+  mass_energy_transfer_cm2_g: 29.8645
+  dose_over_energy_fluence_cm2_g: 29.7504
+  mean_secondary_energy_keV: 588.2193
+  mean_secondary_energy_rel_err_pct: 0.0461
+  edep_cavity_MeV: 66.1121
+  edep_cavity_rel_err_pct: 1.3093
+  g4_water_imean_eV: 78.0
+  g4_user_s: 41.27
+  g4_real_s: 11.159911
+  process_calls:
+    compt: 1407991
+    Transportation: 387258
+    msc: 13007627
+    eIoni: 8732874
+  batch: 0
+  seeds:
+  - 4100001
+  - 4100002
+  exit_code: 0
+  wall_s: 11.4
+started_utc: '2026-10-10T05:44:03Z'
+finished_utc: '2026-10-10T05:44:14Z'
+wall_time_s: 11.4
+summary:
+  n_batches_ok: 1
+  ratio_mean: 0.99618
+  ratio_sem_from_batch_spread: null
+  ratio_sem_from_example_estimate: 0.01305
+  deviation_from_1_percent: -0.382
+  deviation_in_sigma_batch: null
+  mean_secondary_energy_keV_mean: 588.2193
+  mass_energy_transfer_cm2_g_mean: 29.8645
+  g4_water_imean_eV: 78.0
