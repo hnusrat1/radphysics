@@ -1,0 +1,195 @@
+run_id: M1-fano-diag-rfact004
+purpose: 'Fano step-size diagnostic: msc range factor 0.04 (production 0.08), everything else as M0-fano-opt4'
+created_utc: '2026-10-10T11:41:48Z'
+git:
+  commit: 8fab53bce183d69546443fb393c9b577710f9fe0
+  dirty: true
+machine:
+  hostname: vm
+  platform: Linux-6.18.44-fc-v114-x86_64-with-glibc2.39
+  cpu: Intel(R) Xeon(R) Processor @ 2.80GHz
+  logical_cpus: 4
+  compiler: c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+geant4:
+  version: 11.4.3
+  prefix: /opt/geant4/11.4.3
+  features: "Known Features:\n staticlibs[no]\n multithreading[yes]\n smartstack[no]\n php_as_hp[no]\n\
+    \ clhep[yes]\n expat[no]\n zlib[yes]\n gdml[no]\n ptl[yes]\n usolids[no]\n freetype[no]\n hdf5[no]\n\
+    \ g3tog4[no]\n qt[no]\n motif[no]\n raytracer-x11[no]\n opengl-x11[no]\n openinventor[no]\n vtk[no]"
+  datasets:
+    G4NDL:
+      envvar: G4NEUTRONHPDATA
+      path: /opt/geant4/data/G4NDL4.7.1
+      env_value: null
+    G4EMLOW:
+      envvar: G4LEDATA
+      path: /opt/geant4/data/G4EMLOW8.8
+      env_value: null
+    PhotonEvaporation:
+      envvar: G4LEVELGAMMADATA
+      path: /opt/geant4/data/PhotonEvaporation6.1.2
+      env_value: null
+    RadioactiveDecay:
+      envvar: G4RADIOACTIVEDATA
+      path: /opt/geant4/data/RadioactiveDecay6.1.2
+      env_value: null
+    G4PARTICLEXS:
+      envvar: G4PARTICLEXSDATA
+      path: /opt/geant4/data/G4PARTICLEXS4.2
+      env_value: null
+    G4PII:
+      envvar: G4PIIDATA
+      path: /opt/geant4/data/G4PII1.3
+      env_value: null
+    RealSurface:
+      envvar: G4REALSURFACEDATA
+      path: /opt/geant4/data/RealSurface2.2
+      env_value: null
+    G4SAIDDATA:
+      envvar: G4SAIDXSDATA
+      path: /opt/geant4/data/G4SAIDDATA2.0
+      env_value: null
+    G4ABLA:
+      envvar: G4ABLADATA
+      path: /opt/geant4/data/G4ABLA3.3
+      env_value: null
+    G4INCL:
+      envvar: G4INCLDATA
+      path: /opt/geant4/data/G4INCL1.3
+      env_value: null
+    G4ENSDFSTATE:
+      envvar: G4ENSDFSTATEDATA
+      path: /opt/geant4/data/G4ENSDFSTATE3.0
+      env_value: null
+    G4CHANNELING:
+      envvar: G4CHANNELINGDATA
+      path: /opt/geant4/data/G4CHANNELING2.0
+      env_value: null
+application:
+  name: fanoCavity (Geant4 extended/medical example, unmodified)
+  executable: /opt/build/examples/fanoCavity/fanoCavity
+  physics_constructor: standard_opt4
+  production_cut: 10 km for gamma, e-, e+ (example default, CSDA)
+  compton_cross_section_factor: 1000
+  beam: gamma, 1.25 MeV, uniform over the wall radius, normal incidence
+  geometry: wall G4_WATER 5 mm each side, cavity G4_WATER at 1 mg/cm3, 2 mm thick, radius 1 cm
+  pre_init_macro_commands:
+  - /process/msc/RangeFactor 0.04
+  extra_macro_commands: []
+statistics:
+  batches: 20
+  events_per_batch: 340000
+  threads: 4
+  total_events: 6800000
+batches:
+- ratio: 1.00745
+  ratio_err: 0.00345
+  mass_energy_transfer_cm2_g: 29.8611
+  dose_over_energy_fluence_cm2_g: 30.0837
+  mean_secondary_energy_keV: 588.1532
+  mean_secondary_energy_rel_err_pct: 0.0112
+  g4_water_imean_eV: 78.0
+  g4_user_s: 1257.64
+  g4_real_s: 336.417482
+  process_calls:
+    compt: 23985893
+    Transportation: 6570513
+    msc: 383066319
+    eIoni: 149763571
+    conv: 6
+    phot: 3
+    annihil: 1
+  batch: 0
+  seeds:
+  - 5101001
+  - 5101002
+  exit_code: 0
+  wall_s: 336.7
+- ratio: 1.00051
+  ratio_err: 0.00334
+  mass_energy_transfer_cm2_g: 29.8558
+  dose_over_energy_fluence_cm2_g: 29.8712
+  mean_secondary_energy_keV: 588.0495
+  mean_secondary_energy_rel_err_pct: 0.0112
+  g4_water_imean_eV: 78.0
+  g4_user_s: 1320.12
+  g4_real_s: 369.690373
+  process_calls:
+    compt: 23962468
+    Transportation: 6572231
+    msc: 382845080
+    eIoni: 149441592
+    conv: 5
+    phot: 1
+  batch: 1
+  seeds:
+  - 5101003
+  - 5101004
+  exit_code: 0
+  wall_s: 370.0
+- ratio: 0.99709
+  ratio_err: 0.00332
+  mass_energy_transfer_cm2_g: 29.8618
+  dose_over_energy_fluence_cm2_g: 29.775
+  mean_secondary_energy_keV: 588.1677
+  mean_secondary_energy_rel_err_pct: 0.0112
+  g4_water_imean_eV: 78.0
+  g4_user_s: 1395.27
+  g4_real_s: 471.146863
+  process_calls:
+    compt: 23967028
+    Transportation: 6567821
+    msc: 382650496
+    eIoni: 149487673
+    conv: 7
+  batch: 2
+  seeds:
+  - 5101005
+  - 5101006
+  exit_code: 0
+  wall_s: 471.5
+- ratio: 1.00185
+  ratio_err: 0.00337
+  mass_energy_transfer_cm2_g: 29.8668
+  dose_over_energy_fluence_cm2_g: 29.9222
+  mean_secondary_energy_keV: 588.2659
+  mean_secondary_energy_rel_err_pct: 0.0112
+  g4_water_imean_eV: 78.0
+  g4_user_s: 1409.57
+  g4_real_s: 574.560942
+  process_calls:
+    compt: 23976055
+    Transportation: 6574717
+    msc: 383296118
+    eIoni: 149593840
+    conv: 8
+  batch: 3
+  seeds:
+  - 5101007
+  - 5101008
+  exit_code: 0
+  wall_s: 574.8
+- ratio: 0.99735
+  ratio_err: 0.00332
+  mass_energy_transfer_cm2_g: 29.8688
+  dose_over_energy_fluence_cm2_g: 29.7896
+  mean_secondary_energy_keV: 588.3054
+  mean_secondary_energy_rel_err_pct: 0.0112
+  g4_water_imean_eV: 78.0
+  g4_user_s: 1313.07
+  g4_real_s: 1560.344396
+  process_calls:
+    compt: 23965808
+    Transportation: 6571197
+    msc: 383057597
+    eIoni: 149525397
+    conv: 9
+    annihil: 2
+    phot: 1
+  batch: 4
+  seeds:
+  - 5101009
+  - 5101010
+  exit_code: 0
+  wall_s: 1560.7
+started_utc: '2026-10-10T11:41:48Z'
