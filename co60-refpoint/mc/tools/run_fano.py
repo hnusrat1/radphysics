@@ -38,13 +38,14 @@ PATTERNS = {
 }
 
 
-def make_macro(physics, seeds, events, energy_mev, extra):
+def make_macro(physics, seeds, events, energy_mev, extra, pre=()):
     lines = [
         "/control/verbose 1",
         "/run/verbose 1",
         "/control/cout/ignoreThreadsExcept 0",
         f"/random/setSeeds {seeds[0]} {seeds[1]}",
         f"/testem/phys/addPhysics {physics}",
+        *pre,
         "/run/initialize",
         "/process/em/printParameters",
         f"/gun/energy {energy_mev} MeV",
@@ -79,6 +80,8 @@ def main():
     ap.add_argument("--run-id", required=True)
     ap.add_argument("--purpose", default="Fano cavity test")
     ap.add_argument("--extra", action="append", default=[], help="extra macro command after /run/initialize")
+    ap.add_argument("--pre", action="append", default=[],
+                    help="macro command after the physics constructor is chosen and before /run/initialize")
     args = ap.parse_args()
 
     run_dir = STUDY_ROOT / "mc" / "runs" / args.run_id
@@ -95,6 +98,7 @@ def main():
         "compton_cross_section_factor": 1000,
         "beam": f"gamma, {args.energy_mev} MeV, uniform over the wall radius, normal incidence",
         "geometry": "wall G4_WATER 5 mm each side, cavity G4_WATER at 1 mg/cm3, 2 mm thick, radius 1 cm",
+        "pre_init_macro_commands": args.pre,
         "extra_macro_commands": args.extra,
     }
     manifest["statistics"] = {"batches": args.batches, "events_per_batch": args.events,
@@ -108,7 +112,7 @@ def main():
         seeds = (args.seed_base * 1000 + 2 * i + 1, args.seed_base * 1000 + 2 * i + 2)
         bdir = run_dir / f"batch_{i:02d}"
         bdir.mkdir()
-        macro = make_macro(args.physics, seeds, args.events, args.energy_mev, args.extra)
+        macro = make_macro(args.physics, seeds, args.events, args.energy_mev, args.extra, args.pre)
         (bdir / "run.mac").write_text(macro)
         t0 = time.time()
         proc = subprocess.run([args.exe, "run.mac", str(args.threads)], cwd=bdir,

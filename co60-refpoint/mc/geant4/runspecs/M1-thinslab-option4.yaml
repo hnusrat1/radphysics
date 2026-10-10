@@ -1,0 +1,14 @@
+run_id: M1-thinslab-option4
+purpose: >-
+  Required test (STUDY_PLAN Section 8): track-length estimator on a thin slab against the analytic uncollided
+  fluence. Scoring cylinder radius 4 cm, thickness 0.05 cm, centred at 0.5 cm depth, no variance reduction.
+physics: option4
+threads: 4
+batches: 10
+histories_per_batch: 400000
+seed_base: 6001
+geometry: {scoring_radius_cm: 4.0, scoring_thickness_cm: 0.05, scoring_depth_cm: 0.5}
+cuts: {electron_threshold_keV: 10, gamma_threshold_keV: 10}
+russian_roulette: {enabled: false}
+depth_scan: false
+event_sample_per_batch: 0
