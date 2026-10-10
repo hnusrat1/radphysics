@@ -9,6 +9,7 @@ Usage:
 
 import json
 import math
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -114,6 +115,7 @@ def build_checks(r, m):
         return (mean - ref) / sem if sem else float("nan")
 
     def add(name, result, status, label, chip=None):
+        result = re.sub(r"(?<=[ (])-(?=\d)", "−", result)   # typographic minus for signed values
         rows.append({"name": name, "result": result, "status": status, "status_label": label, "chip": chip})
 
     diag = r.get("diagnostics", {})
@@ -187,8 +189,7 @@ def build_checks(r, m):
             add("Scoring-cylinder boundary: D in the cylinder over the boundary-free dose at R0 (depth scan with the cylinder moved to 8 cm)",
                 f"{pm(x['ratio'], x['sem'])} ({z:+.1f}σ; {n_free} boundary-free batches). Next to the cylinder the dose is "
                 f"distorted by up to ±3%; see Findings.",
-                "ok" if abs(z) < 3 else "warn", "passes" if abs(z) < 3 else "outside 3σ",
-                "Boundary artifact next to the cylinder")
+                "warn", "within 3σ; see Findings", "Boundary artifact next to the cylinder")
 
     ev = r.get("event_sample")
     if ev:

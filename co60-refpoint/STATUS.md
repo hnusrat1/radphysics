@@ -1,14 +1,21 @@
 # Status
 
-## M1. Monte Carlo reference at R0 (2026-10-10). In progress: runs finishing, then Humza's review.
+## M1. Monte Carlo reference at R0 (2026-10-10). Waiting for Humza's review.
 
 ### Summary
 
-The Geant4 reference for all five layers at R0 is done for the main configuration: G4EmStandardPhysics_option4, 10 keV thresholds, 1.2 × 10⁸ histories in 10 batches. Every statistical target in plan Section 4.1 is met. D/Φ₀ = 5.3582 × 10⁻¹² Gy cm² ± 0.093% and β = 1.0052 ± 0.0008. The Spencer–Attix s_w,air (Δ = 10 keV) is 1.1331 on the ICRU 37 stopping-power basis, 1.1268 on ICRU 90 and 1.1385 on Geant4's own stopping powers. The 1% spread between bases is far larger than the statistics. Which basis is the reference for scoring AI answers is a gate question.
+The Geant4 reference for all five layers at R0 is done: G4EmStandardPhysics_option4, 10 keV thresholds, 2.4 × 10⁸ histories in 20 batches (main run and a seed-independent replicate, pooled by the rule fixed in advance, D022). Every statistical target in plan Section 4.1 is met.
 
-Along the way I found and fixed two Geant4 problems that would have biased results: Rayleigh scattering of primaries is missing (D019), and the plan's linear track-length estimator gives the wrong electron fluence at low energy (D020). I also found one problem with the uncertainty estimates: 10-batch standard errors can come out much too small by chance, as they did in the main run (D023).
+- **Dose.** D/Φ₀ = 5.35838 × 10⁻¹² Gy cm² ± 0.066%.
+- **β.** β = D/K_col = 1.0045 ± 0.0006.
+- **s_w,air.** The Spencer–Attix ratio (Δ = 10 keV) is 1.1331 on the ICRU 37 stopping-power basis, 1.1268 on ICRU 90 and 1.1385 on Geant4's own stopping powers. The 1% spread between bases is far larger than the statistics. Which basis the AI answers are scored against is a gate question.
 
-The analytic primary-fluence check came out 0.12% low (−1.9σ on counting statistics). A long diagnostic series found no physics or variance-reduction cause. A replicate run decides whether it was chance (D022). Results page: `analysis/results/co60_r0_m1.html`.
+Problems found and fixed or bounded:
+- **Two Geant4 problems that would have biased results (fixed).** Rayleigh scattering of primaries is missing in option4's general gamma process (D019). The plan's linear track-length estimator gives the wrong electron fluence at low energy (D020).
+- **10-batch standard errors can come out much too small by chance (D023).** This made a primary-fluence fluctuation in the main run look like a 4σ effect; the replicate resolved it.
+- **The scoring cylinder's boundary distorts the dose by up to ±3% in the few millimetres next to it.** Inside the cylinder the dose is 0.9974 ± 0.0017 of the boundary-free dose (−1.5σ). That is not significant, but the 95% interval (−0.6% to +0.1%) is wider than D's statistical uncertainty, so a boundary effect of that size on D at R0 is not excluded.
+
+Results page: `analysis/results/co60_r0_m1.html`, published (private) at https://claude.ai/artifact/Cu5ScfiTccG3u14D4mbiLe.
 
 ### What was done
 
@@ -19,110 +26,116 @@ The analytic primary-fluence check came out 0.12% low (−1.9σ on counting stat
 - every photon carries its history: primary per line, scattered source photon, or secondary photon. Every electron carries its parent photon's category and whether it is a delta ray;
 - tallies in MeV, cm and g; JSON output per batch; per-history second moments for D, K and the total photon track length.
 
-**Variance reduction** (D016). Electron Russian roulette outside a region of interest, and photon importance sampling in a parallel world (importance 2, 8, 32). The efficiency gain for D is about 25× over analog transport. An analog run at matched settings checks it (below).
+**Variance reduction** (D016). Electron Russian roulette outside a region of interest, and photon importance sampling in a parallel world (importance 2, 8, 32). The efficiency gain for D is about 25× over analog transport. An analog run checks it (below).
 
 **Runs** (`mc/runs/`, each with a manifest):
 
-| Run | Purpose | Histories | Wall time |
-|---|---|---|---|
-| M1-R0-option4 | main run | 10 × 1.2 × 10⁷ | 1.8 h |
-| M1-R0-option4-rep2 | replicate, new seeds (D022) | 10 × 1.2 × 10⁷ | pending |
-| M1-R0-option4-S2-5keV | check S2: 5 keV thresholds | 10 × 6 × 10⁶ | 1.5 h |
-| M1-R0-option4-S1-half | check S1: r 0.5 cm, t 0.1 cm | 10 × 9 × 10⁶ | 1.4 h |
-| M1-R0-option4-pdd | central-axis depth dose, PDD(5) | 10 × 6 × 10⁶ | 1.4 h |
-| M1-vrcheck-analog | no variance reduction | 10 × 6 × 10⁶ | 1.2 h |
-| M1-thinslab-option4-v2 | thin-slab track-length test | 10 × 4 × 10⁵ | 3 min |
-| M1-check-transmission | tracking μ by transmission (TestEm13) | 2 × 2 × 10⁷ photons | 4 min |
-| M1-check-primary-* | primary-fluence diagnostics (5 runs) | see below | 5 h total |
-| M1-check-pdd-cyl8, -ext | depth scan with the cylinder at 8 cm (boundary-free dose at 5 cm) | 4 × 3 × 10⁶, 12 × 3 × 10⁶ | 0.3 h, pending |
-| M1-tables-option4-v2 | stopping powers, δ, cross sections from the production physics | — | — |
+| Run | Purpose | Histories |
+|---|---|---|
+| M1-R0-option4, M1-R0-option4-rep2 | main run and replicate, pooled (D022) | 2 × 10 × 1.2 × 10⁷ |
+| M1-R0-option4-S2-5keV | check S2: 5 keV thresholds | 10 × 6 × 10⁶ |
+| M1-R0-option4-S1-half | check S1: r 0.5 cm, t 0.1 cm | 10 × 9 × 10⁶ |
+| M1-R0-option4-pdd | central-axis depth dose, PDD(5) | 10 × 6 × 10⁶ |
+| M1-vrcheck-analog | no variance reduction | 10 × 6 × 10⁶ |
+| M1-thinslab-option4-v2 | thin-slab track-length test | 10 × 4 × 10⁵ |
+| M1-check-transmission | tracking μ by transmission (TestEm13) | 2 × 2 × 10⁷ photons |
+| M1-check-primary-* | primary-fluence diagnostics (5 runs) | see below |
+| M1-check-pdd-cyl8 | depth scan with the cylinder at 8 cm | 4 × 3 × 10⁶ |
+| M1-check-boundary-free-R0 | boundary-free dose at R0 (main VR, cylinder at 8 cm) | 10 × 6 × 10⁶ |
+| M1-tables-option4-v2 | stopping powers, δ, cross sections from the production physics | — |
 
-The compute ran in this 4-core container (D013).
+Compute ran in this 4-core container (D013). Wall times per batch are in each manifest; runs often shared the CPU, so they overstate CPU use.
 
-### Results at R0 (main run)
+### Results at R0 (pooled, 20 batches)
 
 Uncertainties are 1σ standard errors of the mean: the larger of the batch spread and the history-by-history estimate where both exist (D023).
 
 | Layer | Quantity | Value |
 |---|---|---|
-| 1 | total photon fluence / Φ₀ | 1.1538 ± 0.0005 |
-| 1 | scattered fraction of fluence / of energy fluence | 0.3686 / 0.1810 |
-| 1 | mean photon energy, all / scattered | 0.9666 / 0.4748 MeV |
-| 2 | interactions: Compton, photoelectric, Rayleigh, pair | 96.52%, 2.44%, 1.02%, 0.021% |
+| 1 | total photon fluence / Φ₀ | 1.1541 ± 0.0004 |
+| 1 | scattered fraction of fluence / of energy fluence | 0.3685 / 0.1810 |
+| 1 | mean photon energy, all / scattered | 0.9666 / 0.4747 MeV |
+| 2 | interactions: Compton, photoelectric, Rayleigh, pair | 96.52%, 2.43%, 1.03%, 0.020% |
 | 2 | share of energy transferred by Compton | 99.77% |
-| 3 | mean initial electron energy: all / primary parent / scattered parent | 0.3470 / 0.5884 / 0.1262 MeV |
-| 3 | Compton recoils above the free-electron edge (1.1732 / 1.3325 MeV) | 0.21% / 0.19% |
-| 4 | delta-ray share of electron fluence above 10 keV | 0.0299 |
-| 4 | radiative / collision energy loss | 0.00228 |
-| 5 | D/Φ₀ | 5.3582 × 10⁻¹² Gy cm² ± 0.093% |
-| 5 | K/Φ₀, K_col/Φ₀ | 5.3444, 5.3304 × 10⁻¹² Gy cm² |
-| 5 | β = D/K_col | 1.0052 ± 0.0008 |
+| 3 | mean initial electron energy: all / primary parent / scattered parent | 0.3472 / 0.5887 / 0.1263 MeV |
+| 3 | Compton recoils above the free-electron edge (1.1732 / 1.3325 MeV) | 0.22% / 0.18% |
+| 4 | delta-ray share of electron fluence above 10 keV | 0.0300 |
+| 4 | radiative / collision energy loss | 0.00229 |
+| 5 | D/Φ₀ | 5.35838 × 10⁻¹² Gy cm² ± 0.066% |
+| 5 | K/Φ₀, K_col/Φ₀ | 5.3483, 5.3343 × 10⁻¹² Gy cm² |
+| 5 | β = D/K_col | 1.0045 ± 0.0006 |
 | 5 | g | 0.00262 |
 | 5 | dose from electrons set in motion by scattered photons | 18.8% |
 | 5 | s_w,air (Spencer–Attix, Δ = 10 keV): ICRU 37 / ICRU 90 / Geant4 / PEGS4 matched | 1.1331 / 1.1268 / 1.1385 / 1.1259 |
+| 5 | PDD(5), d_max | 81.53 ± 0.26%, 0.78 ± 0.05 cm |
 
-PDD(5) = 81.53 ± 0.26% and d_max = 0.78 ± 0.05 cm (M1-R0-option4-pdd: 1 mm slabs within r < 1 cm; d_max from a parabola through the slabs around the peak). The dose is flat to within about 0.5% from 0.45 to 0.95 cm, so d_max is poorly defined. There is no external value to compare yet: refs.yaml `pdd5` is null until a published value is entered.
-
-The ICRU 37-basis s_w,air, 1.1331, agrees with the TRS-398 value in refs.yaml (1.133, not yet verified).
+The ICRU 37-basis s_w,air, 1.1331, agrees with the TRS-398 value in refs.yaml (1.133, not yet verified). PDD(5) has no external value yet; refs.yaml `pdd5` is null. The depth of maximum dose is poorly defined, because the dose is flat to within about 0.5% between 0.45 and 0.95 cm.
 
 ### Checks
 
 | Check | Result | Status |
 |---|---|---|
-| Statistical targets (Section 4.1) | D/Φ₀ 0.093% (target 0.1%), β 0.077% (0.2%), worst spectral bin 0.79% (1%) | met |
+| Statistical targets (Section 4.1) | D/Φ₀ 0.066% (target 0.1%), β 0.062% (0.2%), worst spectral bin 0.57% (1%) | met |
 | Thin slab: track-length fluence against analytic, no VR | 0.9995 ± 0.0007 | passes |
-| Tracking μ against G4EmCalculator (TestEm13 transmission) | +0.10 ± 0.04% (1.1732 MeV), +0.07 ± 0.04% (1.3325 MeV) | measured; analytic uses tracking μ |
-| Primary fluence at R0 against analytic (tracking μ) | 0.9988 ± 0.0006 (−1.9σ) | open, see below |
-| Fluence-to-dose closure (CSDA-weighted estimator) | 1.0006; linear estimator 1.064 (D020) | passes |
-| S2: 5 keV thresholds | D/Φ₀ +0.13% (0.8σ); s_w,air +0.0002%; electron spectrum shape χ² 29/24; photon spectrum shape χ² 41/26 (two bins: 150–200 keV −1.0%, 1.05–1.10 MeV −1.1%) | passes; photon shape marginal |
-| S1: half-size scoring volume | D/Φ₀ +0.47% (2.1σ); electron fluence +0.43%, its shape χ² 18/24; s_w,air +0.001% | passes (under 3σ) |
-| Analog transport against VR | D/Φ₀ −0.10% (0.2σ, analog precision 0.65%); spectra χ²/ndf 7/23 | passes |
-| Event sample, validity rules (D014) | 0.064% of Monte Carlo interactions fail the bound rules; 99% fail the strict free-electron rules | as designed |
-| Bookkeeping | 0 untagged tracks; largest per-interaction energy imbalance 1.15 keV | passes |
-| Fano step-size diagnostics | range factor 0.04: 6 of 20 batches, 0.9999 ± 0.0018; step function: not started | pending |
+| Tracking μ against G4EmCalculator (TestEm13 transmission) | +0.10 ± 0.04% (1.1732 MeV), +0.07 ± 0.04% (1.3325 MeV) | measured; the analytic fluence uses tracking μ |
+| Primary fluence at R0 against analytic (tracking μ) | pooled 0.9992 ± 0.0004 (−1.7σ); main 0.9988 ± 0.0006, replicate 0.9996 ± 0.0006 | passes |
+| Fluence-to-dose closure (CSDA-weighted estimator) | 1.0007; linear estimator 1.0644 (D020) | passes |
+| S2: 5 keV thresholds | D/Φ₀ +0.13% (+0.9σ); s_w,air +0.0003%; electron fluence normalization +0.12%, shape χ² 20/24; photon fluence normalization −0.03%, shape χ² 29/26 | passes |
+| S1: half-size scoring volume | D/Φ₀ +0.47% (+2.1σ); electron fluence normalization +0.42%, shape χ² 23/24; s_w,air +0.0010% | passes (under 3σ) |
+| Analog transport against VR | D/Φ₀ −0.10% (−0.2σ); electron fluence normalization −0.04%, shape χ² 8/22 | passes |
+| Scoring-cylinder boundary: D in the cylinder over the boundary-free D at R0 | 0.9974 ± 0.0017 (−1.5σ, 14 boundary-free batches) | passes; artifact next to the cylinder, see below |
+| Event sample, validity rules (D014) | 0.064% of 100,000 Monte Carlo interactions fail the bound rules; 99% fail the strict free-electron rules | as designed |
+| Bookkeeping | 0 untagged tracks; largest per-interaction energy imbalance 1.23 keV | passes |
+| Fano step-size diagnostics | running at low priority after production; see below | pending |
 
 ### What failed or was anomalous
 
-- **Rayleigh scattering missing for primaries (fixed, D019).** In option4, G4GammaGeneralProcess does not sample Rayleigh scattering above 1.022 MeV, so primary photons could never scatter coherently. Found in the first production attempt by the absence of Rayleigh events among primaries. That attempt was stopped and archived (`mc/runs/_archived/M1-R0-option4-attempt1/`). All production runs switch the general process off.
-- **Plan's linear electron-fluence estimator fails closure (D020).** It puts too much track length at low energy for the final steps of electrons below about 20 keV; the dose rebuilt from it is 6.4% too high. A CSDA-weighted estimator closes to 1.0006 and is the Layer 4 reference; the linear one is kept and reported. On s_w,air the two differ by 0.008%.
+- **Rayleigh scattering missing for primaries (fixed, D019).** In option4, G4GammaGeneralProcess does not sample Rayleigh scattering above 1.022 MeV, so primary photons could never scatter coherently. It showed up in the first production attempt as zero Rayleigh events among primaries. That attempt was stopped and archived (`mc/runs/_archived/M1-R0-option4-attempt1/`). All production runs switch the general process off.
+- **Plan's linear electron-fluence estimator fails closure (D020).** It puts too much track length at low energy for the final steps of electrons below about 20 keV, so the dose rebuilt from it is 6.4% too high. A CSDA-weighted estimator closes to 0.07% and is the Layer 4 reference. The linear one is kept and reported; on s_w,air the two differ by 0.008%.
 - **Photon categories wrong at importance-cell boundaries (fixed before production).** Split copies were labelled as secondary photons, and primaries became "scattered" when crossing a cell boundary. Interactions are now counted only for electromagnetic processes, and split copies inherit the parent's history. Every production run reports 0 untagged tracks.
-- **Primary-fluence check: 0.12% low in the main run, cause not found.** Against the analytic exp(−μs)/(ΩR²) averaged over the volume, with μ the tracking value measured by TestEm13, the main run gives 0.9988. Diagnostics, all against the same analytic:
+- **The scoring cylinder's boundary distorts the dose next to it.** The PDD run's 1 mm depth slabs (r < 1 cm) show the dose 2–3.7% high 1.5–4.5 mm in front of the scoring cylinder and 1.5–2.3% low 1.5–4.5 mm behind it. Every batch shows it (11σ), with water on both sides of the boundary.
+  - Moving the cylinder to 8 cm (`M1-check-pdd-cyl8`) moves the pattern with it.
+  - Far from both cylinders the two depth scans agree to 1.0011 ± 0.0008 per history.
+  - Inside the cylinder: against the boundary-free dose at R0 (`M1-check-boundary-free-R0`: the main run's variance reduction, the cylinder at 8 cm, the dose scored by position in r < 1 cm, 4.9–5.1 cm) the ratio is 0.9974 ± 0.0017 (−1.5σ; 95% interval −0.6% to +0.1%). No significant effect, but D at R0 carries this as a possible systematic until it is resolved further. The boundary-free value has batch errors only (10 batches).
+  - Likely mechanism: with GS multiple scattering and the SafetyPlus step limit, electron steps shrink as electrons approach a boundary (geometry factor 2.5, range factor 0.08), while far from boundaries they reach 0.2 × the range. A step-length-dependent displacement of the energy deposition piles energy up in front of the boundary and leaves a deficit behind it. Energy is moved, not created.
+  - PDD(5) uses the dose inside the cylinder and D_max far from it.
+- **Primary-fluence fluctuation in the main run (resolved).** Against the analytic exp(−μs)/(ΩR²) with the tracking μ measured by TestEm13, the main run gave 0.9988. That is −4.4σ on its batch spread and −1.9σ on counting statistics. The diagnostic runs found no cause:
 
-  | Run | Transport | VR | Scoring cylinder | Result |
+  | Run | Transport | VR | Scoring cylinder | Primary / analytic |
   |---|---|---|---|---|
   | main | full | importance + roulette | r 1, t 0.2 | 0.9988 ± 0.0006 |
+  | replicate | full | importance + roulette | r 1, t 0.2 | 0.9996 ± 0.0006 |
   | S2 | full | importance + roulette | r 1, t 0.2 | 0.9996 ± 0.0010 |
   | analog | full | none | r 1, t 0.2 | 0.9989 ± 0.0010 |
-  | check is-on-prodgeom | photon only | importance | r 1, t 0.2 | 1.0005 ± 0.0011 |
-  | check is-off | photon only | none | r 4, t 1 | 1.0005 ± 0.0004 |
-  | check is-on | photon only | importance | r 4, t 1 | 0.9998 ± 0.0004 |
-  | check full-r4 | full | none | r 4, t 1 | 1.0007 ± 0.0004 |
+  | is-on-prodgeom | photon only | importance | r 1, t 0.2 | 1.0005 ± 0.0011 |
+  | is-off | photon only | none | r 4, t 1 | 1.0005 ± 0.0004 |
+  | is-on | photon only | importance | r 4, t 1 | 0.9998 ± 0.0004 |
+  | full-r4 | full | none | r 4, t 1 | 1.0007 ± 0.0004 |
   | thin slab | full | none | r 4, t 0.05 at 0.5 cm | 0.9995 ± 0.0007 |
 
-  Full transport and photon-only agree in the same geometry (full-r4 against is-off: +0.02%, 0.4σ), so electron transport does not touch the primary photons.
+  "Photon only" stops electrons in their first step (`/process/em/lowestElectronEnergy 2 MeV`); TestEm13 shows this parameter leaves photon transmission unchanged (identical counts with identical seeds). Also ruled out: null interactions (none among 10⁵ sampled interactions), history counting, and a scoring artifact (the collision estimator shows the same value).
 
-  "Photon only" stops electrons in their first step (`/process/em/lowestElectronEnergy 2 MeV`); TestEm13 shows this parameter leaves photon transmission unchanged (identical counts with identical seeds). Also ruled out: null interactions turning primaries into scattered photons (none among 10⁵ sampled interactions; the 12 scattered photons at exact line energy are Rayleigh), history counting, and the collision estimator, which shows the same deficit as the track-length estimator in the main run.
-
-  What looked like a 4.4σ effect is 1.9σ. The main run's batches agree with each other better than their history variance allows (D023). The replicate decides; the rule for pooling it was set in advance (D022).
-- **The scoring cylinder's boundary distorts the dose near it, not inside it.** The PDD run's 1 mm depth slabs (r < 1 cm) show the dose 2–3.7% high 1.5–4.5 mm in front of the scoring cylinder (4.9–5.1 cm) and 1.5–2.3% low 1.5–4.5 mm behind it. Every batch shows it (11σ). Water is on both sides of the boundary, so this is a transport artifact.
-
-  A run with the cylinder moved to 8 cm (`M1-check-pdd-cyl8`) moves the pattern with it. Far from both cylinders the two depth scans agree to 0.9987 ± 0.0008 per history. Inside the cylinder, the dose with the boundary against the boundary-free dose at the same depth is 1.007 ± 0.005 (4.9–5.0 cm) and 0.992 ± 0.013 (5.0–5.1 cm). So D at R0 is not visibly affected, but this bound (about 0.5%) is five times wider than D/Φ₀'s statistical uncertainty. An extension of the boundary-free run (`M1-check-pdd-cyl8-ext`) tightens it (pending).
-
-  Likely mechanism: with GS multiple scattering and the SafetyPlus step limit, electron steps shrink as electrons approach a boundary (geometry factor 2.5, range factor 0.08), while far from boundaries they reach 0.2 × the range. A step-length-dependent displacement of the energy deposition then piles up in front of the boundary and leaves a deficit behind it. Energy is moved, not created. PDD(5) uses the dose inside the cylinder and D_max far from it, so it is affected only within the bound above.
-- **Spectrum comparisons were not shape comparisons.** The first χ² between run spectra compared absolute fluences per Φ₀, so S1's +0.43% overall normalization showed up as χ² 66/25. The analysis now reports the normalization ratio and a shape χ² (each spectrum scaled to unit sum) separately. Spectra carry only batch errors, which D023 shows can be too small in the main run.
-- **Batch standard errors can be too small (D023).** See the previous item. Targets and comparisons now use the larger of the batch and history-based errors.
-- **Geant4's water stopping power differs from the Bethe formula at low energy.** In option4, water's collision stopping power is above Bethe–Møller (I = 78 eV, same density effect) by 2.5% at 12 keV, 1.7% at 100 keV and 0.9% at 200 keV, and within 0.4% above 0.5 MeV. Air agrees within 0.1%. Option4 uses the Penelope ionisation model below 100 keV (`PenIoni`, then `MollerBhabha`). Geant4 smooths the dE/dx table across the model boundary, carrying the 1.7% offset at 100 keV as 1.7% × (100 keV/E) above it. That accounts for the 0.85% at 200 keV and 0.34% at 500 keV. So the Geant4-basis s_w,air (1.1385) is 1.0% above the ICRU 90 basis (1.1268). PEGS4 media built with Geant4's I, density, composition and density effect give 1.1259 (`mc/egsnrc/b0/`, D015).
-- **Fano diagnostics starved of CPU.** They run at the lowest priority behind production. One batch took 4 h. They will finish after the production queue.
+  The main run's batches agree with each other better than their history variance allows (D023). The replicate, run under the rule fixed beforehand (D022), gave 0.9996. Pooled: 0.9992 ± 0.0004.
+- **Batch standard errors can be too small (D023).** The main run's batch spread was 0.43–0.71 of the history-based value. Targets and comparisons use the larger of the batch and history-based errors. Spectra have only batch errors.
+- **Spectrum comparisons were not shape comparisons.** The first χ² between run spectra compared absolute fluences per Φ₀, so S1's overall normalization difference showed up as a large χ². The analysis now reports the normalization ratio and a shape χ² (each spectrum scaled to unit sum) separately.
+- **Geant4's water stopping power differs from the Bethe formula at low energy.** In option4, water's collision stopping power is above Bethe–Møller (I = 78 eV, same density effect) by 2.5% at 12 keV, 1.7% at 100 keV and 0.9% at 200 keV, and within 0.4% above 0.5 MeV. Air agrees within 0.1%.
+  - Option4 uses the Penelope ionisation model below 100 keV (`PenIoni`, then `MollerBhabha`).
+  - Geant4 smooths the dE/dx table across the model boundary, carrying the 1.7% offset at 100 keV as 1.7% × (100 keV/E) above it. That accounts for the 0.85% at 200 keV and 0.34% at 500 keV.
+  - So the Geant4-basis s_w,air (1.1385) is 1.0% above the ICRU 90 basis (1.1268). PEGS4 media built with Geant4's I, density, composition and density effect give 1.1259 (`mc/egsnrc/b0/`, D015).
+- **Two slips in my own process management.** Twice a `pkill -f` pattern matched my own shell, and once a waiting script as well. No simulation ran with a wrong configuration. The only run lost was a 2-minute-old extension, archived as `mc/runs/_archived/M1-check-pdd-cyl8-ext-stopped/` with its reason. Processes are now stopped by PID only.
+- **The ROI check has no buffer on the near side of a depth scan.** `RunAction::CheckRoi` requires the ROI to start at or before the start of the depth scan, but not 1.2 × the CSDA range before it. That is harmless for scans from the surface (the PDD run) but would allow roulette bias for a scan starting inside the phantom. `M1-check-boundary-free-R0` satisfies the buffer by its spec (ROI from 4.1 cm, scan from 4.9 cm). To fix in the code before M2.
+- **Still running at the gate.** The photon-only check with mass-geometry importance (`M1-check-primary-ismass-prodgeom`, D021) and the Fano step-size diagnostics. Neither affects the M1 numbers; their results are added when they finish.
+- **Fano diagnostics starved of CPU.** They run at the lowest priority behind production, and one batch took 4 h. They will finish overnight.
 - **Importance-ratio warning in S1.** S1's inner cell has importance 48 against 8 outside, a ratio of 6. Geant4 warns once (GeomBias1001) when the ratio is outside [0.25, 4]. The algorithm handles any ratio fairly: split into ⌊6⌋ = 6 copies of weight w/6. The warning has no effect on results.
 
 ### Open questions for Humza at this gate
 
 1. **s_w,air basis for scoring AI answers.** The study's MC spectrum gives 1.1331 (ICRU 37), 1.1268 (ICRU 90), 1.1385 (Geant4). AI answers will most likely quote the TRS-398 value. Score against the ICRU 37 basis (protocol-consistent), the ICRU 90 basis (current data), or report against both?
-2. **Uncertainty policy (D023).** Use the larger of the batch and history-based standard errors.
-3. **Layer 4 estimator (D020).** CSDA-weighted as the reference, linear reported.
-4. **Fano result.** Production +0.16 ± 0.06%; the step-size diagnostics will not finish before this gate. Accept as a bound on interface artifacts, or wait for them?
-5. **Scoring-volume boundary (above).** Keep the scoring cylinder as a mass-geometry daughter, which limits steps exactly at its surface and is the plan's design? Or, for M2 onward, score in a parallel world or by position, so that it does not alter electron stepping? Tighter msc stepping is the other option, at higher CPU cost. Recommendation: decide after the extension run bounds the effect on D at R0.
-6. **refs.yaml.** All entries unverified, including the TRS-398 s_w,air, the Co-60 line energies and the constants used in normalisation.
+2. **Scoring-volume boundary.** D at R0 is 0.9974 ± 0.0017 of the boundary-free dose: no significant effect, but not excluded at the few-tenths-of-a-percent level, and the dose next to any mass-geometry boundary is distorted by up to ±3%. Options: quote D at R0 with a boundary systematic of this size; or run the boundary-free configuration longer to tighten it. For M2 onward, keep the scoring cylinder in the mass geometry (as the plan has it), or score in a parallel world or by position so that it does not alter electron stepping? This matters most for the code comparison in M2, if EGSnrc's geometry boundaries behave differently.
+3. **Uncertainty policy (D023).** Use the larger of the batch and history-based standard errors.
+4. **Layer 4 estimator (D020).** CSDA-weighted as the reference, linear reported.
+5. **Fano result.** Production +0.16 ± 0.06%; the step-size diagnostics finish overnight. Accept as a bound on interface artifacts, or wait for them?
+6. **refs.yaml.** All entries are unverified, including the TRS-398 s_w,air, the Co-60 line energies and the constants used in normalisation. A published PDD(5) for Co-60, 10 × 10 cm², SSD 100 cm would give the depth dose an external check.
 
 ### Next, after approval (M2)
 
