@@ -173,8 +173,9 @@ def build_checks(r, m):
             sw = c["scalars"]["L5_s_w_air_icru37"]
             extra = f"; s<sub>w,air</sub> (ICRU 37 basis) {100 * sw['rel_diff']:+.4f}%"
         es = c["electron_fluence_shape"]
-        add(name, f"{100 * s['rel_diff']:+.2f}% ({s['z']:+.1f}σ){extra}; electron spectrum shape χ²/ndf "
-            f"{es['chi2']:.0f}/{es['ndf']}", "ok" if ok else "warn", "passes" if ok else "outside 3σ")
+        add(name, f"{100 * s['rel_diff']:+.2f}% ({s['z']:+.1f}σ){extra}; electron fluence spectrum: normalization "
+            f"{100 * (es['norm_ratio'] - 1):+.2f}%, shape χ²/ndf {es['chi2_shape']:.0f}/{es['ndf_shape']}",
+            "ok" if ok else "warn", "passes" if ok else "outside 3σ")
 
     ev = r.get("event_sample")
     if ev:

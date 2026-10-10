@@ -351,7 +351,13 @@ def compare_spectrum(a, b, path):
     mb, sb = get(b)
     ok = (sa > 0) & (sb > 0)
     chi2 = float(np.sum(((ma - mb)[ok]) ** 2 / (sa[ok] ** 2 + sb[ok] ** 2)))
-    return {"chi2": chi2, "ndf": int(ok.sum()), "chi2_per_ndf": chi2 / max(int(ok.sum()), 1)}
+    # Shape alone: each spectrum scaled to unit sum over the common bins (the normalization's own
+    # uncertainty is neglected, so the shape chi-square has ndf - 1 degrees of freedom).
+    na, nb = ma[ok].sum(), mb[ok].sum()
+    chi2_shape = float(np.sum(((ma / na - mb / nb)[ok]) ** 2 / ((sa / na)[ok] ** 2 + (sb / nb)[ok] ** 2)))
+    ndf = int(ok.sum())
+    return {"chi2": chi2, "ndf": ndf, "chi2_per_ndf": chi2 / max(ndf, 1),
+            "norm_ratio": float(nb / na), "chi2_shape": chi2_shape, "ndf_shape": ndf - 1}
 
 
 def targets(res):

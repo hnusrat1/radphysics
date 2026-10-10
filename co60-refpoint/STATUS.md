@@ -28,7 +28,7 @@ The analytic primary-fluence check came out 0.12% low (−1.9σ on counting stat
 | M1-R0-option4 | main run | 10 × 1.2 × 10⁷ | 1.8 h |
 | M1-R0-option4-rep2 | replicate, new seeds (D022) | 10 × 1.2 × 10⁷ | pending |
 | M1-R0-option4-S2-5keV | check S2: 5 keV thresholds | 10 × 6 × 10⁶ | 1.5 h |
-| M1-R0-option4-S1-half | check S1: r 0.5 cm, t 0.1 cm | 10 × 9 × 10⁶ | pending |
+| M1-R0-option4-S1-half | check S1: r 0.5 cm, t 0.1 cm | 10 × 9 × 10⁶ | 1.4 h |
 | M1-R0-option4-pdd | central-axis depth dose, PDD(5) | 10 × 6 × 10⁶ | pending |
 | M1-vrcheck-analog | no variance reduction | 10 × 6 × 10⁶ | 1.2 h |
 | M1-thinslab-option4-v2 | thin-slab track-length test | 10 × 4 × 10⁵ | 3 min |
@@ -73,8 +73,8 @@ The ICRU 37-basis s_w,air, 1.1331, agrees with the TRS-398 value in refs.yaml (1
 | Tracking μ against G4EmCalculator (TestEm13 transmission) | +0.10 ± 0.04% (1.1732 MeV), +0.07 ± 0.04% (1.3325 MeV) | measured; analytic uses tracking μ |
 | Primary fluence at R0 against analytic (tracking μ) | 0.9988 ± 0.0006 (−1.9σ) | open, see below |
 | Fluence-to-dose closure (CSDA-weighted estimator) | 1.0006; linear estimator 1.064 (D020) | passes |
-| S2: 5 keV thresholds | D/Φ₀ +0.13% (0.8σ); s_w,air +0.0002% | passes |
-| S1: half-size scoring volume | D/Φ₀ +0.53% (1.7σ) at 6 of 10 batches | pending |
+| S2: 5 keV thresholds | D/Φ₀ +0.13% (0.8σ); s_w,air +0.0002%; electron spectrum shape χ² 29/24; photon spectrum shape χ² 41/26 (two bins: 150–200 keV −1.0%, 1.05–1.10 MeV −1.1%) | passes; photon shape marginal |
+| S1: half-size scoring volume | D/Φ₀ +0.47% (2.1σ); electron fluence +0.43%, its shape χ² 18/24; s_w,air +0.001% | passes (under 3σ) |
 | Analog transport against VR | D/Φ₀ −0.10% (0.2σ, analog precision 0.65%); spectra χ²/ndf 7/23 | passes |
 | Event sample, validity rules (D014) | 0.064% of Monte Carlo interactions fail the bound rules; 99% fail the strict free-electron rules | as designed |
 | Bookkeeping | 0 untagged tracks; largest per-interaction energy imbalance 1.15 keV | passes |
@@ -103,6 +103,7 @@ The ICRU 37-basis s_w,air, 1.1331, agrees with the TRS-398 value in refs.yaml (1
   "Photon only" stops electrons in their first step (`/process/em/lowestElectronEnergy 2 MeV`); TestEm13 shows this parameter leaves photon transmission unchanged (identical counts with identical seeds). Also ruled out: null interactions turning primaries into scattered photons (none among 10⁵ sampled interactions; the 12 scattered photons at exact line energy are Rayleigh), history counting, and the collision estimator, which shows the same deficit as the track-length estimator in the main run.
 
   What looked like a 4.4σ effect is 1.9σ. The main run's batches agree with each other better than their history variance allows (D023). The replicate decides; the rule for pooling it was set in advance (D022).
+- **Spectrum comparisons were not shape comparisons.** The first χ² between run spectra compared absolute fluences per Φ₀, so S1's +0.43% overall normalization showed up as χ² 66/25. The analysis now reports the normalization ratio and a shape χ² (each spectrum scaled to unit sum) separately. Spectra carry only batch errors, which D023 shows can be too small in the main run.
 - **Batch standard errors can be too small (D023).** See the previous item. Targets and comparisons now use the larger of the batch and history-based errors.
 - **Geant4's water stopping power differs from the Bethe formula at low energy.** In option4, water's collision stopping power is above Bethe–Møller (I = 78 eV, same density effect) by 2.5% at 12 keV, 1.7% at 100 keV and 0.9% at 200 keV, and within 0.4% above 0.5 MeV. Air agrees within 0.1%. Option4 uses the Penelope ionisation model below 100 keV (`PenIoni`, then `MollerBhabha`). Geant4 smooths the dE/dx table across the model boundary, carrying the 1.7% offset at 100 keV as 1.7% × (100 keV/E) above it. That accounts for the 0.85% at 200 keV and 0.34% at 500 keV. So the Geant4-basis s_w,air (1.1385) is 1.0% above the ICRU 90 basis (1.1268). PEGS4 media built with Geant4's I, density, composition and density effect give 1.1259 (`mc/egsnrc/b0/`, D015).
 - **Fano diagnostics starved of CPU.** They run at the lowest priority behind production. One batch took 4 h. They will finish after the production queue.
