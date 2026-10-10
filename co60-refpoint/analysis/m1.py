@@ -41,7 +41,8 @@ PROCS = ["compt", "phot", "conv", "Rayl", "other"]
 
 # ---------------------------------------------------------------- loading
 def load_batches(run_id):
-    files = sorted((RUNS / run_id).glob("batch_*/output.json"))
+    """Batches of one run, or of several runs joined with '+' (pooling, DECISIONS D022)."""
+    files = [f for part in run_id.split("+") for f in sorted((RUNS / part).glob("batch_*/output.json"))]
     return [json.load(open(f)) for f in files]
 
 
@@ -468,11 +469,37 @@ def diagnostics():
                           ("M1-R0-option4-S1-half", "S1: as main run, r 0.5 cm t 0.1 cm"),
                           ("M1-vrcheck-analog", "full transport, no VR, r 1 cm t 0.2 cm"),
                           ("M1-thinslab-option4-v2", "thin slab: full transport, no VR, r 4 cm t 0.05 cm at 0.5 cm")
-                          ] + list(DIAGNOSTIC_RUNS.items()):
+                          ] + list(DIAGNOSTIC_RUNS.items()) + (
+                          [(POOLED, "main run and replicate pooled (20 batches)")]
+                          if len(list((RUNS / "M1-R0-option4-rep2").glob("batch_*/output.json"))) >= 10 else []):
         pr = primary_ratios(run_id)
         if pr:
             d["primary_fluence"][run_id] = {"label": label, **pr}
     return d
+
+
+POOLED = "M1-R0-option4+M1-R0-option4-rep2"
+
+
+def pooling_decision(runs):
+    """DECISIONS D022: pool the replicate with the main run if both agree within 3 combined
+    standard errors on D/Phi0 and on the primary fluence ratio (tracking mu); otherwise keep them apart."""
+    a, b = runs.get("M1-R0-option4"), runs.get("M1-R0-option4-rep2")
+    out = {"rule": "DECISIONS D022", "pooled": False, "reference_run": "M1-R0-option4"}
+    if not b or b["_meta"]["batches"] < 10:
+        out["reason"] = "replicate not complete"
+        return out
+    zs = {}
+    for k in ("L5_D_over_phi0_Gy_cm2", "L1_primary_line1_measured_over_analytic_tracking_mu",
+              "L1_primary_line2_measured_over_analytic_tracking_mu"):
+        sa, sb = a[k].get("sem_conservative", a[k]["sem"]), b[k].get("sem_conservative", b[k]["sem"])
+        zs[k] = float((b[k]["mean"] - a[k]["mean"]) / math.hypot(sa, sb))
+    out["z"] = zs
+    if all(abs(z) < 3 for z in zs.values()):
+        out.update({"pooled": True, "reference_run": POOLED, "reason": "agree within 3 sigma"})
+    else:
+        out["reason"] = "disagree on " + ", ".join(k for k, z in zs.items() if abs(z) >= 3)
+    return out
 
 
 def to_jsonable(x):
@@ -504,8 +531,12 @@ def main():
     sp = bases(TABLES, PEGS4_DIR)
     runs = {k: analyse_run(k, sp) for k in ("M1-R0-option4", "M1-R0-option4-rep2", "M1-R0-option4-S2-5keV",
                                            "M1-R0-option4-S1-half", "M1-vrcheck-analog", "M1-thinslab-option4-v2")}
-    main_res = runs["M1-R0-option4"]
     result = {"runs": {k: v for k, v in runs.items() if v is not None}}
+    result["pooling"] = pooling_decision(runs)
+    if result["pooling"]["pooled"]:
+        runs[POOLED] = analyse_run(POOLED, sp)
+        result["runs"][POOLED] = runs[POOLED]
+    main_res = runs[result["pooling"]["reference_run"]]
     if main_res:
         result["targets"] = targets(main_res)
         for label, key, layers in (("S2_cut_independence", "M1-R0-option4-S2-5keV", None),
@@ -520,7 +551,7 @@ def main():
                                                              ["L1_photon_fluence_comparison", "total"]),
                 }
     result["diagnostics"] = diagnostics()
-    ev = summarize_events(RUNS / "M1-R0-option4")
+    ev = summarize_events(RUNS / "M1-R0-option4")   # the main run's sample (100 000 interactions)
     if ev:
         result["event_sample"] = ev
     p = pdd("M1-R0-option4-pdd")

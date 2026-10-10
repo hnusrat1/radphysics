@@ -58,11 +58,11 @@ def main():
     r = json.load(open(RES / "M1_results.json"))
     fano = yaml.safe_load(open(ROOT / "analysis" / "M1_fano_summary.yaml"))
     text = yaml.safe_load(open(ROOT / "analysis" / "m1_report_text.yaml"))
-    main_run = r["runs"]["M1-R0-option4"]
+    main_run = r["runs"][r.get("pooling", {}).get("reference_run", "M1-R0-option4")]
     meta = main_run["_meta"]
 
     def v(key, run=main_run):
-        return run[key]["mean"], run[key]["sem"]
+        return run[key]["mean"], run[key].get("sem_conservative", run[key]["sem"])
 
     # Compact data for the charts
     data = {

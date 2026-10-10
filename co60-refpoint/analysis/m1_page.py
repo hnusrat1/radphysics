@@ -276,7 +276,7 @@ def render(r, m, n, data_json, text, fano, v, pm, sci, rel, sig):
         return run[key]["mean"]
 
     def row(label, key, unit="", run=m, fmt=None):
-        mean, sem = run[key]["mean"], run[key]["sem"]
+        mean, sem = run[key]["mean"], run[key].get("sem_conservative", run[key]["sem"])
         shown = fmt(mean, sem) if fmt else pm(mean, sem)
         return f"<tr><td>{label}</td><td class='num'>{shown}</td><td>{unit}</td></tr>"
 
@@ -401,8 +401,8 @@ def render(r, m, n, data_json, text, fano, v, pm, sci, rel, sig):
       {row('Scattered fraction of energy fluence', 'L1_scattered_fraction_energy_fluence')}
       {row('Mean energy, all photons', 'L1_mean_energy_all_MeV', 'MeV')}
       {row('Mean energy, scattered photons', 'L1_mean_energy_scattered_MeV', 'MeV')}
-      {row('Primary 1.1732 MeV: measured / analytic', 'L1_primary_line1_measured_over_analytic')}
-      {row('Primary 1.3325 MeV: measured / analytic', 'L1_primary_line2_measured_over_analytic')}
+      {row('Primary 1.1732 MeV: measured / analytic (tracking μ)', 'L1_primary_line1_measured_over_analytic_tracking_mu')}
+      {row('Primary 1.3325 MeV: measured / analytic (tracking μ)', 'L1_primary_line2_measured_over_analytic_tracking_mu')}
     </tbody></table></div>
   </div>
 </section>
