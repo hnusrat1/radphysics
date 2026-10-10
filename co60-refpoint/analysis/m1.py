@@ -456,8 +456,78 @@ def primary_ratios(run_id):
     return res
 
 
+def boundary_check():
+    """Effect of the scoring cylinder's boundary on the dose (STATUS M1).
+
+    Dose per history in the volume r < 1 cm, 4.9-5.1 cm: from the scoring cylinder (volume-scored, boundary
+    present) in the main run(s), and from the depth scan of runs with the cylinder at 8 cm (position-scored,
+    no boundary near 5 cm). Also the depth-scan ratio with/without the cylinder near 5 cm.
+    """
+    gy_per_mev = J_PER_MEV / 1e-3        # MeV per gram -> Gy
+    slab_mass = math.pi * 1.0**2 * 0.1   # g, r < 1 cm, 1 mm water (depth-scan radius 1 cm in every run used here)
+
+    def r0_from_depth(b):
+        """Dose per history (Gy) in r < 1 cm, 4.9-5.1 cm from a run's depth scan (any grid that has those edges)."""
+        d = b["bins"]["depth"]
+        edges = np.linspace(d["min"], d["max"], d["n"] + 1)
+        sel = (edges[:-1] >= 4.9 - 1e-9) & (edges[1:] <= 5.1 + 1e-9)
+        width = float(np.sum(np.diff(edges)[sel]))
+        assert abs(width - 0.2) < 1e-9, "depth grid does not resolve 4.9-5.1 cm"
+        return strip(tally(b, "depth_edep"))[sel].sum() / b["histories"] * gy_per_mev / (math.pi * 1.0**2 * width)
+
+    estimates = {}
+    for run_id in ("M1-check-boundary-free-R0", "M1-check-pdd-cyl8"):
+        bs = load_batches(run_id)
+        if len(bs) >= 2:
+            v = np.array([r0_from_depth(b) for b in bs])
+            estimates[run_id] = {"mean": float(v.mean()), "sem": float(v.std(ddof=1) / np.sqrt(len(v))), "n_batches": len(v)}
+    if not estimates:
+        return None
+    # Combine the boundary-free estimates (inverse-variance)
+    w = {k: 1 / e["sem"] ** 2 for k, e in estimates.items()}
+    d_free_mean = sum(estimates[k]["mean"] * w[k] for k in w) / sum(w.values())
+    d_free_sem = 1 / math.sqrt(sum(w.values()))
+    free_runs = "M1-check-pdd-cyl8"
+    free = load_batches(free_runs)
+
+    def depth_per_history(batches):
+        a = np.array([strip(tally(b, "depth_edep")) / b["histories"] for b in batches])
+        return a.mean(0), a.std(0, ddof=1) / np.sqrt(len(a)), len(a)
+
+    out = {"boundary_free_estimates": estimates,
+           "D_per_history_boundary_free_Gy": {"mean": d_free_mean, "sem": d_free_sem}}
+    for ref in ("M1-R0-option4", "M1-R0-option4-pdd", POOLED):
+        bs = load_batches(ref) if (ref != POOLED or len(list((RUNS / "M1-R0-option4-rep2").glob("batch_*/output.json"))) >= 10) else []
+        if not bs:
+            continue
+        v = np.array([b["scalars"]["edep"] / b["histories"] * gy_per_mev / b["geometry"]["scoring_mass_g"] for b in bs])
+        # conservative error: larger of batch spread and history-by-history
+        hbh = np.sqrt(sum((b["scalars"]["edep_sq"] / b["histories"] - (b["scalars"]["edep"] / b["histories"]) ** 2)
+                          / b["histories"] for b in bs)) / len(bs) * gy_per_mev / bs[0]["geometry"]["scoring_mass_g"]
+        sem = max(float(v.std(ddof=1) / np.sqrt(len(v))), float(hbh))
+        ratio = v.mean() / d_free_mean
+        rsem = ratio * math.hypot(sem / v.mean(), d_free_sem / d_free_mean)
+        out[f"cylinder_over_boundary_free:{ref}"] = {"ratio": float(ratio), "sem": float(rsem),
+                                                      "D_cylinder_Gy": float(v.mean()), "D_cylinder_sem_Gy": sem}
+    bp = load_batches("M1-R0-option4-pdd")
+    if bp and free:
+        mf, sf, _ = depth_per_history(free)
+        mp, sp_, _ = depth_per_history(bp)
+        r = mp / mf
+        rs = r * np.hypot(sp_ / mp, sf / mf)
+        out["depth_ratio_with_over_without"] = {"depth_cm": ((np.arange(len(r)) + 0.5) * 0.1).tolist(),
+                                                 "ratio": r.tolist(), "sem": rs.tolist()}
+        far = slice(0, 40)
+        w = 1 / rs[far] ** 2
+        out["far_field_ratio_0_4cm"] = {"mean": float(np.sum(r[far] * w) / w.sum()), "sem": float(1 / np.sqrt(w.sum()))}
+    return out
+
+
 def diagnostics():
     d = {}
+    bc = boundary_check()
+    if bc:
+        d["boundary"] = bc
     if TRANSMISSION.exists():
         tr = yaml.safe_load(open(TRANSMISSION))
         d["transmission"] = {}

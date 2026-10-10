@@ -177,6 +177,19 @@ def build_checks(r, m):
             f"{100 * (es['norm_ratio'] - 1):+.2f}%, shape χ²/ndf {es['chi2_shape']:.0f}/{es['ndf_shape']}",
             "ok" if ok else "warn", "passes" if ok else "outside 3σ")
 
+    bd = diag.get("boundary")
+    if bd:
+        key = "cylinder_over_boundary_free:" + r.get("pooling", {}).get("reference_run", "M1-R0-option4")
+        x = bd.get(key) or bd.get("cylinder_over_boundary_free:M1-R0-option4")
+        if x:
+            z = (x["ratio"] - 1) / x["sem"]
+            n_free = sum(e["n_batches"] for e in bd["boundary_free_estimates"].values())
+            add("Scoring-cylinder boundary: D in the cylinder over the boundary-free dose at R0 (depth scan with the cylinder moved to 8 cm)",
+                f"{pm(x['ratio'], x['sem'])} ({z:+.1f}σ; {n_free} boundary-free batches). Next to the cylinder the dose is "
+                f"distorted by up to ±3%; see Findings.",
+                "ok" if abs(z) < 3 else "warn", "passes" if abs(z) < 3 else "outside 3σ",
+                "Boundary artifact next to the cylinder")
+
     ev = r.get("event_sample")
     if ev:
         b = ev["bound_failure_rate"]; s = ev["strict_failure_rate"]

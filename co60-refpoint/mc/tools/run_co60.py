@@ -27,9 +27,11 @@ from manifest import STUDY_ROOT, base_manifest, utc_now, write_yaml  # noqa: E40
 BINS = STUDY_ROOT / "config" / "bins.yaml"
 
 
-def bin_commands():
+def bin_commands(spec=None):
     b = yaml.safe_load(open(BINS))["mc_scoring"]
     pe, ee, d = b["photon_energy"], b["electron_energy"], b["depth"]
+    if spec and spec.get("depth_bins"):   # per-run override of the depth-scan grid
+        d = spec["depth_bins"]
     return [
         f"/co60/bins/photonE {pe['min']} {pe['max']} {pe['n']} MeV",
         f"/co60/bins/electronE {ee['min']} {ee['max']} {ee['n']} MeV",
@@ -70,7 +72,7 @@ def make_macro(spec, seeds, out_json, events_csv, verbose):
         lines.append(f"/co60/vr/roi {r} {z0} {z1} cm")
     for cell in spec.get("importance_cells_cm", []):
         lines.append(f"/co60/vr/importanceCell {cell[0]} {cell[1]} {cell[2]} cm {cell[3]}")
-    lines += bin_commands()
+    lines += bin_commands(spec)
     lines.append(f"/co60/score/depthScan {'true' if spec.get('depth_scan', False) else 'false'}")
     lines += spec.get("pre_init_commands", [])
     lines.append(f"/co60/out/file {out_json}")
