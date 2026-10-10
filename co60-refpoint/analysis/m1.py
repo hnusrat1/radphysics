@@ -33,6 +33,7 @@ J_PER_MEV = ref_value("joule_per_MeV")
 BINS = yaml.safe_load(open(ROOT / "config" / "bins.yaml"))
 TABLES = RUNS / "M1-tables-option4-v2" / "batch_00" / "output.json"
 PEGS4_DIR = ROOT / "mc" / "egsnrc" / "b0"
+TRANSMISSION = RUNS / "M1-check-transmission" / "results.yaml"
 
 CAT_PRIMARY, CAT_SCATTERED = [0, 1], [2, 3]
 PROCS = ["compt", "phot", "conv", "Rayl", "other"]
@@ -114,6 +115,13 @@ def observables(b, sp, tables_json=TABLES):
         expected_x = frac * fluence_cylinder_average(g["scoring_radius"], g["scoring_thickness"],
                                                      g["scoring_depth"], src["ssd"], src["solid_angle_sr"], mu_x)
         o[f"L1_primary_{line}_measured_over_analytic_xcom"] = tl[cat] / (vol * n) / expected_x
+        # Same check with the attenuation coefficient Geant4 uses in tracking, measured by transmission
+        # (TestEm13, run M1-check-transmission); its uncertainty is not propagated here (about 0.04% in mu).
+        if TRANSMISSION.exists():
+            mu_t = yaml.safe_load(open(TRANSMISSION))["lines"][line]["mu_measured_cm-1"]
+            expected_t = frac * fluence_cylinder_average(g["scoring_radius"], g["scoring_thickness"],
+                                                         g["scoring_depth"], src["ssd"], src["solid_angle_sr"], mu_t)
+            o[f"L1_primary_{line}_measured_over_analytic_tracking_mu"] = tl[cat] / (vol * n) / expected_t
 
     # Layer 2: photon interactions in the scoring volume
     inter = tally(b, "interactions")
