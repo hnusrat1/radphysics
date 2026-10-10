@@ -1,0 +1,293 @@
+<title>Co-60 Reference Point Briefing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans+Condensed:wght@600&family=IBM+Plex+Sans:wght@400;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+/* Layout: reading column with a sticky contents rail on wide screens; wide figures break out to the full width. */
+:root {
+  --bg: #f4f6f9; --surface: #ffffff; --ink: #142030; --muted: #586779; --rule: #d9e0e8;
+  --cobalt: #1f4fb8; --cobalt-soft: #e5ecfa; --amber: #a35a00; --amber-soft: #fbefdc; --green: #23704a; --green-soft: #e1f2e8;
+  --violet: #6a3fb0;
+  --f-display: "IBM Plex Sans Condensed", "Arial Narrow", sans-serif;
+  --f-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-ui: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0d1219; --surface: #141c26; --ink: #e3e9f1; --muted: #93a2b4; --rule: #263241;
+  --cobalt: #7ea7ff; --cobalt-soft: #1b2a47; --amber: #f0b45b; --amber-soft: #3a2a12; --green: #6fd39a; --green-soft: #15301f;
+  --violet: #b99cf2; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0d1219; --surface: #141c26; --ink: #e3e9f1; --muted: #93a2b4; --rule: #263241;
+  --cobalt: #7ea7ff; --cobalt-soft: #1b2a47; --amber: #f0b45b; --amber-soft: #3a2a12; --green: #6fd39a; --green-soft: #15301f;
+  --violet: #b99cf2; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 17px; line-height: 1.6; }
+.wrap { max-width: 1160px; margin: 0 auto; padding-inline: 20px; padding-block: 32px 72px;
+  display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 48px; }
+nav.rail { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 24px); align-self: start;
+  font-family: var(--f-ui); font-size: 13px; display: grid; gap: 4px; }
+nav.rail .t { font-family: var(--f-display); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--muted); font-size: 12px; margin-bottom: 6px; }
+nav.rail a { color: var(--ink); text-decoration: none; padding: 4px 8px; border-radius: 4px; }
+nav.rail a:hover, nav.rail a:focus-visible { background: var(--cobalt-soft); color: var(--cobalt); outline: none; }
+main { min-width: 0; display: grid; gap: 56px; }
+section { display: grid; gap: 16px; scroll-margin-top: 24px; min-width: 0; }
+h1, h2, h3 { font-family: var(--f-display); font-weight: 600; text-wrap: balance; margin: 0; line-height: 1.15; }
+h1 { font-size: clamp(30px, 4.2vw, 44px); letter-spacing: -0.005em; }
+h2 { font-size: 27px; }
+h3 { font-size: 19px; }
+p { margin: 0; max-width: 68ch; }
+.eyebrow { font-family: var(--f-display); font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--cobalt); font-weight: 600; }
+.lede { font-size: 19px; color: var(--ink); max-width: 64ch; }
+.meta { font-family: var(--f-mono); font-size: 13px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px 18px; }
+a { color: var(--cobalt); }
+ul.tight { margin: 0; padding-left: 1.2rem; display: grid; gap: 8px; max-width: 70ch; }
+.num, td.n { font-family: var(--f-mono); font-variant-numeric: tabular-nums; font-size: 0.92em; }
+.callout { border-left: 3px solid var(--cobalt); background: var(--cobalt-soft); padding: 14px 18px; border-radius: 0 6px 6px 0; max-width: 72ch; }
+.callout.warn { border-left-color: var(--amber); background: var(--amber-soft); }
+.short { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 28px; }
+.short div { display: grid; gap: 4px; align-content: start; }
+.short b { font-family: var(--f-ui); font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 600; }
+.chain { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0; border: 1px solid var(--rule);
+  border-radius: 8px; background: var(--surface); overflow: hidden; }
+.chain .lyr { padding: 16px 16px 18px; display: grid; gap: 8px; align-content: start; border-right: 1px solid var(--rule); min-width: 0; }
+.chain .lyr:last-child { border-right: 0; }
+.chain .k { font-family: var(--f-mono); font-size: 12px; color: var(--cobalt); }
+.chain .nm { font-family: var(--f-display); font-weight: 600; font-size: 17px; line-height: 1.2; }
+.chain .big { font-family: var(--f-mono); font-size: 19px; font-variant-numeric: tabular-nums; }
+.chain .sub { font-family: var(--f-ui); font-size: 13px; color: var(--muted); line-height: 1.45; }
+.chain .ai { font-family: var(--f-ui); font-size: 13px; line-height: 1.45; border-top: 1px dashed var(--rule); padding-top: 8px; }
+.chain .ai em { font-style: normal; color: var(--violet); font-weight: 600; }
+.tbl { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-family: var(--f-ui); font-size: 14px; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-weight: 600; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
+tr:last-child td { border-bottom: 0; }
+.chip { display: inline-block; font-family: var(--f-ui); font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+.chip.ok { background: var(--green-soft); color: var(--green); }
+.chip.warn { background: var(--amber-soft); color: var(--amber); }
+.chip.open { background: var(--cobalt-soft); color: var(--cobalt); }
+.fig { border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); padding: 18px 18px 14px; display: grid; gap: 10px; min-width: 0; }
+.cap { font-family: var(--f-ui); font-size: 13px; color: var(--muted); max-width: 80ch; }
+.er { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 2fr) 4.2rem; gap: 14px; align-items: center; min-height: 40px; }
+.el { font-family: var(--f-ui); font-size: 13.5px; line-height: 1.3; display: grid; }
+.en { font-size: 12px; color: var(--muted); }
+.et { position: relative; height: 40px; }
+.eb { position: absolute; left: 0; top: 14px; height: 12px; border-radius: 0 3px 3px 0; }
+.k-mc { background: var(--cobalt); }
+.k-def { background: var(--amber); }
+.k-art { background: var(--muted); }
+.k-phys { background: var(--violet); }
+.etol { position: absolute; top: 0; bottom: 0; width: 0; border-left: 1.5px dashed var(--ink); opacity: 0.55; }
+.ev { font-family: var(--f-mono); font-size: 13px; text-align: right; font-variant-numeric: tabular-nums; }
+.er.axis { min-height: 34px; }
+.er.axis .et { height: 34px; border-top: 1px solid var(--rule); }
+.tk { position: absolute; top: 4px; transform: translateX(-50%); font-family: var(--f-mono); font-size: 11px; color: var(--muted); }
+.tollab { position: absolute; top: 18px; transform: translateX(-50%); font-family: var(--f-ui); font-size: 11px; color: var(--ink); white-space: nowrap; }
+.key { display: flex; flex-wrap: wrap; gap: 6px 16px; font-family: var(--f-ui); font-size: 12.5px; color: var(--muted); }
+.key span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; background: var(--c); }
+.cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; }
+.cols > div { display: grid; gap: 10px; align-content: start; min-width: 0; }
+.finding { display: grid; gap: 6px; padding: 14px 0; border-top: 1px solid var(--rule); }
+.finding:first-of-type { border-top: 0; padding-top: 0; }
+.steps { display: grid; gap: 10px; }
+.step { display: grid; grid-template-columns: 3.4rem minmax(0, 1fr); gap: 12px; align-items: baseline; }
+.step .mk { font-family: var(--f-mono); font-size: 14px; color: var(--cobalt); font-weight: 600; }
+footer { font-family: var(--f-ui); font-size: 13px; color: var(--muted); border-top: 1px solid var(--rule); padding-top: 16px; display: grid; gap: 4px; }
+@media (max-width: 900px) {
+  .wrap { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  nav.rail { position: static; display: flex; flex-wrap: wrap; gap: 4px 6px; }
+  nav.rail .t { width: 100%; }
+  .chain { grid-template-columns: minmax(0, 1fr); }
+  .chain .lyr { border-right: 0; border-bottom: 1px solid var(--rule); }
+  .chain .lyr:last-child { border-bottom: 0; }
+  .short, .cols { grid-template-columns: minmax(0, 1fr); }
+  .er { grid-template-columns: minmax(0, 1fr) 3.8rem; grid-template-areas: "l v" "t t"; gap: 4px 10px; }
+  .er .el { grid-area: l; } .er .ev { grid-area: v; } .er .et { grid-area: t; height: 22px; }
+  .eb { top: 5px; }
+  .er.axis { grid-template-areas: "t t"; } .er.axis .el, .er.axis .ev { display: none; }
+  .er.axis .et { height: 40px; }
+  .tollab { white-space: normal; width: 9rem; text-align: center; }
+  body { font-size: 16px; }
+}
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto; } }
+</style>
+<div class="wrap">
+<nav class="rail" aria-label="Contents">
+  <span class="t">Contents</span>
+  <a href="#short">In short</a>
+  <a href="#why">Why this study</a>
+  <a href="#how">How the reference was built</a>
+  <a href="#results">What the results show</a>
+  <a href="#effects">How big each effect is</a>
+  <a href="#findings">What went wrong</a>
+  <a href="#assess">Strengths and weaknesses</a>
+  <a href="#venues">Where to publish</a>
+  <a href="#next">Decisions and next steps</a>
+</nav>
+<main>
+<header style="display:grid;gap:14px">
+  <span class="eyebrow">Co-60 reference point study · M1 briefing · 10 October 2026</span>
+  <h1>At which step of the photon-to-dose chain do AI answers fail?</h1>
+  <p class="lede">The Monte Carlo side of the study is built. For every step from the incident photon to the absorbed dose at 5 cm depth in a Co-60 beam, there is now a reference value with a known uncertainty and an independent check. This page explains what was done, what the numbers say, where the reference is solid and where it is not, and where the work could be published.</p>
+  <div class="meta"><span>Geant4 11.4.3 · option4 · 10 keV thresholds</span><span>2.4 × 10⁸ histories, 20 batches</span><span>branch claude/adoring-edison-tna32r</span></div>
+</header>
+
+<section id="short">
+  <h2>In short</h2>
+  <div class="short">
+    <div><b>Status</b><p>M0 and M1 are complete and reviewed. All plan targets are met. One approved extension run is tightening the scoring-boundary bound.</p></div>
+    <div><b>Headline numbers</b><p>D/Φ₀ = <span class="num">5.3584 × 10⁻¹² Gy cm² ± 0.066%</span>, β = <span class="num">1.0045</span>, s<sub>w,air</sub> = <span class="num">1.1268</span> (ICRU 90) / <span class="num">1.1331</span> (ICRU 37), PDD(5) = <span class="num">81.5%</span>.</p></div>
+    <div><b>What matters beyond this study</b><p>The stopping-power basis moves s<sub>w,air</sub> by up to 1%, far more than any Monte Carlo uncertainty. Geant4 option4 drops Rayleigh scattering above 1.022 MeV in its default gamma process. A water–water scoring boundary distorts the dose next to it by a few percent.</p></div>
+    <div><b>Still open</b><p>EGSnrc and the other Geant4 lists (M2); your verification of refs.yaml; the Fano step-size diagnostics; the boundary systematic on D, now ±0.17% and shrinking.</p></div>
+  </div>
+</section>
+
+<section id="why">
+  <h2>Why this study</h2>
+  <p>Language models state textbook radiation physics fluently. Stating a cross section is a different skill from modelling what photons and electrons do at a point in a phantom, and a check on the final dose cannot tell the two apart: a model can recall a PDD table and still have the transport wrong. The study therefore grades every intermediate quantity in the photon-to-dose chain against a Monte Carlo that scores the same quantity in the same bins, and asks at which layer an answer first leaves tolerance.</p>
+  <p>The point is the Co-60 reference condition: central axis, 5 cm depth in water, 10 × 10 cm² at SSD 100 cm, where standards laboratories calibrate chambers in N<sub>D,w</sub>. Its protocol quantities (s<sub>w,air</sub> from TRS-398, β slightly above 1, PDD tables) are in every model's training data. The design uses that: it compares a recalled quantity (PDD(5)) with a computed one at the same point (D/Φ₀).</p>
+  <div class="callout"><p><b>Hypotheses, recorded before any data.</b> H1: errors are small for primary-photon quantities, which follow from μ and two-body kinematics. H2: errors are larger for the scattered photon spectrum and the electron fluence spectrum, which need transport. H3: models reproduce PDD(5) better than D/Φ₀. The spread between Monte Carlo codes sets the resolution: an AI difference inside it is reported as unresolved.</p></div>
+</section>
+
+<section id="how">
+  <h2>How the reference was built</h2>
+  <ul class="tight">
+    <li><b>Own application, no TOPAS or GATE.</b> A Geant4 11.4.3 application (option4, 10 keV production thresholds in the whole phantom) in which every scorer is visible: point source model A uniform over the 10 × 10 cm² pyramid, 30 cm water cube, scoring cylinder r = 1 cm, t = 0.2 cm at 5 cm.</li>
+    <li><b>Histories are tagged.</b> Every photon carries its category (primary per line, scattered source photon, secondary photon); every electron carries its parent's category and a delta-ray flag. That is what lets each layer be split by primary and scattered parents.</li>
+    <li><b>Estimators.</b> Track length for photon and electron fluence, with electron track length spread over each step's energy interval by the restricted CSDA range. Kerma from the energy transferred at each interaction, not from tabulated μ<sub>tr</sub>. Dose from deposition. s<sub>w,air</sub> by Spencer–Attix from the scored electron spectrum with the Nahum track-end term, on four stopping-power bases.</li>
+    <li><b>Variance reduction.</b> Electron Russian roulette outside a region of interest sized at 1.2 × the CSDA range, and photon importance sampling in a parallel world. Together they give about 25× in efficiency for D. An analog run checks them.</li>
+    <li><b>Statistics.</b> Independent batches, plus per-history second moments where available. Every quoted error is the larger of the two (D023).</li>
+    <li><b>Provenance.</b> Pinned builds, a manifest for every run, frozen production binaries tagged with their source commit, every run kept (superseded ones archived with a reason), and every choice logged in DECISIONS.md.</li>
+  </ul>
+</section>
+
+<section id="results">
+  <h2>What the results show</h2>
+  <p>Each layer below shows its key Monte Carlo result and what an AI answer has to get right to match it. The full set, with spectra and angular distributions, is on the <a href="https://claude.ai/artifact/Cu5ScfiTccG3u14D4mbiLe">M1 results page</a>.</p>
+  
+<div class="chain">
+  <div class="lyr"><span class="k">Layer 1</span><span class="nm">Photons arriving</span>
+    <span class="big">36.8%</span>
+    <span class="sub">of photon fluence at 5 cm is scattered, but only 18.1% of the energy fluence. Mean energy 0.967 MeV (scattered 0.475 MeV).</span>
+    <span class="ai"><em>AI must:</em> attenuate the two lines correctly and know that scatter dominates the photon count but not the energy.</span></div>
+  <div class="lyr"><span class="k">Layer 2</span><span class="nm">Interactions</span>
+    <span class="big">96.52%</span>
+    <span class="sub">of interactions are Compton (99.77% of energy transferred). Photoelectric 2.43%, Rayleigh 1.03%, pair 0.020%.</span>
+    <span class="ai"><em>AI must:</em> see that the softened scattered spectrum raises photoelectric and Rayleigh shares far above their primary-beam values.</span></div>
+  <div class="lyr"><span class="k">Layer 3</span><span class="nm">Electrons set in motion</span>
+    <span class="big">347 keV</span>
+    <span class="sub">mean initial energy: 589 keV from primary parents, 126 keV from scattered ones. 0.22% of recoils from the 1.1732 MeV line exceed its free-electron edge (bound-electron Doppler broadening).</span>
+    <span class="ai"><em>AI must:</em> produce Compton recoils that end near the edges and weight in the scattered parents.</span></div>
+  <div class="lyr"><span class="k">Layer 4</span><span class="nm">Electrons slowing down</span>
+    <span class="big">3.0%</span>
+    <span class="sub">of the electron fluence above 10 keV is delta rays; radiative/collision loss 0.0023.</span>
+    <span class="ai"><em>AI must:</em> build a slowing-down spectrum, the step furthest from textbook recall.</span></div>
+  <div class="lyr"><span class="k">Layer 5</span><span class="nm">Energy deposited</span>
+    <span class="big">5.3584</span>
+    <span class="sub">× 10⁻¹² Gy cm² for D/Φ₀ (±0.066%). β = 1.0045; s<sub>w,air</sub> = 1.1268 (ICRU 90); PDD(5) = 81.5%.</span>
+    <span class="ai"><em>AI must:</em> account for the 18.8% of dose from scattered-photon parents, which a primary-only calculation misses.</span></div>
+</div>
+  <div class="tbl"><table><thead><tr><th>Layer</th><th>Quantity</th><th>Value (pooled, 1σ)</th></tr></thead><tbody><tr><td class='n'>1</td><td>Total photon fluence / Φ₀</td><td class='n'>1.1541 ± 0.0004</td></tr><tr><td class='n'>1</td><td>Scattered fraction of fluence / of energy fluence</td><td class='n'>0.3685 / 0.1810</td></tr><tr><td class='n'>2</td><td>Compton, photoelectric, Rayleigh, pair (share of interactions)</td><td class='n'>96.52%, 2.43%, 1.03%, 0.020%</td></tr><tr><td class='n'>3</td><td>Mean initial electron energy: all / primary parent / scattered parent</td><td class='n'>0.3472 / 0.5887 / 0.1263 MeV</td></tr><tr><td class='n'>4</td><td>Delta-ray share above 10 keV; radiative / collision loss</td><td class='n'>0.0300; 0.00229</td></tr><tr><td class='n'>5</td><td>D/Φ₀</td><td class='n'>5.35838 × 10⁻¹² Gy cm² ± 0.066%</td></tr><tr><td class='n'>5</td><td>K/Φ₀, K<sub>col</sub>/Φ₀</td><td class='n'>5.3483, 5.3343 × 10⁻¹² Gy cm²</td></tr><tr><td class='n'>5</td><td>β = D/K<sub>col</sub>; g</td><td class='n'>1.0045 ± 0.0006; 0.00262</td></tr><tr><td class='n'>5</td><td>s<sub>w,air</sub>, Δ = 10 keV: ICRU 90 / ICRU 37 / Geant4 / PEGS4 matched</td><td class='n'>1.1268 / 1.1331 / 1.1385 / 1.1259</td></tr><tr><td class='n'>5</td><td>PDD(5); d<sub>max</sub></td><td class='n'>81.53 ± 0.26%; 0.78 ± 0.05 cm</td></tr></tbody></table></div>
+  <h3>Reading the numbers</h3>
+  <ul class="tight">
+    <li><b>Scatter is the story at 5 cm.</b> A third of the photons reaching the point have scattered, and electrons set in motion by them deposit 18.8% of the dose. A model that treats the beam as primary-only will be off by about a fifth in dose. That is a large, unambiguous signal against a 2% tolerance.</li>
+    <li><b>Compton carries the energy, but not all the interactions.</b> 96.5% of interactions and 99.8% of the energy transfer are Compton, yet the softened scattered spectrum makes photoelectric absorption 2.4% of interactions. A model reasoning from the primary lines alone will put that near zero.</li>
+    <li><b>β = 1.0045.</b> Dose exceeds collision kerma by 0.45% at 5 cm, as transient CPE beyond d<sub>max</sub> requires; the plan expected an excess on the order of 0.5%.</li>
+    <li><b>s<sub>w,air</sub> depends on the data more than on the transport.</b> The same electron spectrum gives 1.1268 with ICRU 90 stopping powers and 1.1331 with ICRU 37. The ICRU 37 value matches the TRS-398 figure of 1.133 (in refs.yaml, not yet verified). Scoring uses ICRU 90 as primary and reports ICRU 37 alongside (D024), so a model quoting the protocol is not marked wrong for quoting it.</li>
+    <li><b>Bound-electron Compton matters for the event task.</b> option4 uses a bound-electron Compton model, so recoil energies are smeared around the free-electron edge. The validity rules for sampled events allow a Doppler tolerance of 60 keV (the 99.9th percentile of the Monte Carlo departure). Under the strict free-electron rules, 99% of Monte Carlo events would fail on energy conservation alone, because binding energy goes to local deposition.</li>
+  </ul>
+  <div class="tbl"><table><thead><tr><th>Check</th><th>Result</th><th>Status</th></tr></thead><tbody><tr><td>Statistical targets (plan 4.1)</td><td class='n'>D/Φ₀ 0.066% (0.1%), β 0.062% (0.2%), worst spectral bin 0.57% (1%)</td><td><span class='chip ok'>met</span></td></tr><tr><td>Tracking μ against G4EmCalculator (TestEm13, 2 × 10⁷ photons per line)</td><td class='n'>+0.10 ± 0.04%, +0.07 ± 0.04%</td><td><span class='chip ok'>measured</span></td></tr><tr><td>Primary fluence against exp(−μs)/(ΩR²), tracking μ</td><td class='n'>0.9992 ± 0.0004 (−1.7σ)</td><td><span class='chip ok'>passes</span></td></tr><tr><td>Fluence-to-dose closure, CSDA-weighted (linear)</td><td class='n'>1.0007 (1.0644)</td><td><span class='chip ok'>passes</span></td></tr><tr><td>Cut independence S2 (5 keV): D/Φ₀; s<sub>w,air</sub></td><td class='n'>+0.13% (+0.9σ); +0.0003%</td><td><span class='chip ok'>passes</span></td></tr><tr><td>Volume size S1 (r 0.5, t 0.1 cm): D/Φ₀</td><td class='n'>+0.47% (+2.1σ)</td><td><span class='chip ok'>within 3σ</span></td></tr><tr><td>Variance reduction against analog transport: D/Φ₀</td><td class='n'>−0.10% (−0.2σ)</td><td><span class='chip ok'>passes</span></td></tr><tr><td>Scoring boundary: D in cylinder over boundary-free D</td><td class='n'>0.9974 ± 0.0017 (−1.5σ); 95%: −0.6% to +0.1%</td><td><span class='chip warn'>systematic</span></td></tr><tr><td>Fano cavity, production stepping (opt0 control)</td><td class='n'>1.0016 ± 0.0006 (1.0147)</td><td><span class='chip warn'>+0.16% accepted</span></td></tr><tr><td>Event sample under the validity rules (bound / strict)</td><td class='n'>0.064% / 99% fail, of 100,000</td><td><span class='chip ok'>as designed</span></td></tr></tbody></table></div>
+</section>
+
+<section id="effects">
+  <h2>How big each effect is</h2>
+  <p>The question for the AI comparison is which uncertainties are small enough to ignore. On a log scale, against the proposed 2% tolerance for Layer 5 dose: the Monte Carlo statistics and systematics sit one to two orders of magnitude below it. The stopping-power basis for s<sub>w,air</sub> does not, and the physics an AI has to capture is ten times above it.</p>
+  <div class="fig">
+    <div class="key"><span style="--c:var(--cobalt)">Monte Carlo statistics and systematics on R0 results</span><span style="--c:var(--amber)">choice of reference data</span><span style="--c:var(--muted)">artifacts the reference avoids</span><span style="--c:var(--violet)">physics an AI must capture</span></div>
+    <div class="er"><div class="el"><span>Statistical uncertainty of β (1σ)</span><span class="en">statistics</span></div><div class="et"><span class="eb k-mc" style="width:10.57%"></span><span class="etol" style="left:60.80%"></span></div><div class="ev">0.0623%</div></div>
+<div class="er"><div class="el"><span>Statistical uncertainty of D/Φ₀ (1σ)</span><span class="en">statistics</span></div><div class="et"><span class="eb k-mc" style="width:11.31%"></span><span class="etol" style="left:60.80%"></span></div><div class="ev">0.0655%</div></div>
+<div class="er"><div class="el"><span>Primary fluence against the analytic value</span><span class="en">−1.7σ</span></div><div class="et"><span class="eb k-mc" style="width:13.84%"></span><span class="etol" style="left:60.80%"></span></div><div class="ev">0.0781%</div></div>
+<div class="er"><div class="el"><span>Fano cavity deviation, production stepping</span><span class="en">+2.7σ</span></div><div class="et"><span class="eb k-mc" style="width:23.95%"></span><span class="etol" style="left:60.80%"></span></div><div class="ev">0.157%</div></div>
+<div class="er"><div class="el"><span>Scoring boundary effect on D inside the cylinder</span><span class="en">−1.5σ, bound tightening</span></div><div class="et"><span class="eb k-mc" style="width:31.36%"></span><span class="etol" style="left:60.80%"></span></div><div class="ev">0.262%</div></div>
+<div class="er"><div class="el"><span>Halving the scoring volume (S1), change in D</span><span class="en">+2.1σ</span></div><div class="et"><span class="eb k-mc" style="width:39.85%"></span><span class="etol" style="left:60.80%"></span></div><div class="ev">0.471%</div></div>
+<div class="er"><div class="el"><span>s<sub>w,air</sub>: ICRU 37 against ICRU 90 stopping powers</span><span class="en">data basis</span></div><div class="et"><span class="eb k-def" style="width:42.42%"></span><span class="etol" style="left:60.80%"></span></div><div class="ev">0.562%</div></div>
+<div class="er"><div class="el"><span>s<sub>w,air</sub>: Geant4 against ICRU 90 stopping powers</span><span class="en">data basis</span></div><div class="et"><span class="eb k-def" style="width:51.36%"></span><span class="etol" style="left:60.80%"></span></div><div class="ev">1.04%</div></div>
+<div class="er"><div class="el"><span>Dose 1–4 mm from the scoring boundary (largest slab)</span><span class="en">transport artifact</span></div><div class="et"><span class="eb k-art" style="width:70.07%"></span><span class="etol" style="left:60.80%"></span></div><div class="ev">3.8%</div></div>
+<div class="er"><div class="el"><span>Electron fluence 10–20 keV: linear against CSDA estimator</span><span class="en">estimator</span></div><div class="et"><span class="eb k-art" style="width:83.17%"></span><span class="etol" style="left:60.80%"></span></div><div class="ev">9.38%</div></div>
+<div class="er"><div class="el"><span>Dose from electrons with scattered-photon parents</span><span class="en">physics an AI must capture</span></div><div class="et"><span class="eb k-phys" style="width:93.23%"></span><span class="etol" style="left:60.80%"></span></div><div class="ev">18.8%</div></div>
+<div class="er axis"><div class="el"></div><div class="et"><span class="tk" style="left:0.00%">0.03%</span><span class="tk" style="left:17.43%">0.1%</span><span class="tk" style="left:33.33%">0.3%</span><span class="tk" style="left:50.76%">1%</span><span class="tk" style="left:66.67%">3%</span><span class="tk" style="left:84.10%">10%</span><span class="tk" style="left:100.00%">30%</span><span class="tollab" style="left:60.80%">proposed AI tolerance, Layer 5 dose (2%)</span></div><div class="ev"></div></div>
+    <div class="cap">Bar length is the size of each effect in percent, log scale; the dashed line is the proposed tolerance for Layer 5 dose quantities (plan Section 6). "Artifacts the reference avoids": the dose next to the scoring boundary (the reference value is inside the cylinder) and the linear electron estimator (replaced by the CSDA-weighted one).</div>
+  </div>
+</section>
+
+<section id="findings">
+  <h2>What went wrong, and what it taught us</h2>
+  <div class="finding"><h3>Geant4 option4 drops Rayleigh scattering above 1.022 MeV</h3><p>The default G4GammaGeneralProcess does not sample coherent scattering in its 2m<sub>e</sub>c²–100 MeV zone, which holds both Co-60 lines. The first production run showed zero Rayleigh events among primaries. The dose effect is small, but Layer 2 interaction shares would have been wrong. Production now switches the general process off (D019). This should go to the Geant4 developers as an issue report.</p></div>
+  <div class="finding"><h3>The plan's linear electron-fluence estimator fails energy closure by 6.4%</h3><p>Geant4 ends an electron below about 20 keV in a single step, over which the path per unit energy is 1/L(E), not constant. Spreading track length linearly puts too much fluence at low energy: the dose rebuilt from the spectrum is 6.4% high. Weighting by the restricted CSDA range closes to 0.07%. In the 10–20 keV bin the two differ by 9%, which matters for the lowest comparison bins; s<sub>w,air</sub> moves by less than 0.01% (D020).</p></div>
+  <div class="finding"><h3>A water–water boundary distorts the dose next to it</h3><p>The depth scan shows the dose up to 3.8% high 1–4 mm in front of the scoring cylinder and 2.2% low behind it, with water on both sides. Moving the cylinder to 8 cm moves the pattern; far from both cylinders the scans agree to +0.11%. The likely cause is GS multiple scattering with the SafetyPlus step limit: steps shrink near a boundary, and a step-length-dependent displacement of deposition piles energy up in front of it. Inside the cylinder the dose is 0.9974 ± 0.0017 of the boundary-free value. That is not significant, but the bound is still wider than D's statistical error, so it is carried as a systematic and tightened by the running extension (D025). From M2, dose is scored without a boundary near R0, partly because EGSnrc crosses boundaries with a different algorithm.</p></div>
+  <div class="finding"><h3>A 4σ anomaly that was a fluctuation</h3><p>The main run's primary fluence came out 0.12% below exp(−μs)/(ΩR²) at 4.4σ on its batch spread. Eight diagnostic runs (photon-only and full transport, with and without importance sampling, two geometries), a transmission measurement of the tracking μ and a collision-estimator cross-check found no cause. The main run's batches simply agreed with each other more than their per-history variance allowed. A replicate with new seeds, pooled by a rule fixed before it finished (D022), came out normal; pooled, the check gives 0.9992 ± 0.0004. The lasting change is the uncertainty policy (D023).</p></div>
+  <div class="finding"><h3>Geant4's own water stopping power is not Bethe–Møller below 100 keV</h3><p>option4 uses the Penelope ionisation model below 100 keV. For water it is 2.5% above Bethe–Møller (I = 78 eV) at 12 keV and 1.7% at 100 keV, and Geant4 smooths that offset into the higher-energy model as 1.7% × (100 keV/E). Air agrees within 0.1%. That is why the Geant4-basis s<sub>w,air</sub> is 1.1385, 1% above the ICRU 90 basis, and why it is not used for scoring.</p></div>
+  <div class="finding"><h3>Smaller items</h3><p>Photon categories were mislabelled at importance-cell boundaries during development (fixed before production; zero untagged tracks since). The region-of-interest check lacked a buffer in front of a depth scan starting inside the phantom (no M1 run was affected; fixed for M2). Twice, process clean-up commands matched my own shell; one two-minute run was lost and archived with its reason.</p></div>
+</section>
+
+<section id="assess">
+  <h2>Strengths and weaknesses</h2>
+  <div class="cols">
+    <div><h3>Strengths</h3>
+      <ul class="tight">
+        <li><b>Every layer has an independent check:</b> analytic primary fluence with a measured tracking μ, thin slab, fluence-to-dose closure at 0.07%, analog against variance reduction, S1, S2, a seed-independent replicate, and a boundary-free dose.</li>
+        <li><b>Anomalies were run down, not explained away.</b> Two were real Geant4 issues; one was statistics, settled by a pre-registered replicate.</li>
+        <li><b>Conservative uncertainties.</b> The larger of two error estimates everywhere; targets met on that basis.</li>
+        <li><b>The design separates recall from computation</b> (H3), and the layered grading shows where an answer fails, not only whether.</li>
+        <li><b>Sampled-event validity rules are physical</b> and calibrated on the reference physics, so invalid AI events can be counted separately from distributional distance.</li>
+        <li><b>Full provenance.</b> Any number on this page traces to a run manifest, a commit and a decision entry.</li>
+      </ul></div>
+    <div><h3>Weaknesses and open risks</h3>
+      <ul class="tight">
+        <li><b>One code so far.</b> Until EGSnrc and the Livermore and Penelope lists run (M2), the reference is one code's physics and the resolution floor is unknown.</li>
+        <li><b>s<sub>w,air</sub> has no unique truth.</b> The 1% basis spread is set by convention (D024); reviewers will ask, and the TRS-398 revision's basis still needs checking.</li>
+        <li><b>Source model A is idealized:</b> no head scatter, no source size, no contamination electrons. PDD(5) and the scatter fraction will differ from a real unit, and models may answer for a real unit unless the prompt is explicit.</li>
+        <li><b>Open systematics:</b> the scoring-boundary effect on D (±0.17%, tightening) and the Fano deviation (+0.16%, 2.7σ, step-size diagnostics pending).</li>
+        <li><b>External values unverified.</b> NIST μ/ρ and μ<sub>en</sub>/ρ could not be fetched from the container, so the plan's kerma-from-tables cross-check is not done yet.</li>
+        <li><b>The Doppler tolerance comes from the reference itself</b> (99.9th percentile). It is physically motivated, but a definition from Compton-profile data would be harder to question.</li>
+        <li><b>One point, one depth.</b> Generality waits for the V1 variations.</li>
+        <li><b>The AI side does not exist yet.</b> The main risks ahead are prompt ambiguity, model-version drift and cost.</li>
+      </ul></div>
+  </div>
+</section>
+
+<section id="venues">
+  <h2>Where to publish</h2>
+  <p>The publishable result is the AI comparison (M4–M5); M1 is its foundation. My recommendation: write the main paper for <b>Medical Physics</b>, submit an <b>AAPM annual meeting</b> abstract once the first AI results exist (or ESTRO, depending on timing), and decide on a benchmark-track version once the V1 variations are scoped. The plan lists the venue as an open decision because it changes the reporting format; the table says how.</p>
+  <div class="tbl"><table><thead><tr><th>Venue</th><th>Why it fits</th><th>What it would need</th></tr></thead><tbody><tr><td><b>Medical Physics</b> (AAPM)</td><td>Primary recommendation. The study is a Monte Carlo reference with an AI evaluation on top, and the readers are the people who use both the protocol quantities and the models. Reviewers will test the Monte Carlo hardest, which is where this study is strongest.</td><td>Reporting to the AAPM TG-268 Monte Carlo checklist (the run manifests already hold most of it); EGSnrc and the other Geant4 lists (M2) as the resolution floor; exact model identifiers and dates.</td></tr><tr><td><b>Physics in Medicine &amp; Biology</b></td><td>If the Monte Carlo findings grow into a large part of the paper: the boundary artifact, the estimator closure, the stopping-power basis. PMB readers care about transport details.</td><td>The same as above; a fuller transport section, ideally with the boundary artifact compared against EGSnrc.</td></tr><tr><td><b>phiRO</b> (ESTRO, open access)</td><td>A shorter, faster paper. Fits if the story is the breakpoint result alone.</td><td>A tight scope: one configuration, the five-layer breakpoint figure, the Monte Carlo spread.</td></tr><tr><td><b>JACMP</b> (AAPM, open access)</td><td>If the framing is practical: can a clinical physicist trust a model's reasoning for a calculation check.</td><td>A clinical-use angle and less transport detail.</td></tr><tr><td><b>NeurIPS Datasets &amp; Benchmarks</b> or <b>ML4H</b></td><td>If the work is released as a benchmark: verifiable intermediate quantities, sampled-event validity rules and Monte Carlo ground truth are rare in model evaluation. It also leads into the training-environment phase (V4).</td><td>A frozen, released benchmark with the V1 variations, including the invented compound medium that no table covers; a datasheet; more models.</td></tr></tbody></table></div>
+  <ul class="tight">
+    <li><b>Conferences.</b> AAPM and ESTRO for the AI results; ICCR (computers in radiotherapy) for the Monte Carlo and scoring methodology. Check current abstract deadlines; I have not looked them up.</li>
+    <li><b>Side outputs.</b> The Rayleigh omission is an issue report to Geant4, not a paper. The boundary artifact could become a technical note in Medical Physics or PMB if it is characterized against step settings and compared with EGSnrc in M2: anyone scoring dose in a small daughter volume with option4 is exposed to it.</li>
+    <li><b>Reporting guidelines to plan for.</b> TG-268 (RECORDS) for the Monte Carlo; for a clinical-AI venue, TRIPOD-LLM. Both are easier to satisfy now, while the manifests are being written, than at submission.</li>
+  </ul>
+</section>
+
+<section id="next">
+  <h2>Decisions taken today, and what comes next</h2>
+  <div class="tbl"><table><thead><tr><th>Decision</th><th>What it fixes</th></tr></thead><tbody>
+    <tr><td>D024</td><td>s<sub>w,air</sub> scored against ICRU 90, with ICRU 37 reported alongside; fixed before any AI answer exists.</td></tr>
+    <tr><td>D025</td><td>Scoring-boundary effect carried as a systematic on D; extension running; dose scored without a nearby boundary from M2.</td></tr>
+    <tr><td>D023, D020</td><td>Conservative uncertainty policy; CSDA-weighted electron estimator as the Layer 4 reference.</td></tr>
+    <tr><td>D026</td><td>Fano +0.16% accepted as a bound, step-size results reviewed before M2; at least 20 batches per M2 run; refs.yaml verification order.</td></tr>
+  </tbody></table></div>
+  <div class="steps">
+    <div class="step"><span class="mk">You</span><p>Verify refs.yaml in this order: line energies, TRS-398 s<sub>w,air</sub> (and whether its 2024 revision uses ICRU 90), I-values, normalisation constants, then the rest. Add a published PDD(5) for Co-60, 10 × 10 cm², SSD 100 cm. Settle the remaining plan decisions: SSD, vacuum or air, model list, tolerances, source for model B.</p></div>
+    <div class="step"><span class="mk">M2</span><p>Livermore and Penelope at R0; the EGSnrc B0 benchmark (DOSRZnrc, FLURZnrc, SPRRZnrc) with the matched water; comparison with the published values you verify. Gate: you accept the Monte Carlo as the reference.</p></div>
+    <div class="step"><span class="mk">M3</span><p>Prompt, schema and sandbox; the P0 pilot on one inexpensive model; a cost estimate. Gate: prompts, models, tolerances and budget.</p></div>
+    <div class="step"><span class="mk">M4–M5</span><p>The full model × condition × repeat matrix, the sampled-events task, then the breakpoint analysis.</p></div>
+  </div>
+</section>
+
+<footer>
+  <span>Generated by analysis/m1_brief.py from analysis/results/M1_results.json and analysis/M1_fano_summary.yaml.</span>
+  <span>Results page: <a href="https://claude.ai/artifact/Cu5ScfiTccG3u14D4mbiLe">M1 results</a>. Full record: STATUS.md and DECISIONS.md on branch claude/adoring-edison-tna32r.</span>
+</footer>
+</main>
+</div>

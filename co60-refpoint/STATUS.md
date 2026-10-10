@@ -15,7 +15,7 @@ Problems found and fixed or bounded:
 - **10-batch standard errors can come out much too small by chance (D023).** This made a primary-fluence fluctuation in the main run look like a 4σ effect; the replicate resolved it.
 - **The scoring cylinder's boundary distorts the dose by up to ±3% in the few millimetres next to it.** Inside the cylinder the dose is 0.9974 ± 0.0017 of the boundary-free dose (−1.5σ). That is not significant, but the 95% interval (−0.6% to +0.1%) is wider than D's statistical uncertainty, so a boundary effect of that size on D at R0 is not excluded.
 
-Results page: `analysis/results/co60_r0_m1.html`, published (private) at https://claude.ai/artifact/Cu5ScfiTccG3u14D4mbiLe.
+Results page: `analysis/results/co60_r0_m1.html`, published (private) at https://claude.ai/artifact/Cu5ScfiTccG3u14D4mbiLe. Study brief (why, what, results, strengths and weaknesses, venues): `analysis/results/co60_brief.html` (built by `analysis/m1_brief.py`), published (private) at https://claude.ai/artifact/24vAALYwGGg9Hej4P7Df4d.
 
 ### What was done
 
