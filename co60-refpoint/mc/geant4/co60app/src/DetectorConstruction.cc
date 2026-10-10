@@ -4,6 +4,7 @@
 
 #include "G4Box.hh"
 #include "G4Exception.hh"
+#include "G4IStore.hh"
 #include "G4LogicalVolume.hh"
 #include "G4NistManager.hh"
 #include "G4PVPlacement.hh"
@@ -13,7 +14,9 @@
 
 #include <algorithm>
 
+const G4VPhysicalVolume* DetectorConstruction::fWorldPV = nullptr;
 const G4VPhysicalVolume* DetectorConstruction::fPhantomPV = nullptr;
+std::vector<const G4VPhysicalVolume*> DetectorConstruction::fCellPVs;
 const G4VPhysicalVolume* DetectorConstruction::fScoringPV = nullptr;
 G4double DetectorConstruction::fScoringMass = 0.;
 
@@ -55,11 +58,61 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   auto* phantomL = new G4LogicalVolume(phantomS, water, "Phantom");
   fPhantomPV = new G4PVPlacement(nullptr, {0, 0, half}, phantomL, "Phantom", worldL, false, 0, true);
 
+  fWorldPV = worldP;
+
+  // Mass-geometry importance cells: nested water cylinders, clipped to the phantom.
+  // The scoring cylinder must lie inside the innermost cell.
+  G4LogicalVolume* mother = phantomL;
+  G4double motherZ = half;  // global z of the mother's origin
+  fCellPVs.clear();
+  if (c.importanceEnabled && c.importanceMassWorld) {
+    G4int copy = 1;
+    for (const auto& cell : c.importanceCells) {
+      const G4double z0 = std::max(cell.zmin, 0.);
+      const G4double z1 = std::min(cell.zmax, c.phantomSize);
+      const G4double r = std::min(cell.radius, half);
+      const G4String name = "ImpCell" + std::to_string(copy);
+      auto* solid = new G4Tubs(name, 0., r, 0.5 * (z1 - z0), 0., CLHEP::twopi);
+      auto* logical = new G4LogicalVolume(solid, water, name);
+      fCellPVs.push_back(new G4PVPlacement(nullptr, {0, 0, 0.5 * (z0 + z1) - motherZ}, logical, name, mother,
+                                           false, copy, true));
+      mother = logical;
+      motherZ = 0.5 * (z0 + z1);
+      ++copy;
+    }
+    if (!c.importanceCells.empty()) {
+      const auto& in = c.importanceCells.back();
+      if (c.scoringRadius > in.radius || c.scoringDepth - 0.5 * c.scoringThickness < std::max(in.zmin, 0.)
+          || c.scoringDepth + 0.5 * c.scoringThickness > in.zmax)
+      {
+        G4Exception("DetectorConstruction", "CO60-IMP", FatalException,
+                    "--importance-mass needs the scoring cylinder inside the innermost importance cell");
+      }
+    }
+  }
+
   auto* scoringS = new G4Tubs("Scoring", 0., c.scoringRadius, 0.5 * c.scoringThickness, 0., CLHEP::twopi);
   auto* scoringL = new G4LogicalVolume(scoringS, water, "Scoring");
   fScoringPV =
-    new G4PVPlacement(nullptr, {0, 0, c.scoringDepth - half}, scoringL, "Scoring", phantomL, false, 0, true);
+    new G4PVPlacement(nullptr, {0, 0, c.scoringDepth - motherZ}, scoringL, "Scoring", mother, false, 0, true);
   fScoringMass = scoringL->GetMass();
 
   return worldP;
+}
+
+void DetectorConstruction::CreateMassImportanceStore()
+{
+  const Config& c = Config::Get();
+  G4IStore* store = G4IStore::GetInstance();
+  store->AddImportanceGeometryCell(1., *fWorldPV, 0);
+  store->AddImportanceGeometryCell(1., *fPhantomPV, 0);
+  G4double inner = 1.;
+  for (size_t i = 0; i < fCellPVs.size(); ++i) {
+    inner = c.importanceCells[i].importance;
+    store->AddImportanceGeometryCell(inner, *fCellPVs[i], static_cast<G4int>(i + 1));
+    G4cout << "Importance cell " << i + 1 << " (mass geometry): r <= " << c.importanceCells[i].radius / cm
+           << " cm, " << std::max(c.importanceCells[i].zmin, 0.) / cm << " <= z <= "
+           << c.importanceCells[i].zmax / cm << " cm, importance " << inner << G4endl;
+  }
+  store->AddImportanceGeometryCell(inner, *fScoringPV, 0);
 }

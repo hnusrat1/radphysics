@@ -1,0 +1,26 @@
+/control/verbose 1
+/run/verbose 0
+/control/cout/ignoreThreadsExcept 0
+/process/em/verbose 0
+/random/setSeeds 6201013 6201014
+/co60/geom/scoringRadius 4.0 cm
+/co60/geom/scoringThickness 1.0 cm
+/co60/geom/scoringDepth 5.0 cm
+/co60/source/ssd 100.0 cm
+/co60/source/field 10.0 10.0 cm
+/co60/phys/electronThreshold 10 keV
+/co60/phys/gammaThreshold 10 keV
+/co60/vr/russianRoulette false
+/co60/vr/survival 0.05
+/co60/vr/roi 5.0 3.5 6.5 cm
+/co60/bins/photonE 0.0 1.4 140 MeV
+/co60/bins/electronE 0.0 1.4 1400 MeV
+/co60/bins/cosTheta 40
+/co60/bins/depth 0.0 10.0 100 1.0 cm
+/co60/score/depthScan false
+/process/em/UseGeneralProcess false
+/process/em/lowestElectronEnergy 2 MeV
+/co60/out/file output.json
+/run/initialize
+/run/printProgress 250000
+/run/beamOn 2500000

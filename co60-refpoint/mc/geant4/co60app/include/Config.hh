@@ -72,9 +72,12 @@ struct Config
   G4double roiZmin = 4.1 * cm;
   G4double roiZmax = 5.9 * cm;
 
-  // Photon importance sampling (enabled by the --importance launch flag):
-  // nested cylinders, outermost first; the rest of the world has importance 1.
+  // Photon importance sampling (enabled by the --importance or --importance-mass
+  // launch flag): nested cylinders, outermost first; the rest of the world has
+  // importance 1. With --importance the cells are a parallel world; with
+  // --importance-mass they are water volumes in the mass geometry (DECISIONS D021).
   G4bool importanceEnabled = false;
+  G4bool importanceMassWorld = false;
   std::vector<ImportanceCell> importanceCells;
 
   // Scoring grids (from config/bins.yaml via the run harness)

@@ -107,7 +107,7 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
   const G4StepPoint* post = step->GetPostStepPoint();
   const G4VPhysicalVolume* preVol = pre->GetPhysicalVolume();
   const bool inScoring = (preVol == DetectorConstruction::ScoringPV());
-  const bool inPhantom = inScoring || preVol == DetectorConstruction::PhantomPV();
+  const bool inPhantom = preVol != DetectorConstruction::WorldPV();  // phantom, importance cells, scoring
   const double w = pre->GetWeight();
   const G4ParticleDefinition* pd = track->GetDefinition();
   const int pIdx = ParticleIndex(pd);

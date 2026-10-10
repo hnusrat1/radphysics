@@ -174,7 +174,8 @@ def main():
         (bdir / "run.mac").write_text(macro)
         cmd = [args.exe, "run.mac", spec["physics"], str(spec.get("threads", 4))]
         if spec.get("importance_cells_cm"):
-            cmd.append("--importance")
+            # parallel (default) or mass geometry for the importance cells (DECISIONS D021)
+            cmd.append("--importance-mass" if spec.get("importance_geometry") == "mass" else "--importance")
         t0 = time.time()
         proc = subprocess.run(cmd, cwd=bdir, capture_output=True, text=True)
         wall = time.time() - t0

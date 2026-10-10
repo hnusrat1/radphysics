@@ -1,6 +1,7 @@
 #include "Messenger.hh"
 
 #include "Config.hh"
+#include "DetectorConstruction.hh"
 #include "ImportanceWorld.hh"
 
 #include "G4Exception.hh"
@@ -136,10 +137,15 @@ void Messenger::SetNewValue(G4UIcommand* command, G4String value)
       {WithUnit(t[0], t[3]), WithUnit(t[1], t[3]), WithUnit(t[2], t[3]), std::stod(t[4])});
   }
   else if (path == "/co60/vr/applyImportance") {
-    if (!c.importanceEnabled || ImportanceWorld::Instance() == nullptr) {
-      Fail(path, "importance sampling was not enabled at launch (--importance)");
+    if (c.importanceEnabled && c.importanceMassWorld) {
+      DetectorConstruction::CreateMassImportanceStore();
     }
-    ImportanceWorld::Instance()->CreateImportanceStore();
+    else if (c.importanceEnabled && ImportanceWorld::Instance() != nullptr) {
+      ImportanceWorld::Instance()->CreateImportanceStore();
+    }
+    else {
+      Fail(path, "importance sampling was not enabled at launch (--importance or --importance-mass)");
+    }
   }
   else if (path == "/co60/bins/photonE" || path == "/co60/bins/electronE") {
     need(4);

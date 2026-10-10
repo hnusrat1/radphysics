@@ -207,7 +207,9 @@ void RunAction::WriteOutput(const G4Run* run, const Tallies& t) const
   os << "  \"variance_reduction\": {\"russian_roulette\": " << (c.rrEnabled ? "true" : "false")
      << ", \"survival\": " << c.rrSurvival << ", \"roi_radius\": " << c.roiRadius / cm << ", \"roi_zmin\": "
      << c.roiZmin / cm << ", \"roi_zmax\": " << c.roiZmax / cm
-     << ", \"photon_importance_sampling\": " << (c.importanceEnabled ? "true" : "false") << ", \"importance_cells\": [";
+     << ", \"photon_importance_sampling\": " << (c.importanceEnabled ? "true" : "false")
+     << ", \"importance_geometry\": \"" << (c.importanceEnabled ? (c.importanceMassWorld ? "mass" : "parallel") : "none")
+     << "\", \"importance_cells\": [";
   for (size_t i = 0; i < c.importanceCells.size(); ++i) {
     const auto& ic = c.importanceCells[i];
     os << (i ? ", " : "") << "{\"radius\": " << ic.radius / cm << ", \"zmin\": " << ic.zmin / cm

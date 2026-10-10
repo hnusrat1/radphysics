@@ -1,6 +1,6 @@
 // co60app: photon-to-dose scoring at the Co-60 reference point (STUDY_PLAN R0).
 //
-// Usage: co60app <macro> <option4|livermore|penelope> [threads] [--importance]
+// Usage: co60app <macro> <option4|livermore|penelope> [threads] [--importance | --importance-mass]
 
 #include "Actions.hh"
 #include "Config.hh"
@@ -20,11 +20,19 @@
 int main(int argc, char** argv)
 {
   if (argc < 3) {
-    G4cerr << "usage: co60app <macro> <option4|livermore|penelope> [threads] [--importance]" << G4endl;
+    G4cerr << "usage: co60app <macro> <option4|livermore|penelope> [threads] [--importance | --importance-mass]"
+           << G4endl;
     return 1;
   }
-  const G4bool importance = argc > 4 && G4String(argv[4]) == "--importance";
-  Config::Get().importanceEnabled = importance;
+  const G4String vrFlag = argc > 4 ? G4String(argv[4]) : G4String();
+  if (!vrFlag.empty() && vrFlag != "--importance" && vrFlag != "--importance-mass") {
+    G4cerr << "unknown option " << vrFlag << G4endl;
+    return 1;
+  }
+  const G4bool importance = vrFlag == "--importance";
+  const G4bool importanceMass = vrFlag == "--importance-mass";
+  Config::Get().importanceEnabled = importance || importanceMass;
+  Config::Get().importanceMassWorld = importanceMass;
   auto messenger = std::make_unique<Messenger>();
   auto* runManager = G4RunManagerFactory::CreateRunManager(G4RunManagerType::Default);
   if (argc > 3) runManager->SetNumberOfThreads(G4UIcommand::ConvertToInt(argv[3]));
@@ -41,6 +49,13 @@ int main(int argc, char** argv)
     sampler = std::make_unique<G4GeometrySampler>(parallelName, "gamma");
     sampler->SetParallel(true);
     physics->RegisterPhysics(new G4ImportanceBiasing(sampler.get(), parallelName));
+  }
+  // Photon importance sampling with the cells in the mass geometry (as in Geant4 example B01): the
+  // importance process acts only where a step ends on a real geometric boundary (DECISIONS D021).
+  if (importanceMass) {
+    sampler = std::make_unique<G4GeometrySampler>(static_cast<G4VPhysicalVolume*>(nullptr), "gamma");
+    sampler->SetParallel(false);
+    physics->RegisterPhysics(new G4ImportanceBiasing(sampler.get()));
   }
   runManager->SetUserInitialization(detector);
   runManager->SetUserInitialization(physics);

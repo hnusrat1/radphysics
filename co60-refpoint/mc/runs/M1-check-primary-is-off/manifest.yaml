@@ -1,0 +1,253 @@
+run_id: M1-check-primary-is-off
+purpose: 'Diagnostic for the primary-fluence deficit at R0 (measured/analytic 0.9985 +- 0.0003 in M1-R0-option4).
+  Photon transport only: /process/em/lowestElectronEnergy 2 MeV stops every electron in its first step,
+  which leaves photon transport unchanged. Larger scoring cylinder (r 4 cm, t 1 cm at 5 cm depth) for
+  statistics. Importance sampling off; Russian roulette off. Compare the primary track-length fluence
+  with the analytic value; on and off together separate a variance-reduction bias from a physics or analytic
+  cause.'
+created_utc: '2026-10-10T14:42:25Z'
+git:
+  commit: f2db18d8e497491755713b47a6da4eaaa0d750c1
+  dirty: true
+machine:
+  hostname: vm
+  platform: Linux-6.18.44-fc-v114-x86_64-with-glibc2.39
+  cpu: Intel(R) Xeon(R) Processor @ 2.80GHz
+  logical_cpus: 4
+  compiler: c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+geant4:
+  version: 11.4.3
+  prefix: /opt/geant4/11.4.3
+  features: "Known Features:\n staticlibs[no]\n multithreading[yes]\n smartstack[no]\n php_as_hp[no]\n\
+    \ clhep[yes]\n expat[no]\n zlib[yes]\n gdml[no]\n ptl[yes]\n usolids[no]\n freetype[no]\n hdf5[no]\n\
+    \ g3tog4[no]\n qt[no]\n motif[no]\n raytracer-x11[no]\n opengl-x11[no]\n openinventor[no]\n vtk[no]"
+  datasets:
+    G4NDL:
+      envvar: G4NEUTRONHPDATA
+      path: /opt/geant4/data/G4NDL4.7.1
+      env_value: null
+    G4EMLOW:
+      envvar: G4LEDATA
+      path: /opt/geant4/data/G4EMLOW8.8
+      env_value: null
+    PhotonEvaporation:
+      envvar: G4LEVELGAMMADATA
+      path: /opt/geant4/data/PhotonEvaporation6.1.2
+      env_value: null
+    RadioactiveDecay:
+      envvar: G4RADIOACTIVEDATA
+      path: /opt/geant4/data/RadioactiveDecay6.1.2
+      env_value: null
+    G4PARTICLEXS:
+      envvar: G4PARTICLEXSDATA
+      path: /opt/geant4/data/G4PARTICLEXS4.2
+      env_value: null
+    G4PII:
+      envvar: G4PIIDATA
+      path: /opt/geant4/data/G4PII1.3
+      env_value: null
+    RealSurface:
+      envvar: G4REALSURFACEDATA
+      path: /opt/geant4/data/RealSurface2.2
+      env_value: null
+    G4SAIDDATA:
+      envvar: G4SAIDXSDATA
+      path: /opt/geant4/data/G4SAIDDATA2.0
+      env_value: null
+    G4ABLA:
+      envvar: G4ABLADATA
+      path: /opt/geant4/data/G4ABLA3.3
+      env_value: null
+    G4INCL:
+      envvar: G4INCLDATA
+      path: /opt/geant4/data/G4INCL1.3
+      env_value: null
+    G4ENSDFSTATE:
+      envvar: G4ENSDFSTATEDATA
+      path: /opt/geant4/data/G4ENSDFSTATE3.0
+      env_value: null
+    G4CHANNELING:
+      envvar: G4CHANNELINGDATA
+      path: /opt/geant4/data/G4CHANNELING2.0
+      env_value: null
+spec_file: mc/geant4/runspecs/M1-check-primary-is-off.yaml
+spec:
+  run_id: M1-check-primary-is-off
+  purpose: 'Diagnostic for the primary-fluence deficit at R0 (measured/analytic 0.9985 +- 0.0003 in M1-R0-option4).
+    Photon transport only: /process/em/lowestElectronEnergy 2 MeV stops every electron in its first step,
+    which leaves photon transport unchanged. Larger scoring cylinder (r 4 cm, t 1 cm at 5 cm depth) for
+    statistics. Importance sampling off; Russian roulette off. Compare the primary track-length fluence
+    with the analytic value; on and off together separate a variance-reduction bias from a physics or
+    analytic cause.'
+  physics: option4
+  threads: 4
+  batches: 8
+  histories_per_batch: 2500000
+  seed_base: 6201
+  geometry:
+    scoring_radius_cm: 4.0
+    scoring_thickness_cm: 1.0
+    scoring_depth_cm: 5.0
+  source:
+    ssd_cm: 100.0
+    field_cm:
+    - 10.0
+    - 10.0
+  cuts:
+    electron_threshold_keV: 10
+    gamma_threshold_keV: 10
+  russian_roulette:
+    enabled: false
+    roi_cm:
+    - 5.0
+    - 3.5
+    - 6.5
+  pre_init_commands:
+  - /process/em/UseGeneralProcess false
+  - /process/em/lowestElectronEnergy 2 MeV
+  depth_scan: false
+  event_sample_per_batch: 0
+bins_file: config/bins.yaml
+executable: /opt/build/co60app/co60app.production
+executable_source_commit: 8eda68783c4644ce1852364bbfaad06e14743e4d
+batches:
+- batch: 0
+  seeds:
+  - 6201001
+  - 6201002
+  exit_code: 0
+  wall_s: 122.4
+  command: /opt/build/co60app/co60app.production run.mac option4 4
+  histories: 2500000
+  D_over_phi0_Gy_cm2: 5.302029053794314e-12
+  D_rel_sem_history_by_history: 0.004365222077323715
+  energy_balance_max_abs_MeV: 0.00037345842772196214
+  untagged_tracks: 0
+- batch: 1
+  seeds:
+  - 6201003
+  - 6201004
+  exit_code: 0
+  wall_s: 126.4
+  command: /opt/build/co60app/co60app.production run.mac option4 4
+  histories: 2500000
+  D_over_phi0_Gy_cm2: 5.2955431430026074e-12
+  D_rel_sem_history_by_history: 0.004374143790512327
+  energy_balance_max_abs_MeV: 0.0005338102563998692
+  untagged_tracks: 0
+- batch: 2
+  seeds:
+  - 6201005
+  - 6201006
+  exit_code: 0
+  wall_s: 121.0
+  command: /opt/build/co60app/co60app.production run.mac option4 4
+  histories: 2500000
+  D_over_phi0_Gy_cm2: 5.301212516807853e-12
+  D_rel_sem_history_by_history: 0.004372303992921221
+  energy_balance_max_abs_MeV: 8.956862487763395e-05
+  untagged_tracks: 0
+- batch: 3
+  seeds:
+  - 6201007
+  - 6201008
+  exit_code: 0
+  wall_s: 116.3
+  command: /opt/build/co60app/co60app.production run.mac option4 4
+  histories: 2500000
+  D_over_phi0_Gy_cm2: 5.301124061143618e-12
+  D_rel_sem_history_by_history: 0.004365879034441299
+  energy_balance_max_abs_MeV: 0.00011360420872241761
+  untagged_tracks: 0
+- batch: 4
+  seeds:
+  - 6201009
+  - 6201010
+  exit_code: 0
+  wall_s: 125.6
+  command: /opt/build/co60app/co60app.production run.mac option4 4
+  histories: 2500000
+  D_over_phi0_Gy_cm2: 5.313285223247495e-12
+  D_rel_sem_history_by_history: 0.004369467830399266
+  energy_balance_max_abs_MeV: 8.793383466376703e-05
+  untagged_tracks: 0
+- batch: 5
+  seeds:
+  - 6201011
+  - 6201012
+  exit_code: 0
+  wall_s: 120.6
+  command: /opt/build/co60app/co60app.production run.mac option4 4
+  histories: 2500000
+  D_over_phi0_Gy_cm2: 5.307645536297211e-12
+  D_rel_sem_history_by_history: 0.004364531598245057
+  energy_balance_max_abs_MeV: 0.0005858371280009766
+  untagged_tracks: 0
+- batch: 6
+  seeds:
+  - 6201013
+  - 6201014
+  exit_code: 0
+  wall_s: 120.8
+  command: /opt/build/co60app/co60app.production run.mac option4 4
+  histories: 2500000
+  D_over_phi0_Gy_cm2: 5.350614722293552e-12
+  D_rel_sem_history_by_history: 0.004346318751978296
+  energy_balance_max_abs_MeV: 0.0006350041783291793
+  untagged_tracks: 0
+- batch: 7
+  seeds:
+  - 6201015
+  - 6201016
+  exit_code: 0
+  wall_s: 122.5
+  command: /opt/build/co60app/co60app.production run.mac option4 4
+  histories: 2500000
+  D_over_phi0_Gy_cm2: 5.3243989210150675e-12
+  D_rel_sem_history_by_history: 0.004356803111536243
+  energy_balance_max_abs_MeV: 0.00011432751452455925
+  untagged_tracks: 0
+started_utc: '2026-10-10T14:42:25Z'
+geant4_physics_printout:
+  em_models:
+    gamma phot:
+    - LivermorePhElectric (0 eV - 100 TeV)
+    gamma compt:
+    - LowEPComptonModel (0 eV - 20 MeV)
+    - KleinNishina (20 MeV - 100 TeV)
+    gamma conv:
+    - BetheHeitler5D (0 eV - 100 TeV)
+    gamma Rayl:
+    - LivermoreRayleigh (0 eV - 100 TeV)
+    e- msc:
+    - GoudsmitSaunderson (0 eV - 100 MeV)
+    - WentzelVIUni (100 MeV - 100 TeV)
+    e- eIoni:
+    - PenIoni (0 eV - 100 keV)
+    - MollerBhabha (100 keV - 100 TeV)
+    e- eBrem:
+    - eBremSB (0 eV - 1 GeV)
+    - eBremLPM (1 GeV - 100 TeV)
+    e- ePairProd:
+    - ePairProd (0 eV - 100 TeV)
+    e- CoulombScat:
+    - eCoulombScattering (100 MeV - 100 TeV)
+    e+ msc:
+    - GoudsmitSaunderson (0 eV - 100 MeV)
+    - WentzelVIUni (100 MeV - 100 TeV)
+    e+ eIoni:
+    - PenIoni (0 eV - 100 keV)
+    - MollerBhabha (100 keV - 100 TeV)
+    e+ eBrem:
+    - eBremSB (0 eV - 1 GeV)
+    - eBremLPM (1 GeV - 100 TeV)
+    e+ ePairProd:
+    - ePairProd (0 eV - 100 TeV)
+    e+ annihil:
+    - eplusTo2or3gamma (0 eV - 100 TeV)
+    e+ CoulombScat:
+    - eCoulombScattering (100 MeV - 100 TeV)
+  g4_water_range_cuts: gamma 1 mm e- 8.24701 um e+ 8.33478 um proton 8.24701 um
+  g4_water_energy_thresholds: gamma 2.93547 keV e- 10 keV e+ 10 keV proton 824.701 eV
+finished_utc: '2026-10-10T14:58:54Z'
+wall_time_s: 975.6
