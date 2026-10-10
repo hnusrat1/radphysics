@@ -1,0 +1,18 @@
+run_id: M1-check-primary-full-r4
+purpose: >-
+  Diagnostic for the primary-fluence deficit at R0. Full electron transport, no variance reduction, in the
+  geometry of M1-check-primary-is-off (scoring cylinder r 4 cm, t 1 cm at 5 cm depth). The two runs differ only in
+  /process/em/lowestElectronEnergy 2 MeV (photon-only) versus full transport, so a difference in primary fluence
+  isolates an effect of electron transport on the photon bookkeeping.
+physics: option4
+threads: 4
+batches: 8
+histories_per_batch: 2000000
+seed_base: 6241
+geometry: {scoring_radius_cm: 4.0, scoring_thickness_cm: 1.0, scoring_depth_cm: 5.0}
+source: {ssd_cm: 100.0, field_cm: [10.0, 10.0]}
+cuts: {electron_threshold_keV: 10, gamma_threshold_keV: 10}
+russian_roulette: {enabled: false, roi_cm: [5.0, 3.5, 6.5]}
+pre_init_commands: ['/process/em/UseGeneralProcess false']   # DECISIONS D019
+depth_scan: false
+event_sample_per_batch: 0
