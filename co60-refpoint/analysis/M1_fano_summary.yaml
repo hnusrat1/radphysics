@@ -1,0 +1,40 @@
+standard_opt4:
+  runs:
+  - M0-fano-opt4
+  - M0-fano-opt4-ext
+  batches: 40
+  events_total: 13600000
+  ratio_mean: 1.001569
+  ratio_sem_batch_spread: 0.000575
+  ratio_sem_example_estimate: 0.000528
+  deviation_percent: 0.1569
+  deviation_sigma: 2.73
+  interval_95_percent:
+  - 1.00044
+  - 1.0027
+standard_opt0:
+  runs:
+  - M0-fano-opt0-control
+  batches: 10
+  events_total: 1000000
+  ratio_mean: 1.014703
+  ratio_sem_batch_spread: 0.001568
+  ratio_sem_example_estimate: 0.00199
+  deviation_percent: 1.4703
+  deviation_sigma: 9.37
+  interval_95_percent:
+  - 1.01163
+  - 1.01778
+standard_opt4 | /process/msc/RangeFactor 0.04:
+  runs:
+  - M1-fano-diag-rfact004
+  batches: 6
+  events_total: 2040000
+  ratio_mean: 0.999968
+  ratio_sem_batch_spread: 0.001774
+  ratio_sem_example_estimate: 0.001364
+  deviation_percent: -0.0032
+  deviation_sigma: -0.02
+  interval_95_percent:
+  - 0.99649
+  - 1.00344

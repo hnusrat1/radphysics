@@ -4,6 +4,16 @@ import html
 import math
 
 
+def g4_label(raw):
+    """'Geant4 version Name: geant4-11-04-patch-03 [MT] (01-October-2026)' -> 'Geant4 11.4.3 (MT)'."""
+    import re
+    m = re.search(r"geant4-(\d+)-(\d+)(?:-patch-(\d+))?", raw)
+    if not m:
+        return raw.strip()
+    ver = f"{int(m.group(1))}.{int(m.group(2))}.{int(m.group(3) or 0)}"
+    return f"Geant4 {ver}" + (" (MT)" if "[MT]" in raw else "")
+
+
 def esc(s):
     return html.escape(str(s))
 
@@ -127,6 +137,9 @@ JS = r"""
     for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; };
   const fmt = (x) => { if (x === 0) return '0'; const a = Math.abs(x);
     return (a >= 1e4 || a < 1e-3) ? x.toExponential(2) : x.toPrecision(3); };
+  const SUP = {'-': '⁻', '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹'};
+  const fmtLog = (x) => { const e = Math.round(Math.log10(x));
+    return (e >= -2 && e <= 2) ? String(+x.toPrecision(1)) : '10' + String(e).split('').map(c => SUP[c]).join(''); };
 
   function ticksLog(lo, hi) { const t = []; for (let e = Math.floor(Math.log10(lo)); e <= Math.ceil(Math.log10(hi)); e++) {
     const v = Math.pow(10, e); if (v >= lo * 0.999 && v <= hi * 1.001) t.push(v); } return t; }
@@ -139,7 +152,7 @@ JS = r"""
     const draw = () => {
       host.innerHTML = '';
       const W = Math.max(host.clientWidth, 280), H = cfg.height || Math.round(Math.min(320, Math.max(220, W * 0.5)));
-      const m = {l: 58, r: 14, t: 10, b: 38};
+      const m = {l: 66, r: 14, t: 10, b: 38};
       const svg = el('svg', {viewBox: `0 0 ${W} ${H}`, role: 'img', 'aria-label': cfg.title || ''}, host);
       const xs = cfg.series.flatMap(s => s.edges), ys = cfg.series.flatMap(s => s.y.filter(v => v > 0));
       const x0 = cfg.xdomain ? cfg.xdomain[0] : Math.min(...xs), x1 = cfg.xdomain ? cfg.xdomain[1] : Math.max(...xs);
@@ -151,7 +164,7 @@ JS = r"""
                                 : (H - m.b) - (y - y0) / (y1 - y0) * (H - m.t - m.b);
       const yt = cfg.ylog ? ticksLog(y0, y1) : ticksLin(y0, y1, 5);
       yt.forEach(t => { el('line', {x1: m.l, x2: W - m.r, y1: Y(t), y2: Y(t), stroke: css('--rule'), 'stroke-width': 1}, svg);
-        el('text', {x: m.l - 6, y: Y(t) + 4, 'text-anchor': 'end'}, svg).textContent = fmt(t); });
+        el('text', {x: m.l - 6, y: Y(t) + 4, 'text-anchor': 'end'}, svg).textContent = cfg.ylog ? fmtLog(t) : fmt(t); });
       ticksLin(x0, x1, cfg.xticks || 7).forEach(t => { el('text', {x: X(t), y: H - m.b + 16, 'text-anchor': 'middle'}, svg).textContent = t; });
       el('line', {x1: m.l, x2: W - m.r, y1: H - m.b, y2: H - m.b, stroke: css('--axis')}, svg);
       el('text', {x: (m.l + W - m.r) / 2, y: H - 4, 'text-anchor': 'middle', class: 'lbl'}, svg).textContent = cfg.xlabel;
@@ -322,7 +335,7 @@ def render(r, m, n, data_json, text, fano, v, pm, sci, rel, sig):
     pdd = r.get("pdd")
     pdd_txt = (f"PDD(5) = <span class='num'>{pdd['PDD5']['mean']:.2f} ± {pdd['PDD5']['sem']:.2f}</span>%, "
                f"d<sub>max</sub> = <span class='num'>{pdd['d_max_cm']['mean']:.3f} ± {pdd['d_max_cm']['sem']:.3f}</span> cm"
-               ) if pdd else "Depth scan not yet run."
+               ) if pdd else "Depth scan not yet run"
 
     return f"""<title>Co-60 Reference Point M1</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -352,7 +365,7 @@ def render(r, m, n, data_json, text, fano, v, pm, sci, rel, sig):
   <h1>Co-60 reference point: the Monte Carlo reference, layer by layer</h1>
   <p class="lede">{T['intro']}</p>
   <div class="meta">
-    <span>{esc(meta['geant4_version'].split('$Name:')[-1].strip(' $') if '$Name' in meta['geant4_version'] else meta['geant4_version'])}</span>
+    <span>{esc(g4_label(meta['geant4_version']))}</span>
     <span>G4EmStandardPhysics_option4</span>
     <span>water, 5 cm depth, 10 × 10 cm², SSD 100 cm</span>
     <span class="num">{n['hist']} histories · {n['batches']} batches</span>
@@ -426,7 +439,7 @@ def render(r, m, n, data_json, text, fano, v, pm, sci, rel, sig):
   <div class="sec-head"><span class="k">Layer 4</span><h2>Electrons slowing down</h2></div>
   <p class="lede">{T['layer4']}</p>
   <div class="fig"><div class="legend"><span><i style="background:var(--s1)"></i>all electrons</span><span><i style="background:var(--s2)"></i>delta rays and descendants</span><span><i style="background:var(--s3)"></i>positrons</span></div>
-    <div class="chart" id="ch-electron"></div><div class="cap">Differential fluence per unit Φ₀; track length spread linearly over each step's energy loss; 10 keV bins.</div></div>
+    <div class="chart" id="ch-electron"></div><div class="cap">Differential fluence per unit Φ₀ from the CSDA-weighted track-length estimator (DECISIONS D020); 10 keV bins.</div></div>
   <div class="grid2">
     <div class="fig"><div class="chart" id="ch-electron-ang"></div><div class="cap">Electron fluence by direction (pre-step direction, track-length weighted).</div></div>
     <div class="tbl"><table><thead><tr><th>Quantity</th><th class="num">Value</th><th>Unit</th></tr></thead><tbody>

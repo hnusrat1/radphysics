@@ -96,9 +96,103 @@ def main():
         "batches": meta["batches"],
         "commit": git_head(),
     }
+    text["checks"] = build_checks(r, main_run) + text.get("checks_extra", [])
     page = build_page(r, main_run, numbers, data_json, text, fano, v)
     (RES / "co60_r0_m1.html").write_text(page)
     print(f"wrote {RES / 'co60_r0_m1.html'} ({len(page) / 1024:.0f} kB)")
+
+
+def build_checks(r, m):
+    """Rows of the checks table, every number taken from M1_results.json.
+
+    Status: 'ok' when the check passes its stated criterion, 'warn' when it does not
+    and the cause is open or understood but not fixed, 'bad' when it fails outright.
+    """
+    rows = []
+
+    def z_of(mean, sem, ref=1.0):
+        return (mean - ref) / sem if sem else float("nan")
+
+    def add(name, result, status, label, chip=None):
+        rows.append({"name": name, "result": result, "status": status, "status_label": label, "chip": chip})
+
+    diag = r.get("diagnostics", {})
+    pf = diag.get("primary_fluence", {})
+
+    th = pf.get("M1-thinslab-option4-v2")
+    if th:
+        x = th["tracking_mu"]; z = z_of(x["mean"], x["sem"])
+        add("Thin slab: primary track-length fluence against the analytic value (r 4 cm, 0.05 cm at 0.5 cm, no VR)",
+            f"{pm(x['mean'], x['sem'])} ({z:+.1f}σ, {x['n_batches']} batches)",
+            "ok" if abs(z) < 3 else "warn", "passes" if abs(z) < 3 else "outside 3σ")
+
+    tr = diag.get("transmission")
+    if tr:
+        parts = [f"{l['energy_MeV']} MeV: {pm(l['ratio'], l['ratio_sem'])}" for l in tr.values()]
+        add("Tracking attenuation coefficient over G4EmCalculator value (TestEm13 transmission, 5 cm water)",
+            "; ".join(parts) + ". The analytic fluence below uses the tracking value.", "ok", "measured")
+
+    main = pf.get("M1-R0-option4")
+    if main:
+        x = main["tracking_mu"]; z = z_of(x["mean"], x["sem"])
+        st = "ok" if abs(z) < 3 else "warn"
+        add("R0: primary fluence against the analytic value (main run)",
+            f"{pm(x['mean'], x['sem'])} ({z:+.1f}σ). Not reproduced by the diagnostic runs; see Findings.",
+            st, "passes" if st == "ok" else "open", None if st == "ok" else "Primary fluence: open anomaly")
+    rep = pf.get("M1-R0-option4-rep2")
+    if rep and rep["tracking_mu"]["sem"]:
+        x = rep["tracking_mu"]; z = z_of(x["mean"], x["sem"])
+        add("R0: primary fluence, replicate with new seeds",
+            f"{pm(x['mean'], x['sem'])} ({z:+.1f}σ, {x['n_batches']} batches)",
+            "ok" if abs(z) < 3 else "warn", "passes" if abs(z) < 3 else "outside 3σ")
+
+    others = [(k, v) for k, v in pf.items() if k not in ("M1-R0-option4", "M1-R0-option4-rep2", "M1-thinslab-option4-v2")]
+    if others:
+        cells = "<br>".join(f"{esc_(v['label'])}: {pm(v['tracking_mu']['mean'], v['tracking_mu']['sem'])}"
+                            for _, v in others if v["tracking_mu"]["sem"])
+        add("Primary fluence in the diagnostic runs (photon-only and full transport, with and without importance sampling)",
+            cells, "ok", "no bias found")
+
+    x = m["L5_D_continuous_over_D"]
+    ok = abs(x["mean"] - 1) < 0.002
+    add("Fluence-to-dose closure: ∫Φ_E L_Δ dE plus track ends, over scored dose (CSDA-weighted estimator)",
+        f"{pm(x['mean'], x['sem'])}; linear estimator {pm(m['L5_D_continuous_over_D_linear']['mean'], m['L5_D_continuous_over_D_linear']['sem'])} (DECISIONS D020)",
+        "ok" if ok else "warn", "passes" if ok else "fails")
+
+    for label, key, name in (("S2_cut_independence", "L5_D_over_phi0_Gy_cm2", "Cut independence (S2, 5 keV thresholds): D/Φ₀"),
+                             ("S1_volume_size", "L5_D_over_phi0_Gy_cm2", "Scoring volume size (S1, r 0.5 cm, t 0.1 cm): D/Φ₀"),
+                             ("vr_check_analog", "L5_D_over_phi0_Gy_cm2", "Variance reduction against analog transport: D/Φ₀")):
+        c = r.get(label)
+        if not c:
+            continue
+        s = c["scalars"][key]
+        ok = abs(s["z"]) < 3
+        extra = ""
+        if label == "S2_cut_independence":
+            sw = c["scalars"]["L5_s_w_air_icru37"]
+            extra = f"; s<sub>w,air</sub> (ICRU 37 basis) {100 * sw['rel_diff']:+.4f}%"
+        es = c["electron_fluence_shape"]
+        add(name, f"{100 * s['rel_diff']:+.2f}% ({s['z']:+.1f}σ){extra}; electron spectrum shape χ²/ndf "
+            f"{es['chi2']:.0f}/{es['ndf']}", "ok" if ok else "warn", "passes" if ok else "outside 3σ")
+
+    ev = r.get("event_sample")
+    if ev:
+        b = ev["bound_failure_rate"]; s = ev["strict_failure_rate"]
+        add("Event sample under the validity rules (Monte Carlo events, D014)",
+            f"{ev['n_events']:,} interactions: {100 * b['valid']:.3f}% fail the bound rules "
+            f"(δ<sub>C</sub> = {1e3 * ev['doppler_tolerance']['delta_c']:.0f} keV); {100 * s['valid']:.1f}% fail the strict free-electron rules",
+            "ok", "as designed")
+
+    meta = m["_meta"]
+    add("Bookkeeping: untagged tracks; largest per-interaction energy imbalance",
+        f"{meta['untagged_tracks']} untagged; {1e3 * meta['energy_balance_max_abs_MeV']:.2f} keV",
+        "ok" if meta["untagged_tracks"] == 0 else "bad", "passes" if meta["untagged_tracks"] == 0 else "fails")
+    return rows
+
+
+def esc_(s):
+    import html
+    return html.escape(str(s))
 
 
 def build_page(r, m, n, data_json, text, fano, v):

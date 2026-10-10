@@ -177,3 +177,21 @@ co60app scores both estimators:
 - the CSDA-weighted estimator, as `electron_fluence_csda` etc.
 
 Analysis uses the CSDA-weighted spectrum for Layer 4 and for s_w,air and reports the linear one alongside. On s_w,air the two differ by less than 0.03%. **[Humza]** Confirm the CSDA-weighted spectrum as the Layer 4 reference.
+
+## D021. Mass-geometry importance sampling, built as an alternative (2026-10-10)
+
+The main run's primary fluence came out 0.15% below the analytic value (STATUS, M1 anomalies). While parallel-world importance sampling was a suspect, I added a second implementation: the importance cells become nested G4_WATER cylinders in the mass geometry, clipped to the phantom, as in Geant4 example B01. There the importance process acts only where a step really ends on a geometric boundary.
+
+- Selected per run spec with `importance_geometry: mass`; the launch flag is `--importance-mass`. The default stays the parallel world.
+- The scoring cylinder must lie inside the innermost cell. Electrons that can reach the scoring volume never reach a cell wall (ROI radius 1.8 cm + CSDA range 0.62 cm < 2.5 cm, and likewise in z), so the added boundaries cannot change the scored electron transport.
+- Built into a separate binary (`co60app.dev-8440e7c`); the frozen production binary is unchanged.
+
+Not adopted. The photon-only checks found no bias from the parallel implementation (STATUS), so production keeps D016. The option and its check spec (`M1-check-primary-ismass-prodgeom`) stay in the repository.
+
+## D022. Replicate of the main run, with the pooling rule fixed in advance (2026-10-10)
+
+The main run's primary-fluence deficit (0.9985 ± 0.0003 against the model μ, 4σ) was not reproduced by any diagnostic. `M1-R0-option4-rep2` repeats the main run exactly (same spec, same production binary) with new seeds (seed_base 6111).
+
+Rule, written before the replicate finishes:
+- If the replicate agrees with the main run within 3 combined standard errors on D/Φ₀ and on the primary fluence ratio, the two are pooled (20 batches) for every R0 result, and both are also reported separately.
+- If they disagree on either, they are not pooled; both are reported, and the difference is treated as an unresolved systematic until explained.

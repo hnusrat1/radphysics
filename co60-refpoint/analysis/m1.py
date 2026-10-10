@@ -328,11 +328,12 @@ def targets(res):
         "initial electron spectrum, comparison grid": res["L3_spectrum_comparison"]["all"],
     }
     out = {
-        "D_over_phi0": {"target": 0.001, "achieved": rel("L5_D_over_phi0_Gy_cm2")},
-        "beta": {"target": 0.002, "achieved": rel("L5_beta")},
+        "D/Φ₀, relative standard error": {"target": 0.001, "achieved": rel("L5_D_over_phi0_Gy_cm2")},
+        "β, relative standard error": {"target": 0.002, "achieved": rel("L5_beta")},
     }
     for name, sp in spectra.items():
-        out[f"worst bin >= 1% of total: {name}"] = {"target": 0.01, "achieved": worst_bin(sp["mean"], sp["sem"])}
+        out[f"{name[0].upper() + name[1:]}: worst bin holding ≥ 1% of the total"] = {
+            "target": 0.01, "achieved": worst_bin(sp["mean"], sp["sem"])}
     for v in out.values():
         v["met"] = v["achieved"] is not None and v["achieved"] <= v["target"]
     return out
@@ -363,6 +364,65 @@ def pdd(run_id):
             "depth_cm": (np.arange(pr.shape[1]) + 0.5) * 0.1}
 
 
+DIAGNOSTIC_RUNS = {   # primary-fluence diagnostics (STATUS M1): transport, variance reduction, geometry
+    "M1-check-primary-is-off": "photon only, no VR, r 4 cm t 1 cm",
+    "M1-check-primary-is-on": "photon only, parallel importance, r 4 cm t 1 cm",
+    "M1-check-primary-full-r4": "full transport, no VR, r 4 cm t 1 cm",
+    "M1-check-primary-is-on-prodgeom": "photon only, parallel importance, r 1 cm t 0.2 cm",
+    "M1-check-primary-ismass-prodgeom": "photon only, mass-geometry importance, r 1 cm t 0.2 cm",
+}
+
+
+def primary_ratios(run_id):
+    """Primary fluence over the analytic value (model mu and tracking mu), both lines averaged, per batch."""
+    batches = load_batches(run_id)
+    if not batches:
+        return None
+    tr = yaml.safe_load(open(TRANSMISSION))["lines"] if TRANSMISSION.exists() else None
+    out = {"model_mu": [], "tracking_mu": []}
+    for b in batches:
+        g, src, n = b["geometry"], b["source"], b["histories"]
+        tl = tally(b, "photon_track_length")
+        for kind in out:
+            vals = []
+            for line, cat in (("line1", 0), ("line2", 1)):
+                mu = g4_mu_water(TABLES, src[f"{line}_MeV"])[0] if kind == "model_mu" else tr[line]["mu_measured_cm-1"]
+                frac = b["scalars"][f"histories_{line}"] / n
+                expected = frac * fluence_cylinder_average(g["scoring_radius"], g["scoring_thickness"],
+                                                           g["scoring_depth"], src["ssd"], src["solid_angle_sr"], mu)
+                vals.append(tl[cat] / (g["scoring_volume_cm3"] * n) / expected)
+            out[kind].append(np.mean(vals))
+    k = len(batches)
+    return {kind: {"mean": float(np.mean(v)), "sem": float(np.std(v, ddof=1) / np.sqrt(k)) if k > 1 else None,
+                   "n_batches": k} for kind, v in out.items()}
+
+
+def diagnostics():
+    d = {}
+    if TRANSMISSION.exists():
+        tr = yaml.safe_load(open(TRANSMISSION))
+        d["transmission"] = {}
+        for line, rec in tr["lines"].items():
+            mu_model = g4_mu_water(TABLES, rec["energy_MeV"])[0]
+            d["transmission"][line] = {"energy_MeV": rec["energy_MeV"], "mu_tracking_cm-1": rec["mu_measured_cm-1"],
+                                       "mu_tracking_sem_cm-1": rec["mu_measured_sem_cm-1"], "mu_model_cm-1": mu_model,
+                                       "ratio": rec["mu_measured_cm-1"] / mu_model,
+                                       "ratio_sem": rec["mu_measured_sem_cm-1"] / mu_model,
+                                       "photons": rec["incident"]}
+    d["primary_fluence"] = {}
+    for run_id, label in [("M1-R0-option4", "main run: full transport, importance + roulette, r 1 cm t 0.2 cm"),
+                          ("M1-R0-option4-rep2", "replicate of the main run (new seeds)"),
+                          ("M1-R0-option4-S2-5keV", "S2: as main run, 5 keV cuts"),
+                          ("M1-R0-option4-S1-half", "S1: as main run, r 0.5 cm t 0.1 cm"),
+                          ("M1-vrcheck-analog", "full transport, no VR, r 1 cm t 0.2 cm"),
+                          ("M1-thinslab-option4-v2", "thin slab: full transport, no VR, r 4 cm t 0.05 cm at 0.5 cm")
+                          ] + list(DIAGNOSTIC_RUNS.items()):
+        pr = primary_ratios(run_id)
+        if pr:
+            d["primary_fluence"][run_id] = {"label": label, **pr}
+    return d
+
+
 def to_jsonable(x):
     if isinstance(x, dict):
         return {k: to_jsonable(v) for k, v in x.items()}
@@ -390,8 +450,8 @@ SCALAR_KEYS_S = [
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     sp = bases(TABLES, PEGS4_DIR)
-    runs = {k: analyse_run(k, sp) for k in ("M1-R0-option4", "M1-R0-option4-S2-5keV", "M1-R0-option4-S1-half",
-                                           "M1-vrcheck-analog", "M1-thinslab-option4-v2")}
+    runs = {k: analyse_run(k, sp) for k in ("M1-R0-option4", "M1-R0-option4-rep2", "M1-R0-option4-S2-5keV",
+                                           "M1-R0-option4-S1-half", "M1-vrcheck-analog", "M1-thinslab-option4-v2")}
     main_res = runs["M1-R0-option4"]
     result = {"runs": {k: v for k, v in runs.items() if v is not None}}
     if main_res:
@@ -407,6 +467,7 @@ def main():
                     "photon_fluence_shape": compare_spectrum(main_res, other,
                                                              ["L1_photon_fluence_comparison", "total"]),
                 }
+    result["diagnostics"] = diagnostics()
     ev = summarize_events(RUNS / "M1-R0-option4")
     if ev:
         result["event_sample"] = ev
