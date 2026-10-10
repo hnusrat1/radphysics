@@ -1,0 +1,30 @@
+run_id: M1-check-transmission
+executable: /opt/build/examples/TestEm13-opt4/build/TestEm13
+thickness_cm: 5.0
+material: G4_WATER
+physics: G4EmStandardPhysics_option4, UseGeneralProcess false
+lines:
+  line1:
+    energy_MeV: 1.1732
+    transmitted: 14438928
+    incident: 20000000
+    mu_measured_cm-1: 0.06516087621445024
+    mu_measured_sem_cm-1: 2.7754076526153513e-05
+    calculator_terms_as_printed:
+      Rayl: 4.0765 um2/mg
+      compt: 6.5044 mm2/g
+      conv: 0.92121 um2/mg
+      phot: 0.26793 um2/mg
+      total: 6.5097 mm2/g
+  line2:
+    energy_MeV: 1.3325
+    transmitted: 14738873
+    incident: 20000000
+    mu_measured_cm-1: 0.061048769666384076
+    mu_measured_sem_cm-1: 2.671912626143869e-05
+    calculator_terms_as_printed:
+      Rayl: 3.1604 um2/mg
+      compt: 6.0936 mm2/g
+      conv: 3.8848 um2/mg
+      phot: 0.21135 um2/mg
+      total: 6.1008 mm2/g

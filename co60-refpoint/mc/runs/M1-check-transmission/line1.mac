@@ -1,0 +1,13 @@
+# TestEm13 transmission check of photon cross sections, production physics (DECISIONS D019)
+/control/verbose 1
+/run/verbose 1
+/testem/phys/addPhysics emstandard_opt4
+/process/em/UseGeneralProcess false
+/testem/det/setMat G4_WATER
+/testem/det/setSize 5.0 cm
+/run/initialize
+/random/setSeeds 7001 7002
+/gun/particle gamma
+/gun/energy 1.1732 MeV
+/run/printProgress 0
+/run/beamOn 20000000
