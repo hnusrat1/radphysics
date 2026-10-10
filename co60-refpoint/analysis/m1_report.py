@@ -121,9 +121,9 @@ def build_checks(r, m):
 
     th = pf.get("M1-thinslab-option4-v2")
     if th:
-        x = th["tracking_mu"]; z = z_of(x["mean"], x["sem"])
+        x = th["tracking_mu"]; z = z_of(x["mean"], x["sem_conservative"])
         add("Thin slab: primary track-length fluence against the analytic value (r 4 cm, 0.05 cm at 0.5 cm, no VR)",
-            f"{pm(x['mean'], x['sem'])} ({z:+.1f}σ, {x['n_batches']} batches)",
+            f"{pm(x['mean'], x['sem_conservative'])} ({z:+.1f}σ, {x['n_batches']} batches)",
             "ok" if abs(z) < 3 else "warn", "passes" if abs(z) < 3 else "outside 3σ")
 
     tr = diag.get("transmission")
@@ -134,21 +134,22 @@ def build_checks(r, m):
 
     main = pf.get("M1-R0-option4")
     if main:
-        x = main["tracking_mu"]; z = z_of(x["mean"], x["sem"])
+        x = main["tracking_mu"]; z = z_of(x["mean"], x["sem_conservative"]); zb = z_of(x["mean"], x["sem"])
         st = "ok" if abs(z) < 3 else "warn"
         add("R0: primary fluence against the analytic value (main run)",
-            f"{pm(x['mean'], x['sem'])} ({z:+.1f}σ). Not reproduced by the diagnostic runs; see Findings.",
+            f"{pm(x['mean'], x['sem_conservative'])} ({z:+.1f}σ on the counting-statistics error; "
+            f"{zb:+.1f}σ on the batch spread, which is unusually small in this run; see Findings)",
             st, "passes" if st == "ok" else "open", None if st == "ok" else "Primary fluence: open anomaly")
     rep = pf.get("M1-R0-option4-rep2")
     if rep and rep["tracking_mu"]["sem"]:
-        x = rep["tracking_mu"]; z = z_of(x["mean"], x["sem"])
+        x = rep["tracking_mu"]; z = z_of(x["mean"], x["sem_conservative"])
         add("R0: primary fluence, replicate with new seeds",
-            f"{pm(x['mean'], x['sem'])} ({z:+.1f}σ, {x['n_batches']} batches)",
+            f"{pm(x['mean'], x['sem_conservative'])} ({z:+.1f}σ, {x['n_batches']} batches)",
             "ok" if abs(z) < 3 else "warn", "passes" if abs(z) < 3 else "outside 3σ")
 
     others = [(k, v) for k, v in pf.items() if k not in ("M1-R0-option4", "M1-R0-option4-rep2", "M1-thinslab-option4-v2")]
     if others:
-        cells = "<br>".join(f"{esc_(v['label'])}: {pm(v['tracking_mu']['mean'], v['tracking_mu']['sem'])}"
+        cells = "<br>".join(f"{esc_(v['label'])}: {pm(v['tracking_mu']['mean'], v['tracking_mu']['sem_conservative'])}"
                             for _, v in others if v["tracking_mu"]["sem"])
         add("Primary fluence in the diagnostic runs (photon-only and full transport, with and without importance sampling)",
             cells, "ok", "no bias found")

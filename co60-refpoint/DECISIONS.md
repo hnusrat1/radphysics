@@ -195,3 +195,18 @@ The main run's primary-fluence deficit (0.9985 ± 0.0003 against the model μ, 4
 Rule, written before the replicate finishes:
 - If the replicate agrees with the main run within 3 combined standard errors on D/Φ₀ and on the primary fluence ratio, the two are pooled (20 batches) for every R0 result, and both are also reported separately.
 - If they disagree on either, they are not pooled; both are reported, and the difference is treated as an unresolved systematic until explained.
+
+## D023. Uncertainties: the larger of the batch spread and a second estimate (2026-10-10)
+
+The plan's uncertainty is the standard error over at least 10 independent batches. With 10 batches that estimate is itself uncertain by about ±24% (1σ), and it can come out far too small by chance.
+
+The main run shows this. Its batches agree with each other better than their own history-by-history variance allows: the batch spread of the total photon track length is 0.64 of the history-based value, D/Φ₀ 0.71, the primary fluence 0.43 of its counting-statistics value. S2, the analog run and the photon-only checks show ratios near 1. The event samples share no records between batches, so the batches are not reusing random streams. The main run's small spread is a chance outcome (p ≈ 0.02–0.07 per quantity).
+
+From M1 on, analysis/m1.py reports, beside the batch standard error:
+- `sem_hbh` for quantities with per-history second moments (D, K, total photon fluence): the standard error from the variance of the per-history scores;
+- `sem_counting` for the primary fluence: the Poisson error of the number of primary crossings (track length over thickness), a floor for the track-length estimator;
+- `sem_conservative`, the larger of the batch standard error and these.
+
+Statistical targets, run-to-run comparisons and the primary-fluence check use `sem_conservative`. Quantities without a second estimate (β, spectra, s_w,air) keep the batch standard error.
+
+Effect: the main run's D/Φ₀ relative uncertainty is 0.093% (target 0.1%, met). Its primary-fluence deficit against the tracking μ is 1.9σ instead of 4.4σ. **[Humza]** Confirm this policy.

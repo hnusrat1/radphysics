@@ -257,12 +257,56 @@ def combine(per_batch):
     return {"mean": mean, "sem": sem, "n_batches": n}
 
 
+# Scalars with history-by-history second moments: (result key, scalar, normalisation per batch)
+HBH = [
+    ("L5_D_over_phi0_Gy_cm2", "edep", lambda b: J_PER_MEV / (b["geometry"]["scoring_mass_g"] * 1e-3)
+                                                / b["histories"] / b["source"]["phi0_per_history_cm-2"]),
+    ("L5_K_over_phi0_Gy_cm2", "kerma_energy_transfer", lambda b: J_PER_MEV / (b["geometry"]["scoring_mass_g"] * 1e-3)
+                                                               / b["histories"] / b["source"]["phi0_per_history_cm-2"]),
+    ("L1_fluence_total_per_phi0", "photon_track_length_total",
+     lambda b: 1.0 / (b["geometry"]["scoring_volume_cm3"] * b["histories"] * b["source"]["phi0_per_history_cm-2"])),
+]
+
+
+def add_history_variance(res, batches):
+    """Second uncertainty estimate from history-by-history second moments, and a conservative one.
+
+    The batch spread of 10 batches estimates the standard error to about +-24% (1 sigma); it can be
+    much smaller by chance (the main run's batches agree better than their history variance allows,
+    STATUS M1). For quantities with second moments, `sem_hbh` is computed from the variance of the
+    per-history scores and `sem_conservative` is the larger of the two. For the primary fluence
+    ratios, `sem_counting` is the Poisson error of the number of primary crossings (track length
+    over thickness), a floor for the track-length estimator.
+    """
+    k = len(batches)
+    for key, scalar, norm in HBH:
+        if key not in res:
+            continue
+        var = 0.0
+        for b in batches:
+            s, n, c = b["scalars"], b["histories"], norm(b)
+            mean_h = s[scalar] / n
+            # batch value = c * sum over histories, so its variance is c^2 * n * var(per-history score)
+            var += c * c * n * max(s[scalar + "_sq"] / n - mean_h * mean_h, 0.0)
+        res[key]["sem_hbh"] = float(np.sqrt(var) / k)
+        res[key]["sem_conservative"] = float(max(res[key]["sem"], res[key]["sem_hbh"]))
+    t = batches[0]["geometry"]["scoring_thickness"]
+    for line, cat in (("line1", 0), ("line2", 1)):
+        crossings = sum(tally(b, "photon_track_length")[cat] for b in batches) / t
+        for suffix in ("", "_xcom", "_tracking_mu"):
+            key = f"L1_primary_{line}_measured_over_analytic{suffix}"
+            if key in res:
+                res[key]["sem_counting"] = float(res[key]["mean"] / np.sqrt(crossings))
+                res[key]["sem_conservative"] = float(max(res[key]["sem"], res[key]["sem_counting"]))
+
+
 def analyse_run(run_id, sp):
     batches = load_batches(run_id)
     if not batches:
         return None
     per = [observables(b, sp) for b in batches]
     res = combine(per)
+    add_history_variance(res, batches)
     res["_meta"] = {
         "run_id": run_id,
         "batches": len(batches),
@@ -287,8 +331,8 @@ def compare(a, b, keys):
     for k in keys:
         if k not in a or k not in b:
             continue
-        ma, sa = float(a[k]["mean"]), float(a[k]["sem"])
-        mb, sb = float(b[k]["mean"]), float(b[k]["sem"])
+        ma, sa = float(a[k]["mean"]), float(a[k].get("sem_conservative", a[k]["sem"]))
+        mb, sb = float(b[k]["mean"]), float(b[k].get("sem_conservative", b[k]["sem"]))
         comb = math.hypot(sa, sb)
         out[k] = {"reference": ma, "reference_sem": sa, "variant": mb, "variant_sem": sb,
                   "rel_diff": mb / ma - 1 if ma else None, "z": (mb - ma) / comb if comb else None}
@@ -312,7 +356,7 @@ def compare_spectrum(a, b, path):
 def targets(res):
     """Statistical targets of STUDY_PLAN Section 4.1."""
     def rel(k):
-        return float(res[k]["sem"] / abs(res[k]["mean"]))
+        return float(res[k].get("sem_conservative", res[k]["sem"]) / abs(res[k]["mean"]))
 
     def worst_bin(mean, sem):
         mean, sem = np.asarray(mean), np.asarray(sem)
@@ -393,8 +437,16 @@ def primary_ratios(run_id):
                 vals.append(tl[cat] / (g["scoring_volume_cm3"] * n) / expected)
             out[kind].append(np.mean(vals))
     k = len(batches)
-    return {kind: {"mean": float(np.mean(v)), "sem": float(np.std(v, ddof=1) / np.sqrt(k)) if k > 1 else None,
-                   "n_batches": k} for kind, v in out.items()}
+    t = batches[0]["geometry"]["scoring_thickness"]
+    crossings = sum(tally(b, "photon_track_length")[:2].sum() for b in batches) / t
+    res = {}
+    for kind, v in out.items():
+        mean = float(np.mean(v))
+        sem = float(np.std(v, ddof=1) / np.sqrt(k)) if k > 1 else None
+        counting = mean / float(np.sqrt(crossings))
+        res[kind] = {"mean": mean, "sem": sem, "sem_counting": counting,
+                     "sem_conservative": max(sem or 0.0, counting), "n_batches": k}
+    return res
 
 
 def diagnostics():
