@@ -1,0 +1,127 @@
+-- The C compiler identification is GNU 13.3.0
+-- The CXX compiler identification is GNU 13.3.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Checking C++ feature CXXSTDLIB_FILESYSTEM_NATIVE - Success
+-- Performing Test HAVE_TLS
+-- Performing Test HAVE_TLS - Success
+-- Found EXPAT: /usr/lib/x86_64-linux-gnu/libexpat.so (found version "2.6.1") 
+-- Pre-configuring dataset G4NDL (4.7.1)
+-- Pre-configuring dataset G4EMLOW (8.8)
+-- Pre-configuring dataset PhotonEvaporation (6.1.2)
+-- Pre-configuring dataset RadioactiveDecay (6.1.2)
+-- Pre-configuring dataset G4PARTICLEXS (4.2)
+-- Pre-configuring dataset G4PII (1.3)
+-- Pre-configuring dataset RealSurface (2.2)
+-- Pre-configuring dataset G4SAIDDATA (2.0)
+-- Pre-configuring dataset G4ABLA (3.3)
+-- Pre-configuring dataset G4INCL (1.3)
+-- Pre-configuring dataset G4ENSDFSTATE (3.0)
+-- Pre-configuring dataset G4CHANNELING (2.0)
+  *WARNING*
+    Geant4 has been pre-configured to look for datasets
+    in the directory:
+ 
+    /opt/geant4/data
+ 
+    but the following datasets are NOT present on disk at
+    that location:
+ 
+    G4NDL (4.7.1)
+    G4EMLOW (8.8)
+    PhotonEvaporation (6.1.2)
+    RadioactiveDecay (6.1.2)
+    G4PARTICLEXS (4.2)
+    G4PII (1.3)
+    RealSurface (2.2)
+    G4SAIDDATA (2.0)
+    G4ABLA (3.3)
+    G4INCL (1.3)
+    G4ENSDFSTATE (3.0)
+    G4CHANNELING (2.0)
+ 
+ -  If you have access to cvmfs, you can use standard datasets
+    by reconfiguring with:
+      cmake -DGEANT4_INSTALL_DATADIR=/cvmfs/geant4.cern.ch/share/data <...>
+    The variable can also be set in ccmake or cmake-gui.
+ -  If you want to have these datasets installed by Geant4,
+    simply re-run cmake with GEANT4_INSTALL_DATA=ON. This will
+    configure the build to download and install these datasets for you.
+    For example, use:
+      cmake -DGEANT4_INSTALL_DATA=ON <otherargs>
+ 
+    If you're running on a Windows system, this is the best
+    solution as CMake will unpack the datasets for you
+    without any further software being required
+ 
+ -  Alternatively, you can install these datasets manually
+    now or after you have installed Geant4. To do this,
+    download the following files:
+ 
+    https://cern.ch/geant4-data/datasets/G4NDL.4.7.1.tar.gz
+    https://cern.ch/geant4-data/datasets/G4EMLOW.8.8.tar.gz
+    https://cern.ch/geant4-data/datasets/G4PhotonEvaporation.6.1.2.tar.gz
+    https://cern.ch/geant4-data/datasets/G4RadioactiveDecay.6.1.2.tar.gz
+    https://cern.ch/geant4-data/datasets/G4PARTICLEXS.4.2.tar.gz
+    https://cern.ch/geant4-data/datasets/G4PII.1.3.tar.gz
+    https://cern.ch/geant4-data/datasets/G4RealSurface.2.2.tar.gz
+    https://cern.ch/geant4-data/datasets/G4SAIDDATA.2.0.tar.gz
+    https://cern.ch/geant4-data/datasets/G4ABLA.3.3.tar.gz
+    https://cern.ch/geant4-data/datasets/G4INCL.1.3.tar.gz
+    https://cern.ch/geant4-data/datasets/G4ENSDFSTATE.3.0.tar.gz
+    https://cern.ch/geant4-data/datasets/G4CHANNELING.2.0.tar.gz
+ 
+    and unpack them under the directory:
+ 
+    /opt/geant4/data
+ 
+    As we supply the datasets packed in gzipped tar files,
+    you will need the 'tar' utility to unpack them.
+ 
+    Nota bene: Missing datasets will not affect or break
+               compilation and installation of the Geant4
+               libraries.
+ 
+-- Looking for sys/types.h
+-- Looking for sys/types.h - found
+-- Looking for stdint.h
+-- Looking for stdint.h - found
+-- Looking for stddef.h
+-- Looking for stddef.h - found
+-- Check size of off64_t
+-- Check size of off64_t - done
+-- Looking for fseeko
+-- Looking for fseeko - found
+-- Looking for unistd.h
+-- Looking for unistd.h - found
+-- Building PTL with option BUILD_STATIC_LIBS - OFF
+-- Building PTL with option BUILD_SHARED_LIBS - ON
+-- Building PTL with option BUILD_OBJECT_LIBS - 
+-- Building PTL with CMAKE_CXX_STANDARD - 17
+-- Building PTL with option PTL_USE_COVERAGE - 
+-- Building PTL with option PTL_USE_SANITIZER - 
+-- Building PTL with option PTL_USE_CLANG_TIDY - 
+-- Building PTL with option PTL_USE_TBB - OFF
+-- Building PTL with option PTL_USE_LOCKS - OFF
+-- Building PTL with option PTL_INSTALL_HEADERS - ON
+-- Building PTL with option PTL_INSTALL_CONFIG - ON
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE  
+-- The following Geant4 features are enabled:
+CMAKE_CXX_STANDARD: Compiling against C++ Standard '17'
+GEANT4_BUILD_MULTITHREADED: Build multithread enabled libraries
+GEANT4_BUILD_TLS_MODEL: Building with TLS model 'initial-exec'
+GEANT4_USE_SYSTEM_EXPAT: Using system EXPAT library
+
+-- Configuring done (5.6s)
+-- Generating done (0.5s)
+-- Build files have been written to: /opt/build/geant4-v11.4.3

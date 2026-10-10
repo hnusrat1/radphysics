@@ -1,0 +1,274 @@
+spawn HEN_HOUSE/scripts/configure
+
+###############################################################################
+configure
+###############################################################################
+
+Copyright (C) 2015 National Research Council Canada
+
+This program comes with ABSOLUTELY NO WARRANTY. This is free software, and you
+are welcome to redistribute it under certain conditions. See LICENCE file for
+details or http://www.gnu.org/licenses/agpl.txt
+
+###############################################################################
+
+EGSnrc configuration script.
+
+This script configures EGSnrc for use on your system.  The configuration
+options will be saved in a configuration file inside the $HEN_HOUSE/specs
+directory. You can use this configuration by setting the environment variable
+$EGS_CONFIG to the path of the configuration file.
+
+You can use this script to generate as many different configurations as you
+wish (for instance, you may have different compilers installed or various
+operating systems on the same file system). If the environment variable
+$HEN_HOUSE is set for previous EGSnrc installations, it should probably be
+unset prior to calling this script.
+
+This script will ask you questions to configure EGSnrc.
+
+Any response you enter overrides the suggested default shown in brackets.
+This implies that if you want to *add* something to the default answer, you
+must re-type this default answer as part of your response.
+
+To accept the default answer shown in brackets:     just press enter.
+To submit an empty answer, overriding the default:  enter '--' as a response.
+To get help for some questions requiring input:     enter '?' as a response.
+
+###############################################################################
+
+You can exit this script at any time by typing Ctrl-C.
+
+Press enter to continue.
+
+Checking system type ...                          x86_64-unknown-linux-gnu
+Checking for make ...                             yes (/usr/bin/gmake)
+
+Looking for available fortran compilers ...       found: gfortran f77 f95
+
+Input fortran compiler:                           [gfortran] 
+Testing if gfortran works ...                     yes. Object extension is 'o'
+Testing if gfortran can create executables ...    yes. Extension is ''
+Checking for compiler version ...                 GNU Fortran (Ubuntu 13.3.0-6ubuntu2~24.04.1) version 13.3.0
+
+Input standard compilation flags:                 
+[-fPIC] Input optimization flags:                         
+[-O2 -mtune=native -mcmodel=medium -std=legacy] Input flags for debugging:                        
+[-g] Input libraries that your compiler may need:      
+
+Will use the following compiler settings: 
+    F77     = gfortran
+    FCFLAGS = -fPIC
+    FDEBUG  = -g
+    FOPT    = -O2 -mtune=native -mcmodel=medium -std=legacy
+    FLIBS   = 
+
+Testing if compilation flags work ...             yes
+
+Checking for the availability of various system dependent functions:
+Checking for a working 'exit' subroutine ...      yes (exit)
+Checking if 'system' is a function ...            yes
+Checking for the 'date_and_time' subroutine ...   yes
+Checking for the 'flush' subroutine ...           yes  (flush)
+Checking for the 'fdate' subroutine ...           yes  (fdate)
+Checking for the 'secnds' function ...            yes  (secnds)
+Checking for the 'date' subroutine ...            no
+Checking for the 'time' subroutine ...            no
+Checking for the 'etime' function ...             yes  (etime)
+Checking for the 'lnblnk' function ...            yes
+Checking for the 'hostnm' function ...            yes  (hostnm)
+Testing if hostnm works ...                       yes  (returns vm)
+Checking for the 'lstat' function ...             yes
+Checking if lstat works ...                       yes
+Checking if inquire works on directories ...      yes
+Checking for record length ...                    4
+Checking for the endianess of the machine ...     little endian
+Checking for integer*8 ...                        yes
+Checking for integer*2 ...                        yes
+
+Looking for available C compilers ...             found: gcc cc c89
+
+Input C compiler:                                 
+[gcc] Input C compiler flags to use:                    
+[-O2 -fPIC -mtune=native -mcmodel=medium] Checking for fortran name mangling scheme ...     lower case, _ and _
+
+Input path to EGSnrc HEN_HOUSE directory:         [/opt/EGSnrc/HEN_HOUSE] 
+Choose a configuration name:                      [linux.conf] linux
+
+Using HEN_HOUSE          = /opt/EGSnrc/HEN_HOUSE
+      configuration file = linux.conf
+      configuration name = linux
+
+Creating lib/linux directory ...                  OK
+Creating egs_config1.h ...                        OK
+Creating egs_c_utils.h and egs_c_utils.c ...      OK
+Compiling egs_c_utils.c ...                       OK
+Creating load_beamlib.o ...                       OK
+Creating load_vculib.o ...                        OK
+Creating read_write_pardose ...                   OK
+Creating dosxyznrc_linux.spec ...                 OK
+Library needed for dlopen ...                     -ldl
+Creating config file linux.conf ...               OK
+Creating machine.macros ...                       OK
+Creating machine.f ...                            OK
+Creating machine.mortran ...                      OK
+Creating bin directory ...                        OK
+Creating bin/linux directory ...                  OK
+Creating log directory ...                        OK
+Compiling mortran3 ...                            OK
+Compiling pegs4 ...                               OK
+Compiling beam_build ...                          OK
+Compiling beamdp ...                              OK
+Compiling ctcreate ...                            OK
+Compiling statdose ...                            OK
+Compiling readphsp ...                            OK
+Compiling dosxyz_show ...                         Failed
+Compiling addphsp ...                             OK
+
+Looking for installed C++ compilers ...           OK
+
+Found the following C++ compilers in your search path:
+    g++
+
+Input C++ compiler:                               
+[g++]: 
+Determining Fortran libraries for g++ linking ... OK
+
+Using the following compiler/linker switches for creating/linking against
+dynamic shared objects (DSO, also known as shared library or DLL), where
+$(abs_dso) or $(ABS_DSO) below will be replaced with the absolute path to the
+EGSnrc DSO directory at compile/link time:
+
+1) Optimization options:                          -O2 -mtune=native -mcmodel=medium -std=c++14
+2) Generation of position independent code:       -fPIC
+3) Preprocessor defines:                          
+4) Flag for creating shared libraries:            -shared
+5) Output/dlopen library:                         -o $@ -ldl 
+6) DSO path encoded in the executable:            -L$(abs_dso) -Wl,-rpath,$(abs_dso)
+7) Linking against library some_lib:              -lsome_lib
+8) Fortran libraries needed by C++ linker:        -lgfortran -lquadmath
+
+Input option to change, or enter to proceed:      
+
+Creating C++ config file ...                      OK
+Building the IAEA phase space library ...         OK
+Building the EGSnrc C++ class library ...         OK
+Adding C++ make variables to configuration ...    OK
+
+EGSnrc system configuration log saved in:         
+/opt/EGSnrc/HEN_HOUSE/log/configure-linux.log
+
+###############################################################################
+
+The EGSnrc basic installation is complete.
+
+Every user who wants to use the system must now run the following script to
+specify the directory to keep EGSnrc user codes and set various useful
+environment variables and aliases:
+
+/opt/EGSnrc/HEN_HOUSE/scripts/finalize_egs_foruser
+
+###############################################################################
+
+You are logged in as .
+
+This script can now launch 'finalize_egs_foruser' to proceed with the
+installation of the EGSnrc user area for .
+
+Do you want to finalize for ? (yes/no):           yes
+
+
+###############################################################################
+finalize_egs_foruser
+###############################################################################
+
+Copyright (C) 2015 National Research Council Canada
+
+This program comes with ABSOLUTELY NO WARRANTY. This is free software, and you
+are welcome to redistribute it under certain conditions. See LICENCE file for
+details or http://www.gnu.org/licenses/agpl.txt
+
+###############################################################################
+
+You can exit this script at any time by typing Ctrl-C.
+
+Press enter to continue.
+
+Choose a directory for your user codes:           
+[/opt/EGSnrc/egs_home] 
+Creating egs_home ...                             OK
+Creating bin directory ...                        OK
+Creating bin/linux directory ...                  OK
+Creating pegs4 directory ...                      OK
+Creating pegs4/data directory ...                 OK
+Creating pegs4/inputs directory ...               OK
+Creating pegs4/density directory ...              OK
+Creating beamnrc directory ...                    OK
+Creating beamnrc/spec_modules directory ...       OK
+
+Copying user codes to EGS_HOME area ...
+    Copying cavity ...                            OK
+    Copying cavrznrc ...                          OK
+    Copying cavsphnrc ...                         OK
+    Copying dosrznrc ...                          OK
+    Copying dosxyznrc ...                         OK
+    Copying edknrc ...                            OK
+    Copying egs_app ...                           OK
+    Copying egs_cbct ...                          OK
+    Copying egs_chamber ...                       OK
+    Copying egs_fac ...                           OK
+    Copying egs_gammaspec ...                     OK
+    Copying egs_kerma ...                         OK
+    Copying egs_phd ...                           OK
+    Copying examin ...                            OK
+    Copying flurznrc ...                          OK
+    Copying g ...                                 OK
+    Copying ranlux_test ...                       OK
+    Copying ranmar_test ...                       OK
+    Copying sprrznrc ...                          OK
+    Copying tutor1 ...                            OK
+    Copying tutor2 ...                            OK
+    Copying tutor2pp ...                          OK
+    Copying tutor3 ...                            OK
+    Copying tutor4 ...                            OK
+    Copying tutor4pp ...                          OK
+    Copying tutor5 ...                            OK
+    Copying tutor6 ...                            OK
+    Copying tutor7 ...                            OK
+    Copying tutor7pp ...                          OK
+
+Copying BEAMnrc examples .module files ...
+    Copying EX10MeVe.module ...                   OK
+    Copying EX16MVp.module ...                    OK
+    Copying EXphantom.module ...                  OK
+    Copying EXslabs.module ...                    OK
+
+You may now compile user codes. Please select:
+    1. Compile all
+    2. Compile selected
+    3. Compile none (default)
+
+Choose 1 (all), 2 (some) or 3 (none):             3
+[3] 
+EGSnrc user configuration log saved in:           
+/opt/EGSnrc/HEN_HOUSE//log/configure-linux-.log
+
+###############################################################################
+
+The EGSnrc configuration for  is ALMOST complete ...
+
+EGSnrc requires various environment variables and aliases to be defined.
+Typically you add these definitions to your shell resource file located in
+your home directory, to ensure the EGSnrc environment is properly set up
+every time you log in.
+
+Your default shell is /bin/bash
+Add the following statements to your .bashrc file: 
+
+export EGS_HOME=/opt/EGSnrc/egs_home/
+export EGS_CONFIG=/opt/EGSnrc/HEN_HOUSE/specs/linux.conf
+source /opt/EGSnrc/HEN_HOUSE/scripts/egsnrc_bashrc_additions
+
+###############################################################################
+
+configure exit 0
