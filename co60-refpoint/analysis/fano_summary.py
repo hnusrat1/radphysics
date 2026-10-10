@@ -1,11 +1,13 @@
 """Pool Fano cavity batches across runs and plot them.
 
-Batches from runs with the same physics constructor are pooled. The pooled
+Batches from runs with the same physics constructor and the same pre-initialization
+commands (step-size settings) are pooled. The pooled
 uncertainty is the standard error of the batch mean (all batches have the same
 number of events), shown next to the example's own event-by-event estimate.
 
 Usage:
   python analysis/fano_summary.py M0-fano-opt4 M0-fano-opt4-ext M0-fano-opt0-control
+  python analysis/fano_summary.py --tag=M1 M0-fano-opt4 M0-fano-opt4-ext M1-fano-diag-rfact004 ...
 """
 
 import sys
@@ -23,10 +25,13 @@ ROOT = Path(__file__).resolve().parent.parent
 RUNS = ROOT / "mc" / "runs"
 OUT = ROOT / "analysis"
 
-# Categorical slots 1 and 2 of the reference palette (validated, light mode).
-COLORS = {"standard_opt4": "#2a78d6", "standard_opt0": "#eb6834"}
+# Categorical slots of the reference palette (validated, light mode), in fixed order.
+SLOTS = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100"]
 LABELS = {"standard_opt4": "standard_opt4 (production e- transport)",
-          "standard_opt0": "standard_opt0 (negative control)"}
+          "standard_opt0": "standard_opt0 (negative control)",
+          "standard_opt4 | /process/msc/RangeFactor 0.04": "msc range factor 0.04 (production 0.08)",
+          "standard_opt4 | /process/eLoss/StepFunction 0.05 1 um": "step function 0.05, 1 um (production 0.2, 10 um)"}
+COLORS = {k: SLOTS[i] for i, k in enumerate(LABELS)}
 INK, INK_2, GRID, SURFACE = "#0b0b0b", "#52514e", "#e4e3df", "#fcfcfb"
 
 
@@ -34,7 +39,8 @@ def load(run_ids):
     pooled = {}
     for run_id in run_ids:
         m = yaml.safe_load(open(RUNS / run_id / "manifest.yaml"))
-        phys = m["application"]["physics_constructor"]
+        pre = m["application"].get("pre_init_macro_commands") or []
+        phys = " | ".join([m["application"]["physics_constructor"], *pre])
         entry = pooled.setdefault(phys, {"runs": [], "events_per_batch": set(), "ratio": [], "err": []})
         entry["runs"].append(run_id)
         entry["events_per_batch"].add(m["statistics"]["events_per_batch"])
@@ -105,13 +111,16 @@ def plot(pooled, summary, path):
 
 
 def main():
-    run_ids = sys.argv[1:]
-    pooled = load(run_ids)
+    args = sys.argv[1:]
+    tag = "M0"
+    if args and args[0].startswith("--tag="):
+        tag = args.pop(0).split("=", 1)[1]
+    pooled = load(args)
     summary = summarize(pooled)
     (OUT / "figures").mkdir(exist_ok=True)
-    with open(OUT / "M0_fano_summary.yaml", "w") as f:
+    with open(OUT / f"{tag}_fano_summary.yaml", "w") as f:
         yaml.safe_dump(summary, f, sort_keys=False)
-    plot(pooled, summary, OUT / "figures" / "M0_fano.png")
+    plot(pooled, summary, OUT / "figures" / f"{tag}_fano.png")
     print(yaml.safe_dump(summary, sort_keys=False))
 
 

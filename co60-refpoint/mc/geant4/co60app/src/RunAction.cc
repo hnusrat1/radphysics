@@ -9,6 +9,7 @@
 #include "G4EmParameters.hh"
 #include "G4Exception.hh"
 #include "G4Gamma.hh"
+#include "G4Positron.hh"
 #include "G4Material.hh"
 #include "G4MaterialCutsCouple.hh"
 #include "G4NistManager.hh"
@@ -17,6 +18,7 @@
 #include "G4SystemOfUnits.hh"
 #include "G4Threading.hh"
 
+#include <algorithm>
 #include <cmath>
 #include <cstdio>
 #include <fstream>
@@ -94,11 +96,53 @@ void RunAction::CheckRoi() const
          << std::max(c.line1, c.line2) / MeV << " MeV e- in G4_WATER)" << G4endl;
 }
 
+G4double RangeTable::Eval(G4double e) const
+{
+  if (e <= eLo) return r.empty() ? 0. : r[0] * e / eLo;
+  const G4double x = (std::log(e) - lnLo) / dln;
+  const size_t i = std::min(static_cast<size_t>(x), r.size() - 2);
+  const G4double f = x - static_cast<G4double>(i);
+  return r[i] + f * (r[i + 1] - r[i]);
+}
+
+void RunAction::BuildRangeTables()
+{
+  G4EmCalculator calc;
+  const G4Material* water = G4NistManager::Instance()->FindOrBuildMaterial("G4_WATER");
+  const G4ParticleDefinition* parts[2] = {G4Electron::Definition(), G4Positron::Definition()};
+  const int n = 2000;
+  const G4double lo = 100. * eV, hi = 2. * MeV;
+  for (int p = 0; p < 2; ++p) {
+    RangeTable& tab = fRange[p];
+    tab.eLo = lo;
+    tab.lnLo = std::log(lo);
+    tab.dln = (std::log(hi) - std::log(lo)) / n;
+    tab.r.assign(n + 1, 0.);
+    // R(lo): treat dE/dx below 100 eV as constant at its 100 eV value.
+    G4double prevE = lo, prevInv = 1. / calc.GetDEDX(lo, parts[p], water);
+    tab.r[0] = lo * prevInv;
+    for (int i = 1; i <= n; ++i) {
+      const G4double e = std::exp(tab.lnLo + i * tab.dln);
+      const G4double inv = 1. / calc.GetDEDX(e, parts[p], water);
+      tab.r[i] = tab.r[i - 1] + 0.5 * (inv + prevInv) * (e - prevE);
+      prevE = e;
+      prevInv = inv;
+    }
+  }
+}
+
 void RunAction::BeginOfRunAction(const G4Run*)
 {
-  if (!IsMaster()) return;
+  if (Config::Get().tableMode) {
+    if (IsMaster()) fTimer.Start();
+    return;
+  }
+  if (!IsMaster()) {
+    BuildRangeTables();
+    return;
+  }
   fTimer.Start();
-  if (!Config::Get().tableMode) CheckRoi();
+  CheckRoi();
 }
 
 void RunAction::EndOfRunAction(const G4Run* run)

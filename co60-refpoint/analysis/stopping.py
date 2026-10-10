@@ -13,12 +13,17 @@ k = 2 pi r_e^2 mc^2 N_A (Z/A). The density-effect correction delta(T) is read
 from ESTAR-computed tables shipped with EGSnrc
 (HEN_HOUSE/pegs4/density_corrections), which also give I and rho.
 
-Three stopping-power bases are used (DECISIONS D018):
-  icru37  water I = 75 eV (water_liquid.density), air I = 85.7 eV
-  icru90  water I = 78 eV (water_icru90.density), air as icru37
-  geant4  restricted and unrestricted dE/dx from G4EmCalculator with the
-          production physics (co60app table mode)
+Four stopping-power bases are used (DECISIONS D018):
+  icru37   water I = 75 eV (water_liquid.density), air I = 85.7 eV
+  icru90   water I = 78 eV (water_icru90.density), air as icru37
+  geant4   restricted and unrestricted dE/dx from G4EmCalculator with the
+           production physics (co60app table mode)
+  pegs4    EGSnrc PEGS4 restricted stopping powers (EDEDX, AE = 0.521 MeV) for
+           water and air matched to Geant4 in I, density, composition and
+           density effect (mc/egsnrc/b0, DECISIONS D015): what EGSnrc will use in B0
 """
+
+import re
 
 import json
 from pathlib import Path
@@ -81,7 +86,22 @@ class Medium:
         return K0 * self.z_over_a / beta2 * bracket
 
 
-def bases(tables_json):
+def pegs4_ededx(listing):
+    """EDEDX (restricted total stopping power, MeV cm2/g) against kinetic energy from a PEGS4 TEST listing."""
+    lines = Path(listing).read_text().splitlines()
+    i = next(k for k, line in enumerate(lines) if "PLOT OF FUNCTION EDEDX" in line)
+    pts = []
+    for line in lines[i + 1:]:
+        m = re.match(r"\s*\d+\s+([\d.E+-]+)\s+([\d.E+-]+)\s+I", line)
+        if m:
+            pts.append((float(m.group(1)), float(m.group(2))))
+        elif pts and "PLOT OF FUNCTION" in line:
+            break
+    pts = np.array(pts)
+    return lambda t: np.exp(np.interp(np.log(t), np.log(pts[:, 0]), np.log(pts[:, 1])))
+
+
+def bases(tables_json, pegs4_dir=None):
     """Water and air stopping-power functions for each basis: name -> (water, air), each (L(T, cut), S(T))."""
     tab = json.load(open(tables_json))["materials"]
     out = {}
@@ -122,6 +142,21 @@ def bases(tables_json):
         "I_water_eV": tab["G4_WATER"]["imean_eV"], "I_air_eV": tab["G4_AIR"]["imean_eV"],
         "source": "G4EmCalculator, " + json.load(open(tables_json))["physics"] + " (co60app table mode)",
     }
+    if pegs4_dir is not None:
+        w = pegs4_ededx(Path(pegs4_dir) / "water_g4_option4.pegs4lst")
+        a = pegs4_ededx(Path(pegs4_dir) / "air_g4_option4.pegs4lst")
+
+        def only10(f):
+            def restricted(t, cut):
+                if cut is not None and abs(cut - 0.010) > 1e-12:
+                    raise ValueError("PEGS4 data were generated for a 10 keV cut only")
+                return f(t)
+            # Below 2 * Delta the restricted and unrestricted stopping powers coincide,
+            # so EDEDX at Delta is the unrestricted value the track-end term needs.
+            return restricted, f
+        out["pegs4"] = {"water": only10(w), "air": only10(a), "I_water_eV": tab["G4_WATER"]["imean_eV"],
+                        "I_air_eV": tab["G4_AIR"]["imean_eV"],
+                        "source": "EGSnrc v2026 PEGS4 EDEDX, media matched to Geant4 (mc/egsnrc/b0)"}
     return out
 
 

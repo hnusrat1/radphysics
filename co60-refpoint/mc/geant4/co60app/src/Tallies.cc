@@ -52,6 +52,13 @@ Tallies::Tallies(const Config& c)
   t["electron_fluence_by_parent"] =
     Tally({3, nEl}, "cm", "e- by parent photon: primary(0), non-primary(1), unknown(2)");
   t["positron_fluence"] = Tally({nEl}, "cm", "e+, sum w*L by energy bin");
+  // Same quantities with each step's track length spread over energy as 1/L(E)
+  // (restricted CSDA) instead of uniformly (DECISIONS D020).
+  t["electron_fluence_csda"] = Tally({nEl}, "cm", "e-, all, CSDA-weighted track length by energy bin");
+  t["electron_fluence_delta_csda"] = Tally({nEl}, "cm", "e- delta rays and descendants, CSDA-weighted");
+  t["electron_fluence_by_parent_csda"] =
+    Tally({3, nEl}, "cm", "e- by parent photon (primary, non-primary, unknown), CSDA-weighted");
+  t["positron_fluence_csda"] = Tally({nEl}, "cm", "e+, CSDA-weighted track length by energy bin");
   t["electron_angular"] = Tally({nCos}, "cm", "e-, sum w*L by cos(theta) to beam axis (pre-step direction)");
   t["positron_angular"] = Tally({nCos}, "cm", "e+, sum w*L by cos(theta)");
   t["charged_energy_loss"] =

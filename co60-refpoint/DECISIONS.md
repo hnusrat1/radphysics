@@ -136,3 +136,44 @@ The layout was chosen from five tested layouts by this figure of merit. The impl
 ## D017. Development runs (2026-10-10)
 
 Short runs made while debugging co60app ran in the session scratch directory and are not archived; they used code that was never committed. Every run that informs a result is made from committed code through `mc/tools/run_co60.py` and archived under `mc/runs/`. Runs made before their code was committed were moved to `mc/runs/_archived/` with a reason and rerun.
+
+## D018. Stopping-power bases for s_w,air (2026-10-10)
+
+Open decision 5 (ICRU 37, ICRU 90, or both) is unresolved, so s_w,air is reported on four bases, all with Δ = 10 keV and the Nahum track-end term, using the same scored electron fluence:
+
+| Basis | Water | Air |
+|---|---|---|
+| icru37 | Bethe–Møller restricted collision stopping power, I = 75 eV | I = 85.7 eV |
+| icru90 | as icru37, I = 78 eV | as icru37 |
+| geant4 | G4EmCalculator restricted dE/dx from the production physics | same |
+| pegs4 | EGSnrc PEGS4 EDEDX for media matched to Geant4 (D015): what EGSnrc will use in B0 | same |
+
+- For icru37 and icru90, the density-effect corrections come from the ESTAR-computed tables shipped with EGSnrc.
+- The implementation (`analysis/stopping.py`) reproduces Geant4 and PEGS4 to 0.05% for air above 100 keV, where all three use the same physics (test in `tests/test_mc_outputs.py`).
+
+Reason: one data set for both media per basis, as the plan requires, while keeping open decision 5 open.
+
+## D019. General gamma process switched off in option4 (2026-10-10)
+
+G4EmStandardPhysics_option4 in 11.4.3 enables G4GammaGeneralProcess. In its energy zone from 2 m_e c² to 100 MeV that process selects only pair production, Compton, photoelectric and photonuclear; Rayleigh scattering is not sampled there (`G4GammaGeneralProcess.cc`, `PostStepDoIt`, case 2).
+
+Both Co-60 lines lie in that zone, so primary photons could never scatter coherently. The first production attempt showed no Rayleigh events for primaries, where about 30 per batch were expected from the Rayleigh cross section that the same physics computes.
+
+All co60app production runs therefore set `/process/em/UseGeneralProcess false` before initialization:
+- photon interactions are then sampled by the separate processes with the same models;
+- the only change in physics is that coherent scattering is restored above 1.022 MeV;
+- G4EmLivermorePhysics and G4EmPenelopePhysics do not use the general process, so this also makes the three lists consistent for M2.
+
+## D020. Electron track-length estimator: linear (plan) and CSDA-weighted (2026-10-10)
+
+Layer 4 asks for each step's track length to be spread over the step's energy interval assuming linear energy loss along the step.
+
+The problem: Geant4 transports an electron to rest in one step once its range falls below the step-function final range (10 µm in option4, about 20 keV in water). Over such a step the path per unit energy is 1/L(E), not constant. The linear rule therefore puts too much track length at low energy.
+
+Evidence: with the linear rule, the dose rebuilt from the scored fluence, ∫Φ_E L_Δ dE, exceeds the scored dose by 6.4%. With track length spread as 1/L(E), using the restricted CSDA range R(E) = ∫dE/L(E) from the production dE/dx at the production threshold, the same closure gives 1.0007.
+
+co60app scores both estimators:
+- the plan's linear estimator, as `electron_fluence` etc.;
+- the CSDA-weighted estimator, as `electron_fluence_csda` etc.
+
+Analysis uses the CSDA-weighted spectrum for Layer 4 and for s_w,air and reports the linear one alongside. On s_w,air the two differ by less than 0.03%. **[Humza]** Confirm the CSDA-weighted spectrum as the Layer 4 reference.

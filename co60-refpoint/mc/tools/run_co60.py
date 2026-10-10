@@ -72,6 +72,7 @@ def make_macro(spec, seeds, out_json, events_csv, verbose):
         lines.append(f"/co60/vr/importanceCell {cell[0]} {cell[1]} {cell[2]} cm {cell[3]}")
     lines += bin_commands()
     lines.append(f"/co60/score/depthScan {'true' if spec.get('depth_scan', False) else 'false'}")
+    lines += spec.get("pre_init_commands", [])
     lines.append(f"/co60/out/file {out_json}")
     if spec.get("event_sample_per_batch", 0) > 0:
         lines.append(f"/co60/out/eventSample {events_csv} {spec['event_sample_per_batch']}")

@@ -63,6 +63,29 @@ void AddLinear(double* row, const BinSpec& b, double eHi, double eLo, double wL)
   }
 }
 
+// As AddLinear, but the path within the step is spread as 1/L(E): the share of
+// the step in [lo, hi) is (R(hi) - R(lo)) / (R(eHi) - R(eLo)), R the restricted
+// CSDA range.
+void AddCsda(double* row, const BinSpec& b, double eHi, double eLo, double wL, const RangeTable& range)
+{
+  const double rHi = range.Eval(eHi), rLo = range.Eval(eLo);
+  if (eHi - eLo <= 1e-9 * kMeV || rHi - rLo <= 0.) {
+    row[EBin(b, eHi)] += wL;
+    return;
+  }
+  const int i0 = EBin(b, eLo), i1 = EBin(b, eHi);
+  if (i0 == i1) {
+    row[i0] += wL;
+    return;
+  }
+  const double perR = wL / (rHi - rLo);
+  for (int i = i0; i <= i1; ++i) {
+    const double lo = std::max((i == 0) ? eLo : b.Lo(i - 1), eLo);
+    const double hi = std::min((i == b.n + 1) ? eHi : b.Lo(i), eHi);
+    if (hi > lo) row[i] += perR * (range.Eval(hi) - range.Eval(lo));
+  }
+}
+
 int ParticleIndex(const G4ParticleDefinition* p)
 {
   if (p == G4Gamma::Definition()) return 0;
@@ -206,10 +229,15 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
         if (info->delta) AddLinear(T["electron_fluence_delta"].data.data(), c.electronE, ePre, eLo, wL);
         const int byParent = info->parentCat < 0 ? 2 : (IsPrimaryCat(info->parentCat) ? 0 : 1);
         AddLinear(&T["electron_fluence_by_parent"].at({byParent, 0}), c.electronE, ePre, eLo, wL);
+        const RangeTable& rt = fRun->Range(0);
+        AddCsda(T["electron_fluence_csda"].data.data(), c.electronE, ePre, eLo, wL, rt);
+        if (info->delta) AddCsda(T["electron_fluence_delta_csda"].data.data(), c.electronE, ePre, eLo, wL, rt);
+        AddCsda(&T["electron_fluence_by_parent_csda"].at({byParent, 0}), c.electronE, ePre, eLo, wL, rt);
         T["electron_angular"].at({CosBin(c.cosTheta, dirPre.z())}) += wL;
       }
       else {
         AddLinear(T["positron_fluence"].data.data(), c.electronE, ePre, eLo, wL);
+        AddCsda(T["positron_fluence_csda"].data.data(), c.electronE, ePre, eLo, wL, fRun->Range(1));
         T["positron_angular"].at({CosBin(c.cosTheta, dirPre.z())}) += wL;
       }
       const double eLost = ePre - ePost;

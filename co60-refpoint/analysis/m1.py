@@ -29,7 +29,8 @@ RUNS = ROOT / "mc" / "runs"
 OUT = ROOT / "analysis" / "results"
 J_PER_MEV = ref_value("joule_per_MeV")
 BINS = yaml.safe_load(open(ROOT / "config" / "bins.yaml"))
-TABLES = RUNS / "M1-tables-option4" / "batch_00" / "output.json"
+TABLES = RUNS / "M1-tables-option4-v2" / "batch_00" / "output.json"
+PEGS4_DIR = ROOT / "mc" / "egsnrc" / "b0"
 
 CAT_PRIMARY, CAT_SCATTERED = [0, 1], [2, 3]
 PROCS = ["compt", "phot", "conv", "Rayl", "other"]
@@ -193,6 +194,18 @@ def observables(b, sp, tables_json=TABLES):
     o["L5_dose_fraction_unknown_parent"] = ed[4].sum() / ed.sum()
     o["L5_D_rel_sem_history_by_history"] = math.sqrt(max(s["edep_sq"] / n - (s["edep"] / n) ** 2, 0) / n) / (
         s["edep"] / n)
+    # Fluence-to-dose closure: continuous energy loss reconstructed from the scored
+    # electron and positron fluence with Geant4's restricted stopping power at the
+    # production threshold, against the scored dose.
+    cut = b["cuts_g4_water"]["e-_threshold_MeV"]
+    key = "L_10keV" if abs(cut - 0.010) < 1e-6 else "L_5keV"
+    rows = json.load(open(tables_json))["materials"]["G4_WATER"]["electron"]
+    te = np.array([r["E"] for r in rows])
+    lv = np.array([r[key] for r in rows])
+    mid = (np.arange(el.size) + 0.5) * 0.001
+    l_mid = np.exp(np.interp(np.log(mid), np.log(te), np.log(lv)))
+    d_cont = np.sum((el + pos) * l_mid) / (vol * n) * J_PER_MEV * 1e3 / phi0
+    o["L5_D_continuous_over_D"] = d_cont / d
     for name, basis in sp.items():
         sa = spencer_attix(el, 0.010, basis["water"], basis["air"])
         o[f"L5_s_w_air_{name}"] = sa["s_w_air"]
@@ -340,7 +353,8 @@ def to_jsonable(x):
 
 SCALAR_KEYS_S = [
     "L5_D_over_phi0_Gy_cm2", "L5_K_over_phi0_Gy_cm2", "L5_Kcol_over_phi0_Gy_cm2", "L5_beta", "L5_g",
-    "L5_s_w_air_icru37", "L5_s_w_air_icru90", "L5_s_w_air_geant4", "L5_dose_fraction_parent_scattered",
+    "L5_s_w_air_icru37", "L5_s_w_air_icru90", "L5_s_w_air_geant4", "L5_s_w_air_pegs4",
+    "L5_D_continuous_over_D", "L5_dose_fraction_parent_scattered",
     "L4_electron_fluence_above_10keV_per_phi0", "L4_delta_fraction_above_10keV", "L4_radiative_to_collision",
     "L4_mean_energy_above_10keV_MeV", "L1_fluence_total_per_phi0", "L1_scattered_fraction_fluence",
     "L1_mean_energy_all_MeV", "L3_mean_T_all_MeV",
@@ -349,7 +363,7 @@ SCALAR_KEYS_S = [
 
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
-    sp = bases(TABLES)
+    sp = bases(TABLES, PEGS4_DIR)
     runs = {k: analyse_run(k, sp) for k in ("M1-R0-option4", "M1-R0-option4-S2-5keV", "M1-R0-option4-S1-half",
                                            "M1-vrcheck-analog", "M1-thinslab-option4")}
     main_res = runs["M1-R0-option4"]

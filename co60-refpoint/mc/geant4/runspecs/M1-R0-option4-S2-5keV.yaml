@@ -6,7 +6,7 @@ purpose: >-
 physics: option4
 threads: 4
 batches: 10
-histories_per_batch: 12000000
+histories_per_batch: 6000000
 seed_base: 6103
 geometry: {scoring_radius_cm: 1.0, scoring_thickness_cm: 0.2, scoring_depth_cm: 5.0}
 source: {ssd_cm: 100.0, field_cm: [10.0, 10.0]}
@@ -16,5 +16,6 @@ importance_cells_cm:
   - [8.0, -1.0, 14.0, 2]
   - [4.0, 2.0, 8.0, 8]
   - [2.5, 3.4, 6.6, 32]
+pre_init_commands: ['/process/em/UseGeneralProcess false']   # DECISIONS D019
 depth_scan: false
 event_sample_per_batch: 0
