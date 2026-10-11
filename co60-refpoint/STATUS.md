@@ -84,7 +84,7 @@ The ICRU 37-basis s_w,air, 1.1331, agrees with the TRS-398 value in refs.yaml (1
 | S2: 5 keV thresholds | D/Φ₀ +0.13% (+0.9σ); s_w,air +0.0003%; electron fluence normalization +0.12%, shape χ² 20/24; photon fluence normalization −0.03%, shape χ² 29/26 | passes |
 | S1: half-size scoring volume | D/Φ₀ +0.47% (+2.1σ); electron fluence normalization +0.42%, shape χ² 23/24; s_w,air +0.0010% | passes (under 3σ) |
 | Analog transport against VR | D/Φ₀ −0.10% (−0.2σ); electron fluence normalization −0.04%, shape χ² 8/22 | passes |
-| Scoring-cylinder boundary: D in the cylinder over the boundary-free D at R0 | 0.99759 ± 0.00109 (−2.2σ, 30 boundary-free batches) | boundary effect resolved; boundary-free D adopted (D027) |
+| Scoring-cylinder boundary: D in the cylinder over the boundary-free D at R0 | 0.99759 ± 0.00109 (−2.2σ; boundary-free D from 30 + 4 batches) | boundary effect resolved; boundary-free D adopted (D027) |
 | Event sample, validity rules (D014) | 0.064% of 100,000 Monte Carlo interactions fail the bound rules; 99% fail the strict free-electron rules | as designed |
 | Bookkeeping | 0 untagged tracks; largest per-interaction energy imbalance 1.23 keV | passes |
 | Fano step-size diagnostics | msc range factor 0.04: 1.00001 ± 0.00088 (20 batches; production 1.00157 ± 0.00058); step function 0.05 / 1 µm: running | range factor done; step function pending |
@@ -97,7 +97,7 @@ The ICRU 37-basis s_w,air, 1.1331, agrees with the TRS-398 value in refs.yaml (1
 - **The scoring cylinder's boundary distorts the dose next to it.** The PDD run's 1 mm depth slabs (r < 1 cm) show the dose 2–3.7% high 1.5–4.5 mm in front of the scoring cylinder and 1.5–2.3% low 1.5–4.5 mm behind it. Every batch shows it (11σ), with water on both sides of the boundary.
   - Moving the cylinder to 8 cm (`M1-check-pdd-cyl8`) moves the pattern with it.
   - Far from both cylinders the two depth scans agree to 1.0011 ± 0.0008 per history.
-  - Inside the cylinder: against the boundary-free dose at R0 (`M1-check-boundary-free-R0`: the main run's variance reduction, the cylinder at 8 cm, the dose scored by position in r < 1 cm, 4.9–5.1 cm) the ratio is 0.99759 ± 0.00109 (−2.2σ; 95% interval −0.46% to −0.02%) after the 20-batch extension (30 boundary-free batches). The boundary-free value has batch errors only. Under D025/D027 it is now the R0 dose reference.
+  - Inside the cylinder: against the boundary-free dose at R0 (`M1-check-boundary-free-R0`: the main run's variance reduction, the cylinder at 8 cm, the dose scored by position in r < 1 cm, 4.9–5.1 cm) the ratio is 0.99759 ± 0.00109 (−2.2σ; 95% interval −0.46% to −0.02%) after the 20-batch extension (30 batches). The analog depth scan `M1-check-pdd-cyl8` (4 batches) is combined with it by inverse variance and carries about 1% of the weight. The boundary-free value has batch errors only. Under D025/D027 it is now the R0 dose reference.
   - Likely mechanism: with GS multiple scattering and the SafetyPlus step limit, electron steps shrink as electrons approach a boundary (geometry factor 2.5, range factor 0.08), while far from boundaries they reach 0.2 × the range. A step-length-dependent displacement of the energy deposition piles energy up in front of the boundary and leaves a deficit behind it. Energy is moved, not created.
   - PDD(5) uses the dose inside the cylinder and D_max far from it.
 - **Primary-fluence fluctuation in the main run (resolved).** Against the analytic exp(−μs)/(ΩR²) with the tracking μ measured by TestEm13, the main run gave 0.9988. That is −4.4σ on its batch spread and −1.9σ on counting statistics. The diagnostic runs found no cause:
@@ -109,6 +109,7 @@ The ICRU 37-basis s_w,air, 1.1331, agrees with the TRS-398 value in refs.yaml (1
   | S2 | full | importance + roulette | r 1, t 0.2 | 0.9996 ± 0.0010 |
   | analog | full | none | r 1, t 0.2 | 0.9989 ± 0.0010 |
   | is-on-prodgeom | photon only | importance | r 1, t 0.2 | 1.0005 ± 0.0011 |
+  | is-mass-prodgeom | photon only | importance, mass-geometry cells (D021) | r 1, t 0.2 | 0.9987 ± 0.0012 |
   | is-off | photon only | none | r 4, t 1 | 1.0005 ± 0.0004 |
   | is-on | photon only | importance | r 4, t 1 | 0.9998 ± 0.0004 |
   | full-r4 | full | none | r 4, t 1 | 1.0007 ± 0.0004 |
@@ -126,7 +127,8 @@ The ICRU 37-basis s_w,air, 1.1331, agrees with the TRS-398 value in refs.yaml (1
 - **Two slips in my own process management.** Twice a `pkill -f` pattern matched my own shell, and once a waiting script as well. No simulation ran with a wrong configuration. The only run lost was a 2-minute-old extension, archived as `mc/runs/_archived/M1-check-pdd-cyl8-ext-stopped/` with its reason. Processes are now stopped by PID only.
 - **The ROI check has no buffer on the near side of a depth scan.** `RunAction::CheckRoi` requires the ROI to start at or before the start of the depth scan, but not 1.2 × the CSDA range before it. That is harmless for scans from the surface (the PDD run) but would allow roulette bias for a scan starting inside the phantom. `M1-check-boundary-free-R0` satisfies the buffer by its spec (ROI from 4.1 cm, scan from 4.9 cm). Fixed in the source for M2 (D025); the frozen M1 production binary is unchanged, and every M1 spec satisfies the stricter check.
 - **Container restart, 2026-10-10 ~22:55 UTC.** The cloud container was reclaimed while no task of mine was attached to the session, and the three running jobs stopped mid-batch: the boundary-free extension at 2/20 batches, the mass-importance check at 5/8, and Fano range factor 0.04 at 6/20. No finished batch was lost. All three were resumed at 02:11 UTC with the same seeds, so the results are identical to an uninterrupted run. `run_fano.py` gained `--resume` for this; it keeps the interrupted batch directory, renamed `*.interrupted-<time>`. About 3 h of compute was lost. From now on a background task stays attached while jobs run.
-- **Still running.** The photon-only check with mass-geometry importance (`M1-check-primary-ismass-prodgeom`, D021) and the Fano step-function diagnostic. Neither changes an M1 number.
+- **Mass-geometry importance check (D021), finished 2026-10-11.** Photon only, production cells and scoring cylinder: primary/analytic 0.9987 ± 0.0012 (−1.1σ). The parallel-world run with the same geometry gives 1.0005 ± 0.0011; the two differ by −0.0018 ± 0.0016 (−1.1σ). Neither implementation shows a bias at the 0.1% level. Production keeps the parallel world (D016).
+- **Still running.** The Fano step-function diagnostic. It does not change an M1 number.
 - **Fano step-size diagnostics.** They were starved of CPU behind production, with one batch taking 4 h, and later resumed at normal priority. Range factor 0.04 gives 1.00001 ± 0.00088, so the production deviation (+0.16%) disappears with tighter msc stepping. The difference is 1.5σ. See D026.
 - **Importance-ratio warning in S1.** S1's inner cell has importance 48 against 8 outside, a ratio of 6. Geant4 warns once (GeomBias1001) when the ratio is outside [0.25, 4]. The algorithm handles any ratio fairly: split into ⌊6⌋ = 6 copies of weight w/6. The warning has no effect on results.
 

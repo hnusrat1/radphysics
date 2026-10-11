@@ -35,7 +35,7 @@ def sci(x, n=4):
         return "0"
     e = math.floor(math.log10(abs(x)))
     m = x / 10**e
-    return f"{m:.{n - 1}f} × 10<sup>{e}</sup>"
+    return f"{m:.{n - 1}f} × 10<sup>{str(e).replace("-", "−")}</sup>"
 
 
 def pm(mean, sem, digits=None):
@@ -126,7 +126,7 @@ def build_checks(r, m):
         return (mean - ref) / sem if sem else float("nan")
 
     def add(name, result, status, label, chip=None):
-        result = re.sub(r"(?<=[ (])-(?=\d)", "−", result)   # typographic minus for signed values
+        result = re.sub(r"(?:(?<=[ (])|^)-(?=\d)", "−", result)   # typographic minus for signed values
         rows.append({"name": name, "result": result, "status": status, "status_label": label, "chip": chip})
 
     diag = r.get("diagnostics", {})
@@ -196,10 +196,10 @@ def build_checks(r, m):
         x = bd.get(key) or bd.get("cylinder_over_boundary_free:M1-R0-option4")
         if x:
             z = (x["ratio"] - 1) / x["sem"]
-            n_free = sum(e["n_batches"] for e in bd["boundary_free_estimates"].values())
+            n_free = " + ".join(str(e["n_batches"]) for e in bd["boundary_free_estimates"].values())
             used = bd.get("R0_dose_reference", {}).get("uses") == "boundary_free"
             add("Scoring-cylinder boundary: D in the cylinder over the boundary-free dose at R0 (depth scan with the cylinder moved to 8 cm)",
-                f"{pm(x['ratio'], x['sem'])} ({z:+.1f}σ; {n_free} boundary-free batches). Next to the cylinder the dose is "
+                f"{pm(x['ratio'], x['sem'])} ({z:+.1f}σ; boundary-free D from {n_free} batches in two runs, inverse-variance weighted). Next to the cylinder the dose is "
                 f"distorted by up to ±3%; see Findings."
                 + (" The boundary-free D is the R0 reference (D025, D027)." if used else ""),
                 "warn", "boundary-free D adopted" if used else "within 3σ; see Findings", "Boundary artifact next to the cylinder")

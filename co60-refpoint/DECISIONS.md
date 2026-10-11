@@ -188,6 +188,8 @@ The main run's primary fluence came out 0.15% below the analytic value (STATUS, 
 
 Not adopted. The photon-only checks found no bias from the parallel implementation (STATUS), so production keeps D016. The option and its check spec (`M1-check-primary-ismass-prodgeom`) stay in the repository.
 
+Outcome (2026-10-11): `M1-check-primary-ismass-prodgeom` (8 batches, 4×10⁷ histories) gives primary/analytic 0.9987 ± 0.0012, against 1.0005 ± 0.0011 for the parallel world in the same geometry (difference −1.1σ). Both agree with the analytic value. The mass-geometry option stays available but is not used.
+
 ## D022. Replicate of the main run, with the pooling rule fixed in advance (2026-10-10)
 
 The main run's primary-fluence deficit (0.9985 ± 0.0003 against the model μ, 4σ) was not reproduced by any diagnostic. `M1-R0-option4-rep2` repeats the main run exactly (same spec, same production binary) with new seeds (seed_base 6111).
@@ -270,7 +272,7 @@ Outcome for the first step-size diagnostic (2026-10-11): with the msc range fact
 D025 said the cylinder's D at R0 is replaced by the boundary-free value if the two are not consistent, but set no threshold. Applied: replace if they differ by 2 combined standard errors or more (95%).
 
 Outcome:
-- Cylinder over boundary-free D at R0 = 0.99759 ± 0.00109 (−2.2σ). Boundary-free: `M1-check-boundary-free-R0` plus `-ext`, 30 batches. Cylinder: main run plus replicate, 20 batches.
+- Cylinder over boundary-free D at R0 = 0.99759 ± 0.00109 (−2.2σ). Boundary-free: `M1-check-boundary-free-R0` plus `-ext` (30 batches, the main run's variance reduction), combined by inverse variance with the analog depth scan `M1-check-pdd-cyl8` (4 batches, about 1% of the weight). Cylinder: main run plus replicate, 20 batches.
 - **The R0 dose reference becomes the boundary-free value: D/Φ₀ = 5.3713 × 10⁻¹² Gy cm² ± 0.087%.**
 - β = D_boundary-free / K_col = 1.0069 ± 0.0011.
 - The cylinder values (5.3584 × 10⁻¹² Gy cm², β = 1.0045) are reported alongside.
