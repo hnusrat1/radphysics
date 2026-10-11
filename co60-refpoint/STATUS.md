@@ -18,6 +18,16 @@ Humza delegated every open choice on 2026-10-11: "pick your best recommended cho
   - β = 1.0053 ± 0.0014, with K_col from `M2-R0-option4`; K_col itself is 1.0009 ± 0.0012 times M1.
 - **EGSnrc s_w,air (SPRRZnrc, B0): done.** 1.12602 ± 0.00002 (4 jobs × 2.5 × 10⁷). Geant4's R0 electron spectrum through Spencer–Attix with the same matched PEGS4 stopping powers gives 1.12593 ± 0.000003, a difference of +0.008%. The Geant4 value in B0 itself follows from `M2-B0-option4`.
 - **PDD(5), boundary-free: done.** `M2-R0-option4-pdd`, cylinder at 8 cm, range factor 0.04: PDD(5) = 81.79 ± 0.22%, d_max = 0.81 ± 0.04 cm (parabola through the 1 mm bins of a flat peak, so d_max is loosely determined). M1 gave 81.53 ± 0.26% with D(5) from the cylinder (−0.24% artifact). The difference is +0.26 ± 0.34 points.
+- **Livermore and Penelope at R0: done.** Both use the same msc model and step settings as option4 (GS below 100 MeV, SafetyPlus, range factor 0.04, from their batch-0 printouts). Their differences from option4 therefore come from the cross-section and energy-loss models. Against option4:
+  - Photon fluences, mean photon energy, kerma, K_col, g and the dose shares agree within 0.2% (≤ 1.8σ).
+  - s_w,air agrees within 0.003% on every stopping-power basis.
+  - The scoring-cylinder dose agrees within +0.25% (Livermore, 1.6σ) and +0.11% (Penelope).
+  - Resolved model differences:
+    - Penelope's electron fluence above 10 keV is −0.80% (−4.9σ) and its mean electron energy −0.16% (−3.0σ). Its ionisation model gives a higher stopping power, so at the same dose there is less fluence.
+    - Livermore's scattered share of interactions is +0.48% (+3.9σ) and its mean initial electron energy −0.36% (−2.7σ). Both point to its Compton model (binding and Doppler).
+  - The largest list difference in any scalar is 0.8%. The scoring tolerances are 2% and 5%, so the AI comparison can resolve every quantity at those levels.
+  - **Distributions.** List-to-option4 distances are of the same order as the option4 half-sample distances. The largest is Penelope's electron angular distribution, with W1 = 0.0014 against 0.0004 for the half sample.
+- **Scorer positive controls.** The Livermore and Penelope results, scored as if they were model answers, show no breakpoint. Livermore passes everywhere. Penelope passes everywhere except one unresolved distribution (outside 3 × half-sample, inside the code spread).
 - **Queue** (`mc/queues/M2.yaml`, run by `mc/tools/run_queue.py` in chunks under 2 h):
   - option4 layers, then the dose extension;
   - SPRRZnrc, the boundary-free PDD;

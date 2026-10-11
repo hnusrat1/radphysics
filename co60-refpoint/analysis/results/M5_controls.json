@@ -1,13 +1,1007 @@
 {
  "reference_sources": {
   "layers": "M2-R0-option4",
-  "lists": "none yet",
+  "lists": [
+   "livermore",
+   "penelope"
+  ],
   "half_sample": "M2-R0-option4",
-  "dose": "M2-R0-option4-bf",
-  "pdd": "M1 (provisional): M1-R0-option4-pdd"
+  "dose": "M2-R0-option4-bf+M2-R0-option4-bf-ext",
+  "pdd": "M2-R0-option4-pdd"
  },
- "reference_provisional": true,
+ "reference_provisional": false,
  "controls": {
+  "positive_livermore": {
+   "n": 1,
+   "observables": {
+    "L1_primary_fluence_per_phi0": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": 0.7292069336521202,
+     "rel_diff_median": -5.086974382226489e-05,
+     "rel_diff_range": [
+      -5.086974382226489e-05,
+      -5.086974382226489e-05
+     ],
+     "verdict": "pass"
+    },
+    "L1_total_fluence_per_phi0": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": 1.1549681838515693,
+     "rel_diff_median": 0.0005109997648745719,
+     "rel_diff_range": [
+      0.0005109997648745719,
+      0.0005109997648745719
+     ],
+     "verdict": "pass"
+    },
+    "L1_scattered_fraction_fluence": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": 0.3686351634211335,
+     "rel_diff_median": 0.000964922297380579,
+     "rel_diff_range": [
+      0.000964922297380579,
+      0.000964922297380579
+     ],
+     "verdict": "pass"
+    },
+    "L1_scattered_fraction_energy_fluence": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": 0.1810078528975198,
+     "rel_diff_median": 0.0007439059452005764,
+     "rel_diff_range": [
+      0.0007439059452005764,
+      0.0007439059452005764
+     ],
+     "verdict": "pass"
+    },
+    "L1_mean_photon_energy_MeV": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": 0.9664799275794268,
+     "rel_diff_median": -0.00035113964287018725,
+     "rel_diff_range": [
+      -0.00035113964287018725,
+      -0.00035113964287018725
+     ],
+     "verdict": "pass"
+    },
+    "L1_photon_fluence_spectrum_primary": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "w1_median": 5.6057352340777155e-05,
+     "w1_range": [
+      5.6057352340777155e-05,
+      5.6057352340777155e-05
+     ],
+     "jsd_median": 1.0075644869472831e-07,
+     "jsd_range": [
+      1.0075644869472831e-07,
+      1.0075644869472831e-07
+     ],
+     "verdict": "pass"
+    },
+    "L1_photon_fluence_spectrum_scattered": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "w1_median": 0.00027822598677490295,
+     "w1_range": [
+      0.00027822598677490295,
+      0.00027822598677490295
+     ],
+     "jsd_median": 3.857454420527053e-06,
+     "jsd_range": [
+      3.857454420527053e-06,
+      3.857454420527053e-06
+     ],
+     "verdict": "pass"
+    },
+    "L1_angular_primary": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "w1_median": 0.0,
+     "w1_range": [
+      0.0,
+      0.0
+     ],
+     "jsd_median": 0.0,
+     "jsd_range": [
+      0.0,
+      0.0
+     ],
+     "verdict": "pass"
+    },
+    "L1_angular_scattered": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "w1_median": 0.0006492843663685438,
+     "w1_range": [
+      0.0006492843663685438,
+      0.0006492843663685438
+     ],
+     "jsd_median": 4.645303456496131e-07,
+     "jsd_range": [
+      4.645303456496131e-07,
+      4.645303456496131e-07
+     ],
+     "verdict": "pass"
+    },
+    "L2_interaction_fractions": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": {
+      "compton": 0.9648521279823866,
+      "photoelectric": 0.02423676469220482,
+      "pair": 0.00018312362266096027,
+      "rayleigh": 0.010727983702747678
+     },
+     "verdict": "pass"
+    },
+    "L2_energy_transfer_fractions": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": {
+      "compton": 0.9977533117501878,
+      "photoelectric": 0.0020980135609964456,
+      "pair": 0.0001486746888159023,
+      "rayleigh": 0.0
+     },
+     "verdict": "pass"
+    },
+    "L2_interaction_fractions_primary": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": {
+      "compton": 0.9990060792078677,
+      "photoelectric": 2.5296458266685494e-05,
+      "pair": 0.00036910757363598217,
+      "rayleigh": 0.0005995167602298108
+     },
+     "verdict": "pass"
+    },
+    "L2_interaction_fractions_scattered": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": {
+      "compton": 0.9344017812677411,
+      "photoelectric": 0.04582314233715216,
+      "pair": 1.7229525512591316e-05,
+      "rayleigh": 0.019757846869594226
+     },
+     "verdict": "pass"
+    },
+    "L2_scattered_share_of_interactions": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": 0.5286737521777699,
+     "rel_diff_median": 0.004760858109030177,
+     "rel_diff_range": [
+      0.004760858109030177,
+      0.004760858109030177
+     ],
+     "verdict": "pass"
+    },
+    "L3_initial_spectrum": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "w1_median": 0.0009921464563871461,
+     "w1_range": [
+      0.0009921464563871461,
+      0.0009921464563871461
+     ],
+     "jsd_median": 1.0049802221965628e-05,
+     "jsd_range": [
+      1.0049802221965628e-05,
+      1.0049802221965628e-05
+     ],
+     "verdict": "pass"
+    },
+    "L3_initial_spectrum_parent_primary": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "w1_median": 0.00031885533976782504,
+     "w1_range": [
+      0.00031885533976782504,
+      0.00031885533976782504
+     ],
+     "jsd_median": 1.3608739002185668e-05,
+     "jsd_range": [
+      1.3608739002185668e-05,
+      1.3608739002185668e-05
+     ],
+     "verdict": "pass"
+    },
+    "L3_mean_initial_energy_MeV": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": 0.34650860208114564,
+     "rel_diff_median": -0.0035826030650402073,
+     "rel_diff_range": [
+      -0.0035826030650402073,
+      -0.0035826030650402073
+     ],
+     "verdict": "pass"
+    },
+    "L3_mean_initial_energy_parent_primary_MeV": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": 0.5894167497781433,
+     "rel_diff_median": 0.0003990728230118307,
+     "rel_diff_range": [
+      0.0003990728230118307,
+      0.0003990728230118307
+     ],
+     "verdict": "pass"
+    },
+    "L3_initial_direction": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "w1_median": 0.0012116412097477659,
+     "w1_range": [
+      0.0012116412097477659,
+      0.0012116412097477659
+     ],
+     "jsd_median": 8.583883140471393e-06,
+     "jsd_range": [
+      8.583883140471393e-06,
+      8.583883140471393e-06
+     ],
+     "verdict": "pass"
+    },
+    "L4_electron_fluence_per_phi0": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": 0.012999406541574682,
+     "rel_diff_median": 0.0036163760335697803,
+     "rel_diff_range": [
+      0.0036163760335697803,
+      0.0036163760335697803
+     ],
+     "verdict": "pass"
+    },
+    "L4_electron_fluence_spectrum": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "w1_median": 0.0001867836096230229,
+     "w1_range": [
+      0.0001867836096230229,
+      0.0001867836096230229
+     ],
+     "jsd_median": 1.0994206624916817e-06,
+     "jsd_range": [
+      1.0994206624916817e-06,
+      1.0994206624916817e-06
+     ],
+     "verdict": "pass"
+    },
+    "L4_delta_fraction": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": 0.03023209088416499,
+     "rel_diff_median": 0.006435021144560631,
+     "rel_diff_range": [
+      0.006435021144560631,
+      0.006435021144560631
+     ],
+     "verdict": "pass"
+    },
+    "L4_mean_electron_energy_MeV": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": 0.4364393326921194,
+     "rel_diff_median": -0.00021674705231565275,
+     "rel_diff_range": [
+      -0.00021674705231565275,
+      -0.00021674705231565275
+     ],
+     "verdict": "pass"
+    },
+    "L4_angular": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "w1_median": 0.0005040435612250504,
+     "w1_range": [
+      0.0005040435612250504,
+      0.0005040435612250504
+     ],
+     "jsd_median": 3.256172719400994e-07,
+     "jsd_range": [
+      3.256172719400994e-07,
+      3.256172719400994e-07
+     ],
+     "verdict": "pass"
+    },
+    "L4_radiative_to_collision": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": 0.00231520047903275,
+     "rel_diff_median": 0.000721195839552716,
+     "rel_diff_range": [
+      0.000721195839552716,
+      0.000721195839552716
+     ],
+     "verdict": "pass"
+    },
+    "L5_D_over_phi0_Gy_cm2": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": 5.373212596728169e-12,
+     "rel_diff_median": 0.001113957968657123,
+     "rel_diff_range": [
+      0.001113957968657123,
+      0.001113957968657123
+     ],
+     "verdict": "pass"
+    },
+    "L5_K_over_phi0_Gy_cm2": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": 5.3571638979866335e-12,
+     "rel_diff_median": 0.0007613034626069332,
+     "rel_diff_range": [
+      0.0007613034626069332,
+      0.0007613034626069332
+     ],
+     "verdict": "pass"
+    },
+    "L5_Kcol_over_phi0_Gy_cm2": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": 5.343136729829232e-12,
+     "rel_diff_median": 0.0007522699702718603,
+     "rel_diff_range": [
+      0.0007522699702718603,
+      0.0007522699702718603
+     ],
+     "verdict": "pass"
+    },
+    "L5_beta": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": 1.0056443719546242,
+     "rel_diff_median": 0.0003768285207992642,
+     "rel_diff_range": [
+      0.0003768285207992642,
+      0.0003768285207992642
+     ],
+     "verdict": "pass"
+    },
+    "L5_g": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": 0.002618307023204084,
+     "rel_diff_median": 0.003454771274958419,
+     "rel_diff_range": [
+      0.003454771274958419,
+      0.003454771274958419
+     ],
+     "verdict": "pass"
+    },
+    "L5_dose_fraction_parent_scattered": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": 0.18803736488315337,
+     "rel_diff_median": 0.0023718271531350567,
+     "rel_diff_range": [
+      0.0023718271531350567,
+      0.0023718271531350567
+     ],
+     "verdict": "pass"
+    },
+    "L5_s_w_air": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": 1.126786159070137,
+     "rel_diff_median": 6.21800707010738e-06,
+     "rel_diff_range": [
+      6.21800707010738e-06,
+      6.21800707010738e-06
+     ],
+     "verdict": "pass"
+    },
+    "L5_PDD5_percent": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": 81.78767195942898,
+     "rel_diff_median": 0.0,
+     "rel_diff_range": [
+      0.0,
+      0.0
+     ],
+     "verdict": "pass"
+    }
+   },
+   "breakpoint_layer": null,
+   "breakpoint_reason": "no resolved failure",
+   "verdict_counts_by_layer": {
+    "1": {
+     "pass": 9
+    },
+    "2": {
+     "pass": 5
+    },
+    "3": {
+     "pass": 5
+    },
+    "4": {
+     "pass": 6
+    },
+    "5": {
+     "pass": 8
+    }
+   },
+   "H1_median_abs_rel_diff": 0.0002249712834170478,
+   "H2_median_abs_rel_diff": 0.0007567867164393967,
+   "H3": {
+    "abs_rel_diff_PDD5": 0.0,
+    "abs_rel_diff_D_over_phi0": 0.001113957968657123
+   }
+  },
+  "positive_penelope": {
+   "n": 1,
+   "observables": {
+    "L1_primary_fluence_per_phi0": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": 0.7290596386864058,
+     "rel_diff_median": -0.0002528528381403326,
+     "rel_diff_range": [
+      -0.0002528528381403326,
+      -0.0002528528381403326
+     ],
+     "verdict": "pass"
+    },
+    "L1_total_fluence_per_phi0": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": 1.1546330050631695,
+     "rel_diff_median": 0.00022064539029467635,
+     "rel_diff_range": [
+      0.00022064539029467635,
+      0.00022064539029467635
+     ],
+     "verdict": "pass"
+    },
+    "L1_scattered_fraction_fluence": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": 0.3685792267924505,
+     "rel_diff_median": 0.0008130360728987303,
+     "rel_diff_range": [
+      0.0008130360728987303,
+      0.0008130360728987303
+     ],
+     "verdict": "pass"
+    },
+    "L1_scattered_fraction_energy_fluence": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": 0.18090676380897536,
+     "rel_diff_median": 0.0001850114679776079,
+     "rel_diff_range": [
+      0.0001850114679776079,
+      0.0001850114679776079
+     ],
+     "verdict": "pass"
+    },
+    "L1_mean_photon_energy_MeV": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": 0.966379931434463,
+     "rel_diff_median": -0.000454567587414813,
+     "rel_diff_range": [
+      -0.000454567587414813,
+      -0.000454567587414813
+     ],
+     "verdict": "pass"
+    },
+    "L1_photon_fluence_spectrum_primary": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "w1_median": 2.5126683388027096e-05,
+     "w1_range": [
+      2.5126683388027096e-05,
+      2.5126683388027096e-05
+     ],
+     "jsd_median": 2.0242927659132033e-08,
+     "jsd_range": [
+      2.0242927659132033e-08,
+      2.0242927659132033e-08
+     ],
+     "verdict": "pass"
+    },
+    "L1_photon_fluence_spectrum_scattered": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "w1_median": 0.0005273611871018116,
+     "w1_range": [
+      0.0005273611871018116,
+      0.0005273611871018116
+     ],
+     "jsd_median": 4.242618726298319e-06,
+     "jsd_range": [
+      4.242618726298319e-06,
+      4.242618726298319e-06
+     ],
+     "verdict": "pass"
+    },
+    "L1_angular_primary": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "w1_median": 0.0,
+     "w1_range": [
+      0.0,
+      0.0
+     ],
+     "jsd_median": 0.0,
+     "jsd_range": [
+      0.0,
+      0.0
+     ],
+     "verdict": "pass"
+    },
+    "L1_angular_scattered": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "w1_median": 0.00029558510624530244,
+     "w1_range": [
+      0.00029558510624530244,
+      0.00029558510624530244
+     ],
+     "jsd_median": 1.7310125037931542e-06,
+     "jsd_range": [
+      1.7310125037931542e-06,
+      1.7310125037931542e-06
+     ],
+     "verdict": "pass"
+    },
+    "L2_interaction_fractions": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": {
+      "compton": 0.9650586143405361,
+      "photoelectric": 0.024123287858957683,
+      "pair": 0.0001712882452770489,
+      "rayleigh": 0.010646809555229099
+     },
+     "verdict": "pass"
+    },
+    "L2_energy_transfer_fractions": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": {
+      "compton": 0.9977906598579483,
+      "photoelectric": 0.0020676991037390947,
+      "pair": 0.00014164103831260973,
+      "rayleigh": 0.0
+     },
+     "verdict": "pass"
+    },
+    "L2_interaction_fractions_primary": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": {
+      "compton": 0.9990621195304248,
+      "photoelectric": 2.228202823469294e-05,
+      "pair": 0.0003577239606123562,
+      "rayleigh": 0.0005578744807281739
+     },
+     "verdict": "pass"
+    },
+    "L2_interaction_fractions_scattered": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": {
+      "compton": 0.934539740144005,
+      "photoelectric": 0.04575179509703533,
+      "pair": 3.9822213734908125e-06,
+      "rayleigh": 0.019704482537586172
+     },
+     "verdict": "pass"
+    },
+    "L2_scattered_share_of_interactions": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": 0.5269559059075887,
+     "rel_diff_median": 0.0014960380088896532,
+     "rel_diff_range": [
+      0.0014960380088896532,
+      0.0014960380088896532
+     ],
+     "verdict": "pass"
+    },
+    "L3_initial_spectrum": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "w1_median": 0.0006580738163611729,
+     "w1_range": [
+      0.0006580738163611729,
+      0.0006580738163611729
+     ],
+     "jsd_median": 8.273339152058922e-06,
+     "jsd_range": [
+      8.273339152058922e-06,
+      8.273339152058922e-06
+     ],
+     "verdict": "pass"
+    },
+    "L3_initial_spectrum_parent_primary": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "w1_median": 0.000417960795224474,
+     "w1_range": [
+      0.000417960795224474,
+      0.000417960795224474
+     ],
+     "jsd_median": 1.4433032591501001e-05,
+     "jsd_range": [
+      1.4433032591501001e-05,
+      1.4433032591501001e-05
+     ],
+     "verdict": "pass"
+    },
+    "L3_mean_initial_energy_MeV": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": 0.3472555388330178,
+     "rel_diff_median": -0.0014347176460190322,
+     "rel_diff_range": [
+      -0.0014347176460190322,
+      -0.0014347176460190322
+     ],
+     "verdict": "pass"
+    },
+    "L3_mean_initial_energy_parent_primary_MeV": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": 0.5888735509523915,
+     "rel_diff_median": -0.0005228819769581636,
+     "rel_diff_range": [
+      -0.0005228819769581636,
+      -0.0005228819769581636
+     ],
+     "verdict": "pass"
+    },
+    "L3_initial_direction": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "w1_median": 0.0006877884696071937,
+     "w1_range": [
+      0.0006877884696071937,
+      0.0006877884696071937
+     ],
+     "jsd_median": 8.520937080805997e-06,
+     "jsd_range": [
+      8.520937080805997e-06,
+      8.520937080805997e-06
+     ],
+     "verdict": "pass"
+    },
+    "L4_electron_fluence_per_phi0": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": 0.012848799335585016,
+     "rel_diff_median": -0.008011220795291376,
+     "rel_diff_range": [
+      -0.008011220795291376,
+      -0.008011220795291376
+     ],
+     "verdict": "pass"
+    },
+    "L4_electron_fluence_spectrum": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "w1_median": 0.0007051019155195601,
+     "w1_range": [
+      0.0007051019155195601,
+      0.0007051019155195601
+     ],
+     "jsd_median": 2.5786212563593374e-06,
+     "jsd_range": [
+      2.5786212563593374e-06,
+      2.5786212563593374e-06
+     ],
+     "verdict": "pass"
+    },
+    "L4_delta_fraction": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": 0.02989091514614286,
+     "rel_diff_median": -0.004922817531763509,
+     "rel_diff_range": [
+      -0.004922817531763509,
+      -0.004922817531763509
+     ],
+     "verdict": "pass"
+    },
+    "L4_mean_electron_energy_MeV": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": 0.4358276541597393,
+     "rel_diff_median": -0.0016179634575580236,
+     "rel_diff_range": [
+      -0.0016179634575580236,
+      -0.0016179634575580236
+     ],
+     "verdict": "pass"
+    },
+    "L4_angular": {
+     "verdicts": [
+      "unresolved"
+     ],
+     "pass_rate": 0.0,
+     "w1_median": 0.001367933651128616,
+     "w1_range": [
+      0.001367933651128616,
+      0.001367933651128616
+     ],
+     "jsd_median": 1.5173146480280974e-06,
+     "jsd_range": [
+      1.5173146480280974e-06,
+      1.5173146480280974e-06
+     ],
+     "verdict": "unresolved"
+    },
+    "L4_radiative_to_collision": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": 0.00226352872773295,
+     "rel_diff_median": -0.02161337830214872,
+     "rel_diff_range": [
+      -0.02161337830214872,
+      -0.02161337830214872
+     ],
+     "verdict": "pass"
+    },
+    "L5_D_over_phi0_Gy_cm2": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": 5.365677407338618e-12,
+     "rel_diff_median": -0.0002899662457710574,
+     "rel_diff_range": [
+      -0.0002899662457710574,
+      -0.0002899662457710574
+     ],
+     "verdict": "pass"
+    },
+    "L5_K_over_phi0_Gy_cm2": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": 5.363404165818672e-12,
+     "rel_diff_median": 0.0019270356836975822,
+     "rel_diff_range": [
+      0.0019270356836975822,
+      0.0019270356836975822
+     ],
+     "verdict": "pass"
+    },
+    "L5_Kcol_over_phi0_Gy_cm2": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": 5.349387209647527e-12,
+     "rel_diff_median": 0.001922964673186853,
+     "rel_diff_range": [
+      0.001922964673186853,
+      0.001922964673186853
+     ],
+     "verdict": "pass"
+    },
+    "L5_beta": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": 1.0030632473686616,
+     "rel_diff_median": -0.002190776190500046,
+     "rel_diff_range": [
+      -0.002190776190500046,
+      -0.002190776190500046
+     ],
+     "verdict": "pass"
+    },
+    "L5_g": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": 0.0026133718441835687,
+     "rel_diff_median": 0.0015633853941796748,
+     "rel_diff_range": [
+      0.0015633853941796748,
+      0.0015633853941796748
+     ],
+     "verdict": "pass"
+    },
+    "L5_dose_fraction_parent_scattered": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": 0.1880371309497042,
+     "rel_diff_median": 0.0023705801227960604,
+     "rel_diff_range": [
+      0.0023705801227960604,
+      0.0023705801227960604
+     ],
+     "verdict": "pass"
+    },
+    "L5_s_w_air": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": 1.1267863207557283,
+     "rel_diff_median": 6.361500665072695e-06,
+     "rel_diff_range": [
+      6.361500665072695e-06,
+      6.361500665072695e-06
+     ],
+     "verdict": "pass"
+    },
+    "L5_PDD5_percent": {
+     "verdicts": [
+      "pass"
+     ],
+     "pass_rate": 1.0,
+     "median": 81.78767195942898,
+     "rel_diff_median": 0.0,
+     "rel_diff_range": [
+      0.0,
+      0.0
+     ],
+     "verdict": "pass"
+    }
+   },
+   "breakpoint_layer": null,
+   "breakpoint_reason": "no resolved failure",
+   "verdict_counts_by_layer": {
+    "1": {
+     "pass": 9
+    },
+    "2": {
+     "pass": 5
+    },
+    "3": {
+     "pass": 5
+    },
+    "4": {
+     "pass": 5,
+     "unresolved": 1
+    },
+    "5": {
+     "pass": 8
+    }
+   },
+   "H1_median_abs_rel_diff": 0.0003878674075492481,
+   "H2_median_abs_rel_diff": 0.0015906744258688491,
+   "H3": {
+    "abs_rel_diff_PDD5": 0.0,
+    "abs_rel_diff_D_over_phi0": 0.0002899662457710574
+   }
+  },
   "negative_dose_plus5pct": {
    "n": 1,
    "observables": {
@@ -377,11 +1371,11 @@
       "fail"
      ],
      "pass_rate": 0.0,
-     "median": 5.639301291887295e-12,
-     "rel_diff_median": 0.04999999999999998,
+     "median": 5.635595410149314e-12,
+     "rel_diff_median": 0.05,
      "rel_diff_range": [
-      0.04999999999999998,
-      0.04999999999999998
+      0.05,
+      0.05
      ],
      "verdict": "fail"
     },
@@ -416,7 +1410,7 @@
       "pass"
      ],
      "pass_rate": 1.0,
-     "median": 1.0059266065471881,
+     "median": 1.0052655592209325,
      "rel_diff_median": 0.0,
      "rel_diff_range": [
       0.0,
@@ -468,7 +1462,7 @@
       "pass"
      ],
      "pass_rate": 1.0,
-     "median": 81.5258963075187,
+     "median": 81.78767195942898,
      "rel_diff_median": 0.0,
      "rel_diff_range": [
       0.0,
@@ -501,7 +1495,7 @@
    "H2_median_abs_rel_diff": 0.0,
    "H3": {
     "abs_rel_diff_PDD5": 0.0,
-    "abs_rel_diff_D_over_phi0": 0.04999999999999998
+    "abs_rel_diff_D_over_phi0": 0.05
    }
   },
   "negative_uniform": {
@@ -874,10 +1868,10 @@
      ],
      "pass_rate": 0.0,
      "median": 1.0,
-     "rel_diff_median": 186193279210.82913,
+     "rel_diff_median": 186315717076.38693,
      "rel_diff_range": [
-      186193279210.82913,
-      186193279210.82913
+      186315717076.38693,
+      186315717076.38693
      ],
      "verdict": "fail"
     },
@@ -913,10 +1907,10 @@
      ],
      "pass_rate": 1.0,
      "median": 1.0,
-     "rel_diff_median": -0.005891688825620213,
+     "rel_diff_median": -0.00523797833580737,
      "rel_diff_range": [
-      -0.005891688825620213,
-      -0.005891688825620213
+      -0.00523797833580737,
+      -0.00523797833580737
      ],
      "verdict": "pass"
     },
@@ -965,10 +1959,10 @@
      ],
      "pass_rate": 0.0,
      "median": 1.0,
-     "rel_diff_median": -0.9877339588364908,
+     "rel_diff_median": -0.9877732184320388,
      "rel_diff_range": [
-      -0.9877339588364908,
-      -0.9877339588364908
+      -0.9877732184320388,
+      -0.9877732184320388
      ],
      "verdict": "fail"
     }
@@ -997,8 +1991,8 @@
    "H1_median_abs_rel_diff": 0.5342762907586907,
    "H2_median_abs_rel_diff": 3.103148829230237,
    "H3": {
-    "abs_rel_diff_PDD5": 0.9877339588364908,
-    "abs_rel_diff_D_over_phi0": 186193279210.82913
+    "abs_rel_diff_PDD5": 0.9877732184320388,
+    "abs_rel_diff_D_over_phi0": 186315717076.38693
    }
   },
   "identity": {
@@ -1370,7 +2364,7 @@
       "pass"
      ],
      "pass_rate": 1.0,
-     "median": 5.3707631351307574e-12,
+     "median": 5.367233723951728e-12,
      "rel_diff_median": 0.0,
      "rel_diff_range": [
       0.0,
@@ -1409,7 +2403,7 @@
       "pass"
      ],
      "pass_rate": 1.0,
-     "median": 1.0059266065471881,
+     "median": 1.0052655592209325,
      "rel_diff_median": 0.0,
      "rel_diff_range": [
       0.0,
@@ -1461,7 +2455,7 @@
       "pass"
      ],
      "pass_rate": 1.0,
-     "median": 81.5258963075187,
+     "median": 81.78767195942898,
      "rel_diff_median": 0.0,
      "rel_diff_range": [
       0.0,

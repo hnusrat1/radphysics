@@ -1,0 +1,148 @@
+
+**************************************************************
+ Geant4 version Name: geant4-11-04-patch-03 [MT]   (01-October-2026)
+  << in Multi-threaded mode >> 
+                       Copyright : Geant4 Collaboration
+                      References : NIM A 506 (2003), 250-303
+                                 : IEEE-TNS 53 (2006), 270-278
+                                 : NIM A 835 (2016), 186-225
+                             WWW : http://geant4.org/
+**************************************************************
+
+/run/verbose 0
+/control/cout/ignoreThreadsExcept 0
+/process/em/verbose 0
+/random/setSeeds 7201025 7201026
+/co60/geom/scoringRadius 1.0 cm
+/co60/geom/scoringThickness 0.2 cm
+/co60/geom/scoringDepth 5.0 cm
+/co60/source/ssd 100.0 cm
+/co60/source/field 10.0 10.0 cm
+/co60/phys/electronThreshold 10 keV
+/co60/phys/gammaThreshold 10 keV
+/co60/vr/russianRoulette true
+/co60/vr/survival 0.05
+/co60/vr/roi 1.8 4.1 5.9 cm
+/co60/vr/importanceCell 8.0 -1.0 14.0 cm 2
+/co60/vr/importanceCell 4.0 2.0 8.0 cm 8
+/co60/vr/importanceCell 2.5 3.4 6.6 cm 32
+/co60/bins/photonE 0.0 1.4 140 MeV
+/co60/bins/electronE 0.0 1.4 1400 MeV
+/co60/bins/cosTheta 40
+/co60/bins/depth 0.0 10.0 100 1.0 cm
+/co60/score/depthScan false
+/process/em/UseGeneralProcess false
+/process/msc/RangeFactor 0.04
+/run/physicsModified
+/co60/out/file output.json
+/co60/out/eventSample events.csv 5000
+/run/initialize
+Checking overlaps for volume Phantom:0 (G4Box) ... OK! 
+Checking overlaps for volume Scoring:0 (G4Tubs) ... OK! 
+Checking overlaps for volume ImpCell1:1 (G4Tubs) ... OK! 
+Checking overlaps for volume ImpCell2:2 (G4Tubs) ... OK! 
+Checking overlaps for volume ImpCell3:3 (G4Tubs) ... OK! 
+--- G4CoupledTransportation is used 
+ paraFlag: 1
+ Preparing Importance Sampling 
+G4IStore:: Creating new Parallel IStore ImportanceWorld
+ G4IStore:: ParallelWorldName = ImportanceWorld
+ G4IStore:: fParallelWorldVolume = ImportanceWorld
+G4GeometrySampler:: preparing importance sampling WorldName is ImportanceWorld
+ G4ImportanceConfigurator:: setting world name: ImportanceWorld
+ make sure AddProcess() is invoked for biasing!!! 
+G4ImportanceConfigurator:: entering importance configure, paraflag 1
+### G4ImportanceProcess:: Creating 
+G4ImportanceProcess:: importance process paraflag is: 1
+
+
+
+G4ImportanceProcess:: SetParallelWorld name = ImportanceWorld
+=== G4ProcessPlacer::AddProcessAsSecondDoIt: for: gamma
+  Modifying Process Order for ProcessName: ImportanceProcess
+  The initial AlongStep Vectors: 
+GPIL Vector: 
+   CoupledTransportation
+DoIt Vector: 
+   CoupledTransportation
+The initial PostStep Vectors: 
+GPIL Vector: 
+   Rayl
+   conv
+   compt
+   phot
+   CoupledTransportation
+DoIt Vector: 
+   CoupledTransportation
+   phot
+   compt
+   conv
+   Rayl
+  The final AlongStep Vectors: 
+GPIL Vector: 
+   ImportanceProcess
+   CoupledTransportation
+DoIt Vector: 
+   CoupledTransportation
+   ImportanceProcess
+The final PostStep Vectors: 
+GPIL Vector: 
+   Rayl
+   conv
+   compt
+   phot
+   ImportanceProcess
+   CoupledTransportation
+DoIt Vector: 
+   CoupledTransportation
+   ImportanceProcess
+   phot
+   compt
+   conv
+   Rayl
+================================================
+/run/physicsModified
+G4WT0 > /run/verbose 0
+G4WT0 > /control/cout/ignoreThreadsExcept 0
+G4WT0 > /run/physicsModified 
+G4WT0 > /run/initialize 
+G4WT0 > /run/physicsModified 
+G4WT0 > /control/verbose 1
+G4WT0 > /run/verbose 0
+G4WT0 > /control/cout/ignoreThreadsExcept 0
+G4WT0 > /run/physicsModified 
+G4WT0 > /run/initialize 
+G4WT0 > /run/physicsModified 
+/co60/vr/applyImportance
+Importance cell 1: r <= 8 cm, -1 <= z <= 14 cm, importance 2
+Importance cell 2: r <= 4 cm, 2 <= z <= 8 cm, importance 8
+Importance cell 3: r <= 2.5 cm, 3.4 <= z <= 6.6 cm, importance 32
+/run/printProgress 400000
+/run/beamOn 4000000
+
+========= Table of registered couples ============================
+
+Index : 0     used in the geometry : Yes
+ Material : G4_Galactic
+ Range cuts        :  gamma  1 mm     e-  8.24701 um     e+  8.33478 um  proton 8.24701 um 
+ Energy thresholds :  gamma  990 eV     e-  990 eV     e+  990 eV  proton 824.701 eV 
+ Region(s) which use this couple : 
+    DefaultRegionForTheWorld
+
+Index : 1     used in the geometry : Yes
+ Material : G4_WATER
+ Range cuts        :  gamma  1 mm     e-  8.24701 um     e+  8.33478 um  proton 8.24701 um 
+ Energy thresholds :  gamma  2.93547 keV    e-  10 keV    e+  10 keV proton 824.701 eV 
+ Region(s) which use this couple : 
+    DefaultRegionForTheWorld
+
+==================================================================
+
+### Run 0 starts.
+ROI check passed: buffer needed 7.34918 mm (1.2 x CSDA range 6.12431 mm of 1.3325 MeV e- in G4_WATER)
+G4WT0 > /run/printProgress 400000
+G4WT0 > ### Run 0 starts on worker thread 0.
+G4WT0 > --> Event 800000 starts with initial seeds (80437872,99230217).
+G4WT0 > --> Event 1200000 starts with initial seeds (83660189,72382351).
+G4WT0 > --> Event 2400000 starts with initial seeds (91208731,40187770).
+Wrote output.json
