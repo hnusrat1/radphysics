@@ -1,0 +1,65 @@
+run_id: M2-B0-egsnrc-smoke-sprrznrc
+purpose: Input check and throughput measurement for the EGSnrc B0 benchmark (sprrznrc, analog). Not used
+  for any result.
+created_utc: '2026-10-11T13:31:58Z'
+git:
+  commit: 1d7fcaf591029d3aaf9eca10538127b14aff7f7f
+  dirty: true
+machine:
+  hostname: vm
+  platform: Linux-6.18.44-fc-v114-x86_64-with-glibc2.39
+  cpu: Intel(R) Xeon(R) Processor @ 2.80GHz
+  logical_cpus: 4
+  compiler: c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+egsnrc:
+  hen_house: /opt/EGSnrc/HEN_HOUSE/
+  egs_home: /opt/EGSnrc/egs_home/
+  egs_config: /opt/EGSnrc/HEN_HOUSE/specs/linux.conf
+  commit: bd49a47aae3938f49f4100b8e018091861408b19
+  describe: v2026
+spec_file: mc/egsnrc/b0/specs/M2-B0-egsnrc-smoke-sprrznrc.yaml
+spec:
+  run_id: M2-B0-egsnrc-smoke-sprrznrc
+  purpose: Input check and throughput measurement for the EGSnrc B0 benchmark (sprrznrc, analog). Not
+    used for any result.
+  code: sprrznrc
+  pegs4_file: water_air_g4_option4
+  media:
+  - H2O_G4
+  - AIR_G4
+  geometry:
+    planes_cm:
+    - 0.0
+    - 4.9
+    - 5.1
+    - 30.0
+    radii_cm:
+    - 1.0
+    - 15.0
+  source:
+    ssd_cm: 100.0
+    field_radius_cm: 5.64
+    spectrum_file: co60_lines.spectrum
+  scoring_region: 3
+  bin_width_MeV: 0.01
+  jobs: 1
+  parallel: 1
+  histories_per_job: 200000
+  seed_base: 1101
+egsnrc_run:
+  hen_house: /opt/EGSnrc/HEN_HOUSE/
+  egs_home: /opt/EGSnrc/egs_home/
+  config: /opt/EGSnrc/HEN_HOUSE/specs/linux.conf
+  pegs4_file: water_air_g4_option4
+  transport_block: mc/egsnrc/b0/inputs/b0_transport.inc
+jobs:
+- job: 0
+  seeds:
+  - 1101
+  - 97
+  exit_code: 0
+  wall_s: 5.4
+  command: sprrznrc -i M2-B0-egsnrc-smoke-sprrznrc_j00 -p water_air_g4_option4
+started_utc: '2026-10-11T13:31:58Z'
+finished_utc: '2026-10-11T13:32:04Z'
+cpu_time_s: 5.4

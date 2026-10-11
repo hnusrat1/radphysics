@@ -52,8 +52,10 @@ Messenger::Messenger()
   Make("/co60/geom/scoringThickness", "Scoring cylinder thickness", "value unit");
   Make("/co60/geom/scoringDepth", "Depth of the scoring cylinder centre", "value unit");
   Make("/co60/geom/tableMode", "Geometry for stopping-power tables only", "bool");
+  Make("/co60/geom/cylinderPhantom", "Cylindrical phantom (geometry B0)", "radius depth unit");
   Make("/co60/source/ssd", "Source to surface distance", "value unit");
   Make("/co60/source/field", "Field size at the phantom surface", "x y unit");
+  Make("/co60/source/circularField", "Circular field of this radius at the phantom surface (geometry B0)", "radius unit");
   Make("/co60/source/lines", "Two photon lines and the probability of the first", "e1 e2 unit p1");
   Make("/co60/phys/electronThreshold", "e-/e+ production threshold in G4_WATER", "value unit");
   Make("/co60/phys/gammaThreshold", "Upper bound on the gamma production threshold in G4_WATER", "value unit");
@@ -105,6 +107,13 @@ void Messenger::SetNewValue(G4UIcommand* command, G4String value)
   else if (path == "/co60/geom/scoringThickness") { need(2); c.scoringThickness = WithUnit(t[0], t[1]); }
   else if (path == "/co60/geom/scoringDepth") { need(2); c.scoringDepth = WithUnit(t[0], t[1]); }
   else if (path == "/co60/geom/tableMode") { need(1); c.tableMode = ToBool(t[0]); }
+  else if (path == "/co60/geom/cylinderPhantom") {
+    need(3);
+    c.cylinderPhantom = true;
+    c.phantomRadius = WithUnit(t[0], t[2]);
+    c.phantomDepth = WithUnit(t[1], t[2]);
+  }
+  else if (path == "/co60/source/circularField") { need(2); c.fieldRadius = WithUnit(t[0], t[1]); }
   else if (path == "/co60/source/ssd") { need(2); c.ssd = WithUnit(t[0], t[1]); }
   else if (path == "/co60/source/field") {
     need(3);

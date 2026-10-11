@@ -40,36 +40,39 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     return worldP;
   }
 
-  const G4double half = 0.5 * c.phantomSize;
-  if (c.scoringDepth - 0.5 * c.scoringThickness < 0. || c.scoringDepth + 0.5 * c.scoringThickness > c.phantomSize
+  const G4double half = c.PhantomHalfXY();
+  const G4double depth = c.PhantomDepth();
+  if (c.scoringDepth - 0.5 * c.scoringThickness < 0. || c.scoringDepth + 0.5 * c.scoringThickness > depth
       || c.scoringRadius > half)
   {
     G4Exception("DetectorConstruction", "CO60-GEOM", FatalException, "scoring cylinder outside the phantom");
   }
 
   // World: the source sits at z = -SSD; leave 10 cm of vacuum around everything.
-  const G4double worldHalfXY = std::max(half, 0.5 * std::max(c.fieldX, c.fieldY)) + 10 * cm;
-  const G4double worldHalfZ = std::max(c.ssd, c.phantomSize) + 10 * cm;
+  const G4double worldHalfXY = std::max({half, 0.5 * std::max(c.fieldX, c.fieldY), c.fieldRadius}) + 10 * cm;
+  const G4double worldHalfZ = std::max(c.ssd, depth) + 10 * cm;
   auto* worldS = new G4Box("World", worldHalfXY, worldHalfXY, worldHalfZ);
   auto* worldL = new G4LogicalVolume(worldS, vacuum, "World");
   auto* worldP = new G4PVPlacement(nullptr, {}, worldL, "World", nullptr, false, 0, true);
 
-  auto* phantomS = new G4Box("Phantom", half, half, half);
+  G4VSolid* phantomS = nullptr;
+  if (c.cylinderPhantom) phantomS = new G4Tubs("Phantom", 0., half, 0.5 * depth, 0., CLHEP::twopi);
+  else phantomS = new G4Box("Phantom", half, half, half);
   auto* phantomL = new G4LogicalVolume(phantomS, water, "Phantom");
-  fPhantomPV = new G4PVPlacement(nullptr, {0, 0, half}, phantomL, "Phantom", worldL, false, 0, true);
+  fPhantomPV = new G4PVPlacement(nullptr, {0, 0, 0.5 * depth}, phantomL, "Phantom", worldL, false, 0, true);
 
   fWorldPV = worldP;
 
   // Mass-geometry importance cells: nested water cylinders, clipped to the phantom.
   // The scoring cylinder must lie inside the innermost cell.
   G4LogicalVolume* mother = phantomL;
-  G4double motherZ = half;  // global z of the mother's origin
+  G4double motherZ = 0.5 * depth;  // global z of the mother's origin
   fCellPVs.clear();
   if (c.importanceEnabled && c.importanceMassWorld) {
     G4int copy = 1;
     for (const auto& cell : c.importanceCells) {
       const G4double z0 = std::max(cell.zmin, 0.);
-      const G4double z1 = std::min(cell.zmax, c.phantomSize);
+      const G4double z1 = std::min(cell.zmax, depth);
       const G4double r = std::min(cell.radius, half);
       const G4String name = "ImpCell" + std::to_string(copy);
       auto* solid = new G4Tubs(name, 0., r, 0.5 * (z1 - z0), 0., CLHEP::twopi);

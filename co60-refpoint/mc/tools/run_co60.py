@@ -62,6 +62,12 @@ def make_macro(spec, seeds, out_json, events_csv, verbose):
         f"/co60/geom/scoringDepth {g.get('scoring_depth_cm', 5.0)} cm",
         f"/co60/source/ssd {src.get('ssd_cm', 100.0)} cm",
         f"/co60/source/field {src.get('field_cm', [10.0, 10.0])[0]} {src.get('field_cm', [10.0, 10.0])[1]} cm",
+    ]
+    if "phantom_cylinder_cm" in g:   # geometry B0: [radius, depth]
+        lines.append(f"/co60/geom/cylinderPhantom {g['phantom_cylinder_cm'][0]} {g['phantom_cylinder_cm'][1]} cm")
+    if "field_radius_cm" in src:     # geometry B0: circular field at the surface
+        lines.append(f"/co60/source/circularField {src['field_radius_cm']} cm")
+    lines += [
         f"/co60/phys/electronThreshold {cuts.get('electron_threshold_keV', 10)} keV",
         f"/co60/phys/gammaThreshold {cuts.get('gamma_threshold_keV', 10)} keV",
         f"/co60/vr/russianRoulette {'true' if rr.get('enabled', False) else 'false'}",
@@ -138,7 +144,10 @@ def main():
     ap.add_argument("spec")
     ap.add_argument("--exe", required=True)
     ap.add_argument("--resume", action="store_true", help="run only batches without an output file")
+    ap.add_argument("--deadline-min", type=float, default=None,
+                    help="do not start a batch that would end after this many minutes (resume later with --resume)")
     args = ap.parse_args()
+    t_start = time.time()
 
     spec_path = Path(args.spec).resolve()
     spec = yaml.safe_load(open(spec_path))
@@ -170,6 +179,18 @@ def main():
         bdir = run_dir / f"batch_{i:02d}"
         if i in done and (bdir / "output.json").exists():
             continue
+        if args.deadline_min is not None:
+            walls = [b["wall_s"] for b in manifest["batches"] if b.get("exit_code") == 0]
+            expect = 1.15 * max(walls) if walls else 0.0
+            if time.time() - t_start + expect > 60 * args.deadline_min:
+                print(f"PAUSED before batch {i}: deadline {args.deadline_min} min; resume with --resume", flush=True)
+                write_yaml(manifest_path, manifest)
+                return
+        if bdir.exists() and not (bdir / "output.json").exists() and any(bdir.iterdir()):
+            # Interrupted batch (container restart or kill): keep it, rerun with the same seeds.
+            stamp = utc_now().replace(":", "").replace("-", "")
+            bdir.rename(run_dir / f"batch_{i:02d}.interrupted-{stamp}")
+            manifest.setdefault("interrupted_batches", []).append({"batch": i, "renamed_utc": utc_now()})
         bdir.mkdir(exist_ok=True)
         seeds = (spec["seed_base"] * 1000 + 2 * i + 1, spec["seed_base"] * 1000 + 2 * i + 2)
         macro = make_macro(spec, seeds, "output.json", "events.csv", verbose=(i == 0))

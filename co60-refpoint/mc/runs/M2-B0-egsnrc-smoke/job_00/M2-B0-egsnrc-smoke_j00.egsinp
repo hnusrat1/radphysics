@@ -1,0 +1,92 @@
+ TITLE= M2-B0-egsnrc-smoke: dosrznrc in geometry B0 (co60-refpoint)
+
+ :start I/O control:
+ DOSE ZBOUND MIN= 1
+ DOSE ZBOUND MAX= 4
+ DOSE RBOUND MIN= 0
+ DOSE RBOUND MAX= 2
+ IWATCH= off
+ STORE INITIAL RANDOM NUMBERS= no
+ IRESUME= first
+ OUTPUT OPTIONS= material and dose summary
+ STORE DATA ARRAYS= yes
+ ELECTRON TRANSPORT= normal
+ :stop I/O control:
+
+ :start Monte Carlo inputs:
+ NUMBER OF HISTORIES= 200000
+ INITIAL RANDOM NO. SEEDS= 1001, 97
+ MAX CPU HOURS ALLOWED= 100.0
+ IFULL= dose and stoppers
+ STATISTICAL ACCURACY SOUGHT= 0.0
+ SCORE KERMA= yes
+ :stop Monte Carlo inputs:
+
+ :start geometrical inputs:
+ METHOD OF INPUT= individual
+ Z OF FRONT FACE= 0.
+ DEPTH BOUNDARIES= 4.9, 5.1, 30.0
+ RADII= 1.0, 15.0
+ MEDIA= H2O_G4, AIR_G4
+ DESCRIPTION BY= regions
+ MEDNUM= 1
+ START REGION= 2
+ STOP REGION= 7
+ :stop geometrical inputs:
+
+ :start source inputs:
+ INCIDENT PARTICLE= photon
+ SOURCE NUMBER= 1
+ SOURCE OPTIONS= 100.0, 5.64, 0, 0
+ INCIDENT ENERGY= spectrum
+ SPEC FILENAME= /home/user/radphysics/co60-refpoint/mc/egsnrc/b0/inputs/co60_lines.spectrum
+ SPEC IOUTSP= include
+ :stop source inputs:
+
+ #########################
+ :Start MC Transport Parameter:
+ Global ECUT=                    0.521
+ Global PCUT=                    0.01
+ Global SMAX=                    1e10
+ ESTEPE=                         0.25
+ XIMAX=                          0.5
+ Boundary crossing algorithm= EXACT
+ Skin depth for BCA= 3
+ Electron-step algorithm= PRESTA-II
+ Spin effects= On
+ Brems angular sampling= KM
+ Brems cross sections= NIST
+ Bound Compton scattering= norej
+ Radiative Compton corrections= Off
+ Electron Impact Ionization= Off
+ Pair angular sampling= Simple
+ Pair cross sections= BH
+ Triplet production= Off
+ Photoelectron angular sampling= On
+ Rayleigh scattering= On
+ Atomic relaxations= On
+ Photon cross sections= xcom
+ Photon cross-sections output= Off
+ :Stop MC Transport Parameter:
+ #########################
+
+ :Start Variance Reduction:
+ ELECTRON RANGE REJECTION= Off
+ ESAVEIN= 0.0
+ RUSSIAN ROULETTE DEPTH= 0.0
+ RUSSIAN ROULETTE FRACTION= 0.0
+ EXPONENTIAL TRANSFORM C= 0.0
+ PHOTON FORCING= Off
+ START FORCING= 1
+ STOP FORCING AFTER= 1
+ BREM SPLITTING= Off
+ NUMBER OF BREMS PER EVENT= 1
+ CHARGED PARTICLE RUSSIAN ROULETTE= Off
+ CS ENHANCEMENT FACTOR= 1.0
+ CS ENHANCEMENT START REGION= 1
+ CS ENHANCEMENT STOP REGION= 1
+ :Stop Variance Reduction:
+
+ :start plot control:
+ PLOTTING= Off
+ :stop plot control:

@@ -177,14 +177,16 @@ void RunAction::WriteOutput(const G4Run* run, const Tallies& t) const
   os << "  \"histories\": " << run->GetNumberOfEvent() << ",\n";
   os << "  \"wall_time_s\": " << fTimer.GetRealElapsed() << ",\n";
   os << "  \"threads\": " << G4Threading::GetNumberOfRunningWorkerThreads() << ",\n";
-  os << "  \"geometry\": {\"phantom_size\": " << c.phantomSize / cm << ", \"scoring_radius\": " << c.scoringRadius / cm
+  os << "  \"geometry\": {\"phantom_shape\": \"" << (c.cylinderPhantom ? "cylinder" : "cube") << "\""
+     << ", \"phantom_size\": " << c.phantomSize / cm << ", \"phantom_radius\": " << c.PhantomHalfXY() / cm
+     << ", \"phantom_depth\": " << c.PhantomDepth() / cm << ", \"scoring_radius\": " << c.scoringRadius / cm
      << ", \"scoring_thickness\": " << c.scoringThickness / cm << ", \"scoring_depth\": " << c.scoringDepth / cm
      << ", \"scoring_volume_cm3\": " << volume / cm3
      << ", \"scoring_mass_g\": " << DetectorConstruction::ScoringMass() / g
      << ", \"water_density_g_cm3\": " << water->GetDensity() / (g / cm3)
      << ", \"water_imean_eV\": " << water->GetIonisation()->GetMeanExcitationEnergy() / eV << "},\n";
   os << "  \"source\": {\"ssd\": " << c.ssd / cm << ", \"field_x\": " << c.fieldX / cm << ", \"field_y\": "
-     << c.fieldY / cm << ", \"line1_MeV\": " << c.line1 / MeV << ", \"line2_MeV\": " << c.line2 / MeV
+     << c.fieldY / cm << ", \"field_radius\": " << c.fieldRadius / cm << ", \"line1_MeV\": " << c.line1 / MeV << ", \"line2_MeV\": " << c.line2 / MeV
      << ", \"line1_probability\": " << c.line1Probability
      << ", \"solid_angle_sr\": " << PrimaryGeneratorAction::PyramidSolidAngle()
      << ", \"phi0_per_history_cm-2\": " << PrimaryGeneratorAction::FluenceOnAxis(c.scoringDepth) * cm2 << "},\n";

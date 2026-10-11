@@ -1,0 +1,13 @@
+# M2 Monte Carlo validation queue, in priority order (STATUS M2). Production binary for every R0 run (the code
+# of the M1 reference); the M2 binary, which adds geometry B0, for the B0 runs.
+items:
+  - {kind: geant4, spec: mc/geant4/runspecs/M2-R0-livermore.yaml, exe: /opt/build/co60app/co60app.production}
+  - {kind: geant4, spec: mc/geant4/runspecs/M2-R0-penelope.yaml, exe: /opt/build/co60app/co60app.production}
+  - {kind: egsnrc, spec: mc/egsnrc/b0/specs/M2-B0-egsnrc-spr.yaml}
+  - {kind: egsnrc, spec: mc/egsnrc/b0/specs/M2-B0-egsnrc-dose.yaml}
+  - {kind: egsnrc, spec: mc/egsnrc/b0/specs/M2-B0-egsnrc-fluence.yaml}
+  - {kind: geant4, spec: mc/geant4/runspecs/M2-B0-option4.yaml, exe: /opt/build/co60app/co60app.m2}
+  - {kind: geant4, spec: mc/geant4/runspecs/M2-B0-option4-bf.yaml, exe: /opt/build/co60app/co60app.m2}
+  - {kind: geant4, spec: mc/geant4/runspecs/M2-R0-livermore-bf.yaml, exe: /opt/build/co60app/co60app.production}
+  - {kind: geant4, spec: mc/geant4/runspecs/M2-R0-penelope-bf.yaml, exe: /opt/build/co60app/co60app.production}
+  - {kind: geant4, spec: mc/geant4/runspecs/M2-R0-option4-rf004-bf.yaml, exe: /opt/build/co60app/co60app.production}

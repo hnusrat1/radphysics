@@ -52,11 +52,18 @@ struct Config
   G4double scoringThickness = 0.2 * cm;
   G4double scoringDepth = 5.0 * cm;     // centre of the scoring cylinder
   G4bool tableMode = false;             // geometry with water and air slabs for stopping-power tables
+  // Benchmark geometry B0 (STUDY_PLAN Section 4.2): cylindrical phantom on the beam axis instead of the cube.
+  G4bool cylinderPhantom = false;
+  G4double phantomRadius = 15. * cm;
+  G4double phantomDepth = 30. * cm;
+  G4double PhantomDepth() const { return cylinderPhantom ? phantomDepth : phantomSize; }
+  G4double PhantomHalfXY() const { return cylinderPhantom ? phantomRadius : 0.5 * phantomSize; }
 
   // Source model A
   G4double ssd = 100. * cm;
   G4double fieldX = 10. * cm;           // at the phantom surface
   G4double fieldY = 10. * cm;
+  G4double fieldRadius = 0.;            // > 0: circular field of this radius at the surface (B0), not the square
   G4double line1 = 1.1732 * MeV;
   G4double line2 = 1.3325 * MeV;
   G4double line1Probability = 0.5;

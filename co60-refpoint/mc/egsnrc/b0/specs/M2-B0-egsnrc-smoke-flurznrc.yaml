@@ -1,0 +1,14 @@
+run_id: M2-B0-egsnrc-smoke-flurznrc
+purpose: >-
+  Input check and throughput measurement for the EGSnrc B0 benchmark (flurznrc, analog). Not used for any result.
+code: flurznrc
+pegs4_file: water_air_g4_option4
+media: [H2O_G4, AIR_G4]
+geometry: {planes_cm: [0.0, 4.9, 5.1, 30.0], radii_cm: [1.0, 15.0]}
+source: {ssd_cm: 100.0, field_radius_cm: 5.64, spectrum_file: co60_lines.spectrum}
+scoring_region: 3
+bin_width_MeV: 0.01
+jobs: 1
+parallel: 1
+histories_per_job: 200000
+seed_base: 1101
