@@ -1,0 +1,278 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "type": "object",
+ "required": [
+  "method",
+  "data_sources",
+  "L1_primary_fluence_per_phi0",
+  "L1_total_fluence_per_phi0",
+  "L1_scattered_fraction_fluence",
+  "L1_scattered_fraction_energy_fluence",
+  "L1_mean_photon_energy_MeV",
+  "L1_photon_fluence_spectrum_primary",
+  "L1_photon_fluence_spectrum_scattered",
+  "L1_angular_primary",
+  "L1_angular_scattered",
+  "L2_interaction_fractions",
+  "L2_energy_transfer_fractions",
+  "L2_interaction_fractions_primary",
+  "L2_interaction_fractions_scattered",
+  "L2_scattered_share_of_interactions",
+  "L3_initial_spectrum",
+  "L3_initial_spectrum_parent_primary",
+  "L3_mean_initial_energy_MeV",
+  "L3_mean_initial_energy_parent_primary_MeV",
+  "L3_initial_direction",
+  "L4_electron_fluence_per_phi0",
+  "L4_electron_fluence_spectrum",
+  "L4_delta_fraction",
+  "L4_mean_electron_energy_MeV",
+  "L4_angular",
+  "L4_radiative_to_collision",
+  "L5_D_over_phi0_Gy_cm2",
+  "L5_K_over_phi0_Gy_cm2",
+  "L5_Kcol_over_phi0_Gy_cm2",
+  "L5_beta",
+  "L5_g",
+  "L5_dose_fraction_parent_scattered",
+  "L5_s_w_air",
+  "L5_PDD5_percent"
+ ],
+ "additionalProperties": false,
+ "properties": {
+  "method": {
+   "type": "string"
+  },
+  "data_sources": {
+   "type": "string"
+  },
+  "L1_primary_fluence_per_phi0": {
+   "type": "number"
+  },
+  "L1_total_fluence_per_phi0": {
+   "type": "number"
+  },
+  "L1_scattered_fraction_fluence": {
+   "type": "number"
+  },
+  "L1_scattered_fraction_energy_fluence": {
+   "type": "number"
+  },
+  "L1_mean_photon_energy_MeV": {
+   "type": "number"
+  },
+  "L1_photon_fluence_spectrum_primary": {
+   "type": "array",
+   "items": {
+    "type": "number"
+   },
+   "minItems": 28,
+   "maxItems": 28
+  },
+  "L1_photon_fluence_spectrum_scattered": {
+   "type": "array",
+   "items": {
+    "type": "number"
+   },
+   "minItems": 28,
+   "maxItems": 28
+  },
+  "L1_angular_primary": {
+   "type": "array",
+   "items": {
+    "type": "number"
+   },
+   "minItems": 10,
+   "maxItems": 10
+  },
+  "L1_angular_scattered": {
+   "type": "array",
+   "items": {
+    "type": "number"
+   },
+   "minItems": 10,
+   "maxItems": 10
+  },
+  "L2_interaction_fractions": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "compton",
+    "photoelectric",
+    "pair",
+    "rayleigh"
+   ],
+   "properties": {
+    "compton": {
+     "type": "number"
+    },
+    "photoelectric": {
+     "type": "number"
+    },
+    "pair": {
+     "type": "number"
+    },
+    "rayleigh": {
+     "type": "number"
+    }
+   }
+  },
+  "L2_energy_transfer_fractions": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "compton",
+    "photoelectric",
+    "pair",
+    "rayleigh"
+   ],
+   "properties": {
+    "compton": {
+     "type": "number"
+    },
+    "photoelectric": {
+     "type": "number"
+    },
+    "pair": {
+     "type": "number"
+    },
+    "rayleigh": {
+     "type": "number"
+    }
+   }
+  },
+  "L2_interaction_fractions_primary": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "compton",
+    "photoelectric",
+    "pair",
+    "rayleigh"
+   ],
+   "properties": {
+    "compton": {
+     "type": "number"
+    },
+    "photoelectric": {
+     "type": "number"
+    },
+    "pair": {
+     "type": "number"
+    },
+    "rayleigh": {
+     "type": "number"
+    }
+   }
+  },
+  "L2_interaction_fractions_scattered": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "compton",
+    "photoelectric",
+    "pair",
+    "rayleigh"
+   ],
+   "properties": {
+    "compton": {
+     "type": "number"
+    },
+    "photoelectric": {
+     "type": "number"
+    },
+    "pair": {
+     "type": "number"
+    },
+    "rayleigh": {
+     "type": "number"
+    }
+   }
+  },
+  "L2_scattered_share_of_interactions": {
+   "type": "number"
+  },
+  "L3_initial_spectrum": {
+   "type": "array",
+   "items": {
+    "type": "number"
+   },
+   "minItems": 25,
+   "maxItems": 25
+  },
+  "L3_initial_spectrum_parent_primary": {
+   "type": "array",
+   "items": {
+    "type": "number"
+   },
+   "minItems": 25,
+   "maxItems": 25
+  },
+  "L3_mean_initial_energy_MeV": {
+   "type": "number"
+  },
+  "L3_mean_initial_energy_parent_primary_MeV": {
+   "type": "number"
+  },
+  "L3_initial_direction": {
+   "type": "array",
+   "items": {
+    "type": "number"
+   },
+   "minItems": 10,
+   "maxItems": 10
+  },
+  "L4_electron_fluence_per_phi0": {
+   "type": "number"
+  },
+  "L4_electron_fluence_spectrum": {
+   "type": "array",
+   "items": {
+    "type": "number"
+   },
+   "minItems": 25,
+   "maxItems": 25
+  },
+  "L4_delta_fraction": {
+   "type": "number"
+  },
+  "L4_mean_electron_energy_MeV": {
+   "type": "number"
+  },
+  "L4_angular": {
+   "type": "array",
+   "items": {
+    "type": "number"
+   },
+   "minItems": 10,
+   "maxItems": 10
+  },
+  "L4_radiative_to_collision": {
+   "type": "number"
+  },
+  "L5_D_over_phi0_Gy_cm2": {
+   "type": "number"
+  },
+  "L5_K_over_phi0_Gy_cm2": {
+   "type": "number"
+  },
+  "L5_Kcol_over_phi0_Gy_cm2": {
+   "type": "number"
+  },
+  "L5_beta": {
+   "type": "number"
+  },
+  "L5_g": {
+   "type": "number"
+  },
+  "L5_dose_fraction_parent_scattered": {
+   "type": "number"
+  },
+  "L5_s_w_air": {
+   "type": "number"
+  },
+  "L5_PDD5_percent": {
+   "type": "number"
+  }
+ }
+}

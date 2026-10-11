@@ -1,0 +1,360 @@
+We are studying how photons and electrons deposit energy at one point in a water phantom. Report the
+quantities below for this configuration.
+
+Configuration:
+- Phantom: liquid water, 30 x 30 x 30 cm^3 cube, density 1.000 g/cm^3.
+- Outside the phantom: vacuum.
+- Source: point source on the central axis, 100 cm from the phantom surface (SSD 100 cm), emitting photons uniformly in solid angle within the pyramid that defines a 10 cm x 10 cm field at the phantom surface; no collimator, capsule or other scatter.
+- Photon energies: monoenergetic photons, 2.0 MeV.
+- Point of interest: central axis, 10.0 cm depth.
+- Scoring volume: cylinder on the beam axis, radius 1.0 cm, thickness 0.2 cm, centred at 10.0 cm depth.
+- Normalization: Phi0 is the primary photon fluence at the location of the point of interest, 110 cm from the source, with the phantom removed.
+- Depth dose: D(d_max) is the maximum of the central-axis depth dose for this beam.
+
+Definitions:
+- Primary photon: a photon that has not interacted since leaving the source. Scattered photon: every other
+  photon (scattered source photons and secondary photons such as bremsstrahlung, fluorescence and annihilation
+  photons).
+- theta: the angle between a particle's direction and the beam axis (the direction from the source towards the
+  phantom), so cos(theta) = 1 is straight down the beam axis.
+- Fluence: track length per unit volume in the scoring volume. Spectra are fluence per energy bin (not per MeV),
+  divided by Phi0.
+- Delta rays: electrons set in motion by electrons. They are part of the electron fluence (Layer 4) and not of
+  the electrons set in motion by photon interactions (Layer 3).
+- Quantities "at the point" refer to the scoring volume.
+
+Bin edges (MeV for energies; each list gives the edges, so a list of n+1 numbers defines n bins):
+- photon_energy (28 bins): 0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1, 1.05, 1.1, 1.15, 1.2, 1.25, 1.3, 1.35, 1.4
+- electron_energy (25 bins; the last bin is wider): 0.01, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1, 1.05, 1.1, 1.15, 1.2, 1.4
+- cos_theta (10 bins): -1, -0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1
+
+Quantities to report (JSON key, unit and shape in brackets):
+Layer 1. Photons arriving at the point
+- L1_primary_fluence_per_phi0 [dimensionless; number]: Primary photon fluence in the scoring volume (photons that have not interacted since leaving the source, both lines), divided by Phi0.
+- L1_total_fluence_per_phi0 [dimensionless; number]: Total photon fluence in the scoring volume (primary plus scattered), divided by Phi0.
+- L1_scattered_fraction_fluence [dimensionless; number]: Scattered fraction of the photon fluence in the scoring volume.
+- L1_scattered_fraction_energy_fluence [dimensionless; number]: Scattered fraction of the photon energy fluence in the scoring volume.
+- L1_mean_photon_energy_MeV [MeV; number]: Fluence-weighted mean energy of all photons (primary and scattered) in the scoring volume.
+- L1_photon_fluence_spectrum_primary [dimensionless (fluence in the bin divided by Phi0); list of 28 numbers on the photon_energy grid]: Primary photon fluence in each photon energy bin, divided by Phi0.
+- L1_photon_fluence_spectrum_scattered [dimensionless (fluence in the bin divided by Phi0); list of 28 numbers on the photon_energy grid]: Scattered photon fluence in each photon energy bin, divided by Phi0.
+- L1_angular_primary [fraction; list of 10 numbers on the cos_theta grid, summing to 1]: Fraction of the primary photon fluence in each cos(theta) bin.
+- L1_angular_scattered [fraction; list of 10 numbers on the cos_theta grid, summing to 1]: Fraction of the scattered photon fluence in each cos(theta) bin.
+
+Layer 2. Photon interactions at the point
+- L2_interaction_fractions [fraction; object with keys compton, photoelectric, pair, rayleigh]: Fraction of all photon interactions in the scoring volume by process: incoherent (Compton) scattering, photoelectric absorption, pair production (nuclear and electron field), coherent (Rayleigh) scattering.
+- L2_energy_transfer_fractions [fraction; object with keys compton, photoelectric, pair, rayleigh]: The same fractions weighted by the energy transferred to charged particles.
+- L2_interaction_fractions_primary [fraction; object with keys compton, photoelectric, pair, rayleigh]: Fraction of interactions by process, for interactions of primary photons only.
+- L2_interaction_fractions_scattered [fraction; object with keys compton, photoelectric, pair, rayleigh]: Fraction of interactions by process, for interactions of scattered photons only.
+- L2_scattered_share_of_interactions [dimensionless; number]: Fraction of all photon interactions in the scoring volume that are interactions of scattered photons.
+
+Layer 3. Electrons set in motion
+- L3_initial_spectrum [fraction; list of 25 numbers on the electron_energy grid, summing to 1]: Distribution of the initial kinetic energy of electrons and positrons set in motion in the scoring volume by photon interactions (not delta rays): fraction in each electron energy bin, normalized over the bins.
+- L3_initial_spectrum_parent_primary [fraction; list of 25 numbers on the electron_energy grid, summing to 1]: As L3_initial_spectrum, for electrons and positrons set in motion by primary photons only.
+- L3_mean_initial_energy_MeV [MeV; number]: Mean initial kinetic energy of all electrons and positrons set in motion by photon interactions.
+- L3_mean_initial_energy_parent_primary_MeV [MeV; number]: Mean initial kinetic energy of electrons and positrons set in motion by primary photons.
+- L3_initial_direction [fraction; list of 10 numbers on the cos_theta grid, summing to 1]: Distribution of the initial direction of those electrons and positrons: fraction in each cos(theta) bin, theta measured from the beam axis.
+
+Layer 4. Electrons slowing down
+- L4_electron_fluence_per_phi0 [dimensionless; number]: Electron fluence in the scoring volume above 10 keV, all electrons including delta rays (positrons excluded), divided by Phi0.
+- L4_electron_fluence_spectrum [dimensionless (fluence in the bin divided by Phi0); list of 25 numbers on the electron_energy grid]: Electron fluence in each electron energy bin, all electrons including delta rays, divided by Phi0.
+- L4_delta_fraction [dimensionless; number]: Fraction of the electron fluence above 10 keV that is carried by delta rays (electrons set in motion by electrons).
+- L4_mean_electron_energy_MeV [MeV; number]: Fluence-weighted mean energy of the electron fluence above 10 keV.
+- L4_angular [fraction; list of 10 numbers on the cos_theta grid, summing to 1]: Fraction of the electron fluence in each cos(theta) bin, theta measured from the beam axis.
+- L4_radiative_to_collision [dimensionless; number]: Ratio of radiative to collision energy loss for the electrons in the scoring volume.
+
+Layer 5. Energy deposited
+- L5_D_over_phi0_Gy_cm2 [Gy cm^2; number]: Absorbed dose to water in the scoring volume per unit Phi0.
+- L5_K_over_phi0_Gy_cm2 [Gy cm^2; number]: Kerma in water at the point per unit Phi0.
+- L5_Kcol_over_phi0_Gy_cm2 [Gy cm^2; number]: Collision kerma in water at the point per unit Phi0.
+- L5_beta [dimensionless; number]: beta = D / K_col at the point.
+- L5_g [dimensionless; number]: Radiative yield g = 1 - K_col / K.
+- L5_dose_fraction_parent_scattered [dimensionless; number]: Fraction of the dose deposited by electrons whose parent photon was a scattered photon.
+- L5_s_w_air [dimensionless; number]: Spencer-Attix water-to-air stopping-power ratio at the point, cut-off Delta = 10 keV, including the track-end term. State which stopping-power data you used.
+- L5_PDD5_percent [percent; number]: Percent depth dose at 5 cm on the central axis, 100 x D(5 cm) / D(d_max).
+
+Give a value for every quantity. If you are unsure, give your best estimate rather than leaving it out.
+Also give "method": a short description of how you obtained the values (at most 150 words), and
+"data_sources": the cross-section and stopping-power data you relied on.
+
+Answer format: end your reply with one JSON object in a ```json fenced code block, with exactly the keys above
+plus "method" and "data_sources", using the units stated. The JSON schema is:
+```json
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "type": "object",
+ "required": [
+  "method",
+  "data_sources",
+  "L1_primary_fluence_per_phi0",
+  "L1_total_fluence_per_phi0",
+  "L1_scattered_fraction_fluence",
+  "L1_scattered_fraction_energy_fluence",
+  "L1_mean_photon_energy_MeV",
+  "L1_photon_fluence_spectrum_primary",
+  "L1_photon_fluence_spectrum_scattered",
+  "L1_angular_primary",
+  "L1_angular_scattered",
+  "L2_interaction_fractions",
+  "L2_energy_transfer_fractions",
+  "L2_interaction_fractions_primary",
+  "L2_interaction_fractions_scattered",
+  "L2_scattered_share_of_interactions",
+  "L3_initial_spectrum",
+  "L3_initial_spectrum_parent_primary",
+  "L3_mean_initial_energy_MeV",
+  "L3_mean_initial_energy_parent_primary_MeV",
+  "L3_initial_direction",
+  "L4_electron_fluence_per_phi0",
+  "L4_electron_fluence_spectrum",
+  "L4_delta_fraction",
+  "L4_mean_electron_energy_MeV",
+  "L4_angular",
+  "L4_radiative_to_collision",
+  "L5_D_over_phi0_Gy_cm2",
+  "L5_K_over_phi0_Gy_cm2",
+  "L5_Kcol_over_phi0_Gy_cm2",
+  "L5_beta",
+  "L5_g",
+  "L5_dose_fraction_parent_scattered",
+  "L5_s_w_air",
+  "L5_PDD5_percent"
+ ],
+ "additionalProperties": false,
+ "properties": {
+  "method": {
+   "type": "string"
+  },
+  "data_sources": {
+   "type": "string"
+  },
+  "L1_primary_fluence_per_phi0": {
+   "type": "number"
+  },
+  "L1_total_fluence_per_phi0": {
+   "type": "number"
+  },
+  "L1_scattered_fraction_fluence": {
+   "type": "number"
+  },
+  "L1_scattered_fraction_energy_fluence": {
+   "type": "number"
+  },
+  "L1_mean_photon_energy_MeV": {
+   "type": "number"
+  },
+  "L1_photon_fluence_spectrum_primary": {
+   "type": "array",
+   "items": {
+    "type": "number"
+   },
+   "minItems": 28,
+   "maxItems": 28
+  },
+  "L1_photon_fluence_spectrum_scattered": {
+   "type": "array",
+   "items": {
+    "type": "number"
+   },
+   "minItems": 28,
+   "maxItems": 28
+  },
+  "L1_angular_primary": {
+   "type": "array",
+   "items": {
+    "type": "number"
+   },
+   "minItems": 10,
+   "maxItems": 10
+  },
+  "L1_angular_scattered": {
+   "type": "array",
+   "items": {
+    "type": "number"
+   },
+   "minItems": 10,
+   "maxItems": 10
+  },
+  "L2_interaction_fractions": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "compton",
+    "photoelectric",
+    "pair",
+    "rayleigh"
+   ],
+   "properties": {
+    "compton": {
+     "type": "number"
+    },
+    "photoelectric": {
+     "type": "number"
+    },
+    "pair": {
+     "type": "number"
+    },
+    "rayleigh": {
+     "type": "number"
+    }
+   }
+  },
+  "L2_energy_transfer_fractions": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "compton",
+    "photoelectric",
+    "pair",
+    "rayleigh"
+   ],
+   "properties": {
+    "compton": {
+     "type": "number"
+    },
+    "photoelectric": {
+     "type": "number"
+    },
+    "pair": {
+     "type": "number"
+    },
+    "rayleigh": {
+     "type": "number"
+    }
+   }
+  },
+  "L2_interaction_fractions_primary": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "compton",
+    "photoelectric",
+    "pair",
+    "rayleigh"
+   ],
+   "properties": {
+    "compton": {
+     "type": "number"
+    },
+    "photoelectric": {
+     "type": "number"
+    },
+    "pair": {
+     "type": "number"
+    },
+    "rayleigh": {
+     "type": "number"
+    }
+   }
+  },
+  "L2_interaction_fractions_scattered": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "compton",
+    "photoelectric",
+    "pair",
+    "rayleigh"
+   ],
+   "properties": {
+    "compton": {
+     "type": "number"
+    },
+    "photoelectric": {
+     "type": "number"
+    },
+    "pair": {
+     "type": "number"
+    },
+    "rayleigh": {
+     "type": "number"
+    }
+   }
+  },
+  "L2_scattered_share_of_interactions": {
+   "type": "number"
+  },
+  "L3_initial_spectrum": {
+   "type": "array",
+   "items": {
+    "type": "number"
+   },
+   "minItems": 25,
+   "maxItems": 25
+  },
+  "L3_initial_spectrum_parent_primary": {
+   "type": "array",
+   "items": {
+    "type": "number"
+   },
+   "minItems": 25,
+   "maxItems": 25
+  },
+  "L3_mean_initial_energy_MeV": {
+   "type": "number"
+  },
+  "L3_mean_initial_energy_parent_primary_MeV": {
+   "type": "number"
+  },
+  "L3_initial_direction": {
+   "type": "array",
+   "items": {
+    "type": "number"
+   },
+   "minItems": 10,
+   "maxItems": 10
+  },
+  "L4_electron_fluence_per_phi0": {
+   "type": "number"
+  },
+  "L4_electron_fluence_spectrum": {
+   "type": "array",
+   "items": {
+    "type": "number"
+   },
+   "minItems": 25,
+   "maxItems": 25
+  },
+  "L4_delta_fraction": {
+   "type": "number"
+  },
+  "L4_mean_electron_energy_MeV": {
+   "type": "number"
+  },
+  "L4_angular": {
+   "type": "array",
+   "items": {
+    "type": "number"
+   },
+   "minItems": 10,
+   "maxItems": 10
+  },
+  "L4_radiative_to_collision": {
+   "type": "number"
+  },
+  "L5_D_over_phi0_Gy_cm2": {
+   "type": "number"
+  },
+  "L5_K_over_phi0_Gy_cm2": {
+   "type": "number"
+  },
+  "L5_Kcol_over_phi0_Gy_cm2": {
+   "type": "number"
+  },
+  "L5_beta": {
+   "type": "number"
+  },
+  "L5_g": {
+   "type": "number"
+  },
+  "L5_dose_fraction_parent_scattered": {
+   "type": "number"
+  },
+  "L5_s_w_air": {
+   "type": "number"
+  },
+  "L5_PDD5_percent": {
+   "type": "number"
+  }
+ }
+}
+```

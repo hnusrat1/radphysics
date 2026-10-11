@@ -1,0 +1,33 @@
+# Configurations the AI is asked about (STUDY_PLAN Sections 2 and 5.3). Inputs only: no results.
+# R0 is the study configuration. P0 is the pilot used to debug formatting; P0 answers are excluded from analysis.
+
+R0:
+  description: Co-60 reference point
+  phantom: liquid water, 30 x 30 x 30 cm^3 cube, density 1.000 g/cm^3
+  outside: vacuum
+  source: >-
+    point source on the central axis, 100 cm from the phantom surface (SSD 100 cm), emitting photons uniformly
+    in solid angle within the pyramid that defines a 10 cm x 10 cm field at the phantom surface; no collimator,
+    capsule or other scatter
+  energies: two photon lines, 1.1732 MeV and 1.3325 MeV, emitted with equal probability
+  point: central axis, 5.0 cm depth
+  scoring_volume: cylinder on the beam axis, radius 1.0 cm, thickness 0.2 cm, centred at 5.0 cm depth
+  phi0: >-
+    Phi0 is the primary photon fluence (both lines together) at the location of the point of interest, 105 cm
+    from the source, with the phantom removed
+  pdd: D(d_max) is the maximum of the central-axis depth dose for this beam
+P0:
+  description: pilot configuration (formatting only)
+  phantom: liquid water, 30 x 30 x 30 cm^3 cube, density 1.000 g/cm^3
+  outside: vacuum
+  source: >-
+    point source on the central axis, 100 cm from the phantom surface (SSD 100 cm), emitting photons uniformly
+    in solid angle within the pyramid that defines a 10 cm x 10 cm field at the phantom surface; no collimator,
+    capsule or other scatter
+  energies: monoenergetic photons, 2.0 MeV
+  point: central axis, 10.0 cm depth
+  scoring_volume: cylinder on the beam axis, radius 1.0 cm, thickness 0.2 cm, centred at 10.0 cm depth
+  phi0: >-
+    Phi0 is the primary photon fluence at the location of the point of interest, 110 cm from the source, with
+    the phantom removed
+  pdd: D(d_max) is the maximum of the central-axis depth dose for this beam

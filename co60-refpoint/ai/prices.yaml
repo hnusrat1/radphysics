@@ -1,0 +1,25 @@
+# Cost model for the M4 estimate (STUDY_PLAN Section 5.4). Unverified: list prices change, and the October 2026
+# figures found disagree between sources. Prices are per million tokens in USD; they are tier assumptions, not
+# quotes. Replace both blocks with official prices and the token counts measured in the P0 pilot before
+# Humza approves the budget (STUDY_PLAN Section 10.5).
+checked_on: 2026-10-11
+sources:
+  - https://www.morphllm.com/llm-api (third-party table, about 105 days old when read)
+  - https://www.opslyft.com/blog/llm-pricing-comparison-cost-per-token (third-party, June 2026)
+  - https://www.developersdigest.tech/blog/frontier-model-api-pricing-june-2026 (third-party)
+verified: false
+prices:          # central assumption; the high case is 3x (see analysis in STATUS M3)
+  frontier_anthropic: {input_per_mtok: 5.0, output_per_mtok: 25.0}
+  frontier_openai: {input_per_mtok: 5.0, output_per_mtok: 30.0}
+  frontier_google: {input_per_mtok: 2.0, output_per_mtok: 12.0}
+  open_weight_1: {input_per_mtok: 0.6, output_per_mtok: 2.5}
+  open_weight_2: {input_per_mtok: 0.6, output_per_mtok: 2.5}
+  mock: {input_per_mtok: 0.0, output_per_mtok: 0.0}
+tokens_per_conversation:   # assumed; output includes reasoning tokens; tool conditions re-send a growing context
+  observables:
+    A0: {input: 6000, output: 30000}
+    A1: {input: 300000, output: 45000}
+    A2: {input: 320000, output: 45000}
+  events:
+    A0: {input: 5000, output: 35000}
+    A1: {input: 200000, output: 45000}

@@ -1,10 +1,9 @@
 run_id: M2-R0-livermore
 purpose: >-
-  M2 physics-list comparison at R0 (STUDY_PLAN Section 4.1): G4EmLivermorePhysics with everything else as the
-  M1 reference run M1-R0-option4 (frozen production binary, scoring cylinder, thresholds, variance reduction,
-  msc settings of the constructor, general gamma process off). Differences from option4 measure the EM model
-  spread at fixed transport settings; the boundary and step-size systematics common to all three lists are
-  reported separately (DECISIONS D025-D028). At least 20 batches (D026).
+  M2 physics-list comparison at R0 (STUDY_PLAN Section 4.1): G4EmLivermorePhysics with everything else as
+  M2-R0-option4 (frozen production binary, scoring cylinder, thresholds, variance reduction, msc range factor
+  0.04, general gamma process off). Differences from option4 measure the EM model spread at fixed transport
+  settings (DECISIONS D028). At least 20 batches (D026).
 physics: livermore
 threads: 4
 batches: 20
@@ -18,6 +17,6 @@ importance_cells_cm:   # as M1-R0-option4
   - [8.0, -1.0, 14.0, 2]
   - [4.0, 2.0, 8.0, 8]
   - [2.5, 3.4, 6.6, 32]
-pre_init_commands: ['/process/em/UseGeneralProcess false']   # DECISIONS D019
+pre_init_commands: ['/process/em/UseGeneralProcess false', '/process/msc/RangeFactor 0.04']   # D019; D026/D028 (M2 stepping)
 depth_scan: false
 event_sample_per_batch: 5000

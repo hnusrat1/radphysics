@@ -283,3 +283,31 @@ Caveats:
 - M2 re-measures R0 with boundary-free scoring (D025) and, if adopted, tighter stepping (D026), so the M1 dose values are provisional.
 
 **[Humza]** Confirm the 2σ threshold and the switch to the boundary-free value.
+
+## D028. Open decisions delegated to Claude (2026-10-11)
+
+Humza, 2026-10-11: "just pick your best recommended choices, continue and dont stop until you have the full study ready for me to review!" The choices below are my recommendations, taken under that delegation. Each can be reversed at review; anything that depends on one is listed with it. Two things are not delegable under Section 10 and stay with Humza: verifying `refs.yaml` (rule 1) and approving paid API spend (rule 5).
+
+1. **D027 threshold.** 2σ confirmed. The R0 dose reference is a boundary-free dose (D025). M2 re-measures it with the M2 stepping (item 8), and that value replaces the M1 one.
+2. **R0 stays as planned (Section 11 items 1, 2).** SSD 100 cm, vacuum between source and phantom. Air would add only a 0.1%-level attenuation and scatter term to the normalization. It would also give the AI one more thing to get wrong that is not part of the physics chain.
+3. **s_w,air basis (Section 11 item 5).** As D024: ICRU 90 primary, ICRU 37 alongside.
+4. **Breakpoint tolerances (Section 11 item 4).** The plan defaults, made precise:
+   - Layer 5 dose quantities (D/Φ₀, K/Φ₀, K_col/Φ₀, β, s_w,air, PDD(5)): |AI − MC|/MC ≤ 2%.
+   - Scalars in Layers 1–4 (mean energies, scattered fractions) and all interaction and dose fractions: |AI − MC| ≤ max(5% of MC, 0.005 absolute). The absolute floor keeps a 5% relative test from being impossible for fractions near zero (photoelectric, pair, g).
+   - Distributions: W1 and JSD (Section 6) ≤ 3 × the same distance between two independent halves of the Monte Carlo batches.
+   - Resolution floor (Section 6): a difference is "unresolved" when it lies inside the Monte Carlo spread, defined as the largest |list − option4| among option4, Livermore and Penelope at R0, plus twice its standard error. EGSnrc enters through the B0 benchmark.
+   - A layer "breaks" when at least one of its quantities fails and is resolved. The breakpoint is the first such layer.
+5. **Models (Section 11 item 3).**
+   - Three frontier models, one each from Anthropic, OpenAI and Google: each provider's most capable generally available model on the M4 access date, through the provider's own API.
+   - Two open-weight models from different labs, chosen among the leading open-weight releases on that date, with pinned weights. Current candidates are DeepSeek and Moonshot (Kimi), with Qwen as the alternate.
+   - Exact model identifiers, access route, dates and settings are recorded per call in `ai/raw/` and frozen in `ai/models.yaml` when M4 starts. Humza confirms the list at launch.
+   - Sampling: the provider's default temperature. The reasoning or thinking setting is the provider's highest generally available level, recorded per call.
+6. **Source model B (Section 11 item 6).** Deferred to V2 as the plan says. Recommended source: the Mora, Maio and Rogers (1999) Co-60 unit spectrum, distributed with EGSnrc as `HEN_HOUSE/spectra/egsnrc/mora_10x10_60co_ssd80.ensrc`, entered in `refs.yaml` unverified.
+7. **Venue (Section 11 item 7).** Medical Physics as the primary target. The Monte Carlo part follows the AAPM TG-268 reporting checklist and the AI part reports the TRIPOD-LLM items that apply. This changes no method; it fixes what the M5 tables report.
+8. **M2 stepping (D026 outcome).** As D026 decided: the step-size diagnostics remove the Fano deviation, so every M2 Geant4 run uses msc range factor 0.04 (option4, Livermore, Penelope, B0). The new R0 reference is M2-R0-option4 (layers) plus M2-R0-option4-bf (dose). The M1 runs (range factor 0.08) stay and give the step-size sensitivity of every observable. The boundary artifact is not re-measured with a cylinder at range factor 0.04: from M2 the dose at R0 is scored without a nearby boundary, so the artifact no longer enters any reference value.
+9. **Published PDD(5).** No source for Co-60, 10 × 10 cm², SSD 100 cm is reachable from this environment. BJR Supplement 25 is not online, and physics.nist.gov and the publishers' PDFs are blocked. The entry stays null for Humza to fill. It is a context check only (Section 3 expects model A to differ from unit data); H3 uses the Monte Carlo PDD(5).
+10. **XCOM and ESTAR files for condition A2.** physics.nist.gov is unreachable. Two stand-ins are built in `ai/data/`:
+    - an XCOM water table from the XCOM elemental data distributed with EGSnrc, using XCOM's mixture rule;
+    - an ESTAR-method water table, from ESTAR's density-effect corrections and the Seltzer–Berger bremsstrahlung data distributed with EGSnrc.
+
+    Both are labelled as reproductions, not NIST downloads. They are replaced by the genuine NIST tables before M4 if Humza can download them; `ai/data/validate_tables.py` checks either version.

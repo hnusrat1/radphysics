@@ -1,0 +1,334 @@
+# The observables an AI answer reports, one entry per quantity (STUDY_PLAN Section 3).
+# Single source of truth for the prompt text, the JSON output schema and the scoring map.
+#
+#   id          JSON key in the answer
+#   layer       1-5
+#   kind        scalar | distribution (normalized to 1 by the scorer) | spectrum (per bin, per unit Phi0)
+#   grid        bin grid from config/bins.yaml (comparison section) for distributions and spectra
+#   unit        unit the answer must use
+#   text        definition shown to the model (no values)
+#   mc          key in the Monte Carlo results (analysis/m1.py observables); sub-key after '/'
+#   tolerance   dose (2%), scalar (max(5%, 0.005 abs)), distribution (3 x MC half-sample distance) (DECISIONS D028)
+#   tags        H1 primary-photon quantity, H2 transport quantity, H3r recall item, H3c computed item
+#
+# Changing this file after M4 starts needs a DECISIONS entry and a rerun of every affected comparison
+# (STUDY_PLAN Section 10.3).
+
+observables:
+  # ---------------------------------------------------------------- Layer 1: photons arriving at the point
+  - id: L1_primary_fluence_per_phi0
+    layer: 1
+    kind: scalar
+    unit: dimensionless
+    text: >-
+      Primary photon fluence in the scoring volume (photons that have not interacted since leaving the source,
+      both lines), divided by Phi0.
+    mc: L1_fluence_primary_per_phi0
+    tolerance: scalar
+    tags: [H1]
+  - id: L1_total_fluence_per_phi0
+    layer: 1
+    kind: scalar
+    unit: dimensionless
+    text: Total photon fluence in the scoring volume (primary plus scattered), divided by Phi0.
+    mc: L1_fluence_total_per_phi0
+    tolerance: scalar
+    tags: [H2]
+  - id: L1_scattered_fraction_fluence
+    layer: 1
+    kind: scalar
+    unit: dimensionless
+    text: Scattered fraction of the photon fluence in the scoring volume.
+    mc: L1_scattered_fraction_fluence
+    tolerance: scalar
+    tags: [H2]
+  - id: L1_scattered_fraction_energy_fluence
+    layer: 1
+    kind: scalar
+    unit: dimensionless
+    text: Scattered fraction of the photon energy fluence in the scoring volume.
+    mc: L1_scattered_fraction_energy_fluence
+    tolerance: scalar
+    tags: [H2]
+  - id: L1_mean_photon_energy_MeV
+    layer: 1
+    kind: scalar
+    unit: MeV
+    text: Fluence-weighted mean energy of all photons (primary and scattered) in the scoring volume.
+    mc: L1_mean_energy_all_MeV
+    tolerance: scalar
+    tags: [H2]
+  - id: L1_photon_fluence_spectrum_primary
+    layer: 1
+    kind: spectrum
+    grid: photon_energy
+    unit: dimensionless (fluence in the bin divided by Phi0)
+    text: Primary photon fluence in each photon energy bin, divided by Phi0.
+    mc: L1_photon_fluence_comparison/primary
+    tolerance: distribution
+    tags: [H1]
+  - id: L1_photon_fluence_spectrum_scattered
+    layer: 1
+    kind: spectrum
+    grid: photon_energy
+    unit: dimensionless (fluence in the bin divided by Phi0)
+    text: Scattered photon fluence in each photon energy bin, divided by Phi0.
+    mc: L1_photon_fluence_comparison/scattered
+    tolerance: distribution
+    tags: [H2]
+  - id: L1_angular_primary
+    layer: 1
+    kind: distribution
+    grid: cos_theta
+    unit: fraction
+    text: Fraction of the primary photon fluence in each cos(theta) bin.
+    mc: L1_angular_primary
+    tolerance: distribution
+    tags: [H1]
+  - id: L1_angular_scattered
+    layer: 1
+    kind: distribution
+    grid: cos_theta
+    unit: fraction
+    text: Fraction of the scattered photon fluence in each cos(theta) bin.
+    mc: L1_angular_scattered
+    tolerance: distribution
+    tags: [H2]
+
+  # ---------------------------------------------------------------- Layer 2: photon interactions at the point
+  - id: L2_interaction_fractions
+    layer: 2
+    kind: fractions
+    categories: [compton, photoelectric, pair, rayleigh]
+    unit: fraction
+    text: >-
+      Fraction of all photon interactions in the scoring volume by process: incoherent (Compton) scattering,
+      photoelectric absorption, pair production (nuclear and electron field), coherent (Rayleigh) scattering.
+    mc: L2_fraction_all
+    tolerance: scalar
+    tags: [H2]
+  - id: L2_energy_transfer_fractions
+    layer: 2
+    kind: fractions
+    categories: [compton, photoelectric, pair, rayleigh]
+    unit: fraction
+    text: The same fractions weighted by the energy transferred to charged particles.
+    mc: L2_etr_fraction_all
+    tolerance: scalar
+    tags: [H2]
+  - id: L2_interaction_fractions_primary
+    layer: 2
+    kind: fractions
+    categories: [compton, photoelectric, pair, rayleigh]
+    unit: fraction
+    text: Fraction of interactions by process, for interactions of primary photons only.
+    mc: L2_fraction_primary
+    tolerance: scalar
+    tags: [H1]
+  - id: L2_interaction_fractions_scattered
+    layer: 2
+    kind: fractions
+    categories: [compton, photoelectric, pair, rayleigh]
+    unit: fraction
+    text: Fraction of interactions by process, for interactions of scattered photons only.
+    mc: L2_fraction_scattered
+    tolerance: scalar
+    tags: [H2]
+  - id: L2_scattered_share_of_interactions
+    layer: 2
+    kind: scalar
+    unit: dimensionless
+    text: Fraction of all photon interactions in the scoring volume that are interactions of scattered photons.
+    mc: L2_scattered_share_of_interactions
+    tolerance: scalar
+    tags: [H2]
+
+  # ---------------------------------------------------------------- Layer 3: electrons set in motion
+  - id: L3_initial_spectrum
+    layer: 3
+    kind: distribution
+    grid: electron_energy
+    unit: fraction
+    text: >-
+      Distribution of the initial kinetic energy of electrons and positrons set in motion in the scoring volume
+      by photon interactions (not delta rays): fraction in each electron energy bin, normalized over the bins.
+    mc: L3_spectrum_comparison/all
+    tolerance: distribution
+    tags: [H2]
+  - id: L3_initial_spectrum_parent_primary
+    layer: 3
+    kind: distribution
+    grid: electron_energy
+    unit: fraction
+    text: As L3_initial_spectrum, for electrons and positrons set in motion by primary photons only.
+    mc: L3_spectrum_comparison/parent_primary
+    tolerance: distribution
+    tags: [H1]
+  - id: L3_mean_initial_energy_MeV
+    layer: 3
+    kind: scalar
+    unit: MeV
+    text: Mean initial kinetic energy of all electrons and positrons set in motion by photon interactions.
+    mc: L3_mean_T_all_MeV
+    tolerance: scalar
+    tags: [H2]
+  - id: L3_mean_initial_energy_parent_primary_MeV
+    layer: 3
+    kind: scalar
+    unit: MeV
+    text: Mean initial kinetic energy of electrons and positrons set in motion by primary photons.
+    mc: L3_mean_T_parent_primary_MeV
+    tolerance: scalar
+    tags: [H1]
+  - id: L3_initial_direction
+    layer: 3
+    kind: distribution
+    grid: cos_theta
+    unit: fraction
+    text: >-
+      Distribution of the initial direction of those electrons and positrons: fraction in each cos(theta) bin,
+      theta measured from the beam axis.
+    mc: L3_cos_all
+    tolerance: distribution
+    tags: [H2]
+
+  # ---------------------------------------------------------------- Layer 4: electrons slowing down
+  - id: L4_electron_fluence_per_phi0
+    layer: 4
+    kind: scalar
+    unit: dimensionless
+    text: >-
+      Electron fluence in the scoring volume above 10 keV, all electrons including delta rays (positrons
+      excluded), divided by Phi0.
+    mc: L4_electron_fluence_above_10keV_per_phi0
+    tolerance: scalar
+    tags: [H2]
+  - id: L4_electron_fluence_spectrum
+    layer: 4
+    kind: spectrum
+    grid: electron_energy
+    unit: dimensionless (fluence in the bin divided by Phi0)
+    text: Electron fluence in each electron energy bin, all electrons including delta rays, divided by Phi0.
+    mc: L4_electron_fluence_comparison
+    tolerance: distribution
+    tags: [H2]
+  - id: L4_delta_fraction
+    layer: 4
+    kind: scalar
+    unit: dimensionless
+    text: Fraction of the electron fluence above 10 keV that is carried by delta rays (electrons set in motion by electrons).
+    mc: L4_delta_fraction_above_10keV
+    tolerance: scalar
+    tags: [H2]
+  - id: L4_mean_electron_energy_MeV
+    layer: 4
+    kind: scalar
+    unit: MeV
+    text: Fluence-weighted mean energy of the electron fluence above 10 keV.
+    mc: L4_mean_energy_above_10keV_MeV
+    tolerance: scalar
+    tags: [H2]
+  - id: L4_angular
+    layer: 4
+    kind: distribution
+    grid: cos_theta
+    unit: fraction
+    text: Fraction of the electron fluence in each cos(theta) bin, theta measured from the beam axis.
+    mc: L4_angular
+    tolerance: distribution
+    tags: [H2]
+  - id: L4_radiative_to_collision
+    layer: 4
+    kind: scalar
+    unit: dimensionless
+    text: Ratio of radiative to collision energy loss for the electrons in the scoring volume.
+    mc: L4_radiative_to_collision
+    tolerance: scalar
+    tags: [H2]
+
+  # ---------------------------------------------------------------- Layer 5: energy deposited
+  - id: L5_D_over_phi0_Gy_cm2
+    layer: 5
+    kind: scalar
+    unit: Gy cm^2
+    text: Absorbed dose to water in the scoring volume per unit Phi0.
+    mc: L5_D_over_phi0_Gy_cm2
+    tolerance: dose
+    tags: [H3c]
+  - id: L5_K_over_phi0_Gy_cm2
+    layer: 5
+    kind: scalar
+    unit: Gy cm^2
+    text: Kerma in water at the point per unit Phi0.
+    mc: L5_K_over_phi0_Gy_cm2
+    tolerance: dose
+    tags: [H2]
+  - id: L5_Kcol_over_phi0_Gy_cm2
+    layer: 5
+    kind: scalar
+    unit: Gy cm^2
+    text: Collision kerma in water at the point per unit Phi0.
+    mc: L5_Kcol_over_phi0_Gy_cm2
+    tolerance: dose
+    tags: [H2]
+  - id: L5_beta
+    layer: 5
+    kind: scalar
+    unit: dimensionless
+    text: beta = D / K_col at the point.
+    mc: L5_beta
+    tolerance: dose
+    tags: [H2]
+  - id: L5_g
+    layer: 5
+    kind: scalar
+    unit: dimensionless
+    text: Radiative yield g = 1 - K_col / K.
+    mc: L5_g
+    tolerance: scalar
+    tags: [H2]
+  - id: L5_dose_fraction_parent_scattered
+    layer: 5
+    kind: scalar
+    unit: dimensionless
+    text: Fraction of the dose deposited by electrons whose parent photon was a scattered photon.
+    mc: L5_dose_fraction_parent_scattered
+    tolerance: scalar
+    tags: [H2]
+  - id: L5_s_w_air
+    layer: 5
+    kind: scalar
+    unit: dimensionless
+    text: >-
+      Spencer-Attix water-to-air stopping-power ratio at the point, cut-off Delta = 10 keV, including the
+      track-end term. State which stopping-power data you used.
+    mc: L5_s_w_air_icru90
+    mc_alongside: L5_s_w_air_icru37
+    tolerance: dose
+    tags: [H2]
+  - id: L5_PDD5_percent
+    layer: 5
+    kind: scalar
+    unit: percent
+    text: Percent depth dose at 5 cm on the central axis, 100 x D(5 cm) / D(d_max).
+    mc: pdd/PDD5
+    tolerance: dose
+    tags: [H3r]
+
+# Sampled-events task (STUDY_PLAN Section 5.2). Fields per event; the scorer maps the Monte Carlo event sample
+# onto the same fields (analysis/events.py ai_view).
+events:
+  n_per_call: 200
+  fields:
+    - {id: process, type: string, enum: [compton, photoelectric, pair, rayleigh],
+       text: interaction process}
+    - {id: e_in_MeV, type: number, text: energy of the incident photon}
+    - {id: e_out_MeV, type: number_or_null,
+       text: energy of the outgoing photon for Compton and Rayleigh scattering; null if no photon leaves}
+    - {id: cos_scatter, type: number_or_null,
+       text: cosine of the photon scattering angle relative to the incident photon direction; null if no photon leaves}
+    - {id: t_e_MeV, type: number,
+       text: kinetic energy of the electron set in motion (for pair production, the electron of the pair); 0 for Rayleigh}
+    - {id: cos_electron, type: number_or_null,
+       text: cosine of the angle between that electron and the incident photon direction; null for Rayleigh}
+    - {id: t_positron_MeV, type: number_or_null, text: positron kinetic energy for pair production; null otherwise}

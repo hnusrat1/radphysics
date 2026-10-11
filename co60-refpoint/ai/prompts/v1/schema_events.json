@@ -1,0 +1,73 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "type": "object",
+ "required": [
+  "method",
+  "events"
+ ],
+ "additionalProperties": false,
+ "properties": {
+  "method": {
+   "type": "string"
+  },
+  "events": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "process",
+     "e_in_MeV",
+     "e_out_MeV",
+     "cos_scatter",
+     "t_e_MeV",
+     "cos_electron",
+     "t_positron_MeV"
+    ],
+    "properties": {
+     "process": {
+      "type": "string",
+      "enum": [
+       "compton",
+       "photoelectric",
+       "pair",
+       "rayleigh"
+      ]
+     },
+     "e_in_MeV": {
+      "type": "number"
+     },
+     "e_out_MeV": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "cos_scatter": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "t_e_MeV": {
+      "type": "number"
+     },
+     "cos_electron": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "t_positron_MeV": {
+      "type": [
+       "number",
+       "null"
+      ]
+     }
+    }
+   },
+   "minItems": 200,
+   "maxItems": 200
+  }
+ }
+}

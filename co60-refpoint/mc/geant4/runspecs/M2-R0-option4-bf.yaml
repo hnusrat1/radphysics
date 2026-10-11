@@ -1,6 +1,9 @@
-run_id: M2-R0-option4-rf004-bf
+run_id: M2-R0-option4-bf
 purpose: >-
-  Step-size check on the R0 dose reference (DECISIONS D026, D028): as M1-check-boundary-free-R0 with the msc range factor at 0.04 instead of 0.08. Compared with the pooled boundary-free option4 dose, it measures the effect of the step size that the Fano test flags (+0.16% at 0.08, 1.0000 at 0.04).
+  M2 R0 dose reference (DECISIONS D025, D026, D028): boundary-free dose at R0 with option4 and the M2 stepping
+  (msc range factor 0.04), as M1-check-boundary-free-R0 otherwise (scoring cylinder moved to 8 cm, dose scored by
+  position in r < 1 cm, 4.9-5.1 cm). Against the M1 boundary-free dose (range factor 0.08) it measures the
+  step-size effect on D that the Fano test flags.
 physics: option4
 threads: 4
 batches: 20
@@ -14,7 +17,7 @@ importance_cells_cm:   # as M1-R0-option4
   - [8.0, -1.0, 14.0, 2]
   - [4.0, 2.0, 8.0, 8]
   - [2.5, 3.4, 6.6, 32]
-pre_init_commands: ['/process/em/UseGeneralProcess false', '/process/msc/RangeFactor 0.04']   # DECISIONS D019
+pre_init_commands: ['/process/em/UseGeneralProcess false', '/process/msc/RangeFactor 0.04']   # D019; D026/D028 (M2 stepping)
 depth_scan: true
 depth_bins: {min: 4.9, max: 5.1, n: 2, radius: 1.0}
 event_sample_per_batch: 0

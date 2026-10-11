@@ -16,6 +16,6 @@ importance_cells_cm:   # as M1-R0-option4
   - [8.0, -1.0, 14.0, 2]
   - [4.0, 2.0, 8.0, 8]
   - [2.5, 3.4, 6.6, 32]
-pre_init_commands: ['/process/em/UseGeneralProcess false']   # DECISIONS D019
+pre_init_commands: ['/process/em/UseGeneralProcess false', '/process/msc/RangeFactor 0.04']   # D019; D026/D028 (M2 stepping)
 depth_scan: false
 event_sample_per_batch: 0
