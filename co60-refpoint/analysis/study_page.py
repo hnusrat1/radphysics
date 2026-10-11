@@ -131,7 +131,9 @@ def main():
         if not x:
             return "<td class='n'>running</td>"
         z = (x["ratio"] - 1) / x["sem"] if x["sem"] else 0
-        return f"<td class='n'>{100 * (x['ratio'] - 1):+.2f}% <span class='z'>({z:+.1f}σ)</span></td>"
+        d = 100 * (x["ratio"] - 1)
+        return f"<td class='n'>{d:+.3f}% <span class='z'>({z:+.1f}σ)</span></td>" if abs(d) < 0.01 else \
+            f"<td class='n'>{d:+.2f}% <span class='z'>({z:+.1f}σ)</span></td>"
 
     spread_keys = [("L1_fluence_primary_per_phi0", "Primary photon fluence / Φ₀"),
                    ("L1_scattered_fraction_fluence", "Scattered fraction of photon fluence"),
@@ -195,7 +197,8 @@ def main():
             for L, r, c, d in lists:
                 v = np.array((r[key][sub] if sub else r[key])["mean"], float)
                 ser.append((L, v / v.sum() / np.diff(e), None, c, d))
-            charts.append(spectra_with_ratio(ser, e, xl, "fraction per MeV", title, "ratio to option4"))
+            charts.append(spectra_with_ratio(ser, e, xl, "fraction per MeV", title, "ratio to option4",
+                                             ratio_range=(0.97, 1.03)))
     sp = b0.get("egsnrc_spectra_10keV")
     g0 = b0.get("geant4_spectra_10keV")
     if sp and g0:
@@ -211,7 +214,8 @@ def main():
             ee = e[sel.start:]
             ser = [("Geant4 option4", g[sel] / g[sel].sum() / 0.01, None, "--s1", None),
                    ("EGSnrc", ev[sel] / ev[sel].sum() / 0.01, None, "--s4", "6 3")]
-            charts.append(spectra_with_ratio(ser, ee, xl, "fraction per MeV", title, "EGSnrc / Geant4"))
+            charts.append(spectra_with_ratio(ser, ee, xl, "fraction per MeV", title, "EGSnrc / Geant4",
+                                             ratio_range=(0.95, 1.05)))
     charts_html = "".join(f'<figure class="fig">{c}</figure>' for c in charts)
 
     # ------------------------------------------------ Fano
@@ -383,7 +387,7 @@ def main():
   <tbody>{''.join(spread_rows)}</tbody></table></div>
   {charts_html}
   <h3>Boundary-free dose per list</h3>
-  <div class="tbl"><table><thead><tr><th>List</th><th>D/Φ₀ (Gy cm²)</th><th>β</th><th>Cylinder vs boundary-free</th></tr></thead>
+  <div class="tbl"><table><thead><tr><th>List</th><th class="nt">D/Φ₀ (Gy cm²)</th><th class="nt">β</th><th>Cylinder vs boundary-free</th></tr></thead>
   <tbody>{''.join(d_rows)}</tbody></table></div>
   <h3>EGSnrc benchmark in geometry B0</h3>
   <p>B0 is a cylindrical phantom (r 15 cm, 30 cm deep) with a circular field of the same area. The water and air are matched to
@@ -515,6 +519,7 @@ table { border-collapse: collapse; width: 100%; font-family: var(--f-ui); font-s
 th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--rule); vertical-align: top; }
 tbody tr:last-child td { border-bottom: 0; }
 th { font-weight: 600; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
+th.nt { text-transform: none; letter-spacing: 0; font-size: 13px; }
 .chip { display: inline-block; font-family: var(--f-ui); font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
 .chip.ok { background: var(--green-soft); color: var(--green); }
 .chip.warn { background: var(--amber-soft); color: var(--amber); }
