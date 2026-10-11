@@ -1,0 +1,64 @@
+{
+ "rows": [
+  {
+   "quantity": "s_w,air (Delta = 10 keV), ICRU 37 basis",
+   "mc": 1.1331083438658587,
+   "mc_sem": 1.4188524421345958e-06,
+   "ref_key": "s_w_air_co60_trs398",
+   "ref_value": 1.133,
+   "ref_source": "IAEA TRS-398 (2000)",
+   "verified_by_humza": false,
+   "note": "TRS-398 tabulates s_w,air for Co-60 on the ICRU 37 basis; model A has no head scatter",
+   "mc_over_ref": 1.000095625653891
+  },
+  {
+   "quantity": "beta = D / K_col",
+   "mc": 1.006945556924446,
+   "mc_sem": 0.001092973350152117,
+   "ref_key": "beta_co60_beyond_dmax",
+   "ref_value": null,
+   "ref_source": "STUDY_PLAN.md Section 3 (\"slightly above 1, on the order of 0.5%\"); primary source to be identified",
+   "verified_by_humza": false,
+   "note": "plan: slightly above 1, of order 0.5% beyond d_max; no numeric value in refs.yaml"
+  },
+  {
+   "quantity": "PDD(5), SSD 100 cm, 10 x 10 cm2",
+   "mc": 81.5258963075187,
+   "mc_sem": 0.2621895121847778,
+   "ref_key": "pdd5_co60_ssd100_10x10",
+   "ref_value": null,
+   "ref_source": "BJR Supplement 25 (1996), Co-60 central-axis depth-dose table",
+   "verified_by_humza": false,
+   "note": "model A differs from unit data by design (no head scatter); value to be entered"
+  },
+  {
+   "quantity": "mu/rho of water at 1.1732 MeV (Geant4 tracking, TestEm13)",
+   "mc": 0.06516087621445024,
+   "mc_sem": 2.7754076526153513e-05,
+   "ref_key": "xcom_elemental_cross_sections_egsnrc",
+   "ref_value": 0.0651628171368759,
+   "ref_source": "EGSnrc v2026 HEN_HOUSE/data/xcom_{compton,photo,pair,triplet,rayleigh}.data, described in the EGSnrc manual (PIRS-701) as XCOM data (Berger and Hubbell); the files carry no provenance header",
+   "verified_by_humza": false,
+   "mc_over_ref": 0.9999702142646537,
+   "note": "NIST table value (nist_mu_rho_water) not yet entered; XCOM elemental data used"
+  },
+  {
+   "quantity": "mu/rho of water at 1.3325 MeV (Geant4 tracking, TestEm13)",
+   "mc": 0.061048769666384076,
+   "mc_sem": 2.671912626143869e-05,
+   "ref_key": "xcom_elemental_cross_sections_egsnrc",
+   "ref_value": 0.06106580646138445,
+   "ref_source": "EGSnrc v2026 HEN_HOUSE/data/xcom_{compton,photo,pair,triplet,rayleigh}.data, described in the EGSnrc manual (PIRS-701) as XCOM data (Berger and Hubbell); the files carry no provenance header",
+   "verified_by_humza": false,
+   "mc_over_ref": 0.9997210092523522,
+   "note": "NIST table value (nist_mu_rho_water) not yet entered; XCOM elemental data used"
+  }
+ ],
+ "missing_reference_values": [
+  "nist_mu_rho_water",
+  "nist_mu_en_rho_water",
+  "pdd5_co60_ssd100_10x10",
+  "beta_co60_beyond_dmax"
+ ],
+ "note": "All external values are unverified until Humza checks them (STUDY_PLAN 10.1)."
+}
