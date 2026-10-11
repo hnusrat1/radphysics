@@ -12,7 +12,11 @@ Humza delegated every open choice on 2026-10-11: "pick your best recommended cho
   - Three quantities exceed 2.5σ, none of them for a physical reason. The history-by-history relative SEM scales with the number of histories. The maximum Compton recoil energy is an extreme-value statistic.
   - The third is the positron share of electrons set in motion, at 1.75 × 10⁻⁴ against 2.03 × 10⁻⁴ (−3.3σ). Pair production does not depend on the electron step size. Its batch values are heavy-tailed, from 1.1 to 2.2 × 10⁻⁴ in M2, and M1's main run and replicate already differ by 2.0σ. I read it as a fluctuation in a statistic that the importance weights make heavy-tailed. It enters no dose quantity.
   - The M2 event sample (2 × 10⁵ interactions) gives δ_C = 60 keV (D014), the same as M1.
-- **Queue** (`mc/queues/M2.yaml`, run by `mc/tools/queue.py` in chunks under 2 h):
+- **R0 dose reference: done.** `M2-R0-option4-bf` (20 batches) and `-ext` (25 batches, new seeds) agree, z = −0.64, so they are pooled as under D022/D027.
+  - D/Φ₀ = 5.3672 × 10⁻¹² Gy cm² ± 0.090%, which meets the 0.1% target.
+  - Against the M1 boundary-free value it is 0.99924 ± 0.00125.
+  - β = 1.0053 ± 0.0014, with K_col from `M2-R0-option4`; K_col itself is 1.0009 ± 0.0012 times M1.
+- **Queue** (`mc/queues/M2.yaml`, run by `mc/tools/run_queue.py` in chunks under 2 h):
   - option4 layers, then the dose extension;
   - SPRRZnrc, the boundary-free PDD;
   - Livermore and Penelope;
@@ -25,6 +29,7 @@ Humza delegated every open choice on 2026-10-11: "pick your best recommended cho
   - What went wrong: the boundary-free runs place the scoring cylinder at 8 cm, and co60app reports Φ₀ at the cylinder's depth (108 cm from the source). My first `analysis/m2.py` divided by that Φ₀ and put D/Φ₀ 5.8% high, which is (108/105)².
   - How it was caught: the comparison with M1, whose analysis normalises to 105 cm.
   - Fix: `phi0_at_r0()` now recomputes Φ₀ at 105 cm from the solid angle. It is checked against the main run, where both are the same.
+- **Queue runner shadowed Python's `queue` module.** I named it `mc/tools/queue.py`. When the queue reached the first EGSnrc run, `run_egsnrc.py` imported `concurrent.futures`, which imports the standard `queue` module, and found mine instead. The runner crashed at 18:21 before any job started, and the empty run directory was reused on relaunch. Renamed to `run_queue.py`. About 20 min lost.
 - **Comparison runs trimmed before they started.** Livermore and Penelope at R0 use 4 × 10⁶ histories per batch, and Geant4 B0 layers 3 × 10⁶, to save about 3 h. The option4 reference keeps 1.2 × 10⁸.
 
 ## M3. AI harness (2026-10-11). Built and tested offline; the P0 pilot and M4 need keys, network access and budget approval.

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Run a list of Monte Carlo jobs in order, within a wall-time budget, resumably.
 
-    python mc/tools/queue.py mc/queues/M2.yaml --deadline-min 105
+    python mc/tools/run_queue.py mc/queues/M2.yaml --deadline-min 105
 
 Each item is a Geant4 run spec (run_co60.py) or an EGSnrc spec (run_egsnrc.py). Finished runs are skipped,
 unfinished ones are resumed; no batch starts if it would end after the deadline. The cloud session stops
