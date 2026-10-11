@@ -430,6 +430,7 @@ CSS = """
   --bg: #f4f6f9; --surface: #ffffff; --ink: #142030; --muted: #586779; --rule: #d9e0e8;
   --cobalt: #1f4fb8; --cobalt-soft: #e5ecfa; --amber: #a35a00; --amber-soft: #fbefdc; --green: #23704a; --green-soft: #e1f2e8;
   --red: #a8322a; --red-soft: #f8e3e0;
+  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #b07800;
   --f-display: "IBM Plex Sans Condensed", "Arial Narrow", sans-serif;
   --f-body: "Source Serif 4", Georgia, "Times New Roman", serif;
   --f-ui: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
@@ -438,11 +439,11 @@ CSS = """
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
   --bg: #0d1219; --surface: #141c26; --ink: #e3e9f1; --muted: #93a2b4; --rule: #263241;
   --cobalt: #7ea7ff; --cobalt-soft: #1b2a47; --amber: #f0b45b; --amber-soft: #3a2a12; --green: #6fd39a; --green-soft: #15301f;
-  --red: #ff8f84; --red-soft: #3a1714; color-scheme: dark; } }
+  --red: #ff8f84; --red-soft: #3a1714; --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; color-scheme: dark; } }
 :root[data-theme="dark"] {
   --bg: #0d1219; --surface: #141c26; --ink: #e3e9f1; --muted: #93a2b4; --rule: #263241;
   --cobalt: #7ea7ff; --cobalt-soft: #1b2a47; --amber: #f0b45b; --amber-soft: #3a2a12; --green: #6fd39a; --green-soft: #15301f;
-  --red: #ff8f84; --red-soft: #3a1714; color-scheme: dark; }
+  --red: #ff8f84; --red-soft: #3a1714; --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; color-scheme: dark; }
 * { box-sizing: border-box; }
 body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 17px; line-height: 1.6; }
 .wrap { max-width: 1180px; margin: 0 auto; padding-inline: 20px; padding-block: 32px 72px;
