@@ -157,8 +157,9 @@ def score_events(ai_events, mc, delta_c, seed=1):
     fa = S.event_features(a, scale)
     ref = S.resample(fm, w, 4000, rng)
     out["energy_distance"] = S.energy_distance(fa, ref)
-    base = [S.energy_distance(S.resample(fm, w, n, rng), ref) for _ in range(5)]
-    out["energy_distance_mc_baseline"] = {"median": float(np.median(base)), "max": float(np.max(base))}
+    base = [S.energy_distance(S.resample(fm, w, n, rng), ref) for _ in range(20)]
+    out["energy_distance_mc_baseline"] = {"median": float(np.median(base)), "p95": float(np.percentile(base, 95)),
+                                          "max": float(np.max(base)), "n_draws": 20}
     for rules, kw in (("strict", {}), ("bound", {"delta_c": delta_c, "energy_tol": BINDING_TOLERANCE})):
         chk = check_events(a["process"], a["e_in"], np.where(np.isfinite(a["e_out"]), a["e_out"], -1.0),
                            a["cos_scatter"], a["t_e"], a["t_pos"], **kw)
@@ -264,7 +265,7 @@ def main():
                 "negative_mock": score_events(placeholder_events(1000)["events"], mc, dc)}
             for k, v in result["event_controls"].items():
                 print(f"events {k:22s} energy distance {v['energy_distance']:.4f} (MC baseline "
-                      f"{v['energy_distance_mc_baseline']['median']:.4f}); invalid strict {v['invalid_fraction_strict']:.3f}"
+                      f"{v['energy_distance_mc_baseline']['median']:.4f}, 95th pct {v['energy_distance_mc_baseline']['p95']:.4f}); invalid strict {v['invalid_fraction_strict']:.3f}"
                       f" bound {v['invalid_fraction_bound']:.3f}")
         out = RES / "M5_controls.json"
     else:

@@ -260,7 +260,7 @@ def main():
     ev_rows = []
     for name, v in ev.items():
         ev_rows.append(f"<tr><td class='n'>{esc(name)}</td><td class='n'>{v['energy_distance']:.4f}</td>"
-                       f"<td class='n'>{v['energy_distance_mc_baseline']['median']:.4f}</td>"
+                       f"<td class='n'>{v['energy_distance_mc_baseline']['median']:.4f}, {v['energy_distance_mc_baseline'].get('p95', float('nan')):.4f}</td>"
                        f"<td class='n'>{100 * v['invalid_fraction_bound']:.1f}%</td></tr>")
 
     # ------------------------------------------------ cost
@@ -438,7 +438,7 @@ def main():
   <h3>Controls, scored like a model</h3>
   <div class="tbl"><table><thead><tr><th>Control</th><th>Expected</th><th>Result</th><th></th></tr></thead>
   <tbody>{''.join(ctl_rows)}</tbody></table></div>
-  <div class="tbl"><table><thead><tr><th>Events control</th><th>Energy distance</th><th>MC baseline</th><th>Invalid (bound rules)</th></tr></thead>
+  <div class="tbl"><table><thead><tr><th>Events control</th><th>Energy distance</th><th>MC baseline (median, 95th pct)</th><th>Invalid (bound rules)</th></tr></thead>
   <tbody>{''.join(ev_rows)}</tbody></table></div>
   <details><summary>All {len(OBS)} quantities: reference, tolerance and resolution floor</summary>
   <div class="tbl"><table><thead><tr><th>Layer</th><th>Key</th><th>MC</th><th>Tolerance</th><th>Floor</th><th>Tags</th></tr></thead>
