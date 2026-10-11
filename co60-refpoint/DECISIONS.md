@@ -267,6 +267,8 @@ Decided by Humza at the M1 gate, on my recommendation.
 
 Outcome for the first step-size diagnostic (2026-10-11): with the msc range factor at 0.04 (production 0.08), the Fano ratio is 1.00001 ± 0.00088 (20 batches, `M1-fano-diag-rfact004`), against 1.00157 ± 0.00058 with production stepping. The deviation disappears with tighter stepping, although the difference between the two is only 1.5σ. Unless the step-function diagnostic (`M1-fano-diag-stepfn`, running) points the other way, M2 production uses range factor 0.04, after a throughput measurement, and the boundary artifact is re-measured with it.
 
+Outcome for the second step-size diagnostic (2026-10-11): with the step function at 0.05, 1 µm (production 0.2, 10 µm), the Fano ratio is 0.99921 ± 0.00073 (20 batches, `M1-fano-diag-stepfn`). Both tightenings remove the production deviation; neither result differs from 1 by more than 1.1σ. **M2 production uses msc range factor 0.04 for every Geant4 run (D028 item 8).** The step function stays at the option4 default, since the range factor alone already brings the ratio to 1.0000 and is the cheaper change.
+
 ## D027. R0 dose reference after the boundary-free extension (2026-10-11)
 
 D025 said the cylinder's D at R0 is replaced by the boundary-free value if the two are not consistent, but set no threshold. Applied: replace if they differ by 2 combined standard errors or more (95%).

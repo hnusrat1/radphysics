@@ -98,7 +98,7 @@ pre.prompt { white-space: pre-wrap; font-family: var(--f-mono); font-size: 12.5p
   <p class="lede">The Monte Carlo side of the study is built and validated, and the AI side is built and tested
   without any API call. The model runs need API keys, network access and your approval of the budget.
   This page covers each part, the choices I made under your delegation, and what is left for you.</p>
-  <div class="meta"><span>Generated 2026-10-11 13:57 UTC</span><span>commit f14f0ec</span><span>R0: Co-60, 5 cm depth, 10 × 10 cm², SSD 100 cm</span>
+  <div class="meta"><span>Generated 2026-10-11 14:45 UTC</span><span>commit 1770398</span><span>R0: Co-60, 5 cm depth, 10 × 10 cm², SSD 100 cm</span>
   <span>reference provisional (M1 parts)</span></div>
 </header>
 
@@ -112,7 +112,7 @@ pre.prompt { white-space: pre-wrap; font-family: var(--f-mono); font-size: 12.5p
 <tr><td class='n'>M4</td><td>AI runs at R0</td><td><span class="chip bad">blocked</span></td><td>Needs keys, network access and your budget approval (Section 10.5).</td></tr>
 <tr><td class='n'>M5</td><td>Analysis</td><td><span class="chip warn">built; no AI data</span></td><td>Scorer, breakpoints, H1–H3 and event tests are built and pass their controls. Waiting for M4 answers.</td></tr></tbody></table></div>
   <details><summary>M2 run queue (each run is kept; resumable after a container restart)</summary>
-  <div class="tbl"><table><thead><tr><th>Run</th><th>Code</th><th>Batches or jobs</th></tr></thead><tbody><tr><td class='n'>M2-R0-option4-bf</td><td>Geant4 option4</td><td><span class="chip idle">queued</span></td></tr>
+  <div class="tbl"><table><thead><tr><th>Run</th><th>Code</th><th>Batches or jobs</th></tr></thead><tbody><tr><td class='n'>M2-R0-option4-bf</td><td>Geant4 option4</td><td><span class="chip run">8/20</span></td></tr>
 <tr><td class='n'>M2-R0-option4</td><td>Geant4 option4</td><td><span class="chip idle">queued</span></td></tr>
 <tr><td class='n'>M2-B0-egsnrc-spr</td><td>EGSnrc SPRRZnrc</td><td><span class="chip idle">queued</span></td></tr>
 <tr><td class='n'>M2-R0-option4-pdd</td><td>Geant4 option4</td><td><span class="chip idle">queued</span></td></tr>
@@ -184,7 +184,7 @@ pre.prompt { white-space: pre-wrap; font-family: var(--f-mono); font-size: 12.5p
   <div class="tbl"><table><thead><tr><th>Fano cavity test (fanoCavity, option4)</th><th>Ratio</th><th>Deviation</th><th></th></tr></thead>
   <tbody><tr><td>Production stepping (range factor 0.08), 40 batches</td><td class='n'>1.00157 ± 0.00057</td><td class='n'>+2.7σ</td><td><span class="chip warn">+0.16%</span></td></tr>
 <tr><td>Range factor 0.04</td><td class='n'>1.00001 ± 0.00088</td><td class='n'>+0.0σ</td><td><span class="chip ok">passes</span></td></tr>
-<tr><td>Step function 0.05, 1 µm</td><td colspan='2'><span class="chip run">running</span></td></tr>
+<tr><td>Step function 0.05, 1 µm</td><td class='n'>0.99921 ± 0.00073</td><td class='n'>-1.1σ</td><td><span class="chip ok">see D026</span></td></tr>
 <tr><td>Negative control: G4EmStandardPhysics (opt0)</td><td class='n'>1.0147 ± 0.0016</td><td class='n'>+9.4σ</td><td><span class="chip ok">fails, as it should</span></td></tr></tbody></table></div>
   <p>The +0.16% deviation at production stepping disappears when the electron steps are tightened. The boundary artifact
   found in M1 (dose up to 3% off within a millimetre of a water–water boundary) points to the same step limit. That is why M2 uses

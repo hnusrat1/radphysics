@@ -38,3 +38,16 @@ standard_opt4 | /process/msc/RangeFactor 0.04:
   interval_95_percent:
   - 0.99828
   - 1.00174
+standard_opt4 | /process/eLoss/StepFunction 0.05 1 um:
+  runs:
+  - M1-fano-diag-stepfn
+  batches: 20
+  events_total: 6800000
+  ratio_mean: 0.999206
+  ratio_sem_batch_spread: 0.000731
+  ratio_sem_example_estimate: 0.000741
+  deviation_percent: -0.0794
+  deviation_sigma: -1.09
+  interval_95_percent:
+  - 0.99777
+  - 1.00064

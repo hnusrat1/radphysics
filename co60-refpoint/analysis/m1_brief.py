@@ -370,7 +370,7 @@ def build(n):
     <div><b>Status</b><p>M0 and M1 are complete and reviewed. All plan targets are met. One approved extension run is tightening the scoring-boundary bound.</p></div>
     <div><b>Headline numbers</b><p>D/Φ₀ = <span class="num">{D * 1e12:.4f} × 10⁻¹² Gy cm² ± {100 * Ds / D:.3f}%</span>, β = <span class="num">{n['beta']:.4f}</span>, s<sub>w,air</sub> = <span class="num">{sw90:.4f}</span> (ICRU 90) / <span class="num">{sw37:.4f}</span> (ICRU 37), PDD(5) = <span class="num">{n['pdd5']['mean']:.1f}%</span>.</p></div>
     <div><b>What matters beyond this study</b><p>The stopping-power basis moves s<sub>w,air</sub> by up to 1%, far more than any Monte Carlo uncertainty. Geant4 option4 drops Rayleigh scattering above 1.022 MeV in its default gamma process. A water–water scoring boundary distorts the dose next to it by a few percent.</p></div>
-    <div><b>Still open</b><p>EGSnrc and the other Geant4 lists (M2); your verification of refs.yaml; the Fano step-function diagnostic; your confirmation of the 2σ rule that switched D to the boundary-free value (D027).</p></div>
+    <div><b>Still open</b><p>EGSnrc and the other Geant4 lists (M2); your verification of refs.yaml; your confirmation of the 2σ rule that switched D to the boundary-free value (D027).</p></div>
   </div>
 </section>
 
@@ -472,7 +472,7 @@ def build(n):
     <tr><td>D024</td><td>s<sub>w,air</sub> scored against ICRU 90, with ICRU 37 reported alongside; fixed before any AI answer exists.</td></tr>
     <tr><td>D025</td><td>Scoring-boundary effect carried as a systematic on D; extension running; dose scored without a nearby boundary from M2.</td></tr>
     <tr><td>D023, D020</td><td>Conservative uncertainty policy; CSDA-weighted electron estimator as the Layer 4 reference.</td></tr>
-    <tr><td>D026</td><td>Fano +0.16% accepted as a bound; range factor 0.04 removes it, so M2 plans tighter stepping pending the step-function result; at least 20 batches per M2 run; refs.yaml verification order.</td></tr>
+    <tr><td>D026</td><td>Fano +0.16% accepted as a bound; range factor 0.04 and the tighter step function both remove it, so M2 runs at range factor 0.04; at least 20 batches per M2 run; refs.yaml verification order.</td></tr>
     <tr><td>D027</td><td>Threshold for D025: the cylinder D was 0.24% low at −2.2σ, so D/Φ₀ at R0 is now the boundary-free value. Waiting for your confirmation.</td></tr>
   </tbody></table></div>
   <div class="steps">
