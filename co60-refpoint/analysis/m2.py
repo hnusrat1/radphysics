@@ -62,9 +62,19 @@ def d_bf_per_history(b):
     return strip(tally(b, "depth_edep"))[sel].sum() / b["histories"] * J_PER_MEV / 1e-3 / (math.pi * r * r * width)
 
 
+R0_DEPTH_CM = 5.0
+
+
+def phi0_at_r0(b):
+    """Phi0 per history at the point of interest (SSD + 5 cm). The run output's phi0 refers to the scoring
+    cylinder's depth, which is 8 cm in the boundary-free runs, so it is recomputed here from the solid angle."""
+    s = b["source"]
+    return 1.0 / (s["solid_angle_sr"] * (s["ssd"] + R0_DEPTH_CM) ** 2)
+
+
 def dose_bf(run_id, kcol_res=None, cyl_res=None):
     bs = load_batches(run_id)
-    phi0 = bs[0]["source"]["phi0_per_history_cm-2"]
+    phi0 = phi0_at_r0(bs[0])
     v = np.array([d_bf_per_history(b) / phi0 for b in bs])
     out = {"D_over_phi0_Gy_cm2": {"mean": float(v.mean()), "sem": float(v.std(ddof=1) / np.sqrt(len(v))),
                                   "n_batches": len(v)}}
@@ -213,7 +223,9 @@ def main():
             res["runs"][rid] = analyse_run(rid, sp)
     for L in LISTS:
         rid = f"M2-R0-{L}-bf"
-        if complete(rid):
+        if L == "option4" and complete("M2-R0-option4-bf-ext", 25):
+            rid = "M2-R0-option4-bf+M2-R0-option4-bf-ext"      # pooled (D022, D027)
+        if complete(rid.split("+")[0]):
             lay = res["runs"].get(f"M2-R0-{L}")
             res["dose_bf"][L] = dose_bf(rid, lay, lay)
     if complete("M2-R0-option4-pdd", 10):

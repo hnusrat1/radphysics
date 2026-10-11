@@ -2,6 +2,26 @@
 
 Humza delegated every open choice on 2026-10-11: "pick your best recommended choices, continue and dont stop until you have the full study ready for me to review" (DECISIONS D028). Under that delegation M2 and M3 run back to back, without a gate stop between them. Two things stay with Humza under Section 10: verifying `refs.yaml`, and approving paid API spend. M4 also needs API keys and network access that this environment does not have.
 
+## M2. Monte Carlo validation (2026-10-11). Running.
+
+### Progress
+- **Fano step-size diagnostics: done.** Range factor 0.04 gives 1.00001 ± 0.00088 and step function 0.05 / 1 µm gives 0.99921 ± 0.00073, against 1.00157 ± 0.00058 at production stepping. M2 runs at range factor 0.04 (D026, D028). The batch-0 physics printout of every M2 run is checked for `Rfact=0.04`.
+- **R0 dose at range factor 0.04: done.** `M2-R0-option4-bf`, boundary-free, 20 × 3 × 10⁶ histories: D/Φ₀ = 5.3708 × 10⁻¹² Gy cm² ± 0.14%. Against the M1 boundary-free value (range factor 0.08) the ratio is 0.99990 ± 0.00166. The step size changes the R0 dose by less than 0.17% (1σ). A 25-batch extension (`-ext`) brings the pooled dose to the 0.1% target.
+- **Queue** (`mc/queues/M2.yaml`, run by `mc/tools/queue.py` in chunks under 2 h):
+  - option4 layers, then the dose extension;
+  - SPRRZnrc, the boundary-free PDD;
+  - Livermore and Penelope;
+  - DOSRZnrc, Geant4 B0 boundary-free, FLURZnrc, Geant4 B0 layers;
+  - Livermore and Penelope boundary-free.
+- **Binary check.** The M2 binary (`co60app.m2`, adds geometry B0) reproduces the frozen production binary bit for bit at R0: same seeds, 10⁵ histories, every tally identical. R0 runs use the production binary and B0 runs the M2 binary.
+
+### What failed or was anomalous
+- **Normalisation slip in my new M2 dose code, caught before use.**
+  - What went wrong: the boundary-free runs place the scoring cylinder at 8 cm, and co60app reports Φ₀ at the cylinder's depth (108 cm from the source). My first `analysis/m2.py` divided by that Φ₀ and put D/Φ₀ 5.8% high, which is (108/105)².
+  - How it was caught: the comparison with M1, whose analysis normalises to 105 cm.
+  - Fix: `phi0_at_r0()` now recomputes Φ₀ at 105 cm from the solid angle. It is checked against the main run, where both are the same.
+- **Comparison runs trimmed before they started.** Livermore and Penelope at R0 use 4 × 10⁶ histories per batch, and Geant4 B0 layers 3 × 10⁶, to save about 3 h. The option4 reference keeps 1.2 × 10⁸.
+
 ## M3. AI harness (2026-10-11). Built and tested offline; the P0 pilot and M4 need keys, network access and budget approval.
 
 ### Summary
