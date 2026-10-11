@@ -139,6 +139,9 @@
   source: BJR Supplement 25 (1996), Co-60 central-axis depth-dose table
   entered_from: null
   used_in: [Section 4.3 comparison]
+  notes: >-
+    Not reachable from the build environment (BJR 25 is not online; publisher PDFs and physics.nist.gov blocked),
+    2026-10-11. For Humza to enter (DECISIONS D028 item 9). A context check only; H3 uses the Monte Carlo PDD(5).
   entered_on: 2026-10-10
   verified_by_humza: false
 
@@ -239,4 +242,43 @@
     Water mu/rho from these files: 0.065163 (1.1732 MeV), 0.061066 (1.3325 MeV) cm2/g, computed by
     analysis/xcom.py. Not a substitute for the NIST table values in nist_mu_rho_water until Humza checks them.
   entered_on: 2026-10-10
+  verified_by_humza: false
+
+- key: co60_unit_spectrum_mora_1999
+  quantity: Co-60 therapy-unit photon spectrum on axis, 10 x 10 cm2 at SSD 80 cm (candidate for source model B)
+  value: null
+  unit: relative fluence per energy bin
+  source: >-
+    Mora G, Maio A, Rogers DWO. Monte Carlo simulation of a typical 60Co therapy source. Med Phys 26(11):2494-2502
+    (1999), doi:10.1118/1.598770; distributed with EGSnrc v2026 as HEN_HOUSE/spectra/egsnrc/mora_10x10_60co_ssd80.ensrc
+  entered_from: source_code
+  used_in: []
+  notes: DECISIONS D028 item 6. Model B is deferred to V2; the file is named here so its provenance can be checked.
+  entered_on: 2026-10-11
+  verified_by_humza: false
+
+- key: seltzer_berger_bremsstrahlung_tables_egsnrc
+  quantity: Seltzer-Berger scaled bremsstrahlung cross sections chi(Z, T, k/T), Z = 1-100
+  value: null
+  unit: mb
+  source: >-
+    EGSnrc v2026 HEN_HOUSE/data/nist_brems.data (header "BREME.DAT: S. M. SELTZER, NATIONAL BUREAU OF STANDARDS,
+    5 SEP 84"; 57 energies x 30 k/T values per element, stored k/T-major)
+  entered_from: source_code
+  used_in: [ai/data/build_tables.py radiative stopping power for the A2 ESTAR reproduction]
+  entered_on: 2026-10-11
+  verified_by_humza: false
+
+- key: a2_tables_reproduction
+  quantity: XCOM and ESTAR water tables given to the models in condition A2
+  value: null
+  unit: see file headers
+  source: ai/data/xcom_water.txt and ai/data/estar_water.txt, built by ai/data/build_tables.py from the EGSnrc-distributed XCOM elemental data, ESTAR density-effect corrections and Seltzer-Berger tables
+  entered_from: source_code
+  used_in: [condition A2]
+  notes: >-
+    Reproductions, not NIST downloads (physics.nist.gov unreachable; DECISIONS D028 item 10). Checked against
+    Geant4 option4 below 1.4 MeV by ai/data/validate_tables.py. To be replaced by the genuine NIST tables if
+    Humza can download them before M4.
+  entered_on: 2026-10-11
   verified_by_humza: false

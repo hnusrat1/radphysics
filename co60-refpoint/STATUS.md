@@ -1,6 +1,64 @@
 # Status
 
-## M1. Monte Carlo reference at R0 (2026-10-10). Reviewed at the gate; decisions D024–D026. One approved extension run in progress.
+Humza delegated every open choice on 2026-10-11: "pick your best recommended choices, continue and dont stop until you have the full study ready for me to review" (DECISIONS D028). Under that delegation M2 and M3 run back to back, without a gate stop between them. Two things stay with Humza under Section 10: verifying `refs.yaml`, and approving paid API spend. M4 also needs API keys and network access that this environment does not have.
+
+## M3. AI harness (2026-10-11). Built and tested offline; the P0 pilot and M4 need keys, network access and budget approval.
+
+### Summary
+
+The harness is complete and tested without any API call. It covers prompts, schemas, the sandbox, the provider clients, the run matrix, logging and the cost estimate. The M5 scorer is built and validated on controls. The pilot (P0) and the full matrix (M4) cannot run here:
+- there are no API keys in the environment;
+- the network policy blocks `api.openai.com`, `openrouter.ai`, `api.together.xyz` and `physics.nist.gov`;
+- paid calls need Humza's approval of a cost estimate (Section 10.5).
+
+`ai/README.md` has the launch checklist.
+
+### What was done
+
+- **Observables** (`ai/observables.yaml`). 33 quantities across the five layers, in the units and on the bins of `config/bins.yaml`, plus the sampled-events fields. Each maps to its Monte Carlo key, a tolerance class (D028) and hypothesis tags (H1 primary photon, H2 transport, H3 recall/compute). It is the single source for the prompts, the JSON schema and the scorer.
+- **Prompts** (`ai/prompts/v1/`). Built by `ai/harness/build_prompts.py` and hashed in `MANIFEST.yaml`:
+  - system prompts for A0, A1 and A2;
+  - observables and events tasks for R0 and P0;
+  - the two JSON schemas.
+
+  `tests/test_ai_prompts.py` fails if any number in a prompt, other than the configuration and the bin edges, lies within 0.5% of any Monte Carlo result or `refs.yaml` value (Section 10.2).
+- **Sandbox** (`ai/harness/sandbox.py`). Model code runs in new network, mount and PID namespaces:
+  - no internet;
+  - the repository, Geant4, EGSnrc, their builds and sources, the queue logs and the session transcripts are hidden;
+  - no other process is visible, and the environment is empty;
+  - limits: 4 cores, 10 min per call, 16 GB address space.
+
+  Tested: DNS fails, every hidden path is empty, and the A2 data appear at `/tmp/data`.
+- **Clients and runner** (`ai/harness/providers.py`, `run.py`):
+  - Anthropic Messages, OpenAI Chat Completions, Gemini generateContent, and OpenAI-compatible for open-weight hosts, over HTTPS with the standard library;
+  - one tool loop, capped at 30 tool calls;
+  - one logged retry on malformed JSON;
+  - API errors recorded, never retried silently beyond HTTP backoff;
+  - every request, response, tool call and outcome written once, read-only, to `ai/raw/`.
+
+  The runner refuses R0 runs until the model list and prompts are frozen. A mock provider tests all of this offline (8 tests).
+- **A2 data** (`ai/data/`). NIST was unreachable from both the container and the fetch tool, so the XCOM and ESTAR water tables are reproductions:
+  - built from the NIST data that EGSnrc distributes: XCOM elemental cross sections, ESTAR density-effect corrections and the Seltzer–Berger bremsstrahlung tables;
+  - computed by XCOM's and ESTAR's methods;
+  - labelled as reproductions in their headers and in `refs.yaml`.
+
+  Below 1.4 MeV they agree with Geant4 option4 within 0.1% (photon coefficients above 30 keV, radiative stopping power) and within 0.6% (collision stopping power above 0.5 MeV, I = 75 vs 78 eV).
+- **Cost estimate** (`ai/prices.yaml`, `run.py --dry-run`):
+  - **Matrix:** 125 conversations, for 5 models × (3 conditions × k = 5 observables + 2 conditions × 5 event calls).
+  - **Estimate:** about $130 with central list-price assumptions; the high case (3× prices) is about $400. The P0 pilot is about $10 per model.
+  - **Basis:** the prices come from third-party October 2026 tables that disagree with each other, and the token counts are assumptions. Both are replaced by official prices and P0-measured usage before approval.
+
+### What failed or was anomalous
+
+- **NIST unreachable.** physics.nist.gov is blocked by the container's network policy. A fetch agent's separate route could not resolve the name either. No value was transcribed from memory.
+- **First ESTAR reproduction was wrong by up to 2× in the radiative stopping power.** I read the Seltzer–Berger table in the wrong order: it is stored k/T-major, 57 energies per k/T. The validator against Geant4 caught it before anything used the file. It is fixed and documented in the builder.
+- **Model identifiers are not in the repository.** `ai/models.yaml` names slots and the selection rule (D028); exact IDs are entered at launch and recorded per call.
+
+### Next
+
+The P0 pilot and M4 follow the checklist in `ai/README.md`. Then the M5 scorer runs on the answers.
+
+## M1. Monte Carlo reference at R0 (2026-10-10). Reviewed at the gate; decisions D024–D027. Complete.
 
 ### Summary
 
