@@ -56,7 +56,7 @@ def build():
     if dbf:
         d_ref = dbf["D_over_phi0_Gy_cm2"]
         beta_ref = {"mean": dbf["beta"]["ratio"], "sem": dbf["beta"]["sem"]}
-        sources["dose"] = "M2-R0-option4-bf"
+        sources["dose"] = dbf.get("run", "M2-R0-option4-bf")
     else:
         r0 = m1["diagnostics"]["boundary"]["R0_dose_reference"]
         d_ref, beta_ref = r0["D_over_phi0_boundary_free_Gy_cm2"], r0["beta_boundary_free"]

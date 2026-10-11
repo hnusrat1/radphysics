@@ -76,7 +76,8 @@ def dose_bf(run_id, kcol_res=None, cyl_res=None):
     bs = load_batches(run_id)
     phi0 = phi0_at_r0(bs[0])
     v = np.array([d_bf_per_history(b) / phi0 for b in bs])
-    out = {"D_over_phi0_Gy_cm2": {"mean": float(v.mean()), "sem": float(v.std(ddof=1) / np.sqrt(len(v))),
+    out = {"run": run_id,
+           "D_over_phi0_Gy_cm2": {"mean": float(v.mean()), "sem": float(v.std(ddof=1) / np.sqrt(len(v))),
                                   "n_batches": len(v)}}
     if kcol_res:
         k = kcol_res["L5_Kcol_over_phi0_Gy_cm2"]
