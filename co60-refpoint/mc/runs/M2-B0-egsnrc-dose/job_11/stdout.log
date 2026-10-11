@@ -1,0 +1,453 @@
+================================================================================
+EGSnrc version 4 for x86_64-unknown-linux-gnu          Sun Oct 11 22:29:48 2026
+================================================================================
+configuration...................................linux
+configuration time..............................2026-10-10 05:22:46 UTC
+app compile time................................2026-10-10 05:25:31 UTC
+git commit hash.................................bd49a47
+application.....................................dosrznrc
+pegs file.......................................water_air_g4_option4 on EGS_HOME
+using host......................................vm
+input file......................................M2-B0-egsnrc-dose_j11
+output file(s)..................................M2-B0-egsnrc-dose_j11
+================================================================================
+
+
+ *******************************************************************************
+
+          Sun Oct 11 22:29:48 2026
+
+ *******************************************************************************
+
+ *                               ************                                  *
+ *                               *          *                                  *
+ *                               * DOSRZnrc *                                  *
+ *                               *          *                                  *
+ *                               ************                                  *
+
+   Developed by National Research Council of Canada
+     on linux
+
+ Number of planar regions      = 200
+ Number of cylindrical regions=  60
+
+
+
+ DOSRZnrc(EGSnrc)   ON linux 
+
+ 
+ 
+ *** INPUT CARD I01 ***
+TITLE: M2-B0-egsnrc-dose: dosrznrc in geometry B0 (co60-refpoint)                     
+ 
+ *** INPUT CARD IO2 ***
+
+ DO NOT TRACK(0) OR TRACK(>0) EVERY INTERACTION:                          0
+ DO NOT STORE(0) OR STORE(1,2) INITIAL RANDOM #s:                         0
+ FIRST RUN(0),RESUMED(1),ANALYZE(3),start-RNS(4),parallel(5):             0
+ OUTPUT OPTION (1 THRU 4):                                                3
+ STORE DATA(0) OR NOT(1):                                                 0
+ CSDA CALCULATION(1) OR NOT(0)                                            0
+
+
+ ******DOSE SCORING BOUNDARIES******
+ NZDMIN,NZDMAX,NRDMIN,NRDMAX:     1,    4,    0,    2
+
+ 
+
+ *** INPUT CARD MC1 ***
+
+ # OF HISTORIES:                                               80000000
+ 1st initial random number seed:                                   2012
+ 2nd initial random number seed:                                    108
+ MAXIMUM CPU TIME ALLOWED:                                     100.00HRS
+ SCORING OPTION IFULL(0,1,2,3):                                       0
+ STATISTICAL ACCURACY DESIRED:                                 0.0000%
+ KERMA WILL(1) or WILL NOT(0) be scored:                    1
+ *** INPUT CARD CGM1 ***
+ TERSE(0), RAPID(1) OR DETAILED(2) INPUT:                             1
+
+ *** INPUT CARD CGM2B *** (DETAILED INPUT)
+ NUMBER OF PLANAR SLABS:                                              3
+ GEOMETRICAL Z-PLANE COORDINATES:
+    0.0000    4.9000    5.1000   30.0000
+ 
+ *** INPUT CARD CG3 ***
+ Number of concentric rings:                                          2
+ Ring radius # 1:                                              1.0000 cm
+ Ring radius # 2:                                             15.0000 cm
+
+ *** INPUT CARD M1 ***
+ Number of media(<= 10):                                              2
+
+ *** INPUT CARD M2 ***
+ MEDIUM #1:                                           H2O_G4                  
+ MEDIUM #2:                                           AIR_G4                  
+
+ *** INPUT CARD M3 ***
+
+ # of geometrical zones =                                             7
+ REGION(  1) = MATERIAL( 0) (VACUUM)
+ REGION(  2) TO REGION(  7) = MATERIAL( 1)
+ 
+
+ *** Source inputs read by srcrz ***
+
+ charge of the incident beam (-1,0,1 [& 2 with source 21]),
+ source configuration
+      (0) parallel beam incident from the front:(0),radius(cm)
+                      incident direction cosines (U,V,W)
+   or (1) point source on axis incident from the front(1)
+                      source to front face distance,radius(cm)
+   or (2) broad parallel beam incident from the front(2)
+                      no configuration input necessary,unit area beam
+   or (3) uniform isotropically radiating disk(3)
+                      min,max radius, min,max Z
+   or (4) axial fluence for various beam radii
+                      radius of central axis region
+   or (10) parallel beam incident from the side(10)
+                   half-width,half-height of beam at center(cm)
+   or (11) point source incident from the side(11)
+           source to center distance(cm)
+half-width,half-height of beam at center(cm)
+   or (12) point source incident from off axis(12)
+                       perpendicular distance off central axis(cm)
+                       perpendicular distance from front face(cm)
+   or (13) broad parallel beam incident from any angle:(13)
+                      incident direction cosines (U,V,W)
+   or (14) point source on axisfrom front but restricted:(14),
+                      source to front face dist, outer,inner radius(cm)
+   or (20) parallel beam incident from the front with radial distribution
+   or (21)full phase-space on front: each particle read from unit 42
+                  file MODE (0. = default, 2. with ZLAST as well),
+                      NRCYCL, IPARALLEL, PARNUM
+   or (22)full phase-space from any angle: each particle read from unit 42
+                      file MODE (0. = default, 2. with ZLAST aswell),
+                      distance from centre of source plane to point of
+                      rotation, angle of rotation about Z axis, Z offset
+                      of point of rotation, NRCYCL, IPARALLEL, PARNUM,
+                      X offset of source, Y offset of source.
+   or (23) BEAM treatment headsimulation from any angle: name of BEAM
+                      simulation (eg BEAM_accelname), name of BEAM input
+         file (no .egsinp extension), name of BEAM pegs data
+                    (no .pegs4dat extension), min. and max. weights of
+                      particles to use (defaults to -1e30- 1e30),
+                      distance from centre of BEAM scoring plane to point of
+                      rotation, angle of rotation about Z axis, Z offset
+                      of point of rotation, X offset of source, Y offset
+  of source.
+
+
+  IQIN            0
+         SRCRZ read:    0    1   100.00000     5.64000     0.00000     0.00000
+
+ ELECTRIC CHARGE OF THE SOURCE:                                       0
+ POINT SOURCE ON AXIS INCIDENT FROM THE FRONT(+VE Z-AXIS)
+ SOURCE DISTANCETO THE FRONT FACE OF THE TARGET:             100.0000 cm
+ RADIUS OF THE BEAM ON THE FRONT FACE OF THE TARGET:           5.6400 cm
+
+ *** INPUT CARD TC1 ***
+ ENERGY SPECTRUM:
+
+   READ INPUT ENERGY SPECTRUM FROM: /home/user/radphysics/co60-refpoint/mc/egsnrc/b0/inputs/co60_lines.spectrum                                                                                                                                                                                     
+    HAVE READ    3 INPUT ENERGY BINS FROM FILE
+      Counts/bin assumed
+    ENERGY RANGES FROM     1.173 MeV TO       1.333 MeV
+ 
+ 
+
+***************** Warning: 
+File /opt/EGSnrc/egs_home/dosrznrc/egsrun_12708_M2-B0-egsnrc-dose_j11_vm/M2-B0-egsnrc-dose_j11.errors
+ is already opened and connected to unit  15
+ Will not try to re-open this file, assuming it has been opened
+ by specifying it in the .io file.
+
+
+
+ Bound Compton start region
+  Setting all to            3
+ Rayleigh start region
+  Setting all to            1
+ Relaxations start region
+  Setting all to            1
+ PE sampling start region
+  Setting all to            1
+
+================================================================================
+
+                   Electron/Photon transport parameter
+
+================================================================================
+
+ Photon cross sections                                      xcom
+ Compton cross sections                                     default
+ Photon transport cutoff(MeV)                                    0.1000E-01
+ Pair angular sampling                                       SIM
+ Pair cross sections                                         BH 
+ Triplet production                                          OFF
+ Bound Compton scattering                                    NOREJ         
+ Radiative Compton corrections                               OFF           
+ Rayleigh scattering                                         ON            
+ Atomic relaxations                                          EADL          
+ Photoelectron angular sampling                              ON            
+
+ Electron transport cutoff(MeV)                               0.5210
+ Bremsstrahlung cross sections                              NIST
+ Bremsstrahlung angular sampling                             KM 
+ Spin effects                                                On
+ Electron Impact Ionization                                  Off
+ Maxium electron step in cm (SMAX)                               0.1000E+11
+ Maximum fractional energy loss/step (ESTEPE)                0.2500
+ Maximum 1st elastic moment/step (XIMAX)                     0.5000
+ Boundary crossing algorithm                                 EXACT     
+ Skin-depth for boundary crossing (MFP)                      3.000    
+ Electron-step algorithm                                     PRESTA-II 
+
+================================================================================
+
+
+ BREMSSTRAHLUNG SPLITTING OFF(0) OR ON(1):                            0
+EACH BREMSSTRAHLUNG SPLIT INTO:                                       1
+
+ CHARGED PARTICLE RUSSIAN ROULETT OFF(0) OR ON(1):                    0
+ PROBABILITY OF SURVIVAL:                                      1.0000
+
+ WITHOUT(0) OR WITH(1) RANGE REJECTION:                               0
+ ESAVEIN CUTOFF VALUE FOR regional RANGE REJECTION :           0.0000 MeV
+
+ *** INPUT CARD TC2C ***
+ RUSSIAN ROULETTE WILL NOT BE PLAYED
+
+ NO PATHLENGTH BIASING TO BE DONE
+
+ *** INPUT CARD TC3 ***
+
+ NO INTERACTION FORCING IS IN EFFECT
+
+ 
+ No cross section enhancement
+
+ *** INPUT for plotting ***
+
+ NO PLOTTING OR PLOT PREPARATION WILL BE DONE
+
+ ********* SUCCESSFUL INPUT ACCOMPLISHED *********
+ 
+ 
+ 
+ 
+ 
+
+ CALL TO HATCH AT  22:29:48
+ ===> Photonuclear flag:   0
+ RAYLEIGH OPTION REQUESTED FOR MEDIUM NUMBER  1
+
+ Rayleigh data available for medium  1 in PEGS4 data set.
+ Rayleigh data available for medium  2 in PEGS4 data set.
+
+(Re)-initializing photon cross sections with files from the series: xcom
+
+ Compton cross sections: default
+ Using Compton cross sections from /opt/EGSnrc/HEN_HOUSE/data/compton_sigma.data
+ Working on medium   1 ... 
+  ->  100 atomic ff values computed!
+      preparing data for Rayleigh sampling ... done
+
+OK
+ Working on medium   2 ... OK
+
+Reading screened Rutherford MS data ...............  done 
+
+
+Reading spin data base from /opt/EGSnrc/HEN_HOUSE/data/spinms.data
+EGSnrc spin data, version 2.0   
+Data generated on a machine with 1234 endianess
+The endianess of this CPU is 1234
+Ranges:      1.00   100.00  0.30054  1.00000
+
+
+  medium    1 .....................  done
+  medium    2 .....................  done
+  
+  Medium            1  sige =    6.4381093265694114        6.2098988041227390       monotone =  F F
+  Medium            2  sige =    6.4599623422131609        6.2358048982321757       monotone =  F F
+  
+  Initializing tmxs for estepe =   0.25000000000000000       and ximax =   0.50000000000000000     
+  
+
+Bound Compton scattering requested, reading data ......  Done
+
+ Initializing Bound Compton scattering ......
+ Medium   1 has   5 shells: 
+   1    1   1  0.19999 0.116E+03     0.014
+   2   17   1  0.20000 0.155E+02     0.543
+   3   18   2  0.20000 0.793E+02     0.024
+   4   19   3  0.20000 0.479E+02     0.014
+   5   20   4  0.20000 0.479E+02     0.014
+ Medium   2 has  18 shells: 
+   1   10   1  0.00004 0.210E+02     0.285
+   2   11   2  0.00004 0.110E+03     0.011
+   3   12   3  0.00004 0.669E+02     0.011
+   4   13   1  0.21604 0.178E+02     0.410
+   5   14   2  0.21604 0.921E+02     0.015
+   6   15   3  0.21604 0.558E+02     0.014
+   7   16   4  0.10802 0.558E+02     0.014
+   8   17   1  0.05804 0.155E+02     0.543
+   9   18   2  0.05804 0.793E+02     0.024
+  10   19   3  0.05804 0.479E+02     0.014
+  11   20   4  0.05804 0.479E+02     0.014
+  12   72   1  0.00129 0.671E+01     3.203
+  13   73   2  0.00129 0.271E+02     0.326
+  14   74   3  0.00129 0.142E+02     0.251
+  15   75   4  0.00257 0.142E+02     0.249
+  16   76   5  0.00129 0.889E+02     0.029
+  17   77   6  0.00129 0.606E+02     0.016
+  18   78   7  0.00257 0.606E+02     0.016
+ ...... Done.
+
+Output from subroutine EDGSET:
+==============================
+ Atomic relaxations requested! 
+
+ Reading simplified photo-absorption data ..... Done
+
+ Reading simplified relaxation data ..... Done
+
+ Reading parametrized XCOM photo cross section data ..... Done
+
+ Reading EADL relaxation data ......
+  Z =   1 has  1 shells
+  Z =   8 has  4 shells
+  Z =   6 has  4 shells
+  Z =   7 has  4 shells
+  Z =  18 has  7 shells
+ ...... Done.
+
+  
+ Using NIST brems cross sections! 
+  
+  Initializing brems data for medium            1 ...
+  Max. new cross sections per energy loss:    6.4447326463006656        6.2175703585723943     
+  Initializing brems data for medium            2 ...
+  Max. new cross sections per energy loss:    6.4658914693516270        6.2409003987291394     
+  
+  
+EGSnrc SUCCESSFULLY 'HATCHED' FOR     2 MEDIA.
+
+ HATCH COMPLETED AT 22:29:48
+
+ *******************************************************************************
+
+                   EXECUTION INFORMATION AND WARNING MESSAGES
+
+ *******************************************************************************
+
+ USING DOSRZnrc(EGSnrc)   
+
+ ********* NEW INPUT FILE *********
+
+
+ BATCH #  time-elapsed  total cputime  ratio  time of day  peak region stats(%)
+
+     1          0.0            0.0      0.00    22:29:48           0.413
+     2        173.4          170.3      1.02    22:32:42           0.292
+     3        347.3          340.5      1.02    22:35:36           0.238
+     4        521.3          511.1      1.02    22:38:30           0.206
+     5        700.4          685.8      1.02    22:41:29           0.185
+     6        877.0          858.6      1.02    22:44:25           0.168
+     7       1052.9         1030.7      1.02    22:47:21           0.156
+     8       1224.6         1200.0      1.02    22:50:13           0.146
+     9       1397.8         1371.2      1.02    22:53:06           0.137
+    10       1572.0         1543.4      1.02    22:56:00           0.130
+
+ *********DESIRED STATISTICAL ACCURACY OF  0.000% NOT REACHED*********
+ STATS IN PEAK DOSE REGION=  0.130 % AFTER 10 BATCHES
+
+********* FINAL RANDOM NUMBER STATE: ixx jxx =   33  66  *********
+
+ Finished simulations: elapsed,cputime,ratio=   1746.5  1716.1(= 0.48h)    1.02
+
+ cputime per history =   0.00002 sec. number of historiesper  hour =  167823465.
+
+ OMEG =   9.968E-03(  0.0%)
+
+
+ End of run          Sun Oct 11 22:58:55 2026
+
+ *******************************************************************************
+ *******************************************************************************
+
+  If you are not trying to reset transport parameters,                         
+  ignore all the output until the message                                      
+  ******************** end input transport parameter ***********************   
+                                                                               
+ ***************ERROR***************                                           
+ >>scale L EII cross-sections<< NOT FOUND                                      
+ END OF DELIMETER: MC TRANSPORT PARAMETER                                      
+ ***************ERROR***************                                           
+ >>Compton cross sections<< NOT FOUND                                          
+ END OF DELIMETER: MC TRANSPORT PARAMETER                                      
+ ***************ERROR***************                                           
+ >>Electric Field<< NOT FOUND                                                  
+ END OF DELIMETER: MC TRANSPORT PARAMETER                                      
+ ***************ERROR***************                                           
+ >>Magnetic Field<< NOT FOUND                                                  
+ END OF DELIMETER: MC TRANSPORT PARAMETER                                      
+ ***************ERROR***************                                           
+ >>EM ESTEPE<< NOT FOUND                                                       
+ END OF DELIMETER: MC TRANSPORT PARAMETER                                      
+ ***************ERROR***************                                           
+ >>Photonuclear attenuation<< NOT FOUND                                        
+ END OF DELIMETER: MC TRANSPORT PARAMETER                                      
+ ***************ERROR***************                                           
+ >>Photonuclear cross sections<< NOT FOUND                                     
+ END OF DELIMETER: MC TRANSPORT PARAMETER                                      
+ ***************ERROR***************                                           
+ >>Set ECUT<< NOT FOUND                                                        
+ END OF DELIMETER: MC TRANSPORT PARAMETER                                      
+ ***************ERROR***************                                           
+ >>Set ECUT start region<< NOT FOUND                                           
+ END OF DELIMETER: MC TRANSPORT PARAMETER                                      
+ ***************ERROR***************                                           
+ >>Set ECUT stop region<< NOT FOUND                                            
+ END OF DELIMETER: MC TRANSPORT PARAMETER                                      
+ ***************ERROR***************                                           
+ >>Set PCUT<< NOT FOUND                                                        
+ END OF DELIMETER: MC TRANSPORT PARAMETER                                      
+ ***************ERROR***************                                           
+ >>Set PCUT start region<< NOT FOUND                                           
+ END OF DELIMETER: MC TRANSPORT PARAMETER                                      
+ ***************ERROR***************                                           
+ >>Set PCUT stop region<< NOT FOUND                                            
+ END OF DELIMETER: MC TRANSPORT PARAMETER                                      
+ ***************ERROR***************                                           
+ >>Set SMAX<< NOT FOUND                                                        
+ END OF DELIMETER: MC TRANSPORT PARAMETER                                      
+ ***************ERROR***************                                           
+ >>Set SMAX start region<< NOT FOUND                                           
+ END OF DELIMETER: MC TRANSPORT PARAMETER                                      
+ ***************ERROR***************                                           
+ >>Set SMAX stop region<< NOT FOUND                                            
+ END OF DELIMETER: MC TRANSPORT PARAMETER                                      
+                                                                               
+  ******************** end input transport parameter ***********************   
+                                                                               
+                                                                               
+                                                                               
+  *************************************************                            
+  ********* SUCCESSFUL INPUT ACCOMPLISHED *********                            
+  *************************************************                            
+                                                                               
+                                                                               
+
+
+================================================================================
+Finished simulation
+
+  Elapsed time:                 1746.7 s (  0.485 h)
+  CPU time:                     1716.3 s (  0.477 h)
+  Ratio:                          1.018
+
+
+End of run                                             Sun Oct 11 22:58:55 2026
+================================================================================
