@@ -16,6 +16,8 @@ Humza delegated every open choice on 2026-10-11: "pick your best recommended cho
   - D/Φ₀ = 5.3672 × 10⁻¹² Gy cm² ± 0.090%, which meets the 0.1% target.
   - Against the M1 boundary-free value it is 0.99924 ± 0.00125.
   - β = 1.0053 ± 0.0014, with K_col from `M2-R0-option4`; K_col itself is 1.0009 ± 0.0012 times M1.
+- **EGSnrc s_w,air (SPRRZnrc, B0): done.** 1.12602 ± 0.00002 (4 jobs × 2.5 × 10⁷). Geant4's R0 electron spectrum through Spencer–Attix with the same matched PEGS4 stopping powers gives 1.12593 ± 0.000003, a difference of +0.008%. The Geant4 value in B0 itself follows from `M2-B0-option4`.
+- **PDD(5), boundary-free: done.** `M2-R0-option4-pdd`, cylinder at 8 cm, range factor 0.04: PDD(5) = 81.79 ± 0.22%, d_max = 0.81 ± 0.04 cm (parabola through the 1 mm bins of a flat peak, so d_max is loosely determined). M1 gave 81.53 ± 0.26% with D(5) from the cylinder (−0.24% artifact). The difference is +0.26 ± 0.34 points.
 - **Queue** (`mc/queues/M2.yaml`, run by `mc/tools/run_queue.py` in chunks under 2 h):
   - option4 layers, then the dose extension;
   - SPRRZnrc, the boundary-free PDD;

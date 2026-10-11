@@ -1,0 +1,333 @@
+run_id: M2-R0-livermore
+purpose: 'M2 physics-list comparison at R0 (STUDY_PLAN Section 4.1): G4EmLivermorePhysics with everything
+  else as M2-R0-option4 (frozen production binary, scoring cylinder, thresholds, variance reduction, msc
+  range factor 0.04, general gamma process off). Differences from option4 measure the EM model spread
+  at fixed transport settings (DECISIONS D028). At least 20 batches (D026).'
+created_utc: '2026-10-11T19:13:48Z'
+git:
+  commit: a29d7753bc6997fd81806a02ee5f4e722f52a5be
+  dirty: true
+machine:
+  hostname: vm
+  platform: Linux-6.18.44-fc-v114-x86_64-with-glibc2.39
+  cpu: Intel(R) Xeon(R) Processor @ 2.80GHz
+  logical_cpus: 4
+  compiler: c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+geant4:
+  version: 11.4.3
+  prefix: /opt/geant4/11.4.3
+  features: "Known Features:\n staticlibs[no]\n multithreading[yes]\n smartstack[no]\n php_as_hp[no]\n\
+    \ clhep[yes]\n expat[no]\n zlib[yes]\n gdml[no]\n ptl[yes]\n usolids[no]\n freetype[no]\n hdf5[no]\n\
+    \ g3tog4[no]\n qt[no]\n motif[no]\n raytracer-x11[no]\n opengl-x11[no]\n openinventor[no]\n vtk[no]"
+  datasets:
+    G4NDL:
+      envvar: G4NEUTRONHPDATA
+      path: /opt/geant4/data/G4NDL4.7.1
+      env_value: null
+    G4EMLOW:
+      envvar: G4LEDATA
+      path: /opt/geant4/data/G4EMLOW8.8
+      env_value: null
+    PhotonEvaporation:
+      envvar: G4LEVELGAMMADATA
+      path: /opt/geant4/data/PhotonEvaporation6.1.2
+      env_value: null
+    RadioactiveDecay:
+      envvar: G4RADIOACTIVEDATA
+      path: /opt/geant4/data/RadioactiveDecay6.1.2
+      env_value: null
+    G4PARTICLEXS:
+      envvar: G4PARTICLEXSDATA
+      path: /opt/geant4/data/G4PARTICLEXS4.2
+      env_value: null
+    G4PII:
+      envvar: G4PIIDATA
+      path: /opt/geant4/data/G4PII1.3
+      env_value: null
+    RealSurface:
+      envvar: G4REALSURFACEDATA
+      path: /opt/geant4/data/RealSurface2.2
+      env_value: null
+    G4SAIDDATA:
+      envvar: G4SAIDXSDATA
+      path: /opt/geant4/data/G4SAIDDATA2.0
+      env_value: null
+    G4ABLA:
+      envvar: G4ABLADATA
+      path: /opt/geant4/data/G4ABLA3.3
+      env_value: null
+    G4INCL:
+      envvar: G4INCLDATA
+      path: /opt/geant4/data/G4INCL1.3
+      env_value: null
+    G4ENSDFSTATE:
+      envvar: G4ENSDFSTATEDATA
+      path: /opt/geant4/data/G4ENSDFSTATE3.0
+      env_value: null
+    G4CHANNELING:
+      envvar: G4CHANNELINGDATA
+      path: /opt/geant4/data/G4CHANNELING2.0
+      env_value: null
+spec_file: mc/geant4/runspecs/M2-R0-livermore.yaml
+spec:
+  run_id: M2-R0-livermore
+  purpose: 'M2 physics-list comparison at R0 (STUDY_PLAN Section 4.1): G4EmLivermorePhysics with everything
+    else as M2-R0-option4 (frozen production binary, scoring cylinder, thresholds, variance reduction,
+    msc range factor 0.04, general gamma process off). Differences from option4 measure the EM model spread
+    at fixed transport settings (DECISIONS D028). At least 20 batches (D026).'
+  physics: livermore
+  threads: 4
+  batches: 20
+  histories_per_batch: 4000000
+  seed_base: 7101
+  geometry:
+    scoring_radius_cm: 1.0
+    scoring_thickness_cm: 0.2
+    scoring_depth_cm: 5.0
+  source:
+    ssd_cm: 100.0
+    field_cm:
+    - 10.0
+    - 10.0
+  cuts:
+    electron_threshold_keV: 10
+    gamma_threshold_keV: 10
+  russian_roulette:
+    enabled: true
+    survival: 0.05
+    roi_cm:
+    - 1.8
+    - 4.1
+    - 5.9
+  importance_cells_cm:
+  - - 8.0
+    - -1.0
+    - 14.0
+    - 2
+  - - 4.0
+    - 2.0
+    - 8.0
+    - 8
+  - - 2.5
+    - 3.4
+    - 6.6
+    - 32
+  pre_init_commands:
+  - /process/em/UseGeneralProcess false
+  - /process/msc/RangeFactor 0.04
+  depth_scan: false
+  event_sample_per_batch: 5000
+bins_file: config/bins.yaml
+executable: /opt/build/co60app/co60app.production
+executable_source_commit: 8eda68783c4644ce1852364bbfaad06e14743e4d
+batches:
+- batch: 0
+  seeds:
+  - 7101001
+  - 7101002
+  exit_code: 0
+  wall_s: 210.1
+  command: /opt/build/co60app/co60app.production run.mac livermore 4 --importance
+  histories: 4000000
+  D_over_phi0_Gy_cm2: 5.409641648675487e-12
+  D_rel_sem_history_by_history: 0.005053054082324651
+  energy_balance_max_abs_MeV: 0.0001267892858427544
+  untagged_tracks: 0
+- batch: 1
+  seeds:
+  - 7101003
+  - 7101004
+  exit_code: 0
+  wall_s: 206.5
+  command: /opt/build/co60app/co60app.production run.mac livermore 4 --importance
+  histories: 4000000
+  D_over_phi0_Gy_cm2: 5.3973271846117365e-12
+  D_rel_sem_history_by_history: 0.0050625795800349335
+  energy_balance_max_abs_MeV: 9.630391894033252e-05
+  untagged_tracks: 0
+- batch: 2
+  seeds:
+  - 7101005
+  - 7101006
+  exit_code: 0
+  wall_s: 208.7
+  command: /opt/build/co60app/co60app.production run.mac livermore 4 --importance
+  histories: 4000000
+  D_over_phi0_Gy_cm2: 5.3678009971187994e-12
+  D_rel_sem_history_by_history: 0.005064523309174348
+  energy_balance_max_abs_MeV: 6.197218013070938e-05
+  untagged_tracks: 0
+- batch: 3
+  seeds:
+  - 7101007
+  - 7101008
+  exit_code: 0
+  wall_s: 220.4
+  command: /opt/build/co60app/co60app.production run.mac livermore 4 --importance
+  histories: 4000000
+  D_over_phi0_Gy_cm2: 5.348509712131126e-12
+  D_rel_sem_history_by_history: 0.005091880143160485
+  energy_balance_max_abs_MeV: 0.0002747440188655137
+  untagged_tracks: 0
+- batch: 4
+  seeds:
+  - 7101009
+  - 7101010
+  exit_code: 0
+  wall_s: 206.8
+  command: /opt/build/co60app/co60app.production run.mac livermore 4 --importance
+  histories: 4000000
+  D_over_phi0_Gy_cm2: 5.314015301363396e-12
+  D_rel_sem_history_by_history: 0.00508250161255868
+  energy_balance_max_abs_MeV: 6.735600987584078e-05
+  untagged_tracks: 0
+- batch: 5
+  seeds:
+  - 7101011
+  - 7101012
+  exit_code: 0
+  wall_s: 198.4
+  command: /opt/build/co60app/co60app.production run.mac livermore 4 --importance
+  histories: 4000000
+  D_over_phi0_Gy_cm2: 5.383988196848103e-12
+  D_rel_sem_history_by_history: 0.005069863294591727
+  energy_balance_max_abs_MeV: 0.00010532552727671174
+  untagged_tracks: 0
+- batch: 6
+  seeds:
+  - 7101013
+  - 7101014
+  exit_code: 0
+  wall_s: 201.8
+  command: /opt/build/co60app/co60app.production run.mac livermore 4 --importance
+  histories: 4000000
+  D_over_phi0_Gy_cm2: 5.377402018482546e-12
+  D_rel_sem_history_by_history: 0.005069010655379699
+  energy_balance_max_abs_MeV: 9.601404772130451e-05
+  untagged_tracks: 0
+- batch: 7
+  seeds:
+  - 7101015
+  - 7101016
+  exit_code: 0
+  wall_s: 205.6
+  command: /opt/build/co60app/co60app.production run.mac livermore 4 --importance
+  histories: 4000000
+  D_over_phi0_Gy_cm2: 5.384964857654862e-12
+  D_rel_sem_history_by_history: 0.00504840121119641
+  energy_balance_max_abs_MeV: 7.06729548369811e-05
+  untagged_tracks: 0
+- batch: 8
+  seeds:
+  - 7101017
+  - 7101018
+  exit_code: 0
+  wall_s: 209.2
+  command: /opt/build/co60app/co60app.production run.mac livermore 4 --importance
+  histories: 4000000
+  D_over_phi0_Gy_cm2: 5.309555132307749e-12
+  D_rel_sem_history_by_history: 0.005096208500373203
+  energy_balance_max_abs_MeV: 0.001000671610273729
+  untagged_tracks: 0
+- batch: 9
+  seeds:
+  - 7101019
+  - 7101020
+  exit_code: 0
+  wall_s: 206.4
+  command: /opt/build/co60app/co60app.production run.mac livermore 4 --importance
+  histories: 4000000
+  D_over_phi0_Gy_cm2: 5.403076766404485e-12
+  D_rel_sem_history_by_history: 0.005059353735948755
+  energy_balance_max_abs_MeV: 7.181884480145229e-05
+  untagged_tracks: 0
+- batch: 10
+  seeds:
+  - 7101021
+  - 7101022
+  exit_code: 0
+  wall_s: 207.6
+  command: /opt/build/co60app/co60app.production run.mac livermore 4 --importance
+  histories: 4000000
+  D_over_phi0_Gy_cm2: 5.3948703597636964e-12
+  D_rel_sem_history_by_history: 0.005063150634434249
+  energy_balance_max_abs_MeV: 8.430495572020469e-05
+  untagged_tracks: 0
+- batch: 11
+  seeds:
+  - 7101023
+  - 7101024
+  exit_code: 0
+  wall_s: 207.1
+  command: /opt/build/co60app/co60app.production run.mac livermore 4 --importance
+  histories: 4000000
+  D_over_phi0_Gy_cm2: 5.3441497530193626e-12
+  D_rel_sem_history_by_history: 0.005103096068832326
+  energy_balance_max_abs_MeV: 0.0010385245393293996
+  untagged_tracks: 0
+- batch: 12
+  seeds:
+  - 7101025
+  - 7101026
+  exit_code: 0
+  wall_s: 212.3
+  command: /opt/build/co60app/co60app.production run.mac livermore 4 --importance
+  histories: 4000000
+  D_over_phi0_Gy_cm2: 5.411863161418466e-12
+  D_rel_sem_history_by_history: 0.00505037173114206
+  energy_balance_max_abs_MeV: 0.0014206288437719206
+  untagged_tracks: 0
+- batch: 13
+  seeds:
+  - 7101027
+  - 7101028
+  exit_code: 0
+  wall_s: 206.5
+  command: /opt/build/co60app/co60app.production run.mac livermore 4 --importance
+  histories: 4000000
+  D_over_phi0_Gy_cm2: 5.3594680179365776e-12
+  D_rel_sem_history_by_history: 0.005065541943854299
+  energy_balance_max_abs_MeV: 0.00035939464548451205
+  untagged_tracks: 0
+started_utc: '2026-10-11T19:13:48Z'
+geant4_physics_printout:
+  em_models:
+    gamma phot:
+    - LivermorePhElectric (0 eV - 100 TeV)
+    gamma compt:
+    - LivermoreCompton (0 eV - 1 GeV)
+    - KleinNishina (1 GeV - 100 TeV)
+    gamma conv:
+    - Livermore5DConversion (0 eV - 100 TeV)
+    gamma Rayl:
+    - LivermoreRayleigh (0 eV - 100 TeV)
+    e- msc:
+    - GoudsmitSaunderson (0 eV - 100 MeV)
+    - WentzelVIUni (100 MeV - 100 TeV)
+    e- eIoni:
+    - LowEnergyIoni (0 eV - 100 keV)
+    - MollerBhabha (100 keV - 100 TeV)
+    e- eBrem:
+    - eBremSB (0 eV - 1 GeV)
+    - eBremLPM (1 GeV - 100 TeV)
+    e- ePairProd:
+    - ePairProd (0 eV - 100 TeV)
+    e- CoulombScat:
+    - eCoulombScattering (100 MeV - 100 TeV)
+    e+ msc:
+    - GoudsmitSaunderson (0 eV - 100 MeV)
+    - WentzelVIUni (100 MeV - 100 TeV)
+    e+ eIoni:
+    - MollerBhabha (0 eV - 100 TeV)
+    e+ eBrem:
+    - eBremSB (0 eV - 1 GeV)
+    - eBremLPM (1 GeV - 100 TeV)
+    e+ ePairProd:
+    - ePairProd (0 eV - 100 TeV)
+    e+ annihil:
+    - eplus2gg (0 eV - 100 TeV)
+    e+ CoulombScat:
+    - eCoulombScattering (100 MeV - 100 TeV)
+  g4_water_range_cuts: gamma 1 mm e- 8.24701 um e+ 8.33478 um proton 8.24701 um
+  g4_water_energy_thresholds: gamma 2.93547 keV e- 10 keV e+ 10 keV proton 824.701 eV
+  roi_check: buffer needed 7.42165 mm (1.2 x CSDA range 6.18471 mm of 1.3325 MeV e- in G4_WATER)
