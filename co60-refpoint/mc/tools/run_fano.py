@@ -19,6 +19,7 @@ import time
 from pathlib import Path
 
 import numpy as np
+import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from manifest import STUDY_ROOT, base_manifest, utc_now, write_yaml  # noqa: E402
@@ -82,33 +83,60 @@ def main():
     ap.add_argument("--extra", action="append", default=[], help="extra macro command after /run/initialize")
     ap.add_argument("--pre", action="append", default=[],
                     help="macro command after the physics constructor is chosen and before /run/initialize")
+    ap.add_argument("--resume", action="store_true",
+                    help="continue an interrupted run: keep finished batches, rerun unfinished ones with the same seeds")
     args = ap.parse_args()
 
     run_dir = STUDY_ROOT / "mc" / "runs" / args.run_id
+    resumed = False
     if run_dir.exists():
-        sys.exit(f"{run_dir} exists; runs are never overwritten (STUDY_PLAN Section 10.4)")
-    run_dir.mkdir(parents=True)
+        if not args.resume:
+            sys.exit(f"{run_dir} exists; runs are never overwritten (STUDY_PLAN Section 10.4)")
+        resumed = True
+    else:
+        run_dir.mkdir(parents=True)
 
-    manifest = base_manifest(args.run_id, args.purpose)
-    manifest["application"] = {
-        "name": "fanoCavity (Geant4 extended/medical example, unmodified)",
-        "executable": args.exe,
-        "physics_constructor": args.physics,
-        "production_cut": "10 km for gamma, e-, e+ (example default, CSDA)",
-        "compton_cross_section_factor": 1000,
-        "beam": f"gamma, {args.energy_mev} MeV, uniform over the wall radius, normal incidence",
-        "geometry": "wall G4_WATER 5 mm each side, cavity G4_WATER at 1 mg/cm3, 2 mm thick, radius 1 cm",
-        "pre_init_macro_commands": args.pre,
-        "extra_macro_commands": args.extra,
-    }
-    manifest["statistics"] = {"batches": args.batches, "events_per_batch": args.events,
-                              "threads": args.threads, "total_events": args.batches * args.events}
-    manifest["batches"] = []
-    manifest["started_utc"] = utc_now()
+    if resumed:
+        manifest = yaml.safe_load(open(run_dir / "manifest.yaml"))
+        done = {b["batch"] for b in manifest["batches"] if b.get("exit_code") == 0 and "ratio" in b}
+        manifest["batches"] = [b for b in manifest["batches"] if b["batch"] in done]
+        stamp = utc_now().replace(":", "")
+        moved = []
+        for i in range(args.batches):
+            bdir = run_dir / f"batch_{i:02d}"
+            if i not in done and bdir.exists():
+                bdir.rename(run_dir / f"batch_{i:02d}.interrupted-{stamp}")   # kept, never deleted
+                moved.append(i)
+        manifest.setdefault("resumptions", []).append({"utc": utc_now(), "finished_batches_kept": sorted(done),
+                                                       "interrupted_batches_rerun": moved})
+        write_yaml(run_dir / "manifest.yaml", manifest)
+        print(f"resuming {args.run_id}: {len(done)} finished batches kept, interrupted {moved}", flush=True)
+    else:
+        manifest = None
+    if manifest is None:
+        manifest = base_manifest(args.run_id, args.purpose)
+        manifest["application"] = {
+            "name": "fanoCavity (Geant4 extended/medical example, unmodified)",
+            "executable": args.exe,
+            "physics_constructor": args.physics,
+            "production_cut": "10 km for gamma, e-, e+ (example default, CSDA)",
+            "compton_cross_section_factor": 1000,
+            "beam": f"gamma, {args.energy_mev} MeV, uniform over the wall radius, normal incidence",
+            "geometry": "wall G4_WATER 5 mm each side, cavity G4_WATER at 1 mg/cm3, 2 mm thick, radius 1 cm",
+            "pre_init_macro_commands": args.pre,
+            "extra_macro_commands": args.extra,
+        }
+        manifest["statistics"] = {"batches": args.batches, "events_per_batch": args.events,
+                                  "threads": args.threads, "total_events": args.batches * args.events}
+        manifest["batches"] = []
+        manifest["started_utc"] = utc_now()
 
     t_start = time.time()
-    results = []
+    results = list(manifest["batches"])
+    done_now = {r["batch"] for r in results}
     for i in range(args.batches):
+        if i in done_now:
+            continue
         seeds = (args.seed_base * 1000 + 2 * i + 1, args.seed_base * 1000 + 2 * i + 2)
         bdir = run_dir / f"batch_{i:02d}"
         bdir.mkdir()
@@ -129,7 +157,7 @@ def main():
         print(f"batch {i}: ratio={res.get('ratio')} +- {res.get('ratio_err')} wall={wall:.0f}s", flush=True)
 
     manifest["finished_utc"] = utc_now()
-    manifest["wall_time_s"] = round(time.time() - t_start, 1)
+    manifest["wall_time_s"] = round(sum(r["wall_s"] for r in results), 1)   # sum over batches (resumable)
 
     ok = [r for r in results if r["exit_code"] == 0 and "ratio" in r]
     if ok:
