@@ -82,11 +82,12 @@ findings:
     body: >-
       The depth scan shows the dose 2–3.7% high just in front of the scoring cylinder and 1.5–2.3% low just
       behind it, in water on both sides. Moving the cylinder to 8 cm moves the pattern. Far from both
-      cylinders the two depth scans agree to 0.1%. Inside the cylinder, the dose agrees with the boundary-free
-      dose at the same depth (row in the checks table, from a run with the main run's variance reduction and
-      the cylinder moved to 8 cm). The likely cause is the electron
-      step limit near boundaries (GS multiple scattering, SafetyPlus), which moves energy deposition without
-      creating any. How to score from M2 on is a gate question.
+      cylinders the two depth scans agree to 0.1%. Inside the cylinder the dose is 0.24% below the boundary-free
+      dose at the same depth (−2.2σ; row in the checks table, from 30 batches with the main run's variance
+      reduction and the cylinder moved to 8 cm), so the boundary-free value is now the R0 dose reference
+      (DECISIONS D025, D027). The likely cause is the electron step limit near boundaries (GS multiple
+      scattering, SafetyPlus), which moves energy deposition without creating any. From M2 the dose at R0 is
+      scored without a boundary nearby.
   - title: "A primary-fluence fluctuation that looked like a 4σ effect"
     warn: false
     body: >-
@@ -106,13 +107,13 @@ decisions:
   - title: "s_w,air scoring reference (D024)"
     body: "ICRU 90 basis primary, ICRU 37 reported alongside; fixed before any AI answer exists."
   - title: "Scoring-volume boundary (D025)"
-    body: "D at R0 carries the boundary effect as a systematic; a 20-batch extension of the boundary-free run tightens it. From M2, dose at R0 is scored by position with no boundary nearby."
+    body: "The 20-batch extension resolved the effect (cylinder 0.24% low, −2.2σ); the boundary-free D is the R0 reference (D027, 2σ threshold to confirm). From M2, dose at R0 is scored by position with no boundary nearby."
   - title: "Uncertainty policy (D023)"
     body: "Approved: the larger of the batch and history-by-history standard errors."
   - title: "Layer 4 estimator (D020)"
     body: "Approved: CSDA-weighted spectrum as the reference, linear estimator reported alongside."
   - title: "Fano and M2 settings (D026)"
-    body: "+0.16% accepted as a bound; step-size diagnostics reviewed before M2 production; M2 runs use at least 20 batches."
+    body: "+0.16% accepted as a bound. Range factor 0.04 gives 1.0000 ± 0.0009, so the deviation disappears with tighter stepping; M2 plans range factor 0.04 pending the step-function result. M2 runs use at least 20 batches."
   - title: "refs.yaml (D026)"
     body: "Humza verifies line energies, TRS-398 s_w,air, I-values and normalisation constants first, and adds a published PDD(5)."
 

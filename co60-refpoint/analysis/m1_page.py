@@ -457,10 +457,10 @@ def render(r, m, n, data_json, text, fano, v, pm, sci, rel, sig):
   <div class="sec-head"><span class="k">Layer 5</span><h2>Energy deposited</h2></div>
   <p class="lede">{T['layer5']}</p>
   <div class="stats">
-    <div class="stat"><span class="l">D/Φ₀</span><span class="v">{n['D']}</span><span class="l">± {n['D_rel']} (1σ)</span></div>
+    <div class="stat"><span class="l">{n.get('D_label', 'D/Φ₀')}</span><span class="v">{n['D']}</span><span class="l">± {n['D_rel']} (1σ){('<br>' + n['D_alt']) if n.get('D_alt') else ''}</span></div>
     <div class="stat"><span class="l">K/Φ₀ (scored)</span><span class="v">{n['K']}</span></div>
     <div class="stat"><span class="l">K<sub>col</sub>/Φ₀ (scored)</span><span class="v">{n['Kcol']}</span></div>
-    <div class="stat"><span class="l">β = D/K<sub>col</sub></span><span class="v">{n['beta']}</span><span class="l">± {n['beta_rel']}</span></div>
+    <div class="stat"><span class="l">β = D/K<sub>col</sub></span><span class="v">{n['beta']}</span><span class="l">± {n['beta_rel']}{('<br>' + n['beta_alt']) if n.get('beta_alt') else ''}</span></div>
     <div class="stat"><span class="l">g = 1 − K<sub>col</sub>/K</span><span class="v">{n['g']}</span></div>
   </div>
   <div class="grid2">

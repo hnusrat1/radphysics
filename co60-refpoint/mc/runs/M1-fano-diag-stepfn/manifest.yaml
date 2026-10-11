@@ -1,0 +1,107 @@
+run_id: M1-fano-diag-stepfn
+purpose: 'Fano step-size diagnostic: e-/e+ step function (0.05, 1 um) (production 0.2, 10 um), everything
+  else as M0-fano-opt4'
+created_utc: '2026-10-11T04:17:29Z'
+git:
+  commit: 5828028ff3a3b5f5497938f62e705dc9bcf2ce70
+  dirty: true
+machine:
+  hostname: vm
+  platform: Linux-6.18.44-fc-v114-x86_64-with-glibc2.39
+  cpu: Intel(R) Xeon(R) Processor @ 2.80GHz
+  logical_cpus: 4
+  compiler: c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+geant4:
+  version: 11.4.3
+  prefix: /opt/geant4/11.4.3
+  features: "Known Features:\n staticlibs[no]\n multithreading[yes]\n smartstack[no]\n php_as_hp[no]\n\
+    \ clhep[yes]\n expat[no]\n zlib[yes]\n gdml[no]\n ptl[yes]\n usolids[no]\n freetype[no]\n hdf5[no]\n\
+    \ g3tog4[no]\n qt[no]\n motif[no]\n raytracer-x11[no]\n opengl-x11[no]\n openinventor[no]\n vtk[no]"
+  datasets:
+    G4NDL:
+      envvar: G4NEUTRONHPDATA
+      path: /opt/geant4/data/G4NDL4.7.1
+      env_value: null
+    G4EMLOW:
+      envvar: G4LEDATA
+      path: /opt/geant4/data/G4EMLOW8.8
+      env_value: null
+    PhotonEvaporation:
+      envvar: G4LEVELGAMMADATA
+      path: /opt/geant4/data/PhotonEvaporation6.1.2
+      env_value: null
+    RadioactiveDecay:
+      envvar: G4RADIOACTIVEDATA
+      path: /opt/geant4/data/RadioactiveDecay6.1.2
+      env_value: null
+    G4PARTICLEXS:
+      envvar: G4PARTICLEXSDATA
+      path: /opt/geant4/data/G4PARTICLEXS4.2
+      env_value: null
+    G4PII:
+      envvar: G4PIIDATA
+      path: /opt/geant4/data/G4PII1.3
+      env_value: null
+    RealSurface:
+      envvar: G4REALSURFACEDATA
+      path: /opt/geant4/data/RealSurface2.2
+      env_value: null
+    G4SAIDDATA:
+      envvar: G4SAIDXSDATA
+      path: /opt/geant4/data/G4SAIDDATA2.0
+      env_value: null
+    G4ABLA:
+      envvar: G4ABLADATA
+      path: /opt/geant4/data/G4ABLA3.3
+      env_value: null
+    G4INCL:
+      envvar: G4INCLDATA
+      path: /opt/geant4/data/G4INCL1.3
+      env_value: null
+    G4ENSDFSTATE:
+      envvar: G4ENSDFSTATEDATA
+      path: /opt/geant4/data/G4ENSDFSTATE3.0
+      env_value: null
+    G4CHANNELING:
+      envvar: G4CHANNELINGDATA
+      path: /opt/geant4/data/G4CHANNELING2.0
+      env_value: null
+application:
+  name: fanoCavity (Geant4 extended/medical example, unmodified)
+  executable: /opt/build/examples/fanoCavity/fanoCavity
+  physics_constructor: standard_opt4
+  production_cut: 10 km for gamma, e-, e+ (example default, CSDA)
+  compton_cross_section_factor: 1000
+  beam: gamma, 1.25 MeV, uniform over the wall radius, normal incidence
+  geometry: wall G4_WATER 5 mm each side, cavity G4_WATER at 1 mg/cm3, 2 mm thick, radius 1 cm
+  pre_init_macro_commands:
+  - /process/eLoss/StepFunction 0.05 1 um
+  extra_macro_commands: []
+statistics:
+  batches: 20
+  events_per_batch: 340000
+  threads: 4
+  total_events: 6800000
+batches:
+- ratio: 0.99512
+  ratio_err: 0.00319
+  mass_energy_transfer_cm2_g: 29.8642
+  dose_over_energy_fluence_cm2_g: 29.7185
+  mean_secondary_energy_keV: 588.2139
+  mean_secondary_energy_rel_err_pct: 0.0112
+  g4_water_imean_eV: 78.0
+  g4_user_s: 1970.7
+  g4_real_s: 996.217307
+  process_calls:
+    compt: 23980472
+    Transportation: 6570574
+    eIoni: 1008747006
+    msc: 61757499
+    conv: 5
+  batch: 0
+  seeds:
+  - 5102001
+  - 5102002
+  exit_code: 0
+  wall_s: 996.5
+started_utc: '2026-10-11T04:17:29Z'

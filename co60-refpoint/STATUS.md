@@ -6,14 +6,14 @@
 
 The Geant4 reference for all five layers at R0 is done: G4EmStandardPhysics_option4, 10 keV thresholds, 2.4 × 10⁸ histories in 20 batches (main run and a seed-independent replicate, pooled by the rule fixed in advance, D022). Every statistical target in plan Section 4.1 is met.
 
-- **Dose.** D/Φ₀ = 5.35838 × 10⁻¹² Gy cm² ± 0.066%.
-- **β.** β = D/K_col = 1.0045 ± 0.0006.
+- **Dose.** D/Φ₀ = 5.3713 × 10⁻¹² Gy cm² ± 0.087%. This is the boundary-free value, adopted under D025/D027; the scoring cylinder gives 5.3584 × 10⁻¹² ± 0.066%, 0.24% lower.
+- **β.** β = D/K_col = 1.0069 ± 0.0011 with the boundary-free D (1.0045 ± 0.0006 with the cylinder D).
 - **s_w,air.** Scoring reference (D024): ICRU 90 basis, with ICRU 37 alongside. The Spencer–Attix ratio (Δ = 10 keV) is 1.1331 on the ICRU 37 stopping-power basis, 1.1268 on ICRU 90 and 1.1385 on Geant4's own stopping powers. The 1% spread between bases is far larger than the statistics.
 
 Problems found and fixed or bounded:
 - **Two Geant4 problems that would have biased results (fixed).** Rayleigh scattering of primaries is missing in option4's general gamma process (D019). The plan's linear track-length estimator gives the wrong electron fluence at low energy (D020).
 - **10-batch standard errors can come out much too small by chance (D023).** This made a primary-fluence fluctuation in the main run look like a 4σ effect; the replicate resolved it.
-- **The scoring cylinder's boundary distorts the dose by up to ±3% in the few millimetres next to it.** Inside the cylinder the dose is 0.9974 ± 0.0017 of the boundary-free dose (−1.5σ). That is not significant, but the 95% interval (−0.6% to +0.1%) is wider than D's statistical uncertainty, so a boundary effect of that size on D at R0 is not excluded.
+- **The scoring cylinder's boundary distorts the dose by up to ±3% in the few millimetres next to it and lowers it by 0.24% inside.** After the 20-batch extension, the cylinder dose is 0.99759 ± 0.00109 of the boundary-free dose (−2.2σ). By the rule in D025, with the threshold set in D027, the boundary-free value is now the R0 dose reference. M2 re-measures it with boundary-free scoring.
 
 Results page: `analysis/results/co60_r0_m1.html`, published (private) at https://claude.ai/artifact/Cu5ScfiTccG3u14D4mbiLe. Study brief (why, what, results, strengths and weaknesses, venues): `analysis/results/co60_brief.html` (built by `analysis/m1_brief.py`), published (private) at https://claude.ai/artifact/24vAALYwGGg9Hej4P7Df4d.
 
@@ -41,7 +41,7 @@ Results page: `analysis/results/co60_r0_m1.html`, published (private) at https:/
 | M1-check-transmission | tracking μ by transmission (TestEm13) | 2 × 2 × 10⁷ photons |
 | M1-check-primary-* | primary-fluence diagnostics (5 runs) | see below |
 | M1-check-pdd-cyl8 | depth scan with the cylinder at 8 cm | 4 × 3 × 10⁶ |
-| M1-check-boundary-free-R0 | boundary-free dose at R0 (main VR, cylinder at 8 cm) | 10 × 6 × 10⁶ |
+| M1-check-boundary-free-R0, -ext | boundary-free dose at R0 (main VR, cylinder at 8 cm) | 10 × 6 × 10⁶ + 20 × 6 × 10⁶ |
 | M1-tables-option4-v2 | stopping powers, δ, cross sections from the production physics | — |
 
 Compute ran in this 4-core container (D013). Wall times per batch are in each manifest; runs often shared the CPU, so they overstate CPU use.
@@ -61,9 +61,10 @@ Uncertainties are 1σ standard errors of the mean: the larger of the batch sprea
 | 3 | Compton recoils above the free-electron edge (1.1732 / 1.3325 MeV) | 0.22% / 0.18% |
 | 4 | delta-ray share of electron fluence above 10 keV | 0.0300 |
 | 4 | radiative / collision energy loss | 0.00229 |
-| 5 | D/Φ₀ | 5.35838 × 10⁻¹² Gy cm² ± 0.066% |
+| 5 | D/Φ₀, R0 reference (boundary-free, D027) | 5.3713 × 10⁻¹² Gy cm² ± 0.087% |
+| 5 | D/Φ₀ in the scoring cylinder | 5.35838 × 10⁻¹² Gy cm² ± 0.066% |
 | 5 | K/Φ₀, K_col/Φ₀ | 5.3483, 5.3343 × 10⁻¹² Gy cm² |
-| 5 | β = D/K_col | 1.0045 ± 0.0006 |
+| 5 | β = D/K_col, boundary-free D (cylinder D) | 1.0069 ± 0.0011 (1.0045 ± 0.0006) |
 | 5 | g | 0.00262 |
 | 5 | dose from electrons set in motion by scattered photons | 18.8% |
 | 5 | s_w,air (Spencer–Attix, Δ = 10 keV): ICRU 37 / ICRU 90 / Geant4 / PEGS4 matched | 1.1331 / 1.1268 / 1.1385 / 1.1259 |
@@ -83,10 +84,10 @@ The ICRU 37-basis s_w,air, 1.1331, agrees with the TRS-398 value in refs.yaml (1
 | S2: 5 keV thresholds | D/Φ₀ +0.13% (+0.9σ); s_w,air +0.0003%; electron fluence normalization +0.12%, shape χ² 20/24; photon fluence normalization −0.03%, shape χ² 29/26 | passes |
 | S1: half-size scoring volume | D/Φ₀ +0.47% (+2.1σ); electron fluence normalization +0.42%, shape χ² 23/24; s_w,air +0.0010% | passes (under 3σ) |
 | Analog transport against VR | D/Φ₀ −0.10% (−0.2σ); electron fluence normalization −0.04%, shape χ² 8/22 | passes |
-| Scoring-cylinder boundary: D in the cylinder over the boundary-free D at R0 | 0.9974 ± 0.0017 (−1.5σ, 14 boundary-free batches) | passes; artifact next to the cylinder, see below |
+| Scoring-cylinder boundary: D in the cylinder over the boundary-free D at R0 | 0.99759 ± 0.00109 (−2.2σ, 30 boundary-free batches) | boundary effect resolved; boundary-free D adopted (D027) |
 | Event sample, validity rules (D014) | 0.064% of 100,000 Monte Carlo interactions fail the bound rules; 99% fail the strict free-electron rules | as designed |
 | Bookkeeping | 0 untagged tracks; largest per-interaction energy imbalance 1.23 keV | passes |
-| Fano step-size diagnostics | running at low priority after production; see below | pending |
+| Fano step-size diagnostics | msc range factor 0.04: 1.00001 ± 0.00088 (20 batches; production 1.00157 ± 0.00058); step function 0.05 / 1 µm: running | range factor done; step function pending |
 
 ### What failed or was anomalous
 
@@ -96,7 +97,7 @@ The ICRU 37-basis s_w,air, 1.1331, agrees with the TRS-398 value in refs.yaml (1
 - **The scoring cylinder's boundary distorts the dose next to it.** The PDD run's 1 mm depth slabs (r < 1 cm) show the dose 2–3.7% high 1.5–4.5 mm in front of the scoring cylinder and 1.5–2.3% low 1.5–4.5 mm behind it. Every batch shows it (11σ), with water on both sides of the boundary.
   - Moving the cylinder to 8 cm (`M1-check-pdd-cyl8`) moves the pattern with it.
   - Far from both cylinders the two depth scans agree to 1.0011 ± 0.0008 per history.
-  - Inside the cylinder: against the boundary-free dose at R0 (`M1-check-boundary-free-R0`: the main run's variance reduction, the cylinder at 8 cm, the dose scored by position in r < 1 cm, 4.9–5.1 cm) the ratio is 0.9974 ± 0.0017 (−1.5σ; 95% interval −0.6% to +0.1%). No significant effect, but D at R0 carries this as a possible systematic until it is resolved further. The boundary-free value has batch errors only (10 batches).
+  - Inside the cylinder: against the boundary-free dose at R0 (`M1-check-boundary-free-R0`: the main run's variance reduction, the cylinder at 8 cm, the dose scored by position in r < 1 cm, 4.9–5.1 cm) the ratio is 0.99759 ± 0.00109 (−2.2σ; 95% interval −0.46% to −0.02%) after the 20-batch extension (30 boundary-free batches). The boundary-free value has batch errors only. Under D025/D027 it is now the R0 dose reference.
   - Likely mechanism: with GS multiple scattering and the SafetyPlus step limit, electron steps shrink as electrons approach a boundary (geometry factor 2.5, range factor 0.08), while far from boundaries they reach 0.2 × the range. A step-length-dependent displacement of the energy deposition piles energy up in front of the boundary and leaves a deficit behind it. Energy is moved, not created.
   - PDD(5) uses the dose inside the cylinder and D_max far from it.
 - **Primary-fluence fluctuation in the main run (resolved).** Against the analytic exp(−μs)/(ΩR²) with the tracking μ measured by TestEm13, the main run gave 0.9988. That is −4.4σ on its batch spread and −1.9σ on counting statistics. The diagnostic runs found no cause:
@@ -125,8 +126,8 @@ The ICRU 37-basis s_w,air, 1.1331, agrees with the TRS-398 value in refs.yaml (1
 - **Two slips in my own process management.** Twice a `pkill -f` pattern matched my own shell, and once a waiting script as well. No simulation ran with a wrong configuration. The only run lost was a 2-minute-old extension, archived as `mc/runs/_archived/M1-check-pdd-cyl8-ext-stopped/` with its reason. Processes are now stopped by PID only.
 - **The ROI check has no buffer on the near side of a depth scan.** `RunAction::CheckRoi` requires the ROI to start at or before the start of the depth scan, but not 1.2 × the CSDA range before it. That is harmless for scans from the surface (the PDD run) but would allow roulette bias for a scan starting inside the phantom. `M1-check-boundary-free-R0` satisfies the buffer by its spec (ROI from 4.1 cm, scan from 4.9 cm). Fixed in the source for M2 (D025); the frozen M1 production binary is unchanged, and every M1 spec satisfies the stricter check.
 - **Container restart, 2026-10-10 ~22:55 UTC.** The cloud container was reclaimed while no task of mine was attached to the session, and the three running jobs stopped mid-batch: the boundary-free extension at 2/20 batches, the mass-importance check at 5/8, and Fano range factor 0.04 at 6/20. No finished batch was lost. All three were resumed at 02:11 UTC with the same seeds, so the results are identical to an uninterrupted run. `run_fano.py` gained `--resume` for this; it keeps the interrupted batch directory, renamed `*.interrupted-<time>`. About 3 h of compute was lost. From now on a background task stays attached while jobs run.
-- **Still running at the gate.** The photon-only check with mass-geometry importance (`M1-check-primary-ismass-prodgeom`, D021) and the Fano step-size diagnostics. Neither affects the M1 numbers; their results are added when they finish.
-- **Fano diagnostics starved of CPU.** They run at the lowest priority behind production, and one batch took 4 h. They will finish overnight.
+- **Still running.** The photon-only check with mass-geometry importance (`M1-check-primary-ismass-prodgeom`, D021) and the Fano step-function diagnostic. Neither changes an M1 number.
+- **Fano step-size diagnostics.** They were starved of CPU behind production, with one batch taking 4 h, and later resumed at normal priority. Range factor 0.04 gives 1.00001 ± 0.00088, so the production deviation (+0.16%) disappears with tighter msc stepping. The difference is 1.5σ. See D026.
 - **Importance-ratio warning in S1.** S1's inner cell has importance 48 against 8 outside, a ratio of 6. Geant4 warns once (GeomBias1001) when the ratio is outside [0.25, 4]. The algorithm handles any ratio fairly: split into ⌊6⌋ = 6 copies of weight w/6. The warning has no effect on results.
 
 ### Decisions at the gate (2026-10-10)
@@ -134,7 +135,7 @@ The ICRU 37-basis s_w,air, 1.1331, agrees with the TRS-398 value in refs.yaml (1
 Humza approved all recommendations:
 
 1. **s_w,air scoring reference (D024).** ICRU 90 basis primary, ICRU 37 reported alongside; the Geant4 basis is not used for scoring.
-2. **Scoring-volume boundary (D025).** D at R0 is quoted from the cylinder with the boundary effect as a systematic. A 20-batch extension of the boundary-free run is in progress to tighten the bound to about 0.1%. From M2, dose at R0 is scored by position, with no geometry boundary within an electron range.
+2. **Scoring-volume boundary (D025, D027).** The extension resolved the effect: the cylinder is 0.24% low (−2.2σ), so the boundary-free D is now the R0 reference. The 2σ threshold is recorded in D027 for confirmation. From M2, dose at R0 is scored by position, with no geometry boundary within an electron range.
 3. **Uncertainty policy (D023).** Approved.
 4. **Layer 4 estimator (D020).** CSDA-weighted is the reference; approved.
 5. **Fano (D026).** +0.16% accepted as a bound; step-size diagnostics are reviewed before M2 production. M2 runs use at least 20 batches.

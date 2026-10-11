@@ -262,3 +262,22 @@ Decided by Humza at the M1 gate, on my recommendation.
   5. the remaining entries, `recall` entries first.
 
   A published PDD(5) for Co-60, 10 × 10 cm², SSD 100 cm is to be added as an external check of the depth dose.
+
+Outcome for the first step-size diagnostic (2026-10-11): with the msc range factor at 0.04 (production 0.08), the Fano ratio is 1.00001 ± 0.00088 (20 batches, `M1-fano-diag-rfact004`), against 1.00157 ± 0.00058 with production stepping. The deviation disappears with tighter stepping, although the difference between the two is only 1.5σ. Unless the step-function diagnostic (`M1-fano-diag-stepfn`, running) points the other way, M2 production uses range factor 0.04, after a throughput measurement, and the boundary artifact is re-measured with it.
+
+## D027. R0 dose reference after the boundary-free extension (2026-10-11)
+
+D025 said the cylinder's D at R0 is replaced by the boundary-free value if the two are not consistent, but set no threshold. Applied: replace if they differ by 2 combined standard errors or more (95%).
+
+Outcome:
+- Cylinder over boundary-free D at R0 = 0.99759 ± 0.00109 (−2.2σ). Boundary-free: `M1-check-boundary-free-R0` plus `-ext`, 30 batches. Cylinder: main run plus replicate, 20 batches.
+- **The R0 dose reference becomes the boundary-free value: D/Φ₀ = 5.3713 × 10⁻¹² Gy cm² ± 0.087%.**
+- β = D_boundary-free / K_col = 1.0069 ± 0.0011.
+- The cylinder values (5.3584 × 10⁻¹² Gy cm², β = 1.0045) are reported alongside.
+- Kerma, K_col, interaction shares and fluence spectra come from photon interactions or track lengths and are unchanged. s_w,air is a ratio of spectral averages: it changed by less than 0.001% between scoring volumes of different size (S1), so any boundary effect on it is negligible.
+
+Caveats:
+- −2.2σ is close to the threshold. The boundary-free uncertainty is from batch spread only, because the depth tally has no per-history moments; with 30 batches that estimate is good to about ±13%.
+- M2 re-measures R0 with boundary-free scoring (D025) and, if adopted, tighter stepping (D026), so the M1 dose values are provisional.
+
+**[Humza]** Confirm the 2σ threshold and the switch to the boundary-free value.

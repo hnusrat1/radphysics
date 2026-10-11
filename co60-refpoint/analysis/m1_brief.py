@@ -44,6 +44,12 @@ def load():
     n["batches"] = m["_meta"]["batches"]
     n["D"], n["Ds"] = v("L5_D_over_phi0_Gy_cm2")
     n["beta"], n["betas"] = v("L5_beta")
+    n["D_cyl"], n["Ds_cyl"], n["beta_cyl"], n["betas_cyl"] = n["D"], n["Ds"], n["beta"], n["betas"]
+    ref0 = r["diagnostics"]["boundary"].get("R0_dose_reference")
+    n["ref_bf"] = bool(ref0 and ref0["uses"] == "boundary_free")   # DECISIONS D025/D027
+    if n["ref_bf"]:
+        n["D"], n["Ds"] = (ref0["D_over_phi0_boundary_free_Gy_cm2"][k] for k in ("mean", "sem"))
+        n["beta"], n["betas"] = (ref0["beta_boundary_free"][k] for k in ("mean", "sem"))
     n["K"] = v("L5_K_over_phi0_Gy_cm2")[0]
     n["Kc"] = v("L5_Kcol_over_phi0_Gy_cm2")[0]
     n["g"] = v("L5_g")[0]
@@ -92,6 +98,7 @@ def load():
     n["ev_strict"] = ev["strict_failure_rate"]["valid"]
     n["dc"] = ev["doppler_tolerance"]["delta_c"]
     n["fano"] = fano["standard_opt4"]
+    n["fano_rf"] = fano.get("standard_opt4 | /process/msc/RangeFactor 0.04")
     n["fano0"] = fano["standard_opt0"]
     n["targets"] = r["targets"]
     return n
@@ -111,7 +118,7 @@ def effect_chart(n):
         ("Statistical uncertainty of D/Φ₀ (1σ)", 100 * n["Ds"] / n["D"], "mc", "statistics"),
         ("Primary fluence against the analytic value", 100 * abs(1 - n["prim"]["mean"]), "mc", f"{(n['prim']['mean'] - 1) / n['prim']['sem_conservative']:+.1f}σ"),
         ("Fano cavity deviation, production stepping", 100 * (n["fano"]["ratio_mean"] - 1), "mc", f"{n['fano']['deviation_sigma']:+.1f}σ"),
-        ("Scoring boundary effect on D inside the cylinder", 100 * abs(1 - b["ratio"]), "mc", f"{(b['ratio'] - 1) / b['sem']:+.1f}σ, bound tightening"),
+        ("Scoring boundary effect on D inside the cylinder", 100 * abs(1 - b["ratio"]), "mc", f"{(b['ratio'] - 1) / b['sem']:+.1f}σ, corrected (D027)"),
         ("Halving the scoring volume (S1), change in D", 100 * abs(n["S1"]["rel_diff"]), "mc", f"{n['S1']['z']:+.1f}σ"),
         ("s<sub>w,air</sub>: ICRU 37 against ICRU 90 stopping powers", 100 * (n["sw_icru37"] / n["sw_icru90"] - 1), "def", "data basis"),
         ("s<sub>w,air</sub>: Geant4 against ICRU 90 stopping powers", 100 * (n["sw_geant4"] / n["sw_icru90"] - 1), "def", "data basis"),
@@ -292,9 +299,10 @@ def build(n):
         ("2", "Compton, photoelectric, Rayleigh, pair (share of interactions)", f"{pct(l2[0], 2)}, {pct(l2[1], 2)}, {pct(l2[3], 2)}, {pct(l2[2], 3)}"),
         ("3", "Mean initial electron energy: all / primary parent / scattered parent", f"{n['T_all']:.4f} / {n['T_prim']:.4f} / {n['T_scat']:.4f} MeV"),
         ("4", "Delta-ray share above 10 keV; radiative / collision loss", f"{n['delta']:.4f}; {n['radcol']:.5f}"),
-        ("5", "D/Φ₀", f"{D * 1e12:.5f} × 10⁻¹² Gy cm² ± {100 * Ds / D:.3f}%"),
+        ("5", "D/Φ₀, R0 reference (boundary-free, D027)" if n["ref_bf"] else "D/Φ₀", f"{D * 1e12:.4f} × 10⁻¹² Gy cm² ± {100 * Ds / D:.3f}%"),
+        ("5", "D/Φ₀ in the scoring cylinder", f"{n['D_cyl'] * 1e12:.4f} × 10⁻¹² Gy cm² ± {100 * n['Ds_cyl'] / n['D_cyl']:.3f}%"),
         ("5", "K/Φ₀, K<sub>col</sub>/Φ₀", f"{n['K'] * 1e12:.4f}, {n['Kc'] * 1e12:.4f} × 10⁻¹² Gy cm²"),
-        ("5", "β = D/K<sub>col</sub>; g", f"{pm(n['beta'], n['betas'], 4)}; {n['g']:.5f}"),
+        ("5", "β = D/K<sub>col</sub> (with the cylinder D); g", f"{pm(n['beta'], n['betas'], 4)} ({pm(n['beta_cyl'], n['betas_cyl'], 4)}); {n['g']:.5f}"),
         ("5", "s<sub>w,air</sub>, Δ = 10 keV: ICRU 90 / ICRU 37 / Geant4 / PEGS4 matched", f"{sw90:.4f} / {sw37:.4f} / {swg4:.4f} / {swp4:.4f}"),
         ("5", "PDD(5); d<sub>max</sub>", f"{n['pdd5']['mean']:.2f} ± {n['pdd5']['sem']:.2f}%; {n['dmax']['mean']:.2f} ± {n['dmax']['sem']:.2f} cm"),
     ]
@@ -308,8 +316,9 @@ def build(n):
         ("Cut independence S2 (5 keV): D/Φ₀; s<sub>w,air</sub>", f"{100 * n['S2']['rel_diff']:+.2f}% ({n['S2']['z']:+.1f}σ); {100 * n['S2_sw']:+.4f}%", "ok", "passes"),
         ("Volume size S1 (r 0.5, t 0.1 cm): D/Φ₀", f"{100 * n['S1']['rel_diff']:+.2f}% ({n['S1']['z']:+.1f}σ)", "ok", "within 3σ"),
         ("Variance reduction against analog transport: D/Φ₀", f"{100 * n['an']['rel_diff']:+.2f}% ({n['an']['z']:+.1f}σ)", "ok", "passes"),
-        ("Scoring boundary: D in cylinder over boundary-free D", f"{pm(b['ratio'], b['sem'], 4)} ({bz:+.1f}σ); 95%: {blo:+.1f}% to {bhi:+.1f}%", "warn", "systematic"),
+        ("Scoring boundary: D in cylinder over boundary-free D", f"{pm(b['ratio'], b['sem'], 4)} ({bz:+.1f}σ); 95%: {blo:+.2f}% to {bhi:+.2f}%", "warn", "boundary-free D adopted"),
         ("Fano cavity, production stepping (opt0 control)", f"{pm(n['fano']['ratio_mean'], n['fano']['ratio_sem_batch_spread'], 4)} ({n['fano0']['ratio_mean']:.4f})", "warn", "+0.16% accepted"),
+        ("Fano cavity, msc range factor 0.04", f"{pm(n['fano_rf']['ratio_mean'], n['fano_rf']['ratio_sem_batch_spread'], 4)}" if n.get("fano_rf") else "running", "ok", "deviation gone"),
         ("Event sample under the validity rules (bound / strict)", f"{100 * n['ev_bound']:.3f}% / {100 * n['ev_strict']:.0f}% fail, of {n['ev_n']:,}", "ok", "as designed"),
     ]
     checks_tbl = "".join(
@@ -361,7 +370,7 @@ def build(n):
     <div><b>Status</b><p>M0 and M1 are complete and reviewed. All plan targets are met. One approved extension run is tightening the scoring-boundary bound.</p></div>
     <div><b>Headline numbers</b><p>D/Φ₀ = <span class="num">{D * 1e12:.4f} × 10⁻¹² Gy cm² ± {100 * Ds / D:.3f}%</span>, β = <span class="num">{n['beta']:.4f}</span>, s<sub>w,air</sub> = <span class="num">{sw90:.4f}</span> (ICRU 90) / <span class="num">{sw37:.4f}</span> (ICRU 37), PDD(5) = <span class="num">{n['pdd5']['mean']:.1f}%</span>.</p></div>
     <div><b>What matters beyond this study</b><p>The stopping-power basis moves s<sub>w,air</sub> by up to 1%, far more than any Monte Carlo uncertainty. Geant4 option4 drops Rayleigh scattering above 1.022 MeV in its default gamma process. A water–water scoring boundary distorts the dose next to it by a few percent.</p></div>
-    <div><b>Still open</b><p>EGSnrc and the other Geant4 lists (M2); your verification of refs.yaml; the Fano step-size diagnostics; the boundary systematic on D, now ±{100 * b['sem']:.2f}% and shrinking.</p></div>
+    <div><b>Still open</b><p>EGSnrc and the other Geant4 lists (M2); your verification of refs.yaml; the Fano step-function diagnostic; your confirmation of the 2σ rule that switched D to the boundary-free value (D027).</p></div>
   </div>
 </section>
 
@@ -414,7 +423,7 @@ def build(n):
   <h2>What went wrong, and what it taught us</h2>
   <div class="finding"><h3>Geant4 option4 drops Rayleigh scattering above 1.022 MeV</h3><p>The default G4GammaGeneralProcess does not sample coherent scattering in its 2m<sub>e</sub>c²–100 MeV zone, which holds both Co-60 lines. The first production run showed zero Rayleigh events among primaries. The dose effect is small, but Layer 2 interaction shares would have been wrong. Production now switches the general process off (D019). This should go to the Geant4 developers as an issue report.</p></div>
   <div class="finding"><h3>The plan's linear electron-fluence estimator fails energy closure by {100 * (n['closure_lin'] - 1):.1f}%</h3><p>Geant4 ends an electron below about 20 keV in a single step, over which the path per unit energy is 1/L(E), not constant. Spreading track length linearly puts too much fluence at low energy: the dose rebuilt from the spectrum is {100 * (n['closure_lin'] - 1):.1f}% high. Weighting by the restricted CSDA range closes to {100 * (n['closure'] - 1):.2f}%. In the 10–20 keV bin the two differ by {100 * (1 - n['lin_csda_10_20']):.0f}%, which matters for the lowest comparison bins; s<sub>w,air</sub> moves by less than 0.01% (D020).</p></div>
-  <div class="finding"><h3>A water–water boundary distorts the dose next to it</h3><p>The depth scan shows the dose up to {100 * n['art_max']:.1f}% high 1–4 mm in front of the scoring cylinder and {-100 * n['art_min']:.1f}% low behind it, with water on both sides. Moving the cylinder to 8 cm moves the pattern; far from both cylinders the scans agree to {100 * (n['far']['mean'] - 1):+.2f}%. The likely cause is GS multiple scattering with the SafetyPlus step limit: steps shrink near a boundary, and a step-length-dependent displacement of deposition piles energy up in front of it. Inside the cylinder the dose is {pm(b['ratio'], b['sem'], 4)} of the boundary-free value. That is not significant, but the bound is still wider than D's statistical error, so it is carried as a systematic and tightened by the running extension (D025). From M2, dose is scored without a boundary near R0, partly because EGSnrc crosses boundaries with a different algorithm.</p></div>
+  <div class="finding"><h3>A water–water boundary distorts the dose next to it</h3><p>The depth scan shows the dose up to {100 * n['art_max']:.1f}% high 1–4 mm in front of the scoring cylinder and {-100 * n['art_min']:.1f}% low behind it, with water on both sides. Moving the cylinder to 8 cm moves the pattern; far from both cylinders the scans agree to {100 * (n['far']['mean'] - 1):+.2f}%. The likely cause is GS multiple scattering with the SafetyPlus step limit: steps shrink near a boundary, and a step-length-dependent displacement of deposition piles energy up in front of it. Inside the cylinder the dose is {pm(b['ratio'], b['sem'], 4)} of the boundary-free value ({bz:+.1f}σ, {n['bnd_free_batches']} boundary-free batches), so the boundary-free D is now the R0 reference (D025, with the 2σ threshold in D027) and β moves from {n['beta_cyl']:.4f} to {n['beta']:.4f}. It is a 2σ call, so M2's boundary-free scoring has to confirm it. That scoring is needed anyway, because EGSnrc crosses boundaries with a different algorithm.</p></div>
   <div class="finding"><h3>A 4σ anomaly that was a fluctuation</h3><p>The main run's primary fluence came out 0.12% below exp(−μs)/(ΩR²) at 4.4σ on its batch spread. Eight diagnostic runs (photon-only and full transport, with and without importance sampling, two geometries), a transmission measurement of the tracking μ and a collision-estimator cross-check found no cause. The main run's batches simply agreed with each other more than their per-history variance allowed. A replicate with new seeds, pooled by a rule fixed before it finished (D022), came out normal; pooled, the check gives {pm(prim['mean'], prim['sem_conservative'], 4)}. The lasting change is the uncertainty policy (D023).</p></div>
   <div class="finding"><h3>Geant4's own water stopping power is not Bethe–Møller below 100 keV</h3><p>option4 uses the Penelope ionisation model below 100 keV. For water it is 2.5% above Bethe–Møller (I = 78 eV) at 12 keV and 1.7% at 100 keV, and Geant4 smooths that offset into the higher-energy model as 1.7% × (100 keV/E). Air agrees within 0.1%. That is why the Geant4-basis s<sub>w,air</sub> is {swg4:.4f}, 1% above the ICRU 90 basis, and why it is not used for scoring.</p></div>
   <div class="finding"><h3>Smaller items</h3><p>Photon categories were mislabelled at importance-cell boundaries during development (fixed before production; zero untagged tracks since). The region-of-interest check lacked a buffer in front of a depth scan starting inside the phantom (no M1 run was affected; fixed for M2). Twice, process clean-up commands matched my own shell; one two-minute run was lost and archived with its reason.</p></div>
@@ -437,7 +446,7 @@ def build(n):
         <li><b>One code so far.</b> Until EGSnrc and the Livermore and Penelope lists run (M2), the reference is one code's physics and the resolution floor is unknown.</li>
         <li><b>s<sub>w,air</sub> has no unique truth.</b> The 1% basis spread is set by convention (D024); reviewers will ask, and the TRS-398 revision's basis still needs checking.</li>
         <li><b>Source model A is idealized:</b> no head scatter, no source size, no contamination electrons. PDD(5) and the scatter fraction will differ from a real unit, and models may answer for a real unit unless the prompt is explicit.</li>
-        <li><b>Open systematics:</b> the scoring-boundary effect on D (±{100 * b['sem']:.2f}%, tightening) and the Fano deviation (+{100 * (n['fano']['ratio_mean'] - 1):.2f}%, {n['fano']['deviation_sigma']:.1f}σ, step-size diagnostics pending).</li>
+        <li><b>Step-size sensitivity.</b> The production Fano deviation (+{100 * (n['fano']['ratio_mean'] - 1):.2f}%) disappears at msc range factor 0.04, and the boundary effect on D ({100 * (b['ratio'] - 1):+.2f}%) was corrected on a 2σ result. Both point at the electron step limit, so the M1 dose carries a step-size dependence of a few tenths of a percent until M2 reruns R0 with tighter stepping.</li>
         <li><b>External values unverified.</b> NIST μ/ρ and μ<sub>en</sub>/ρ could not be fetched from the container, so the plan's kerma-from-tables cross-check is not done yet.</li>
         <li><b>The Doppler tolerance comes from the reference itself</b> (99.9th percentile). It is physically motivated, but a definition from Compton-profile data would be harder to question.</li>
         <li><b>One point, one depth.</b> Generality waits for the V1 variations.</li>
@@ -463,7 +472,8 @@ def build(n):
     <tr><td>D024</td><td>s<sub>w,air</sub> scored against ICRU 90, with ICRU 37 reported alongside; fixed before any AI answer exists.</td></tr>
     <tr><td>D025</td><td>Scoring-boundary effect carried as a systematic on D; extension running; dose scored without a nearby boundary from M2.</td></tr>
     <tr><td>D023, D020</td><td>Conservative uncertainty policy; CSDA-weighted electron estimator as the Layer 4 reference.</td></tr>
-    <tr><td>D026</td><td>Fano +0.16% accepted as a bound, step-size results reviewed before M2; at least 20 batches per M2 run; refs.yaml verification order.</td></tr>
+    <tr><td>D026</td><td>Fano +0.16% accepted as a bound; range factor 0.04 removes it, so M2 plans tighter stepping pending the step-function result; at least 20 batches per M2 run; refs.yaml verification order.</td></tr>
+    <tr><td>D027</td><td>Threshold for D025: the cylinder D was 0.24% low at −2.2σ, so D/Φ₀ at R0 is now the boundary-free value. Waiting for your confirmation.</td></tr>
   </tbody></table></div>
   <div class="steps">
     <div class="step"><span class="mk">You</span><p>Verify refs.yaml in this order: line energies, TRS-398 s<sub>w,air</sub> (and whether its 2024 revision uses ICRU 90), I-values, normalisation constants, then the rest. Add a published PDD(5) for Co-60, 10 × 10 cm², SSD 100 cm. Settle the remaining plan decisions: SSD, vacuum or air, model list, tolerances, source for model B.</p></div>

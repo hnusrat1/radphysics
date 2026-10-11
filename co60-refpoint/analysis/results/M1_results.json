@@ -44695,9 +44695,9 @@
   "boundary": {
    "boundary_free_estimates": {
     "M1-check-boundary-free-R0+M1-check-boundary-free-R0-ext": {
-     "mean": 4.884950408291622e-14,
-     "sem": 8.107617098846695e-17,
-     "n_batches": 10
+     "mean": 4.8840629528027256e-14,
+     "sem": 4.2818940869378445e-17,
+     "n_batches": 30
     },
     "M1-check-pdd-cyl8": {
      "mean": 4.8895542040219215e-14,
@@ -44706,26 +44706,43 @@
     }
    },
    "D_per_history_boundary_free_Gy": {
-    "mean": 4.885135936074292e-14,
-    "sem": 7.942573312209241e-17
+    "mean": 4.884126523440291e-14,
+    "sem": 4.2570368073521503e-17
    },
    "cylinder_over_boundary_free:M1-R0-option4": {
-    "ratio": 0.9973545451410062,
-    "sem": 0.0018666374618439298,
+    "ratio": 0.9975606704888267,
+    "sem": 0.0012693362668171051,
     "D_cylinder_Gy": 4.872212529475359e-14,
     "D_cylinder_sem_Gy": 4.516743238297934e-17
    },
    "cylinder_over_boundary_free:M1-R0-option4-pdd": {
-    "ratio": 1.001457240153706,
-    "sem": 0.0028602576165303313,
+    "ratio": 1.0016642134140776,
+    "sem": 0.0025088723207342917,
     "D_cylinder_Gy": 4.892254752316652e-14,
     "D_cylinder_sem_Gy": 1.148778494798096e-16
    },
    "cylinder_over_boundary_free:M1-R0-option4+M1-R0-option4-rep2": {
-    "ratio": 0.9973827109894285,
-    "sem": 0.001748380100770155,
+    "ratio": 0.9975888421583439,
+    "sem": 0.001087855467587162,
     "D_cylinder_Gy": 4.872350123473657e-14,
     "D_cylinder_sem_Gy": 3.1930033757824276e-17
+   },
+   "R0_dose_reference": {
+    "rule": "DECISIONS D025, threshold D027: boundary-free value if |cylinder/boundary-free - 1| >= 2 SEM",
+    "z_cylinder_vs_boundary_free": -2.2164321580366027,
+    "uses": "boundary_free",
+    "D_over_phi0_boundary_free_Gy_cm2": {
+     "mean": 5.371326756390869e-12,
+     "sem": 4.681683735368308e-15
+    },
+    "beta_boundary_free": {
+     "mean": 1.006945556924446,
+     "sem": 0.001092973350152117
+    },
+    "Kcol_over_phi0_Gy_cm2_used": {
+     "mean": 5.334277230237479e-12,
+     "sem": 3.4507035652882876e-15
+    }
    },
    "depth_ratio_with_over_without": {
     "depth_cm": [

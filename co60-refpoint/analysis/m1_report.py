@@ -97,6 +97,17 @@ def main():
         "batches": meta["batches"],
         "commit": git_head(),
     }
+    ref = r.get("diagnostics", {}).get("boundary", {}).get("R0_dose_reference")
+    if ref and ref["uses"] == "boundary_free":   # DECISIONS D025/D027
+        Df, Dfs = ref["D_over_phi0_boundary_free_Gy_cm2"]["mean"], ref["D_over_phi0_boundary_free_Gy_cm2"]["sem"]
+        bf, bfs = ref["beta_boundary_free"]["mean"], ref["beta_boundary_free"]["sem"]
+        numbers.update({
+            "D_label": "D/Φ₀, R0 reference (boundary-free, D027)",
+            "D_alt": f"scoring cylinder: {sci(D, 5)} Gy cm² ({100 * (D / Df - 1):+.2f}%)".replace("-", "−"),
+            "D": f"{sci(Df, 5)} Gy cm²", "D_rel": rel(Df, Dfs),
+            "beta_alt": f"with the cylinder D: {pm(beta, betas)}",
+            "beta": pm(bf, bfs), "beta_rel": rel(bf, bfs),
+        })
     text["checks"] = build_checks(r, main_run) + text.get("checks_extra", [])
     page = build_page(r, main_run, numbers, data_json, text, fano, v)
     (RES / "co60_r0_m1.html").write_text(page)
@@ -186,10 +197,12 @@ def build_checks(r, m):
         if x:
             z = (x["ratio"] - 1) / x["sem"]
             n_free = sum(e["n_batches"] for e in bd["boundary_free_estimates"].values())
+            used = bd.get("R0_dose_reference", {}).get("uses") == "boundary_free"
             add("Scoring-cylinder boundary: D in the cylinder over the boundary-free dose at R0 (depth scan with the cylinder moved to 8 cm)",
                 f"{pm(x['ratio'], x['sem'])} ({z:+.1f}σ; {n_free} boundary-free batches). Next to the cylinder the dose is "
-                f"distorted by up to ±3%; see Findings.",
-                "warn", "within 3σ; see Findings", "Boundary artifact next to the cylinder")
+                f"distorted by up to ±3%; see Findings."
+                + (" The boundary-free D is the R0 reference (D025, D027)." if used else ""),
+                "warn", "boundary-free D adopted" if used else "within 3σ; see Findings", "Boundary artifact next to the cylinder")
 
     ev = r.get("event_sample")
     if ev:

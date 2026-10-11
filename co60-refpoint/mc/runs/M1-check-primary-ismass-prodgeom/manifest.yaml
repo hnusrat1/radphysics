@@ -187,6 +187,18 @@ batches:
   D_rel_sem_history_by_history: 0.005358435350504647
   energy_balance_max_abs_MeV: 6.462874166346388e-05
   untagged_tracks: 0
+- batch: 5
+  seeds:
+  - 6231011
+  - 6231012
+  exit_code: 0
+  wall_s: 293.3
+  command: /opt/build/co60app/co60app.dev-8440e7c run.mac option4 4 --importance-mass
+  histories: 5000000
+  D_over_phi0_Gy_cm2: 5.372194722732538e-12
+  D_rel_sem_history_by_history: 0.005345264334260099
+  energy_balance_max_abs_MeV: 0.001043772749582006
+  untagged_tracks: 0
 started_utc: '2026-10-10T21:43:51Z'
 geant4_physics_printout:
   em_models:
@@ -229,3 +241,5 @@ geant4_physics_printout:
     - eCoulombScattering (100 MeV - 100 TeV)
   g4_water_range_cuts: gamma 1 mm e- 8.24701 um e+ 8.33478 um proton 8.24701 um
   g4_water_energy_thresholds: gamma 2.93547 keV e- 10 keV e+ 10 keV proton 824.701 eV
+resumed_utc:
+- '2026-10-11T04:31:05Z'

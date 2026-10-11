@@ -509,6 +509,32 @@ def boundary_check():
         rsem = ratio * math.hypot(sem / v.mean(), d_free_sem / d_free_mean)
         out[f"cylinder_over_boundary_free:{ref}"] = {"ratio": float(ratio), "sem": float(rsem),
                                                       "D_cylinder_Gy": float(v.mean()), "D_cylinder_sem_Gy": sem}
+    # R0 dose reference (DECISIONS D025/D027): the boundary-free value replaces the cylinder value when the
+    # cylinder/boundary-free ratio differs from 1 by 2 standard errors or more.
+    pooled_ok = len(list((RUNS / "M1-R0-option4-rep2").glob("batch_*/output.json"))) >= 10
+    ref_run = POOLED if pooled_ok else "M1-R0-option4"
+    rb = load_batches(ref_run)
+    phi0 = rb[0]["source"]["phi0_per_history_cm-2"]
+    d_free_phi0 = d_free_mean / phi0
+    d_free_phi0_sem = d_free_sem / phi0
+    rx = out.get(f"cylinder_over_boundary_free:{ref_run}")
+    if rx:
+        z = (rx["ratio"] - 1) / rx["sem"]
+        kc = [b["scalars"]["kerma_energy_transfer"] - b["scalars"]["kcol_radiative_loss"] for b in rb]
+        kc_phi0 = np.array([k / b["histories"] * gy_per_mev / b["geometry"]["scoring_mass_g"] / phi0 for k, b in zip(kc, rb)])
+        kc_mean = float(kc_phi0.mean())
+        kc_sem = float(kc_phi0.std(ddof=1) / np.sqrt(len(kc_phi0)))
+        beta_free = d_free_phi0 / kc_mean
+        out["R0_dose_reference"] = {
+            "rule": "DECISIONS D025, threshold D027: boundary-free value if |cylinder/boundary-free - 1| >= 2 SEM",
+            "z_cylinder_vs_boundary_free": float(z),
+            "uses": "boundary_free" if abs(z) >= 2 else "cylinder",
+            "D_over_phi0_boundary_free_Gy_cm2": {"mean": float(d_free_phi0), "sem": float(d_free_phi0_sem)},
+            "beta_boundary_free": {"mean": float(beta_free),
+                                   "sem": float(beta_free * math.hypot(d_free_phi0_sem / d_free_phi0, kc_sem / kc_mean))},
+            "Kcol_over_phi0_Gy_cm2_used": {"mean": kc_mean, "sem": kc_sem},
+        }
+
     bp = load_batches("M1-R0-option4-pdd")
     if bp and free:
         mf, sf, _ = depth_per_history(free)
