@@ -7,6 +7,11 @@ Humza delegated every open choice on 2026-10-11: "pick your best recommended cho
 ### Progress
 - **Fano step-size diagnostics: done.** Range factor 0.04 gives 1.00001 ± 0.00088 and step function 0.05 / 1 µm gives 0.99921 ± 0.00073, against 1.00157 ± 0.00058 at production stepping. M2 runs at range factor 0.04 (D026, D028). The batch-0 physics printout of every M2 run is checked for `Rfact=0.04`.
 - **R0 dose at range factor 0.04: done.** `M2-R0-option4-bf`, boundary-free, 20 × 3 × 10⁶ histories: D/Φ₀ = 5.3708 × 10⁻¹² Gy cm² ± 0.14%. Against the M1 boundary-free value (range factor 0.08) the ratio is 0.99990 ± 0.00166. The step size changes the R0 dose by less than 0.17% (1σ). A 25-batch extension (`-ext`) brings the pooled dose to the 0.1% target.
+- **R0 layers at range factor 0.04: done.** `M2-R0-option4`, 20 × 6 × 10⁶ histories, is now the layer reference. Against M1, which used range factor 0.08, 54 scalars were compared.
+  - No physical quantity moves by more than 1.6σ. The largest are the mean initial electron energy (+0.15% ± 0.11%) and the scattered share of interactions (−0.14% ± 0.11%).
+  - Three quantities exceed 2.5σ, none of them for a physical reason. The history-by-history relative SEM scales with the number of histories. The maximum Compton recoil energy is an extreme-value statistic.
+  - The third is the positron share of electrons set in motion, at 1.75 × 10⁻⁴ against 2.03 × 10⁻⁴ (−3.3σ). Pair production does not depend on the electron step size. Its batch values are heavy-tailed, from 1.1 to 2.2 × 10⁻⁴ in M2, and M1's main run and replicate already differ by 2.0σ. I read it as a fluctuation in a statistic that the importance weights make heavy-tailed. It enters no dose quantity.
+  - The M2 event sample (2 × 10⁵ interactions) gives δ_C = 60 keV (D014), the same as M1.
 - **Queue** (`mc/queues/M2.yaml`, run by `mc/tools/queue.py` in chunks under 2 h):
   - option4 layers, then the dose extension;
   - SPRRZnrc, the boundary-free PDD;
