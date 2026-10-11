@@ -175,6 +175,45 @@ def main():
         else:
             b0_rows.append(f"<tr><td>{label}</td><td colspan='3'>{chip('run', 'running')}</td></tr>")
 
+    # ------------------------------------------------ charts (shown once the runs exist)
+    from analysis.svgplot import CHART_CSS, spectra_with_ratio
+    import numpy as np
+    bins = yaml.safe_load(open(ROOT / "config" / "bins.yaml"))["comparison"]
+    charts = []
+    runs2 = m2.get("runs", {})
+    lists = [(L, runs2.get(f"M2-R0-{L}"), c, d) for L, c, d in (("option4", "--s1", None), ("livermore", "--s2", "6 3"),
+                                                              ("penelope", "--s3", "2 3"))]
+    lists = [x for x in lists if x[1]]
+    if len(lists) >= 2:
+        for key, sub, grid, title, xl in (
+                ("L4_electron_fluence_comparison", None, "electron_energy", "R0 electron fluence (shape)",
+                 "electron kinetic energy (MeV)"),
+                ("L1_photon_fluence_comparison", "scattered", "photon_energy", "R0 scattered photon fluence (shape)",
+                 "photon energy (MeV)")):
+            e = np.array(bins[grid]["edges"])
+            ser = []
+            for L, r, c, d in lists:
+                v = np.array((r[key][sub] if sub else r[key])["mean"], float)
+                ser.append((L, v / v.sum() / np.diff(e), None, c, d))
+            charts.append(spectra_with_ratio(ser, e, xl, "fraction per MeV", title, "ratio to option4"))
+    sp = b0.get("egsnrc_spectra_10keV")
+    g0 = b0.get("geant4_spectra_10keV")
+    if sp and g0:
+        top = np.array(sp["bintop_MeV"], float)
+        e = np.concatenate([[top[0] - 0.01], top])
+        n = len(top)
+        for key_g, key_e, title, xl in (("electron", "electron_total", "B0 electron fluence (shape)",
+                                         "electron kinetic energy (MeV)"),
+                                        ("photon", "photon_total", "B0 photon fluence (shape)", "photon energy (MeV)")):
+            g = np.array(g0[key_g], float)[:n]      # Geant4 10 keV bin j = [0.01 j, 0.01 (j + 1)] = EGSnrc bin j
+            ev = np.array(sp[key_e]["mean"], float)
+            sel = slice(1, n) if key_g == "electron" else slice(0, n)
+            ee = e[sel.start:]
+            ser = [("Geant4 option4", g[sel] / g[sel].sum() / 0.01, None, "--s1", None),
+                   ("EGSnrc", ev[sel] / ev[sel].sum() / 0.01, None, "--s4", "6 3")]
+            charts.append(spectra_with_ratio(ser, ee, xl, "fraction per MeV", title, "EGSnrc / Geant4"))
+    charts_html = "".join(f'<figure class="fig">{c}</figure>' for c in charts)
+
     # ------------------------------------------------ Fano
     def fano_row(label, key, verdict):
         f = fano.get(key)
@@ -274,7 +313,7 @@ def main():
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
-<style>{CSS}</style>
+<style>{CSS}{CHART_CSS}</style>
 <div class="wrap">
 <nav class="rail" aria-label="Contents">
   <span class="t">Review</span>
@@ -342,6 +381,7 @@ def main():
   transport settings, so their differences come from the cross-section and energy-loss models.</p>
   <div class="tbl"><table><thead><tr><th>Quantity</th><th>M2 vs M1 (step size)</th><th>Livermore</th><th>Penelope</th></tr></thead>
   <tbody>{''.join(spread_rows)}</tbody></table></div>
+  {charts_html}
   <h3>Boundary-free dose per list</h3>
   <div class="tbl"><table><thead><tr><th>List</th><th>D/Φ₀ (Gy cm²)</th><th>β</th><th>Cylinder vs boundary-free</th></tr></thead>
   <tbody>{''.join(d_rows)}</tbody></table></div>
@@ -491,6 +531,7 @@ details summary:focus-visible { outline: 2px solid var(--cobalt); outline-offset
 details > .tbl, details > pre { margin-top: 8px; }
 pre.prompt { white-space: pre-wrap; font-family: var(--f-mono); font-size: 12.5px; line-height: 1.5; background: var(--surface);
   border: 1px solid var(--rule); border-radius: 8px; padding: 14px; max-height: 520px; overflow: auto; }
+.fig { margin: 0; }
 .note, footer { font-family: var(--f-ui); font-size: 13px; color: var(--muted); }
 @media (max-width: 860px) {
   .wrap { grid-template-columns: minmax(0, 1fr); gap: 24px; padding-inline: 16px; }

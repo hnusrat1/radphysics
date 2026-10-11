@@ -206,6 +206,10 @@ def b0(sp):
         out["geant4_s_w_air_pegs4"] = g["L5_s_w_air_pegs4"]
         out["geant4_layers"] = {k: g[k] for k in ("L1_fluence_primary_per_phi0", "L1_fluence_total_per_phi0",
                                                   "L4_electron_fluence_above_10keV_per_phi0")}
+        # 10 keV spectra for the charts: electrons per MeV -> per bin; photons are per bin already (shape only)
+        out["geant4_spectra_10keV"] = {
+            "electron": (np.array(g["L4_electron_fluence_10keV_per_MeV"]["mean"]) * 0.010).tolist(),
+            "photon": np.array(g["L1_photon_fluence_10keV"]["total"]["mean"]).tolist()}
     if "egsnrc_D_over_phi0_Gy_cm2" in out and "geant4_D_over_phi0_Gy_cm2" in out:
         out["D_egsnrc_over_geant4"] = ratio(out["geant4_D_over_phi0_Gy_cm2"], out["egsnrc_D_over_phi0_Gy_cm2"])
     if "egsnrc_s_w_air" in out and "geant4_s_w_air_pegs4" in out:
