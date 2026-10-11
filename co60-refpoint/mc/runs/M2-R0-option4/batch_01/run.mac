@@ -1,0 +1,31 @@
+/control/verbose 1
+/run/verbose 0
+/control/cout/ignoreThreadsExcept 0
+/process/em/verbose 0
+/random/setSeeds 7001003 7001004
+/co60/geom/scoringRadius 1.0 cm
+/co60/geom/scoringThickness 0.2 cm
+/co60/geom/scoringDepth 5.0 cm
+/co60/source/ssd 100.0 cm
+/co60/source/field 10.0 10.0 cm
+/co60/phys/electronThreshold 10 keV
+/co60/phys/gammaThreshold 10 keV
+/co60/vr/russianRoulette true
+/co60/vr/survival 0.05
+/co60/vr/roi 1.8 4.1 5.9 cm
+/co60/vr/importanceCell 8.0 -1.0 14.0 cm 2
+/co60/vr/importanceCell 4.0 2.0 8.0 cm 8
+/co60/vr/importanceCell 2.5 3.4 6.6 cm 32
+/co60/bins/photonE 0.0 1.4 140 MeV
+/co60/bins/electronE 0.0 1.4 1400 MeV
+/co60/bins/cosTheta 40
+/co60/bins/depth 0.0 10.0 100 1.0 cm
+/co60/score/depthScan false
+/process/em/UseGeneralProcess false
+/process/msc/RangeFactor 0.04
+/co60/out/file output.json
+/co60/out/eventSample events.csv 10000
+/run/initialize
+/co60/vr/applyImportance
+/run/printProgress 600000
+/run/beamOn 6000000
