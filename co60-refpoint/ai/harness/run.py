@@ -81,6 +81,12 @@ def freeze(path):
             p.chmod(stat.S_IRUSR | stat.S_IRGRP | stat.S_IROTH)
 
 
+def spent(tag_dir):
+    """OpenRouter's charge so far for every conversation under ai/raw/<tag>/ (all slots, finished or running)."""
+    return sum((json.loads(f.read_text()).get("usage") or {}).get("cost") or 0.0
+               for f in Path(tag_dir).glob("*/*/turns/*_response.json"))
+
+
 def run_conversation(slot, condition, task, config, prompts, version, outdir):
     system = prompts[f"system_{condition}.txt"]
     user = prompts[f"task_{task}_{config}.txt"]
@@ -191,6 +197,8 @@ def main():
     ap.add_argument("--prompt-version", default="v1")
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--raw-root", default=str(RAW))
+    ap.add_argument("--budget", type=float, help="stop starting conversations once the tag's measured charge (USD, "
+                                                   "all slots) reaches this")
     a = ap.parse_args()
     loaded = load_secrets()
     if loaded:
@@ -217,6 +225,8 @@ def main():
         out = Path(a.raw_root) / a.tag / s["slot"] / f"{a.config}_{c}_{t}_r{r}"
         if out.exists():
             continue
+        if a.budget is not None and spent(Path(a.raw_root) / a.tag) >= a.budget:
+            sys.exit(f"budget reached: ${spent(Path(a.raw_root) / a.tag):.2f} >= ${a.budget:.2f}; stopped before {out.name}")
         m = run_conversation(s, c, t, a.config, prompts, a.prompt_version, out)
         print(f"{s['slot']} {c} {t} r{r}: {m['outcome']} ({m['tool_calls']} tool calls, {m['retries']} retries)",
               flush=True)

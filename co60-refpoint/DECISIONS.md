@@ -372,3 +372,23 @@ their hashes still match `MANIFEST.yaml`.
 | Gemini and Qwen sometimes ran past 200 events until the output limit (80,000 to 116,000 characters) | None. Both are already at their maximum output; such answers stay parse failures |
 
 A1 and A2 tool use worked for every model. Every frontier slot is now served by its own provider.
+
+## D032. M4 launch: caching for Haiku, budget, freeze (2026-10-12)
+
+**Pilot cost.** The measured P0 charge was $3.90 for 64 conversations, plus $0.38 for one cached Haiku re-run and
+the charge for one DeepSeek conversation cut off by a job time limit (`ai/raw/P0-pilot-killed/`). Six DeepSeek
+pilot conversations were still running at launch.
+
+**Projection.** Projected from the pilot, R0 cost $14.33, above Humza's $10 limit. Haiku was $12.77 of that: in
+the tool conditions every turn re-sends the conversation, and Anthropic bills a request of 100,000 prompt tokens
+or more at 5× the base price for input and output alike.
+
+**Fix: prompt caching for the Haiku slot (`prompt_cache: true`).** Breakpoints sit on the system prompt and the
+newest message. What the model sees is unchanged. Measured on Haiku's P0 A2 observables conversation: $0.38 with
+caching against $1.87 without, with 95% of 3.5 million prompt tokens read from the cache. With that ratio
+applied to Haiku's tool conditions, R0 projects to $4.72. Groups with no DeepSeek pilot data take the highest mean
+of the other non-Haiku models.
+
+**Launch.** R0 runs under Humza's rule ("run the full R0 matrix if it fits under $10"), with a hard stop:
+`--budget 9.5` stops new conversations once R0's measured charge reaches $9.50. The headroom covers the five
+conversations in flight. `ai/models.yaml` and `ai/prompts/v1/MANIFEST.yaml` are frozen as of this entry.

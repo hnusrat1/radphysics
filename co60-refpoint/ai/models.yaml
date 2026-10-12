@@ -5,7 +5,7 @@
 # scorer; open_weight_2 holds a model without published weights. The model and upstream provider OpenRouter reports,
 # and its charge (usage: {include: true}), are recorded per call in ai/raw/. Set frozen: true once Humza has
 # approved the list and the budget; the runner refuses R0 runs before that.
-frozen: false
+frozen: true
 defaults: &openrouter
   api: openai_compatible
   api_key_env: OPENROUTER_API_KEY

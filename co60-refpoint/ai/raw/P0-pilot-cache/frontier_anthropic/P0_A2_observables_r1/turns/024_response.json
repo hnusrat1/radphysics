@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791820614-Y4V3C6ci9E3OJmm5cAhL",
+ "object": "chat.completion",
+ "created": 1791820614,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Energy conservation checks out now: deposit is 0.99628 versus the expected 0.99642. The total fluence of 0.455 compared to the CSDA value of 0.437 plus deltas is reasonable, since tracks above 10 keV include delta tracks, pushing the total fluence about 4% above the primary value\u2014I'm double-checking that the primary track length roughly matches the CSDA range minus the small range correction.\n\nFor a 1 MeV electron, deltas account for about 3.6% of the fluence, which looks consistent. Now I need to think about timing for the full Monte Carlo run with births: a 1 MeV test with 4000 electrons and 253 steps took about 1.2 seconds, so scaling up to 2e5 births with larger population arrays could take roughly 60 seconds\u2014I'll start with 1e5 to check the statistics first, then do the final runs with 2e5 in a couple of calls. I also want to make sure positron births (kind 3) are correctly included in the pool, contributing to deposit even though they aren't tallied for L4. Time to run the full calculation.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01EsPCKZaUuKLXMJzbcQM6rp",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport sys, pickle, time; sys.path.insert(0,'/tmp/work')\\nimport numpy as np, elec\\ntot=pickle.load(open('/tmp/work/tot.pkl','rb'))\\nB=tot['births']; N=tot['N']; VCYL=np.pi*0.2; PHI=1/(0.0099751*110**2)\\nBall=B[:,3].sum()/(N*VCYL*PHI)\\nt=time.time(); res=elec.run_e(B,Ball,100000,7); print(time.time()-t, res['steps'])\\npickle.dump(res,open('/tmp/work/eres1.pkl','wb'))\\nprint(res['fl_tot'], res['fl_del']/res['fl_tot'], res['rad']/res['col'], res['dep_tot'], res['T0s']/100000*Ball)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Energy conservation checks out now: deposit is 0.99628 versus the expected 0.99642. The total fluence of 0.455 compared to the CSDA value of 0.437 plus deltas is reasonable, since tracks above 10 keV include delta tracks, pushing the total fluence about 4% above the primary value\u2014I'm double-checking that the primary track length roughly matches the CSDA range minus the small range correction.\n\nFor a 1 MeV electron, deltas account for about 3.6% of the fluence, which looks consistent. Now I need to think about timing for the full Monte Carlo run with births: a 1 MeV test with 4000 electrons and 253 steps took about 1.2 seconds, so scaling up to 2e5 births with larger population arrays could take roughly 60 seconds\u2014I'll start with 1e5 to check the statistics first, then do the final runs with 2e5 in a couple of calls. I also want to make sure positron births (kind 3) are correctly included in the pool, contributing to deposit even though they aren't tallied for L4. Time to run the full calculation.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "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.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 144318,
+  "completion_tokens": 714,
+  "total_tokens": 145032,
+  "cost": 0.012873275,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 137583,
+   "cache_write_tokens": 6733,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.012873275,
+   "upstream_inference_prompt_cost": 0.011088275,
+   "upstream_inference_completions_cost": 0.001785
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 387,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}
