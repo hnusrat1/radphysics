@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791828311-1cnU4Hm1wjoVlnrgcxya",
+ "object": "chat.completion",
+ "created": 1791828311,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "The output got truncated since it's around 200 events of data, so I should print it in compact chunks to make sure everything comes through accurately.\n\nRounding energies and angles to 4 decimals should keep things readable while cutting down the length.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01WaYLUKWfrsWPi7CJgcWAcg",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport json\\nd=json.load(open(\\\"sample.json\\\"))\\nkeys=[\\\"process\\\",\\\"e_in_MeV\\\",\\\"e_out_MeV\\\",\\\"cos_scatter\\\",\\\"t_e_MeV\\\",\\\"cos_electron\\\",\\\"t_positron_MeV\\\"]\\ndef fmt(x):\\n    if x is None: return \\\"null\\\"\\n    if isinstance(x,str): return '\\\"'+x+'\\\"'\\n    return f\\\"{x:.4f}\\\" if abs(x)>=1e-3 or x==0 else f\\\"{x:.2e}\\\"\\nlines=[]\\nfor e in d:\\n    lines.append(\\\"[\\\"+\\\",\\\".join(fmt(e[k]) for k in keys)+\\\"]\\\")\\nprint(len(lines))\\nprint(\\\"\\\\n\\\".join(lines[:100]))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The output got truncated since it's around 200 events of data, so I should print it in compact chunks to make sure everything comes through accurately.\n\nRounding energies and angles to 4 decimals should keep things readable while cutting down the length.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQStgsKEAgSGAI4AUIIdGhpbmtpbmcSDGKaa1KqdbwUPZkLshoMYPvyv+cmodjyJpTVIjDP+8fGXKXT+cLInNK+XLxGUe5PKakIEKS7Rgc6uRo3KIHQbjLNjqISRW/0/6e/TZAq0wrEBJUamSmDo76AT0VZWLIgAktTP62nK0FGnWQbfoERq5ybFZ0UPUkNRHT1kv56utZK9v5KxUrECakBSK6cn/Ae6Pt9VMenyauwh49E/SrL6VS+1bgWKo3W/mjIigQjpobM4fp1EUrEn2oFP7z/Jgjs/KuqwXtXRcAMQa7dRvnPuLMrUj5FkTrZofrKkYEDaZHCMJeJoNVhtyVrwniN0UuQBLu/PeTZJu8QBDCl5/AWcrrZ8LU+aEIHSuU+T0L5xH7dB/D0q6tzkfN2VHEx8R5MA8G+27XpPvgItEfb6/KQrLUJs8VMidMEQh7KYhRdqU3/O7upIGvoXTmpZoMU0ednZkAhrsJOKZifCRUW0b9xky2Kf1FmGX13HXmvnjmEOP+MJFfxf4nJIbSbNfebLGTq2MQD5T7ANOazmgGEwovtgTSwVffi8UM8tMa4KpXmdhOeHfoLbec6KkM5TyjXS7ZPrJBbbJVpwddgZsJMfFMo+KlXiVe7nGFHpRoGuvSTEyzZSsAk1Z2pE6Xu6MJML7i4tZrVta66QxGYMe/f3xMOzzlvpUtANFn/w2S5EgoA8LI/rwgxD/ZSUAY7rAMtEOTN1x1yQUezEwunq3fO0IZbqY588H6B2qrQjHrhbt3GUfoRIjBDTWG2FuUV4EHPwJH9OirdoF6F8vd0A2fPYxOvMJi781sD64xFV68eOOAyvfMO/SYTIopzJVJINA5MVY/ZW6RdUGNYiD61spVhBkUsobWu8FptNwfsy6iBl7kEXvIbsb8EHqPTKSWTkLk3YyWYJCjPqxx/G9MSPpO0TDNO1Ny0NHxfyX+fJ9cf4otWbgXMNQxbnyWOs9Ov+CC51OUH7+2df/VsMZ36U13Z3IrmpvrmAWTZuONb7aocbh+ufnnaKEAcbDkAensv/+QGPSpP6mMMZdm0zuWDu3xFe1fB6fNJiG4Rkfh5HeCknLe7rjIa5FJVPWDySRjWC4yCK02qUs/YUtP3aPRnTHylCevZ1nKoWobGkPKX21bE4FSi5rm1w/eqO0DNWNEW+GQ0YJagXNR7TV1nE5383uU7+sfrULCHHWOWjuGLjuY02zQ5f9kY+Aym4a+gm9CIKzsHKSBRzW0lZs/eKzFgHPmNScEKY+ZeqJV6OnBp6DzCDGCAc+LP6o3sB2A9ieFEINN5qWOfN/U9f/XOEwgkyY9blyCGug2YYYAk2Ev7jb3FX0QdSUKohp/KhoPESjgzz6QHxjQIWafuzwLkUBtTMlSs0JNpB0qE0nkuQlGK8apqlzE0d9FxdcWEBndMN931l1aMRkUH2FFj2Pg1qaPc0LGnjgSmljOLxix93acvaDeDnAlRlt6LXJiVbHLeIBlYxhTaw4DBESTlB0z0p+II8h0gVWIGEu+Wytwrfe28g+GoKLwljdsmfKP7PAUtpEbv3tl+ZihRGoy54zZGctkQ2vU/yzVfmkR938JZFWo51NbuMC9XKQwBA4R97bpjWtatipKpb36B8+6e3APd49o4sKgjgY7EJeRYKxf1ZrE5ikp75aI+g0ns7+4rXw5dZ5UUpSCQTvRq3JolDcAUXovvDLU7J/SK3EKKfGmjuAbU/Wsjkju47rfXSqDbJDc53j0fYQsKWqmbSS8t/mHdq68E/waramKmja5q5iPtAjMutRJDWAB/Xtk+c3Z/9q3M8tAU//67dK7vgqMXGr5ZvWZRHpHZvstH1nDIV9CFk925YDSrE+jJXPFGraOSsXAlMCu97wYAhoDQQGNgKjJPMR3GvKHxilnPECIlKoPc/iVGsunGx8nTqHYXLeDyG27NjE2BE8u4WnA+dzaiGAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 55038,
+  "completion_tokens": 501,
+  "total_tokens": 55539,
+  "cost": 0.002373455,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 41363,
+   "cache_write_tokens": 13673,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.002373455,
+   "upstream_inference_prompt_cost": 0.002122955,
+   "upstream_inference_completions_cost": 0.0002505
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 233,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

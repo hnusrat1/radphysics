@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791828318-sF2Ew3b963b7V4HnzkSU",
+ "object": "chat.completion",
+ "created": 1791828318,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "OK, the tool works fine. Let me now write the complete simulation.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_7313c2317cc0440babf9b906",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\n\\n# ============================================================\\n# Constants and cross sections for water\\n# ============================================================\\nm_e = 0.510998950  # MeV\\nr_e = 2.8179403262e-13  # cm\\nNA = 6.02214076e23\\ne_per_cm3 = 10.0 * NA / 18.01528  # electrons/cm^3\\n\\ndef mu_compton(E):\\n    a = E / m_e\\n    t1 = (1+a)/a**2 * (2*(1+a)/(1+2*a) - np.log(1+2*a)/a)\\n    t2 = np.log(1+2*a)/(2*a)\\n    t3 = (1+3*a)/(1+2*a)**2\\n    return 2.0*np.pi*r_e**2 * (t1 + t2 - t3) * e_per_cm3\\n\\ndef mu_photo(E):\\n    xs = np.array([0.01, 0.015, 0.02, 0.03, 0.04, 0.05, 0.06, 0.08, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.6, 0.8, 1.0, 1.1732, 1.25, 1.3325, 1.5, 2.0])\\n    ys = np.array([4.91, 1.67, 0.755, 0.216, 0.0881, 0.0442, 0.0255, 0.0113, 0.00642, 0.00254, 0.00152, 0.00154, 0.00228, 0.00406, 0.00555, 0.00450, 0.00377, 0.00300, 0.00258, 0.00230, 0.00179, 0.00100])\\n    return np.interp(E, xs, ys) * 1.0\\n\\ndef mu_pair(E):\\n    if E < 2.0*m_e: return 0.0\\n    xs = np.array([1.022, 1.1, 1.1732, 1.25, 1.3325, 1.5, 2.0, 3.0, 5.0])\\n    ys = np.array([0.0, 0.0002, 0.00035, 0.00071, 0.00100, 0.00146, 0.00383, 0.0085, 0.0175])\\n    return np.interp(E, xs, ys) * 1.0\\n\\ndef mu_rayleigh(E):\\n    xs = np.array([0.01, 0.015, 0.02, 0.03, 0.04, 0.05, 0.06, 0.08, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.6, 0.8, 1.0, 1.1732, 1.25, 1.3325, 1.5, 2.0])\\n    ys = np.array([0.037, 0.034, 0.032, 0.028, 0.025, 0.022, 0.019, 0.015, 0.012, 0.0085, 0.0065, 0.0050, 0.0040, 0.0055, 0.0045, 0.0035, 0.00303, 0.00250, 0.00242, 0.00210, 0.00186, 0.00114])\\n    return np.interp(E, xs, ys) * 1.0\\n\\ndef mu_total(E):\\n    return mu_compton(E) + mu_photo(E) + mu_pair(E) + mu_rayleigh(E)\\n\\nprint(\\\"Cross sections at 1.1732 MeV:\\\")\\nprint(f\\\"  C={mu_compton(1.1732):.5f} P={mu_photo(1.1732):.5f} PP={mu_pair(1.1732):.5f} R={mu_rayleigh(1.1732):.5f} T={mu_total(1.1732):.5f}\\\")\\nprint(\\\"Cross sections at 1.3325 MeV:\\\")\\nprint(f\\\"  C={mu_compton(1.3325):.5f} P={mu_photo(1.3325):.5f} PP={mu_pair(1.3325):.5f} R={mu_rayleigh(1.3325):.5f} T={mu_total(1.3325):.5f}\\\")\\n\\n# ============================================================\\n# Physics sampling\\n# ============================================================\\ndef sample_type(E):\\n    mc = mu_compton(E)\\n    mp = mu_photo(E)\\n    mpp = mu_pair(E)\\n    mr = mu_rayleigh(E)\\n    total = mc + mp + mpp + mr\\n    r = np.random.random() * total\\n    if r < mc: return 'compton'\\n    r -= mc\\n    if r < mp: return 'photoelectric'\\n    r -= mp\\n    if r < mpp: return 'pair'\\n    return 'rayleigh'\\n\\ndef sample_compton(E_in):\\n    a = E_in / m_e\\n    while True:\\n        cos = 2.0*np.random.random() - 1.0\\n        E_out = E_in / (1.0 + a * (1.0 - cos))\\n        kn = (E_out/E_in)**2 * (E_out/E_in + E_in/E_out - (1.0 - cos**2))\\n        if np.random.random() <= kn:\\n            return cos, E_out, E_in - E_out\\n\\ndef sample_rayleigh(E_in):\\n    while True:\\n        theta = np.random.exponential(0.002)\\n        if theta > 0.2: continue\\n        cos = np.cos(theta)\\n        ff2 = np.exp(-(theta/0.001)**2)\\n        w = (1.0 + cos**2) / 2.0 * ff2\\n        if np.random.random() <= w:\\n            return cos, E_in\\n\\n# ============================================================\\n# Geometry\\n# ============================================================\\nsrc = np.array([0.0, 0.0, 0.0-100.0])\\n\\ndef sample_source():\\n    E = 1.1732 if np.random.random() < 0.5 else 1.3325\\n    x = (np.random.random() - 0.5) * 10.0\\n    y = (np.random.random() - 0.5) * 10.0\\n    d = np.array([x, y, 100.0])\\n    d = d / np.linalg.norm(d)\\n    pos = np.array([x, y, 0.0])\\n    return E, pos, d\\n\\ndef in_scoring(pos):\\n    x, y, z = pos\\n    return (4.9 <= z <= 5.1) and (x*x + y*y <= 1.0)\\n\\ndef in_phantom(pos):\\n    x, y, z = pos\\n    return (0 <= z <= 30) and (-15 <= x <= 15) and (-15 <= y <= 15\\n\\ndef dist_to_boundary(pos, dir):\\n    d = np.inf\\n    for z0 in [0.0, 30.0]:\\n        if abs(dir[2]) > 1e-12:\\n            dz = (z0 - pos[2]) / dir[2]\\n            if dz > 1e-12 and dz < d: d = dz\\n    for x0 in [-15.0, 15.0]:\\n        if abs(dir[0]) > 1e-12:\\n            dx = (x0 - pos[0]) / dir[ [0]\\n            if dx > 1e-12 and dx < d: d = dx\\n    for y0 in [-15.0, 15.0]:\\n        if abs(dir[1]) > 1e-12:\\n            dy = (y0 - pos[1]) / dir[1]\\n            if dy > 1e-12 and dy < d: d = dy\\n    return d\\n\\n# I notice many syntax errors. Let me write a clean version.\\nprint(\\\"\\\\nPreparing final simulation...\\\")\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "OK, the tool works fine. Let me now write the complete simulation.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 33389,
+  "completion_tokens": 1969,
+  "total_tokens": 35358,
+  "cost": 0.001009690836,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 32768,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001009690836,
+   "upstream_inference_prompt_cost": 0.000651884156,
+   "upstream_inference_completions_cost": 0.00035780668
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 15,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

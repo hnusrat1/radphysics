@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791828192-vjVlMtUgnbTy0WTMF9j0",
+ "object": "chat.completion",
+ "created": 1791828192,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "With 400k photons only 205 events came through, matching my expected rate, but that's barely enough to pull 200 unbiased samples from \u2014 I'd need a much larger total pool, maybe closer to 2000 events, to avoid skewing the selection.\n\nChecking the breakdown: photoelectric and pair production counts are roughly matching my estimated ratios, and Compton dominates heavily with most events at lower scattered energies, which all looks consistent. Scaling up to 5 million photons per energy should take roughly 50 seconds each based on the 2s/200k timing, and I should keep memory usage in mind at that scale.\n\nRunning it now with a fixed seed to sample 200 events afterward.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01F7kpWEW5BfApNa2hp5xoWE",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nfinal = r'''\\nimport time, json\\nexec(open(\\\"mc.py\\\").read())\\nt=time.time()\\nev = run(4000000)\\nprint(\\\"time\\\", time.time()-t, \\\"N events in volume\\\", len(ev))\\nfrom collections import Counter\\nprint(Counter(e['process'] for e in ev))\\nimport pickle\\npickle.dump(ev, open(\\\"events_all.pkl\\\",\\\"wb\\\"))\\n'''\\nopen('final.py','w').write(final)\\nr=subprocess.run(['python','final.py'],capture_output=True,text=True); print(r.stdout, r.stderr[-3000:])\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "With 400k photons only 205 events came through, matching my expected rate, but that's barely enough to pull 200 unbiased samples from \u2014 I'd need a much larger total pool, maybe closer to 2000 events, to avoid skewing the selection.\n\nChecking the breakdown: photoelectric and pair production counts are roughly matching my estimated ratios, and Compton dominates heavily with most events at lower scattered energies, which all looks consistent. Scaling up to 5 million photons per energy should take roughly 50 seconds each based on the 2s/200k timing, and I should keep memory usage in mind at that scale.\n\nRunning it now with a fixed seed to sample 200 events afterward.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "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.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 38243,
+  "completion_tokens": 1053,
+  "total_tokens": 39296,
+  "cost": 0.001783915,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 30634,
+   "cache_write_tokens": 7607,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001783915,
+   "upstream_inference_prompt_cost": 0.001257415,
+   "upstream_inference_completions_cost": 0.0005265
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 822,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

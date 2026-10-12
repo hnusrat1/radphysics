@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791828298-GcLSxxSMKgB8xiB10g4i",
+ "object": "chat.completion",
+ "created": 1791828298,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "Events 0\u201324 are now visible. I'll print events 25\u201399 in their own call so nothing is cut.",
+    "refusal": null,
+    "reasoning": "I'm trying to reconcile the line numbering across the two output chunks, figuring out which event index each truncated line actually corresponds to.\n\nI'm realizing the output got truncated partway through the event list, so the visible text actually starts mid-way through some later event rather than at index 0 as I'd assumed \u2014 I need to recheck the indexing to figure out which event the truncated tail actually belongs to.\n\nI'm checking that the \"--- 100\" chunk indeed starts at event index 100 and runs through 199, while events 25\u201399 fall in the truncated \"--- 0\"/\"--- 50\" portion I don't have full visibility into.\n\nRather than trying to piece together that truncated output, I'll just print events 25\u201399 directly in their own call\u201475 lines should stay under the truncation limit.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01KR5CgGK2hj5Jmuunz85r53",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport numpy as np, json\\nd=np.load('sample_99.npz')\\nnames=['compton','rayleigh','photoelectric','pair']\\nlines=[]\\nfor i in range(len(d['proc'])):\\n    p=names[int(d['proc'][i])]\\n    eo=float(d['Eout'][i]); cs=float(d['cosS'][i]); te=float(d['te'][i]); ce=float(d['cose'][i]); tp=float(d['tpos'][i]); e_in=float(d['Ein'][i])\\n    ev={'process':p,'e_in_MeV':round(e_in,6),'e_out_MeV':None if np.isnan(eo) else round(eo,6),\\n        'cos_scatter':None if np.isnan(cs) else round(cs,5),'t_e_MeV':round(te,6),\\n        'cos_electron':None if np.isnan(ce) else round(ce,5),'t_positron_MeV':None if np.isnan(tp) else round(tp,6)}\\n    if p=='rayleigh':\\n        ev['e_out_MeV']=round(e_in,6); ev['t_e_MeV']=0.0; ev['cos_electron']=None\\n    lines.append(json.dumps(ev,separators=(',',':')))\\nprint(',\\\\n'.join(lines[25:60]))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I'm trying to reconcile the line numbering across the two output chunks, figuring out which event index each truncated line actually corresponds to.\n\nI'm realizing the output got truncated partway through the event list, so the visible text actually starts mid-way through some later event rather than at index 0 as I'd assumed \u2014 I need to recheck the indexing to figure out which event the truncated tail actually belongs to.\n\nI'm checking that the \"--- 100\" chunk indeed starts at event index 100 and runs through 199, while events 25\u201399 fall in the truncated \"--- 0\"/\"--- 50\" portion I don't have full visibility into.\n\nRather than trying to piece together that truncated output, I'll just print events 25\u201399 directly in their own call\u201475 lines should stay under the truncation limit.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSjSQKEAgSGAI4AUIIdGhpbmtpbmcSDCpKqeNvDzs+7BljNxoMZUyprkcBHNEBG6GQIjAnfbdA+J7GqIgxL5M1G3YdUinFEDW6gl7c4m4yeXr+ZbdgRYnhh84PR8cbR6JNFLoqqiMTBndKi5eC1flRJmXJpcnx7YMRAVy/hZT9+ar83l8grbwBkvLwBJhUgR6h8PKy+l+r2ha4YlouPMkrWB8YOw0nHNfYq5P4/Mrz4r3cLgtVEsWVzufSTzIqkGlngkvgb+A9DLlEAgZdbPRzsJpt5crGU+KAR6iKRaO5kDjE8/GFCAYTg7ceqjARNmgKsT5RNV+oUVwroqLz7wQF6TSRvIAqERnG3Oewl6GSwyUpnFU6LZIYYKEdhxEbQtaFRX0shZFdUvHlLhd4XEWH1uZfxaXXWme8BX0Ws5EOsro5ouGa2OpD1Pse89TpmKE6V+ZDFDkcsMPk4U3LSMErGYYIOM53LypZr4L9YWRRW8niojQ2COxpZXAYKuzGEZ2JVAHkPo3gyQwiWAHbqiqOiG2DpzcUbXQZvYRNv5v2g+UUPzY3UIn9EZVNcr1lmSyS2Rr7tHJlxDTwJ3Z+Mow3Zq9uV19SuM3NHMvYU0QD2+k2WEg8k+UH6d/GzZ1My4RWOjIAbJ0a28Ua25sEnPbqbWGaF4Yii77CdukOFvdJhPBtmLgfHKKxh+IvNdszhDSqcmxxZvBRtSgL2FyY443Mk/Rl9yNmBHYFvNNvSEn1eeZhq9wvSqT+eWVhvkBviyCaJaMQpz7D+0GiGC2yoGWPojO1EuEd6VvVdD0ofh2vFrcfxBVZ942vLK9p4cMfCEGAhtvtP+N43gUxCQ+QK8lo4pdXJxuHB5BfgmtjKNEZAbcuTvBzlJ+J+R1JV1M6QGq35HboDt94u5D4uDMKK9gi0DIJ1j4qechx03xbyPm0O3gc/KNLQzITLysIisP68DiNmEl0X6X7r5Sw45br+3FsTQp/9W1z9LStsp2xPrP/dd1mRtRK+caU79UHhxdP4SlPvWy9B9L568OeZH4EqvqSeLeGpBH09e3v8y8M6ka5wljhmptY4rWaKxaDtVTdlDeVNucNAQYl+SytM0mFtyhxx+NHGyjKUArlfRfGC9j/PrnH7BdVrBhiPM0X76cCszLY3qpiBQ4YcYnsdhmjpvOM9S91A2zS5Xj1sfUWhdcfjJCbfWyDTTHmSlcM8fcBwPs3gppky1W33fjmVfS15+q0P5f2I7VLAP/rcJNL3Nk8lL9Zc7m0sn0+S0IPUtRXSQ4mUrS9eLnQROQMgWqma6Y6H1LyhP2S66e70X4BQkous95pQzVUv60y6XrLg7avnpBzxja7dduMfjaLgdlG8YbvXOPuoimQLwOUgLrNRSNB0HwToISbvhUp8rwsXRDBBuSmJ2TfaiIzOQBriZwPmq0LWFVYqNq/TGIrFpoI4qROYjV2J49XfIxXdjoIRTK4giD6bUxQ6ySGxO3aWbnEEe8x9dxSA0MIFN/XOu3KkeipaSbSpry/O7TH+dnk0apcLuP1Lu1VF0bMDMbKe5cNq36z/Kmw7Wt0B03X7wzL6FxKGYafJipK0SH2qB04jxoiVZKsAjCF0le+Ne7g3aQlHF/PA3iip6EBhzqeSrOByBz/WgIyGgWqTcJeSVXka7/ranZ8XQiqdnzsf6DCf7AkS1Eq/NToN+H1JC8eI9qmRsnHZNm0tyFGTDc4m/+IFxgsDgnb2F+qj62d2crGuPCIet4pwbEDwcWqh056MBkA8yrcG/QQ4N8nuDwn1nQJxV64WNg6dUEvzBZfsAD3DmN7HyZk3ukj8o03F6ZzuTpvQfAd4LZJX3QUVjGs03EMZcdvxWet/FGgeWFy6Z+eQ3evz4Dm5tj4PHNUWVH/jnVi4j+UsEejgBNoXOqRpj1w21nUDp4xc6izcn+7hDEkRWbqLbfhlg/X8KOj+cgidXZj/KM+Sc+X0V4+Fvq2C0+lv/QjvMdCRpX/e0ZiMrlbrLFvCLX+VSl1sapzjYEq5lYHRrKqxTEzqZdA/b5OIv7p9VOirB0ddmeqQstFqpX7WRWJms8Y/vkjGscmn2X9Xn54ebteXKEV3YiXT4a1GvL/X40W8Wh3+V6yD+yBFrOKYEfEShefjSSh/BICBjefYIsI5jTBgwlFQwXV39AfDvisSAyRS6o1evPfJGiKqGHCeZJlvuTz6NsX3NJVS5KK8GQrmUAPoYEfW/yJNCYCVNXeaR7MNoOkcDBsB40gO2Jz+lGGSdATRR6rMgWpRqw8AXFj3dDs9HBg757zXam88xg+xZrOhb22avxTmVIeMqHC6kvKU96KP6D7tR6bbwHggD7siiV5YYEoR9CGQHeTJ6y6nDvaKgPbZLGElxF8kk8u+XWMwcEwd+UKmIgOXuRUX7mKwjmL1El1Nt879ittG6+dp21ugiazDsZli8vjzjNlaiKQrRczsJDFKAQFFz9/GyRARzaGCvVcXJ1HMWoGC79AaCDwBMe1A6utD4tZhquJX+U1Czgi5Jl89sNvf6mjNk7B3ayOy4Cm4Cq+XbIEtbrJX83jaK1KVWQUFMM5vaDFXo4d3SsOCXNSHJUVryyTDrxXl5Oc5zGIfLEHWcaZ0CtBgVNNW1NkJg4yrDGv9mEoYi0CzKkSuAFuspVYu7gyCwBnDXyze0jk253lMa23DlxvBP6kUlYEu1kzftkHbQrXp2AwLkD45ZLXCtzZPYCjqMcCGcMsG7AgYrtWn821fZ1S6kGaeOp5vTD94shqyrzSSGmx8ZoLQfXZ5AWOIr9VvvvQRKQNt4ER43+c3A2pRxJTjjDvLiIEYQEjunzl9U3WAJa5Fbe1QT5gx+eeI/+fh8bFCJi0lhWeQcRJ5GaOGSptH4hTHyOTsoxKGNiG0D3WCyEQBGMal/mVTEwhJVmJf9d2Uu4UKWsLDHiMrCGM76W31O7kE4J9ow+XlPrgU/rOTaCPsg85QKEx835Pomw5PQ9lw7lIqIF5I0/5OPpYUgRZ9mRNBVKy+eZeNpPnlMti6fPeIBBELLNvzpIagVW2f84FgeVAWEQ5DSxmYcGz8x1HuCUKI9tCYVnuemHTUNKfmDW+jXVjInhAxnjbM9hy6vgJA5EzqmMcLdZzc9WYLiSFxNBzzU9FFEHNB6fGkdKTzTbvaXN9Mn9SW/1PZleQ1nFBLcaQNm9ULvLROlyIEptcAYW+7IWwM9h6S8p6U0e7Rvd8Mca+ytO9iwusrr6DdLqku4nbIp5388tqr9kjVaOhcMN/TXjFEQ4SscAD17G3DGeRzqFJA1whaGjZmx5JZEc+7N49WqpNlh5bUP/jam5xntJFRZTNxISvMpcSrcH9WwZEkf6JA0jpumIMJqQo5SC/G1XIBnqZq778uADIZ3oO3tISBMxfWJPy6e6pLTNdou+GoFEMHUq9kV+qd5zD2qYwcgPyaVpX+bip0IMfwkruVno8zXu+4MtHViC3suGxuDLscQj3BZt/SAmhKfKLTzC/9BxQD0UsoY6vjwFG6QLyaFUHyyowajJRmHX2limiiqyQXJqjmB1PHZ38rknroU2oJ8Xq3k+OnEh0/uXbE8S27plBbyWyDPwpSqHLLKqPgR11heADF/Ph7aKxV/lOx4AVCNFOmMkzWKajMdTRR7Ovgb6hZbYoAlGBT1K+3wAvO6R3QT+GdhLV+YEi9g45fDlEsWaA8dH+3tPmkVp/V7mA/QlnqROMg0BbXpTFwdbf4Qrnesn8ZHvdz9OFtelagf2C+YjhH1ZLiXSmFSrYWlMAGuVp3Gz975S9rV/zeGJHk8AYlsmbjGcy23VAN3OSEXpOaYkatqFJ69M7ZZcV0l9RoSSBsz9FKlgd8BvFJr0CCD5IubQUl5esWj3SISFOCma6yI6QY4JXjlUxZo+fgVVu3z+tacXeiLRJvQHGhHwuq11MK0dQtmS3Xcd3IC8m0MWerUB628T9bNZf3cCj+ogm2OyyHP4yITMj5zLO0Tx7a2QXwOhj4XM0eQRbgQbPzR4iBT32Xd4rz3gb4v8OauNFCZ58h9IoTrGs3ryTol+QN4Xwga0R2druFRuoQaVBoiGd2fjU3DfvEJ3dVcis9kmeFuAROzxh2Y+9uaYE1zu/4PO5B9eEWlOVN5z9wO5Z98xUjcwar25/funMI95GCGI8WlXAhPstXLXXOYo1gkpr03+HUtfmGqCiGqNtGW87dImiKn+J2n3yb8fGxLB29WFr41AoLsNwD/KS8hh0XMYT6b5xX5QAIQsgAV0+vHyFQcSOMaLyn2kb5Sqi/8M6AZktE7NaFUCUqc8kmNhA/7UK0sRstgIBNYWOkLVzcYlD1aulRYdBlVrNeScpwsAsBX7n9079itZyKuPdwMTaMhdOKCWLjrnsupwzoXqCpu86SoIXFIYnKs9bAO2ntEVngZEVUI1AHoxFBjgMRWWlmSurG32ynnrN5wlbTt74MtzoNs9uRPXSbyqrPqXoU/hbrVmHJ8mcILRue6+UpAXdz9+0+xtTMjK+H3tP2L328vahA+R7p5Ti8HrJgns71TjmtY+zM7q7UpJEztkCeSL1dJfT5WA8oBj6M/iEdCa5foUAfxOvsgg02hssSkiDBgB73zy1uqxXH7xiNzlP3RhVKYmGRSmJdDGn58lzKITm68g6jd5uAjOUwhbOWCsbXgb1jW7Oejz+EhuWnfU+Ru/d+J3fY/0tS41uPXd8m8ZB1D9H/HKml1K1Rhq6ENxAuSDw8oAdYIErMXj0W0jqqgQse2wRcXipGACLNCLUWYAlslcEbHxq3ebx0q1pJCarmLbfcimMzF9zypazF+hf43MHSeZi3w5t7Iy+GoZQbEvBkWca0Lu5g8OSvH5ZxjzcN0XXHD7ot+b2L4po7pqrVCiPuleqtIWQpVlRmW3Pl33dMAJxbKEfDXyQ7G9+HTH6OxKtGO/OSo48vXKeSn3HObpB5O0HN20sxknswY7lkCXOWM5PeFe+zph9ulQROFGQ4Sl/a6RvfycsTPjkJHgPU3EgKb+mEw3KNGwtFDEd0VgfbzW0jEcwDOB2JVwJ5FK+/+3rRAGXqVvM3wmfvJ0AIvDrt8+d1PQWmE9oHifmy7WOcvtDWdGBIA9UY8SOKKNGxnIkQvo7zzRztr2QaVns5Af/bH9mpbbUB/MolbdC8xaarcy6Ib6BTPfitYp5QK27sWaataEy9TanD7nBsuuPEhWR40+5G3LdZhbDMemEaNdy2emE7K0ddc6UJRBQTUPJkxZK1gKhZgkgzJjLhz6g12apSiIujw4BFXxsvwFyIhVlqSLog/iKX/TZpIqG8+6nzZKBkHw2iWyq/Dkphz+dPMY9ujTf3yGRee4PVlnHXKKdQy/cds//ZUz7WfG4Q6ji1cY+B0c/6Nvz2HRg99zea2PiUSwRNGmXsTmVaJRe39wfqsvcQQyRhfWDHqFvJUEaec8/ys33nd9ZybfcRi1fnLkJenNfXbQSSmlu+Rm2y0agz1jT9essX7uoh3TbuMIHZGzPFGNJ4E3lnqAWvY5mldARpX50ETjdOQY+BWecmLXC4Sl0PrBamJ32qyvC/A2BpIRuXdP1k7rh2A4SfgKmmakVRJ3O+is9JM3Emnd0fDqmqkkxAEvIHi5sjVgboEOiT7Zjs/UsB1yHi5aLgNi11QbY76QghgULSQnbfxeC1OvLqMU4SA17B9kD3CnTGeUdsKfknnpF6TQ5Grd5XguuIEO7vS0AITaBLta9qyFxRDrVfcNPc0uNCw3d5q44HKmwyiRvWVJueuu9cy2pD4UWYde+zwQ353nBFs6rhaKgZhSARjZf6De+xoQtdzwW83e2eMgFQhfxdo5/fhSYYfcbu0VeQl3RDrJKhX2Mg8Ime6qny5U7bwy/lkIU2vhpq0KtvoDnfvFu22eWxmBP7ahtGS2CjaK2JmWhtgMKOHMGbyWvBvKrr2wTSVxOzG0CF3xaMYQvwstFZwoVvlkOcvQVdeFfAlduIT6rGjWV0JaJvGmC7mSjosew6VaV13UH0RraRpQfzZq1fO5dT6pagWQHjNqw3LZY/NHbIRREUmTkyxIuH/UpA1Ct2Dbg1umqjOwuRigNpRJkU1wyCbb+erWcOwG6Feam+dLN3TwvDnurYz6ws2SFFQd/YVKWKeRUTDAPMLPHn2h8CKt8lkgL5qLKfZ9L1gmacrd5E247GAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 107411,
+  "completion_tokens": 2189,
+  "total_tokens": 109600,
+  "cost": 0.012673025,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 104228,
+   "cache_write_tokens": 3181,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.012673025,
+   "upstream_inference_prompt_cost": 0.007200525,
+   "upstream_inference_completions_cost": 0.0054725
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 1676,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

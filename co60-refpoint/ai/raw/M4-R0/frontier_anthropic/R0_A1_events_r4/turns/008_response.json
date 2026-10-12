@@ -1,0 +1,57 @@
+{
+ "id": "gen-1791828264-ua4VGrKyr9RgBNBExTGa",
+ "object": "chat.completion",
+ "created": 1791828264,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_017LcsLPSYG4L8KLdktLvPUt",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport numpy as np, json\\nd=np.load('sample_99.npz')\\nnames=['compton','rayleigh','photoelectric','pair']\\nev=[]\\nN=len(d['proc'])\\nprint(N, np.bincount(d['proc'],minlength=4), 'primary frac', d['prim'].mean())\\nrows=[]\\nfor i in range(N):\\n    p=names[int(d['proc'][i])]\\n    e_in=float(d['Ein'][i])\\n    eo=d['Eout'][i]; cs=d['cosS'][i]; te=d['te'][i]; ce=d['cose'][i]; tp=d['tpos'][i]\\n    rows.append(dict(process=p,e_in=round(e_in,6),\\n        e_out=None if np.isnan(eo) else round(float(eo),6),\\n        cos_s=None if np.isnan(cs) else round(float(cs),5),\\n        te=round(float(te),6),\\n        ce=None if np.isnan(ce) else round(float(ce),5),\\n        tp=None if np.isnan(tp) else round(float(tp),6), prim=bool(d['prim'][i])))\\nprint(rows[:5])\\nprint(np.mean([r['prim'] for r in rows]))\\nfrom collections import Counter\\nprint(Counter(r['e_in'] for r in rows))\\n\"}"
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 68985,
+  "completion_tokens": 475,
+  "total_tokens": 69460,
+  "cost": 0.001297255,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 65768,
+   "cache_write_tokens": 3215,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001297255,
+   "upstream_inference_prompt_cost": 0.001059755,
+   "upstream_inference_completions_cost": 0.0002375
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 0,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

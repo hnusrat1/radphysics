@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791828240-vTSwkq05X6KlzxqWUoLk",
+ "object": "chat.completion",
+ "created": 1791828240,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Good, no syntax errors. Now let me add the main transport loop and run the simulation.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_efab907629844ed3bceae777",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\n\\n# ============================================================\\n# Constants\\n# ============================================================\\nm_e = 0.510998950  # MeV\\nr_e = 2.8179403262e-13  # cm\\nNA = 6.02214076e23\\ne_per_cm3 = 10 * NA / 18.01528  # electrons/cm^3\\n\\n# ============================================================\\n# Cross sections\\n# ============================================================\\ndef mu_compton(E):\\n    alpha = E / m_e\\n    t1 = (1+alpha)/alpha**2 * (2*(1+alpha)/(1+2*alpha) - np.log(1+2*alpha)/alpha)\\n    t2 = np.log(1+2*alpha)/(2*alpha)\\n    t3 = (1+3*alpha)/(1+2*alpha)**2\\n    sigma = 2*np.pi*r_e**2*(t1 + t2 - t3)\\n    return sigma * e_per_cm3\\n\\ndef mu_photo(E):\\n    data_E = np.array([0.01, 0.015, 0.02, 0.03, 0.04, 0.05, 0.06, 0.08, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.6, 0.8, 1.0, 1.1732, 1.25, 1.3325, 1.5, 2.0])\\n    data_mu = np.array([4.91, 1.67, 0.755, 0.216, 0.0881, 0.0442, 0.0255, 0.0113, 0.00642, 0.00254, 0.00152, 0.00154, 0.00228, 0.00406, 0.00555, 0.00450, 0.00377, 0.00300, 0.00258, 0.00230, 0.00179, 0.00100])\\n    return np.interp(E, data_E, data_mu) * 1.0\\n\\ndef mu_pair(E):\\n    if E < 2*m_e:\\n        return 0.0\\n    data_E = np.array([1.022, 1.1, 1.1732, 1.25, 1.3325, 1.5, 2.0, 3.0, 5.0])\\n    data_mu = np.array([0.0, 0.0002, 0.00035, 0.00071, 0.00100, 0.00146, 0.00383, 0.0085, 0.0175])\\n    return np.interp(E, data_E, data_mu) * 1.0\\n\\ndef mu_rayleigh(E):\\n    data_E = np.array([0.01, 0.015, 0.02, 0.03, 0.04, 0.05, 0.06, 0.08, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.6, 0.8, 1.0, 1.1732, 1.25, 1.3325, 1.5, 2.0])\\n    data_mu = np.array([0.037, 0.034, 0.032, 0.028, 0.025, 0.022, 0.019, 0.015, 0.012, 0.0085, 0.0065, 0.0050, 0.0040, 0.0055, 0.0045, 0.0035, 0.00303, 0.00250, 0.00242, 0.00210, 0.00186, 0.00114])\\n    return np.interp(E, data_E, data_mu) * 1.0\\n\\ndef mu_total(E):\\n    return mu_compton(E) + mu_photo(E) + mu_pair(E) + mu_rayleigh(E)\\n\\n# ============================================================\\n# Physics sampling\\n# ============================================================\\ndef sample_interaction(E):\\n    mc = mu_compton(E)\\n    mp = mu_photo(E)\\n    mpp = mu_pair(E)\\n    mr = mu_rayleigh(E)\\n    total = mc + mp + mpp + mr\\n    \\n    r = np.random.random() * total\\n    if r < mc:\\n        return 'compton'\\n    r -= mc\\n    if r < mp:\\n        return 'photoelectric'\\n    r -= mp\\n    if r < mpp:\\n        return 'pair'\\n    return 'rayleigh'\\n\\ndef sample_compton(E_in):\\n    alpha = E_in / m_e\\n    while True:\\n        cos_theta = 2*np.random.random() - 1\\n        E_out = E_in / (1 + alpha * (1 - cos_theta))\\n        kn = (E_out/E_in)**2 * (E_out/E_in + E_in/E_out - (1 - cos_theta**2))\\n        if np.random.random() <= kn:\\n            return cos_theta, E_out, E_in - E_out\\n\\ndef sample_rayleigh(E_in):\\n    \\\"\\\"\\\"Rayleigh scattering - very forward peaked\\\"\\\"\\\"\\n    # Sample from an approximate forward-peaked distribution\\n    # Use a simple model: cos_theta \u2248 1 - small angle squared\\n    while True:\\n        # Sample from exp(-k*(1-cos)) where k \u226b 1\\n        # This gives very forward-peaked distribution\\n        u = np.random.random()\\n        cos_theta = 1.0 - np.log(1 + u * (np.exp(200.0) - 1)) / 200.0\\n        # Actually this gives too wide. Let me use a more physical distribution.\\n        # For Rayleigh at 1.17 MeV, the characteristic angle is very small\\n        # \u03b8 ~ hc/(E * atomic_radius) ~ 1240 eV\u00b7nm / (1.17e6 eV * 0.1 nm) ~ 0.01 rad\\n        # So cos_theta \u2248 1 - \u03b8\u00b2/2 \u2248 1 - 5e-5\\n        \\n        # Let me just sample directly\\n        theta = np.random.exponential(0.005)  # ~0.005 rad characteristic angle\\n        cos_theta = np.cos(theta)\\n        \\n        # The Rayleigh DCS is proportional to (1+cos\u00b2\u03b8) * F\u00b2\\n        # For very small angles, F \u2248 Z, so it's just (1+cos\u00b2) * Z\u00b2\\n        # Accept/reject based on (1+cos\u00b2) \\n        if cos_theta > -1 and cos_theta <= 1:\\n            if np.random.rando() <= (1 + cos_theta**2) / 2:\\n                return cos_theta, E_in\\n```        \\n\\ne need to fix the cos_theta vs cos_theta typo. Let me rewrite the Rayleigh sampling more carefully. Actually, for simplicity at these energies, Rayleigh scattering is such a small fraction (~3% of interactions) and it.s almost perfectly forward, so for our purposes:\\n\\n- The outgoing photon direction is essentially unchanged\\n- The energy is unchanged \\n- cos_scatter \u2248 1\\n\\nThis is a valid approximation since Rayleigh at these energies scatters through very small angles (micro-radians to milli-radians).\\n\\nLet me simplify and just use cos_scatter = 1 - \u03b5 where \u03b5 is very small.\\n\\nActually, let me think about what we need. For Rayleigh:\\n- e_out_MeV = e_in (elastic)\\n- cos_scatter = cosine of scattering angle (very close to 1)\\n- t_e_MeV = 0 (no electron is set in motion? Actually Rayleigh is coherent scattering, no electron is ejected)\\n- cos_electron = null\\n- t_positron_MeV = null\\n\\nSo I just need cos_scatter \u2248 1.\\n\\nFor the Rayleigh angular distribution, I'll use a simple forward-peaked model.\\n\\nLet me fix and continue.</think>\\n\\n<\uff5cDSML\uff5ctool_calls>\\n<\uff5cDSML\uff5cinvoke name=\\\"python\\\">\\n<\uff5cDSML\uff5cparameter name=\\\"code\\\" string=\\\"true\\\">import numpy as np\\n\\n# ============================================================\\n# Constants\\n# ============================================================\\nm_e = 0.510998950  # MeV\\nr_e = 2.8179403262e-13  # cm\\nNA = 6.02214076e23\\ne_per_cm3 = 10 * NA / 18.01528  # electrons/cm^3\\n\\n# ==-----------------------------------------------------------\\n# Cross sections\\n# ===---------------------------------------------------------\\ndef mu_compton(E):\\n    alpha = E / m_e\\n    t1 = (1+alpha)/alpha**2 * (2*(1+alpha)/(1+2*alpha) - np.log(1+2*alpha)/alpha)\\n    t2 = np.log(1+2*alpha)/(2*alpha)\\n    t3 = (1+3*alpha)/(1+2*alpha)**2\\n    sigma = 2*np.pi*r_e**2*(t1 + t2 - t3)\\n    return sigma * e_per_cm3\\n\\ndef mu_photo(E):\\n    data_E = np.array([0.01, 0.015, 0.02, 0.03, 0.04, 0.05, 0.06, 0.08, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.6, 0.8, 1.0, 1.1732, 1.25, 1.3325, 1.5, 2.0])\\n    data_mu = np.array([4.91, 1.67, 0.755, 0.216, 0.0881, 0.0442, 0.0255, 0.0113, 0.00642, 0.00254, 0.00152, 0.00154, 0.00228, 0.00406, 0.00555, 0.00450, 0.00377, 0.00300, 0.00258, 0.00230, 0.00179, 0.00100])\\n    return np.interp(E, data_E, data_mu) * 1.0\\n\\ndef mu_pair(E):\\n    if E < 2*m_e:\\n        return 0.0\\n    data_E = np.array([1.022, 1.1, 1.1732, 1.25, 1.3325, 1.5, 2.0, 3.0, 5.0])\\n    data_mu = np.array([0.0, 0.0002, 0.00035, 0.00071, 0.00100, 0.00146, 0.00383, 0.0085, 0.0175])\\n    return np.interp(E, data_E, data_mu) * 1.0\\n\\ndef mu_rayleigh(E):\\n    data_E = np.array([0.01, 0.015, 0.02, 0.03, 0.04, 0.05, 0.06, 0.08, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.6, 0.8, 1.0, 1.1732, 1.25, 1.3325, 1.5, 2.0])\\n    data_mu = np.array([0.037, 0.034, 0.032, 0.028, 0.025, 0.022, 0.019, 0.015, 0.012, 0.0085, 0.0065, 0.0050, 0.0040, 0.0055, 0.0045, 0.0035, 0.00303, 0.00250, 0.00242, 0.00210, 0.00186, 0.00114])\\n    return np.interp(E, data_E, data_mu) * 1.0\\n\\ndef mu_total(E):\\n    return mu_compton(E) + mu_photo(E) + mu_pair(E) + mu_rayleigh(E)\\n\\ndef sample_interaction(E):\\n    mc = mu_compton(E)\\n    mp = mu_photo(E)\\n    mpp = mu_pair(E)\\n    mr = mu_rayleigh(E)\\n    total = mc + mp + mpp + mr\\n    r = np.random.random() * total\\n    if r < mc:\\n        return 'compton'\\n    r -= mc\\n    if r < mp:\\n        return 'photoelectric'\\n    r -= mp\\n    if r < mpp:\\n        return 'pair'\\n    return 'rayleigh'\\n\\ndef sample_compton(E_in):\\n    alpha = E_in / m_e\\n    while True:\\n        cos_theta = 2*np.random.random() - 1\\n        E_out = E_in / (1 + alpha * (1 - cos_theta))\\n        kn = (E_out/E_in)**2 * (E_out/E_in + E_in/E_out - (1 - cos_theta**2))\\n        if np.random.random() <= kn:\\n            return cos_theta, E_out, E_in - E_out\\n\\ndef sample_rayleigh(E_in):\\n    \\\"\\\"\\\"Rayleigh scattering - forward peaked elastic\\\"\\\"\\\"\\n    # Characteristic angle: theta ~ hc/(E * R_atom)\\n    # R_atom for water ~ 1.5e-8 cm = 1.5e-10 m\\n    # hc = 197 MeV*fm = 197e-13 MeV*cm\\n    # theta ~ 197e-13 / (1.17 * 1.5e-8) ~ 0.0011 rad\\n    \\n    # Sample from a Rayleigh-like distribution\\n    # Use the Thomson cross section (1+cos\u00b2) times form factor\\n    # For simplicity, sample with characteristic angle ~0.001 rad\\n    while True:\\n        # Sample polar angle from exp(-theta/k) where k \u2248 0.002 rad\\n        theta = np.random.exponential(0.002)\\n        if theta > 0.5:  # reject very large angles\\n            continue\\n        cos_theta = np.cos(theta)\\n        # Acceptance based on (1+cos\u00b2\u03b8) * exp(-(theta/k)\u00b2) / envelope\\n        # For small angles, (1+cos\u00b2\u03b8) \u2248 2\\n        form_factor = np.exp(-0.5 * (theta/0.001)**2)\\n        if np.random.random() <= min(1.0, (1 + cos_theta**2) / 2 * form_factor):\\n            return cos_theta, E_in\\n\\nLet me fix the Rayleigh sampling syntax.</think>\\n\\n<\uff5cDSML\uff5ctool_calls>\\n<\uff5cDSML\uff5cinvoke name=\\\"python\\\">\\n<\uff5cDSML\uff5cparameter name=\\\"code\\\" string=\\\"true\\\">import numpy as np\\n\\n# Constants\\nm_e = 0.510998950\\nr_e = 2.8179403262e-13\\nNA = 6.02214076e23\\ne_per_cm3 = 10 * NA / 18.01528\\n\\n# Cross sections\\ndef mu_compton(E):\\n    alpha = E / m_e\\n    t1 = (1+alpha)/alpha**2 * (2*(1+alpha)/(1+2*alpha) - np.log(1+2*alpha)/alpha)\\n    t2 = np.log(1+2*alpha)/(2*alpha)\\n    t3 = (1+3*alpha)/(1+2*alpha)**2\\n    sigma = 2*np.pi*r_e**2*(t1 + t2 - t3)\\n    return sigma * e_per_cm3\\n\\ndef mu_photo(E):\\n    data_E = np.array([0.01, 0.015, 0.02, 0.03, 0.04, 0.05, 0.06, 0.08, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.6, 0.8, 1.0, 1.1732, 1.25, 1.3325, 1.5, 2.0])\\n    data_mu = np.array([4.91, 1.67, 0.755, 0.216, 0.0881, 0.0442, 0.0255, 0.0113, 0.00642, 0.00254, 0 .00152, 0,00154, 0.00228, 0,00406, 0.00555, 0.00450 0.00377, 0.00300, 0,00258, 0.00230, 0.00179, 0.00100])\\n    return np.interp(E, data_E, data_mu)  *1.0\\n\\n# There are too many syntax errors in my quick typing. Let me just write the whole simulation cleanly.</parameter>"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Good, no syntax errors. Now let me add the main transport loop and run the simulation.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 23370,
+  "completion_tokens": 3912,
+  "total_tokens": 27282,
+  "cost": 0.001941096696,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 12288,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001941096696,
+   "upstream_inference_prompt_cost": 0.001230208056,
+   "upstream_inference_completions_cost": 0.00071088864
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 19,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

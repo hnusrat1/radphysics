@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791828277-TwMPMmXaOVYcsjNm43SL",
+ "object": "chat.completion",
+ "created": 1791828277,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "The earlier variables did not persist, so I'll rebuild the event list and print it in one step.",
+    "refusal": null,
+    "reasoning": "Since state isn't persisted, I need to recompute everything in a single call and print the final JSON output directly so it can be copied, even if that means outputting all 200 events compactly.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01GLMADF5LSFAnf3GbshUxqg",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport numpy as np, json, subprocess\\nd=np.load('sample_99.npz')\\nnames=['compton','rayleigh','photoelectric','pair']\\nevents=[]\\nfor i in range(len(d['proc'])):\\n    p=names[int(d['proc'][i])]\\n    eo=float(d['Eout'][i]); cs=float(d['cosS'][i]); te=float(d['te'][i]); ce=float(d['cose'][i]); tp=float(d['tpos'][i])\\n    e_in=float(d['Ein'][i])\\n    ev={'process':p,'e_in_MeV':round(e_in,6),\\n        'e_out_MeV':None if np.isnan(eo) else round(eo,6),\\n        'cos_scatter':None if np.isnan(cs) else round(cs,5),\\n        't_e_MeV':round(te,6),\\n        'cos_electron':None if np.isnan(ce) else round(ce,5),\\n        't_positron_MeV':None if np.isnan(tp) else round(tp,6)}\\n    if p=='rayleigh':\\n        ev['e_out_MeV']=round(e_in,6); ev['t_e_MeV']=0.0; ev['cos_electron']=None\\n    events.append(ev)\\nout={'method':\\\"Analog photon transport in the 30 cm water cube (vacuum outside) with Klein-Nishina Compton sampling and approximate Rayleigh, photoelectric and pair cross sections; annihilation photons followed. Sources 1.1732/1.3325 MeV, equal weight, directions uniform in solid angle over the 10x10 cm pyramid. At every collision, next-event estimation gives the probability that the photon's next interaction lies in the 1 cm radius, 0.2 cm slab at 5 cm depth; process, outgoing photon and electron are sampled from that conditional distribution. 200 events were drawn from the weighted pool of about 2e7 source photons (weighted reservoir sampling, weight proportional to interaction rate). Bremsstrahlung and fluorescence neglected.\\\",\\n     'events':events}\\ns=json.dumps(out,separators=(',',':'))\\nprint(len(events), len(s))\\nprint(s)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Since state isn't persisted, I need to recompute everything in a single call and print the final JSON output directly so it can be copied, even if that means outputting all 200 events compactly.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS6QcKEAgSGAI4AUIIdGhpbmtpbmcSDCZ1oa5Ya3POo2E3yRoMIhEr4fJ0u3Azkn/3IjBTTIz5Md+3IOarPeEQZciDoyfteM6IBkfzCbac75rXvaCB1J7u7ujznKBQutxCUnQqhgfBem5n4IlTpWWkwwiFJE0GcF8jUyA+bB+K1kpKjuNNTxhsRIj3uAftXrigbC+OXn+V2qLNLZV787E1+nBeNK1gO4Tw5R45P9P/UdOyYBSuJJciNy9xMRamzyxj2oOZAIA6oIoADUFCAKZtedj0QndE6ACXxsMtG82xkKK7/mozNeEW31pwgyYiayzAXD2wIsZeqMnZX0vFjrdnMPT/hCH2LqC8dd3s4fxAamVA1VQLf1GidhVWnWZ2Qbtek4GCM1/fg8eSTBvugcepf7SzvGrAHGlRrwxeGy1CCGbMdkKtifE6M+lw1g49BDRf+XYr1jp01xn5aievriyXbiuitbDfSeovdpvprY7w16zdeE6Y+zNEkPLOiuMLlb7t1EhpBAeWPhc/fGWvi0gvO9Ykm4mYdKKzA1RkBI+vytLWrbIViur/BpxVvRmA96PdiPKW1GBhVNKruo4NikCky5cG4dDdV3Kr/N84GgKaLVI0vlw3cSJx/HDgRTEb9kNAyKRUD8rre1l/vRiIqVRUZU6tgndM2LIp8mZxbj0ofaNztK3gFiBDdj9OIaywqBThK6oYUgadSFDAkdGBo1X8gNeBsgmGwYIjcNBdvtwPsQ02eJRAZ2M76aJle/kWrCOlwV3SP4pwQfYpOH4bnnq1NZr7rd60xaXZEbob6D70SGNWI4Sro7TI2blK5EuqQXUoqDz6U3sj+FlHenVswga0tWlnFHspVK8VRRLJJOLytDZv2AkPF9jdLsZPrhJe612/HIxD63OYuG5ax5RMrRtqK7lcPMgggZmkGjeBHJ+pxrFw5WiqfxwndSYEh8oHVRXDuTm951t1xOU28k+Dxtex+8m7W8q3azrrYz1gLJsts6MscMG+eW7SvB+k4+PmBMG1GrNpvYtC+B/oFjEXUeRqzDhPOgSiJzED+pUbIphuH0sM+7NyiWgP05JNoik7woDom6IbQSqBxSvL/B2Srk9UdhaSfmKjuQMduaiR118AmP3BOOtghyeHyG3PZzQmGlhDlwpTL+Jxbby/uqq0w9pXBinzWjleREJpNotA9kv3WTcliSDuvcjNlCdha4umHpkc45WAR3oGi+z0Zqp4Yr3dSCJ3tR4se6Czu0HYKrmiewg6yVXVMgyaVMSvblfjal654KkfN34o2vbnyMxII0WZ3zfQeLDbExw/x0F6D0/5HDqeu9uEMSKxtbSA7RgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 72608,
+  "completion_tokens": 859,
+  "total_tokens": 73467,
+  "cost": 0.001359425,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 70835,
+   "cache_write_tokens": 1771,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001359425,
+   "upstream_inference_prompt_cost": 0.000929925,
+   "upstream_inference_completions_cost": 0.0004295
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 58,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

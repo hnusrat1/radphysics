@@ -1,0 +1,57 @@
+{
+ "id": "gen-1791828318-CExyCgdGEncbnGVK5lhU",
+ "object": "chat.completion",
+ "created": 1791828318,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01EboAHr6zysQCh3tyBs5NtD",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport json\\nd=json.load(open(\\\"sample.json\\\"))\\nkeys=[\\\"process\\\",\\\"e_in_MeV\\\",\\\"e_out_MeV\\\",\\\"cos_scatter\\\",\\\"t_e_MeV\\\",\\\"cos_electron\\\",\\\"t_positron_MeV\\\"]\\ndef fmt(x):\\n    if x is None: return \\\"null\\\"\\n    if isinstance(x,str): return '\\\"'+x+'\\\"'\\n    return f\\\"{x:.4f}\\\" if abs(x)>=1e-3 or x==0 else f\\\"{x:.2e}\\\"\\nlines=[\\\"[\\\"+\\\",\\\".join(fmt(e[k]) for k in keys)+\\\"]\\\" for e in d]\\nprint(\\\"\\\\n\\\".join(lines[100:]))\\n\"}"
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 59534,
+  "completion_tokens": 250,
+  "total_tokens": 59784,
+  "cost": 0.00075433,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 59238,
+   "cache_write_tokens": 294,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00075433,
+   "upstream_inference_prompt_cost": 0.00062933,
+   "upstream_inference_completions_cost": 0.000125
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 0,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

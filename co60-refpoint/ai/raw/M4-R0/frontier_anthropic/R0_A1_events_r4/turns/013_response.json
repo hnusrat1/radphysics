@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791828289-9PRZh2feKWDIl5PRhYOo",
+ "object": "chat.completion",
+ "created": 1791828289,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "The output is still truncated at the start, so I'll print the first 25 events on their own.",
+    "refusal": null,
+    "reasoning": "The output is still truncated, so I need to print the first portion of the data separately to see the beginning rows I'm missing.\n\nTranscribing all 200 lines by hand is risky, but I'll keep precision reduced to minimize errors and print the first 25 lines to capture the rest of the head.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01DyK4DuC7WrMA2JAM2xtJfj",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nprint(',\\\\n'.join(lines[0:25]))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The output is still truncated, so I need to print the first portion of the data separately to see the beginning rows I'm missing.\n\nTranscribing all 200 lines by hand is risky, but I'll keep precision reduced to minimize errors and print the first 25 lines to capture the rest of the head.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS+g4KEAgSGAI4AUIIdGhpbmtpbmcSDLzrmVk/4Gi2aY8bLhoMJkcuazoqxIBwDn/iIjClnkOuJGsjsWOh9x3dWFwdjx98kb0PT0217olfPqSD1NZq4JAsw3sqKHRCR+0X86kqlw40XPl+Ib14K+3t8Q5Er2hZ0/GmLqFjtzr4gBJVRWQejvPorqb8q8gDJtK39RQz2d00U53twofkxQeAdIk/Q9WWSbD8lPd3Pgv07VnOFHGvz7HM4BRLz2TinXeWi2A67fb5xtGyWoW4EXfBI8JMT8SagE9v5wE+mF0k7gbXCM5YfctxJtoTZMbkQtYB6tt/2yI1BIJnrtzBRC0TzQM1CvvRo8fx0FOhJz/OIrYgI1t/WFAALq2OUMTuZ5fEI9KWc/PWDzg0lsV4hibH/Oie/4/p8VrJHfuq7b0UKWTfTergJw4MTnYMowbIM5WVlGDZ7WfvZT2UChh/PI/DTpeZsT0aPcRThUD3S/SJcmS9DW8uVr9UNUQsLOveaye6SrWCat21QVFfI3i20c4+e0k4Yk2CDZv1/wE6LHEZdCLT3mjxF5Q04hjF1kKLUBYMDe5pgMFsXTouKTydV25FLF+yNEkl2W08cNlBLLfLA6ut29JGkl5SOHMxjnborQtBXtIrtP2elw52Lbcz43pimyGIsu3k7DkVAWccP7N6I4y7RafgfSzUi3vW1E8mB/UOmtR5VkvfhuzCv4xzWm/F8dGJfQJWd4f/91SVdqfuZO2VLA3LFRyePNcyMBAFmC2GggrqzN2YnU5+1ChRT3shAUvn/5optafgEWkHjKmjxcieNIh11asKpajBT0aZ7XHmgbTDKlzFnLxBRCEXqcTbCqo5gJTZIqYZTwHF/SsIngzoiH3Z69boQTEBfbUaT6JpEnIZQLuX1TiPnIqrPff/Aumee7XBtWHYDQqHq6sjt2gGswGscQ65UBe6seMKHbqmjThXfaoMqp+EFxPOC6PwYoaPRcedi1BpwYeF+88gEgVRR2ypsd7B2guuUiMTvcx/qFH1IcOBazXjIvTyHXDYcAjN8CnKLIuowfnB3rGB90ddZdoyvYmuQFAaTgI50H25YGGUgjW2RcrbHM8R5t5nZq4BzGxp6ho2RBQohcbDestclqGetz6YwDin9HnQ8BfH7Bgtxnex5j4+x1o1Qbj3yAImWjvP6KgtqRzd2LhHOH3wMr6rUZ4KhYJu1IKRiQb/nyT2ycD1QVRExsc2aTtEOFMuOoucaEJwUaiKVTV1AU4qVWUyxDP5HMvukwq/eXspl0WBTY6qaGcSpypQC8BWbnqyJUXJ0ueHDUiBqD4BP3owDoaOozCTkNCvys7YJsiTOA95h0o14EAwzuwwmI6DUBJlaIS1F+SnrjfkR4PL6KGZPzfRd0ULP57CxMkjrMPGOnwwXeqQCEQyvhobtkbs0IyxVMiIW70jdg+3BKEcbeFSdR6RLzUlW3YfCraGmwMaJ0UCVcAEKw//464kk4hGGJUQo+pk3EWX0gYzQ0pjp3glatf55dHC4hz1sz1fNKN4BBaxzQ+uE9OwRjEWixnyrbhbPL4uYpII6WItMp9VgHR28rR+AX/m8tTqT/LxsautkVIU3mqIfKGMhGeCLPB9VdreBQl03X9dZCO90aIZI0UfuGiroFuKeg98sc/Axsw4Fa17+ezw/VUNgSDmmZe+m5o4WDEfVrqnpHeHTDG5TB4upLU+WjXzFeZHzt3tSMHLp6SQUC+qFdkxOBjAy3zIxkjVWyna/HVEMqBdQvns7OdeZIc+Zp1jOG6V+i5jKTMp3FSWrcTkco8GuEF8SX0uwlMr8/NC/bavVqjxFIT2j538HDZkcrHqeDZOHAhxxDGVe8b1fRkEAEPR4J2/8r0+PK8MMRv0stWY6hDM46+P3WfM5h833WwIlWJ1gcBLDEcFRe+aVxVPtGB3rTC/hnymxpjff5hdtidjJfZ1LkE3pfCZ+sTFg5MJI7sSLO+BagLW+Q3umVSJhINm0v6WNnH3I+nMB2gWC+qBvUrg2XsnLt035zXh+3kql6baHeE8Ous4bcxYQ4X5egqadZDmOTTz/C3ylrnAG8GiFlUv6EpMwHQVKOQzqEwO39ipI3ttP1LcddfjNeIm7CT5dQd6QhDnrB+7/Zjy8eodqieNK49gf6DJHjcWLSTDIyC6AQb8Z1tBaFNTIcmFofJPzqSdrrH3XIqzMU77Ei/H4ZkLTTStazLsqOgEvNtO/4cEaA0TAJKSlGwEWppTeXEdZ4gad3aDtnevHULa6eQKlupOkjKpcehip7yKxfcq01mAKxUEHDiEXhbUP9KQgTMGKQY8Gz8yGAZT8KBcBAipqoQ4ae75mE+YivkeXyDnijHLYrPNJmX8PpjVb0gT74bATtS/RVVkQew4uHrkpxClTKhVR1Tc8sQyh00MXwMDo4wmlnbG9GSdIdz3ecy4jMk57vfePH3ZcgaD4+eo01u2e3s9p7acj1hXfsAOs9EQaQJhkT6AZBCOkRj4FCNz11/iPXwBdcQQyqygNH5QLGOpAWjfwZh7ijLyDzgSN6bCgHbvk3kYAQ==.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 103563,
+  "completion_tokens": 508,
+  "total_tokens": 104071,
+  "cost": 0.01492915,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 88813,
+   "cache_write_tokens": 14748,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.01492915,
+   "upstream_inference_prompt_cost": 0.01365915,
+   "upstream_inference_completions_cost": 0.00127
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 418,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}
