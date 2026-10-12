@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791817464-QyUoXOwYiB9892BgTtFU",
+ "object": "chat.completion",
+ "created": 1791817464,
+ "model": "qwen/qwen3.7-flash",
+ "provider": "Alibaba",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Good! Now I see that 37.2% of Compton electrons have energies above 1.4 MeV. This means when we normalize the spectrum over the given bins, most probability is in the higher energy bins. The last bin [1.2, 1.4) gets 17.5% of the probability.\n\nNow let me write a comprehensive script that computes all quantities for all layers and produces the final JSON output.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_a90e8a7916ec406e8dbdd5bb",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nfrom scipy.integrate import quad\\nfrom scipy.interpolate import interp1d\\n\\n# Load data\\nxcom = []\\nwith open('/tmp/data/xcom_water.txt', 'r') as f:\\n    for line in f:\\n        if not line.startswith('#'):\\n            xcom.append([float(x) for x in line.split()])\\nxcom = np.array(xcom)\\n\\nestar = []\\nwith open('/tmp/data/estar_water.txt', 'r') as f:\\n    for line in f:\\n        if not line.startswith('#'):\\n           estar.append([float(x) for x in line.split()])\\nestar = np.array(estar)\\n\\n# Constants\\nE_photon = 2.0\\nrho = 1.0\\ndepth = 10.0\\nalpha = E_photon / 0.511\\n\\n# Cross-sections at 2.0 MeV (index 28)\\nmu_ray_mass = rho * xcom[28, 1]\\nmu_compton_mass = rho * xcom[28, 2]\\nmu_photo_mass = rho * xcom[28, 3]\\nmu_pair_nuc_mass = rho * xcom[28, 4]\\nmu_pair_el_mass = rho * xcom[28, 5]\\nmu_total_mass = rho * xcom[28, 7]\\n\\nmu_total = mu_total_mass\\nmu_compton = mu_compton_mass\\nmu_pair = mu_pair_nuc_mass + mu_pair_el_mass\\nmu_rayleigh = mu_ray_mass\\nmu_photo = mu_photo_mass\\n\\n# Bins\\nphoton_energy_edges = np.array([0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, \\n                                0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1, 1.05, \\n                                1.1, 1.15, 1.2, 1.25, 1.3, 1.35, 1.4])\\nelectron_energy_edges = np.array([0.01, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, \\n                                  0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1, 1.05, \\n                                  1.1, 1.15, 1.2, 1.4])\\ncos_theta_edges = np.array([-1, -0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1])\\n\\nn_photon_bins = len(photon_energy_edges) - 1\\nn_electron_bins = len(electron_energy_edges) - 1\\nn_cos_bins = len(cos_theta_edges) - 1\\n\\nprint(\\\"Computing all quantities...\\\")\\nprint(\\\"=\\\"*60)\\n\\n# ===== LAYER 1: PHOTONS ARRIVING AT THE POINT =====\\n\\n# Primary fluence\\nL1_primary_fluence_per_phi0 = np.exp(-mu_total * depth)\\nprint(f\\\"L1_primary_fluence_per_phi0 = {L1_primary_fluence_per_phi0:.6f}\\\")\\n\\n# Primary photon fluence spectrum (all at 2.0 MeV)\\nL1_photon_fluence_spectrum_primary = np.zeros(n_photon_bins)\\nfor i in range(n_photon_bins):\\n    if photon_energy_edges[i] <= E_photon < photon_energy_edges[i+1]:\\n        L1_photon_fluence_spectrum_primary[i] = L1_primary_fluence_per_phi0\\n        break\\n\\n# Angular distribution primary (all forward)\\nL1_angular_primary = np.zeros(n_cos_bins)\\nL1_angular_primary[-1] = 1.0  # All at cos(theta)=1\\n\\n# Scattered calculations\\ndef KN(ct):\\n    k = 1.0 + alpha*(1.0-ct)\\n    s = 1.0 - ct**2\\n    return (1.0/k**2)*(k + 1.0/k - s)\\n\\ndef e_KN(ct):\\n    k = 1.0 + alpha*(1.0-ct)\\n    return E_photon*(1 - 1.0/k)\\n\\ndef gamma_KN(ct):\\n    k = 1.0 + alpha*(1.0-ct)\\n    return E_photon / k\\n\\n# Discretize for spectra\\ncos_vals = np.linspace(-1, 1, 100001)\\nd_cos = cos_vals[1] - cos_vals[0]\\nw_KN = KN(cos_vals)\\ne_energies = e_KN(cos_vals)\\ng_energies = gamma_KN(cos_vals)\\ntotal_int = np.sum(w_KN) * d_cos\\n\\n# Mean scattered photon energy from Compton\\nnum_int_gamma = np.sum(g_energies * w_KN * d_cos)\\nmean_scattered_E_gamma = num_int_gamma / total_int\\nprint(f\\\"\\\\nMean scattered photon energy (Compton): {mean_scattered_E_gamma:.4f} MeV\\\")\\n\\n# Estimate scattered fluence\\nP_interact = 1 - np.exp(-mu_total * depth)\\nf_compton_frac = mu_compton / mu_total\\n# Average attenuation factor for scattered photons (~0.5 since produced at various depths)\\navg_atten_scatter = np.exp(-mu_total * depth / 2)\\nest_scattered_fraction = P_interact * f_compton_frac * avg_atten_scatter\\n\\nL1_scattered_fraction_fluence = est_scattered_fraction\\nL1_total_fluence_per_phi0 = L1_primary_fluence_per_phi0 + L1_scattered_fraction_fluence\\n\\nprint(f\\\"L1_scattered_fraction_fluence = {L1_scattered_fraction_fluence:.6f}\\\")\\nprint(f\\\"L1_total_fluence_per_phi0 = {L1_total_fluence_per_phi0:.6f}\\\")\\n\\n# Fluence-weighted mean photon energy\\nmean_E_primary_bin = E_photon\\nenergy_fluence_primary = L1_primary_fluence_per_phi0 * mean_E_primary_bin\\nenergy_fluence_scattered_est = L1_scattered_fraction_fluence * mean_scattered_E_gamma\\ntotal_energy_fluence_est = energy_fluence_primary + energy_fluence_scattered_est\\nL1_mean_photon_energy_MeV = total_energy_fluence_est / L1_total_fluence_per_phi0\\nprint(f\\\"L1_mean_photon_energy_MeV = {L1_mean_photon_energy_MeV:.4f}\\\")\\n\\n# Scattered fraction of energy fluence\\nL1_scattered_fraction_energy_fluence = energy_fluence_scattered_est / total_energy_fluence_est\\nprint(f\\\"L1_scattered_fraction_energy_fluence = {L1_scattered_fraction_energy_fluence:.6f}\\\")\\n\\n# Scattered photon fluence spectrum (primarily Compton-scattered down to lower energies)\\nL1_photon_fluence_spectrum_scattered = np.zeros(n_photon_bins)\\nfor i in range(n_photon_bins):\\n    mask_i = (g_energies >= photon_energy_edges[i]) & (g_energies < photon_energy_edges[i+1])\\n    bin_frac = np.sum(w_KN[mask_i] * d_cos) / total_int\\n    L1_photon_fluence_spectrum_scattered[i] = L1_scattered_fraction_fluence * bin_frac\\n\\n# Normalized angular scattered distribution\\n# Scattered photons come mainly from Compton scattering, which produces photons peaked backward but with broad distribution\\n# For simplicity, assume roughly uniform over forward hemisphere for first-order estimate\\n# Actually, at 2 MeV, Compton scattering has significant backward component\\nL1_angular_scattered = np.ones(n_cos_bins) * (1.0 / n_cos_bins)  # Rough approximation\\n# Normalize to sum to 1\\nL1_angular_scattered = L1_angular_scattered / np.sum(L1_angular_scattered)\\nprint(f\\\"L1_angular_scattered sum: {np.sum(L1_angular_scattered):.6f}\\\")\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Good! Now I see that 37.2% of Compton electrons have energies above 1.4 MeV. This means when we normalize the spectrum over the given bins, most probability is in the higher energy bins. The last bin [1.2, 1.4) gets 17.5% of the probability.\n\nNow let me write a comprehensive script that computes all quantities for all layers and produces the final JSON output.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 30737,
+  "completion_tokens": 2047,
+  "total_tokens": 32784,
+  "cost": 0.000490876,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 29056,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000490876,
+   "upstream_inference_prompt_cost": 0.000224766,
+   "upstream_inference_completions_cost": 0.00026611
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 93,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

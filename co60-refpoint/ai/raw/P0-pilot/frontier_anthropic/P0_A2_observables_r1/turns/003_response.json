@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791817672-fpgKLGJo7BspaVBRVNAC",
+ "object": "chat.completion",
+ "created": 1791817672,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "Solid angle confirmed at 0.009975 sr. Next I'll write the photon Monte Carlo (Compton via Klein-Nishina, Rayleigh, photoelectric, pair with annihilation photons) and record track segments for the scoring cylinder.",
+    "refusal": null,
+    "reasoning": "I'm setting up a module to write the photon Monte Carlo simulation.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01Q4Xc5JbaVG54aGfniWzcJm",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\ncode = r'''\\nimport numpy as np\\nX=np.loadtxt('/tmp/data/xcom_water.txt')\\nE_=np.loadtxt('/tmp/data/estar_water.txt')\\nmc2=0.51099895\\nre=2.8179403e-13\\ndef loglog(xe, ye, E):\\n    m = ye>0\\n    return np.exp(np.interp(np.log(E), np.log(xe[m]), np.log(ye[m])))\\nXE=X[:,0]\\ndef mu_comp(E):\\n    coh = loglog(XE,X[:,1],E); inc=loglog(XE,X[:,2],E); pe=loglog(XE,X[:,3],E)\\n    pn = np.where(E>1.022, loglog(XE,X[:,4],E),0.0)  # pair nuclear (zeros below 1.022 excluded)\\n    pel= np.where(E>1.022, loglog(XE,np.maximum(X[:,5],1e-30),E),0.0)\\n    return coh, inc, pe, pn+pel\\ndef mu_all(E):\\n    coh,inc,pe,pr = mu_comp(E)\\n    return coh,inc,pe,pr, coh+inc+pe+pr\\n# ESTAR\\nEE=E_[:,0]\\ndef estar(col,E):\\n    return np.exp(np.interp(np.log(E), np.log(EE), np.log(E_[:,col])))\\ndef Scol(E): return estar(1,E)\\ndef Srad(E): return estar(2,E)\\ndef Stot(E): return estar(3,E)\\ndef Yrad(E):\\n    E=np.asarray(E,float)\\n    y = np.interp(np.log(E), np.log(EE), E_[:,5])\\n    return y\\ndef sample_KN(E, rng):\\n    k = E/mc2\\n    epsmin = 1/(1+2*k)\\n    n=len(E)\\n    eps=np.empty(n); cth=np.empty(n)\\n    todo=np.arange(n)\\n    while todo.size:\\n        kk=k[todo]\\n        u=rng.random(todo.size)\\n        ec = epsmin[todo]**u\\n        c = 1-(1/ec-1)/kk\\n        s2 = 1-c*c\\n        p = (ec*ec+1-ec*s2)/2\\n        acc = rng.random(todo.size) < p\\n        eps[todo[acc]]=ec[acc]; cth[todo[acc]]=c[acc]\\n        todo=todo[~acc]\\n    return eps,cth\\ndef sample_Rayleigh_cos(n,rng):\\n    out=np.empty(0)\\n    while out.size<n:\\n        c=rng.uniform(-1,1,2*n)\\n        acc = rng.random(2*n) < (1+c*c)/2\\n        out=np.concatenate([out,c[acc]])\\n    return out[:n]\\ndef orth_basis(d):\\n    # d: (n,3) unit\\n    a=np.where(np.abs(d[:,0:1])<0.9, np.array([[1.,0,0]]), np.array([[0,1.,0]]))\\n    e1=np.cross(d,a); e1/=np.linalg.norm(e1,axis=1,keepdims=True)\\n    e2=np.cross(d,e1)\\n    return e1,e2\\ndef rotate(d,cth,phi):\\n    s=np.sqrt(np.clip(1-cth*cth,0,1))\\n    e1,e2=orth_basis(d)\\n    return cth[:,None]*d + s[:,None]*(np.cos(phi)[:,None]*e1+np.sin(phi)[:,None]*e2)\\n'''\\nopen('/tmp/work/phys.py','w').write(code)\\nimport sys; sys.path.insert(0,'/tmp/work')\\nimport importlib, phys; importlib.reload(phys)\\nrng=np.random.default_rng(1)\\nE=np.full(200000,2.0)\\neps,c=phys.sample_KN(E,rng)\\nprint(\\\"KN mean eps at 2MeV\\\", eps.mean(), \\\"mean cos\\\", c.mean())\\nprint(phys.mu_all(np.array([2.0,0.1,0.5])))\\nprint(phys.Yrad(np.array([0.01,1.0,2.0])), phys.Scol(np.array([1.0])))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I'm setting up a module to write the photon Monte Carlo simulation.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS8QUKEAgSGAI4AUIIdGhpbmtpbmcSDF2iGrccmD2D8t+4ahoMmIXfrNbcPn7C2RVQIjAjelrXuBMc1TFloiXpgv2UAim8Gi8hbPR2UDh4/c8HH80fp6r1EKsI/7FnDjjHlxgqjgWhAGBokx6brtDENEpyoR+tR2/4ZIlN54JVYLX48gOZPhnXWXtYdu+QeV1KjpZEW8cc/AIBSXXtL4MhRE5hes3I+aUsu6mxO0IJFliq0d8oOg0BOvVeu8RZdkw+EMMjEfcCuilx3bAeAzrdpJR6BmZG0Ff8TazIIR3OKaqGlDL53Haoa8BlRiSEOtpYQRzb4S9E/qGzle7fcZXmxkLvpCpgoqHHpid7e6iRvLBdITYVtwiQgkFgu65v9CyYbd7H+u59v5injCvVZojcZHGgCDF70erqAP68nGkNfj0IsAUkmDCrUjCQMQHcr4lYp/1G6g36/anJ/u9j64FvdKHhAfjjBsFRMNTg9KA/3lL70GlCA6uFzvUwoR8+S5VyXteztbIRSse/QWXQo8hdorVqsqX67M56aSRgCI5K8Fb3Owc7/IBPL6ihgdkAJPOD5mwNHEx0wKQ8FORTYkH7RH3TLkpjCmLvyfUhxvSgU435tTyM7YkSDxkQij1Pk7M5ORJtRrwe0ZZ45uQ/UJ0ZmkKaTP3mhx/Q4MOvPShILk6y7eZHYwIKL7yfCC1kFx6n00LXuf/2Q6x6rkpnlRzM+4Yt5TX5KDdMUnpO8lEFUW56+FT2JY7GB6GiXavVhMEsv1LMlXCmEevRkqC8G+8EaLc69Er9KphQ28KIZC0by9VZxttvCyV1RbVWuBK4i1IMAoVmvIgMl/K14QiAtfNAKahhJRO87VODFI2MMJUry9ZgXnkdq/lUAGO1B9De7u7S2x5GOCWAakL86pszKJRToCdA6ooElEfJf4WOSIz4BoMjkzzLBC5mU68G+YwmkF2lOA6a0OOsgNqKCunQi37W9qH5GEdYBKzN4lgY57SyOmzYh+oYAQ==.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 93412,
+  "completion_tokens": 1559,
+  "total_tokens": 94971,
+  "cost": 0.0101207,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0101207,
+   "upstream_inference_prompt_cost": 0.0093412,
+   "upstream_inference_completions_cost": 0.0007795
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 19,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

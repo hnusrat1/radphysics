@@ -12,7 +12,7 @@ defaults: &openrouter
   base_url: https://openrouter.ai/api/v1
 slots:
   - {slot: frontier_anthropic, provider: Anthropic via OpenRouter, <<: *openrouter, model_id: anthropic/claude-haiku-5.5,
-     settings: {reasoning: {effort: high}, usage: {include: true}, max_tokens: 128000,
+     settings: {reasoning: {effort: high}, usage: {include: true}, max_tokens: 128000, prompt_cache: true,
                 provider: {order: [anthropic], allow_fallbacks: true}}}
   - {slot: frontier_openai, provider: OpenAI via OpenRouter, <<: *openrouter, model_id: openai/gpt-6-luna,
      settings: {reasoning: {effort: high}, usage: {include: true}}}

@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791817228-DpnrfGWcCpiCHaFehZSZ",
+ "object": "chat.completion",
+ "created": 1791817228,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "The output got truncated, so I need to print the full event list in compact chunks to capture all 200 entries, splitting into first and second halves to avoid cutoff.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_0169vKvQVsboSBLo5D7TLKS9",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport json\\nd=json.load(open('/tmp/work/events.json'))\\nev=d['events']\\ndef fmt(e):\\n    return json.dumps(e,separators=(',',':'))\\nlines=[fmt(e) for e in ev]\\nprint(\\\"\\\\n\\\".join(lines[:100]))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The output got truncated, so I need to print the full event list in compact chunks to capture all 200 entries, splitting into first and second halves to avoid cutoff.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS4goKEAgSGAI4AUIIdGhpbmtpbmcSDJamHkRQYWrYQFcyXBoMkoLaLwGEr2K29+XTIjCwD1DknA/GaZlzQTL8/13rqRXwAbqozcMMoAHJlKSX0WBycuof8VwW1ZIbiue92FIq/wnPYlLRLel6lGJF2CeVXbi6OMNAmQMEgBoz9Xd8ngaxVnyxExwGXw7n8FFaj2flD7eiK8sY9e0ayfvPSIfONoF3QaYkJSVOkDD7gg2bEYSgRwWgYk6E3HODRO6y+k8lGYC+3176ZZuLLFYnZYAbX+th6NcMG12iUnD0HZ07AVa/XVXKLUa/y+hU0hljZvQQoHkz0EK466O6yDJRnDflwkegg96lVwBMqs/wQVyfRwSS8lWO40g+ZDtCy6GHXc+ltMJdgQl4D4BazfE4Qolhju9HAVZgR+/Va8SgyECefb3E+j1C2rUh4mLDHTSE9J/Af/vgS60Lik6AsyrZLqI8pE3oykvCaMtEGAFIlKy+Evca87aLZxqApk2zqybrMkbrvzXzlgrPzRQDn922hq4FghtowJw6B/owVPtglLM5AVSzFQ5hrWvjLabOZ9po2xVrcsJk3aGJuTbAvH8jl+VHjegsJb2g5zSM0SOzYKlVpJed1+3xBfur0v5EQO3EFKjV0KJd4OwyVLzcCiBGtxuzTooIiIpsIo/gMkJ7UPXanhONoz8RU9bpCdkBrRz8aqDstCE2O5FQSpdFM8N8JN+G/Abx0/k3Jnr/g3nzXEqCf8BpHuwDJm6bVkGZMf/S1G1uUPfJeCe6WY4sVI+k5pRUYD2kSbyZFH6fllL+xgNuROYkxteOWcr2whC6ZJwqnkLwU5nT92/T9zen1vtcYMsq/8TfkHLtLzsLksDgEHGfn+CIswKYgXTJZbCwh9w0Zi/FlkNlzAwLIy902Y/+M7AJBBbcXyurlgjaiiqdT4dM5V71ZkhpdOQ4ioCW13pnvRIV1l8odxFwNeSGU3jINmnflAfyRrmYpUnj9mPlwigtbuhPqePHOKWVr2LO8r1nMGL2RuzjhFA2l557ChKEgBJDF0K2+lWEB0qqfXwLYXrHvhvSxjIRgq3StrYCoz3QcZptGPsFDIZtGU1hvU/gMyyno/3PaS9Sf/fvz66hObS779TBepInPmmHfN5CXf9PWCJQLEZdZvuz1rYJnU9hL/o3PTikvZr0C3o/l5AKbwBhiJx1yZPz8SjH6ZhREW2xx2nYzumZzHkmYbPFl3cV8OiAm5EJ1yv460rsLFpoQyHV/H78eistm4TJ2H847epZ8j6HvFl85a6pf1G0RL5XjTKovrOyCobgDNfDiHfM/hY/VlkkEUn0PJNO64xU208ojH8xP+wA5T5Wy9alunKVVGUvKpqcImLNXUSnfMtJjwKsi6o+W16UC+/4ZvpztVf45KF+5y+Q5wr11vzfqcxD5wLSqE3fuBd4YIPEsU/nMqZa1dNKShxfnpGRirGmCBcD9iFGfCsYYVns6fEtyPQGdZKDKEiBEoa522KgQdlBJmXMqdNTnXOQjJZlA8yZ50O04R84bKqfXQRTpwP9OFs6+6P0+WNiZfng8pY0FONk3u8e5BCln6/F/3Va2Xj0AaWJpcBPXMFhcTNvPZPSd1rW+5Bl4w0sT1r9rRa4/9W2O/rtQbMTLJvVm+B2CV4eJ/JUxqC8Nl1J8wEyvzY5T3C/BGVWKu2xILmGylHWCJNuP1c7xCIjK3Rr+0XQOYEjYg8xh3HaM9gm+dqypEOsDJvJ/536EgGNSTng/TIpCHi/SsrJX7IkhkhORSZOsjmuHTCN69OzEM114sZFKz9Gs+mz9zwnqCgocKLImJ0aUKDJZUciTRT+GAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 94666,
+  "completion_tokens": 353,
+  "total_tokens": 95019,
+  "cost": 0.0096431,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0096431,
+   "upstream_inference_prompt_cost": 0.0094666,
+   "upstream_inference_completions_cost": 0.0001765
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 215,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

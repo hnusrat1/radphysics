@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791817708-pRqoffF0tDEsElyeCmo9",
+ "object": "chat.completion",
+ "created": 1791817708,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I realize I forgot to insert the path into sys.path before running those earlier calls\u2014I need to add that at the start of each one.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01YAkiVm19G3UZjLrUTFmium",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport sys, time, importlib\\nsys.path.insert(0,'/tmp/work')\\nimport phys, photon, track\\nimport numpy as np\\nOm=0.009975072683099257; S_phi0=Om*110.0**2; V=np.pi*1.0**2*0.2\\nmu_p=phys.mu_all(np.array([2.0]))[4][0]; Phi_p=np.exp(-mu_p*10.0)\\nprint(\\\"Phi_p/Phi0\\\", Phi_p, \\\"S_phi0\\\", S_phi0)\\nt=time.time()\\nres=photon.run_photons(400000, seed=2)\\nprint(\\\"time\\\",time.time()-t, len(res['E']))\\nlin=track.cyl_track(res['r'],res['d'],res['l'],10.0)\\nsel=lin>0\\nFsc=(lin*res['f']).sum()/res['N']*S_phi0/V\\nprint(\\\"scattered fluence/Phi0\\\",Fsc, \\\"nseg hits\\\", sel.sum(), \\\"hits scattered\\\", (sel&res['f']).sum())\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I realize I forgot to insert the path into sys.path before running those earlier calls\u2014I need to add that at the start of each one.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSpgcKEAgSGAI4AUIIdGhpbmtpbmcSDK9Brt5HYssJtbyp3RoMk5su2J6u5wkxUPQRIjC3h/LweIMx98QEG2Id1yMusEj2p2gu8aQ6UURi0o73FHf/IrNi5GVJvzE5GOd921wqwwY51sB2WtzQBdPMnv9vwyDu/5esFG3U95N9LfLuVWP36KnDYpnlure0DTncd9GoNnTSM5ifbVOWuTQja+I98o3oOqpuMA+LavGvh/1qXSEXY9Mw8jWHlvnno2l88oBSeWEMEOHd5nwEb2dD6F2zEaeExQ3TS8trtALsDqEdj7Io2YgmhZULKQq1nNvGtRZMf8mgsbW93n7w70z/hk2bERqHD1fzR70FxSdwIt/RDdFXbf3ZYwOeJx1mmoPoY8qqynHYXb6UHc5JzidcigN2Q31GDjkWZ6UwDuCW4cvSTn9TJYslIbhvjwsJEk647Ib6FKCM/3IA8Hb5fBrbueEbEcJ/fZp3RwISPF4BHLQn1HBvkIGeWKTZtqWwdLNz3S0IC+6q/wga1IlH3Ja+Y5XiWiUPWIP2urThw9R6FGE5VaGUPobANdO5pe/yg8iqns7HZ8w2RXG4nAFvomVMvFD069VB+t8qRKQysODVkx+MYJANo2QQXLFaCyQZoqU8AvrDzIlvyJ2plF9mkqwWZcKhJPXc0/Km8+R8hz66GPkgsZ4++pRGILEoe4AeJvXdkG5rH6443OBzE2QbQl2fRglzYu0YJwNnMOuYrwMEbufE6S+HOAnICqNLssrN4IBitNT+A0j0LFbbKTpUHV04YfS0S1neLViVqHTI/eeU4T5frSuq2+vn865vrGghj7clHYJtlVtaJlwk+55Ew33mGtk/NHxX08G2vkjc/a2LNJzwT2QIvGsWnrHdqtJWuccJpcGMPrhL4GXdatn/WWKmp5EaFCXSzfdY1KL4ugWyV0E2TkPnDpu2cPkt3KjpuQFF81UgQ9xuGaZLhPjIk+I57VPikEm6GLeAIQ2S1LLn9k2sh31otbvTZ+y7H5zNWa12QIBUpj7CK9CQj3hoEIe5N3wGQM8aWJcB0OdTsHtAH1tLHuFuH8OeYwILKa8aisUd/Fgig3O8fMempmLopTQfkKrJ0R74m9/Jxz0GaZXpQuhNkOagjv/gc5ttrp1aO27fx8nHpWeH7QXrU3c55TcqQGSR9n2Hu4hq3EgAv4Y4d2PyV8IFDUk9Y5R6NWpFRy5BAaXFTj6x3nBX5icmwH+ViumeDrOmUwqJGAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 100994,
+  "completion_tokens": 449,
+  "total_tokens": 101443,
+  "cost": 0.0516195,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0516195,
+   "upstream_inference_prompt_cost": 0.050497,
+   "upstream_inference_completions_cost": 0.0011225
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 63,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

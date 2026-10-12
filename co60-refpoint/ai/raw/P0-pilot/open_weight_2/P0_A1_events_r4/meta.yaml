@@ -1,0 +1,101 @@
+slot: open_weight_2
+provider: open-weight via OpenRouter (pinned weights)
+api: openai_compatible
+model_requested: qwen/qwen3.7-flash
+settings:
+  reasoning:
+    effort: high
+  usage:
+    include: true
+condition: A1
+task: events
+config: P0
+prompt_version: v1
+prompt_sha256:
+  system_A1.txt: e06e9a5ea06c2f5ca29739818f324713f2dbbf775f019c11018d1aa7ef5416b8
+  task_events_P0.txt: 994719c1edf5944e6dac9acaa42f55a5117a6c605f5bcfb8316e676dfdbbc913
+started_utc: '2026-10-12T14:51:06Z'
+turns:
+- n: 1
+  usage:
+    input_tokens: 1551
+    output_tokens: 3981
+    reasoning_tokens: 2828
+  stop: tool_calls
+  wall_s: 51.27
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 1
+- n: 2
+  usage:
+    input_tokens: 17272
+    output_tokens: 1380
+    reasoning_tokens: 192
+  stop: tool_calls
+  wall_s: 15.59
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 1
+- n: 3
+  usage:
+    input_tokens: 29400
+    output_tokens: 1458
+    reasoning_tokens: 544
+  stop: tool_calls
+  wall_s: 16.52
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 1
+- n: 4
+  usage:
+    input_tokens: 42717
+    output_tokens: 615
+    reasoning_tokens: 551
+  stop: tool_calls
+  wall_s: 8.46
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 1
+- n: 5
+  usage:
+    input_tokens: 54566
+    output_tokens: 12130
+    reasoning_tokens: 669
+  stop: stop
+  wall_s: 61.59
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 0
+- n: 6
+  usage:
+    input_tokens: 61953
+    output_tokens: 2124
+    reasoning_tokens: 1229
+  stop: tool_calls
+  wall_s: 16.17
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 1
+- n: 7
+  usage:
+    input_tokens: 64166
+    output_tokens: 11077
+    reasoning_tokens: 128
+  stop: stop
+  wall_s: 48.86
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 0
+tool_calls: 5
+retries: 1
+outcome: parse_failure
+model_reported: qwen/qwen3.7-flash
+first_parse_errors:
+- '$.events: 136 items, expected 200-200'
+parse_errors:
+- '$.events: 136 items, expected 200-200'
+finished_utc: '2026-10-12T14:54:46Z'
+usage_total:
+  input_tokens: 271625
+  output_tokens: 32765
+  reasoning_tokens: 6141

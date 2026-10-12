@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791816812-9OSaUirAviLW8nDLRn1S",
+ "object": "chat.completion",
+ "created": 1791816812,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "GMICloud",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I forgot to define rho and mec2 in the second cell. Let me fix and consolidate.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_df73936af197432a86a517b6",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nimport math\\nimport time\\n\\nrho = 1.0\\nmec2 = 0.511\\n\\n# ===== ELECTRON STOPPING POWER AND RANGE DATA FOR WATER (ICRU 49) =====\\nE_sp = np.array([0.010, 0.015, 0.020, 0.030, 0.050, 0.070, 0.100, 0.150, 0.200, \\n                 0.300, 0.400, 0.500, 0.600, 0.700, 0.800, 0.900, 1.000, \\n                 1.250, 1.500, 1.750, 2.000, 2.500, 3.000])\\nS_col = np.array([23.14, 16.87, 13.29, 9.67, 6.47, 5.10, 4.10, 3.25, 2.85,\\n                  2.40, 2.16, 2.03, 1.95, 1.90, 1.87, 1.86, 1.85,\\n                  1.86, 1.86, 1.89, 1.92, 2.00, 2.08])\\nS_rad = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,\\n                  0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0156,\\n                  0.0296, 0.0477, 0.071, 0.099, 0.155, 0.220])\\nR_csda = np.array([0.000257, 0.000506, 0.000812, 0.00158, 0.00438, 0.00786, 0.0142, 0.0265, 0.0435,\\n                   0.0858, 0.135, 0.181, 0.235, 0.286, 0.342, 0.388, 0.437,\\n                   0.618, 0.712, 0.856, 1.01, 1.40, 1.80])\\n\\ndef S_col_water(E):\\n    E = np.clip(E, E_sp[0], E_sp[-1])\\n    return float(np.interp(E, E_sp, S_col)) * rho\\n\\ndef S_rad_water(E):\\n    E = np.clip(E, E_sp[0], E_sp[-1])\\n    return float(np.interp(E, E_sp, S_rad)) * rho\\n\\ndef S_total_water(E):\\n    return S_col_water(E) + S_rad_water(E)\\n\\ndef R_csda_water(T):\\n    if T <= E_sp[0]: return R_csda[0]\\n    if T >= E_sp[-1]: return R_csda[-1]\\n    logT = math.log(T)\\n    logE = np.log(E_sp)\\n    logR = np.log(R_csda)\\n    return math.exp(float(np.interp(logT, logE, logR)))\\n\\nfor T in [0.05, 0.1, 0.5, 1.0, 2.0]:\\n    print(f\\\"T={T:.2f} MeV: S_col={S_col_water(T):.3f} MeV/cm, S_rad={S_rad_water(T):.5f} MeV/cm, R={R_csda_water(T):.4f} cm\\\")\\n\\n# === ELECTRON TRANSPORT ===\\ncyl_radius = 1.0\\ncyl_half_z = 0.1\\ncyl_z_min = 9.9\\ncyl_z_max = 10.1\\ncyl_volume = np.pi * cyl_radius**2 * 2*cyl_half_z\\nphantom_half = 15.0\\nphantom_depth = 30.0\\nelectron_energy_edges = np.array([0.01, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1, 1.05, 1.1, 1.15, 1.2, 1.4])\\n\\ndef is_in_cylinder(x, y, z):\\n    return (cyl_z_min <= z <= cyl_z_max) and (x*x + y*y <= cyl_radius*cyl_radius + 1e-9)\\n\\ndef segment_cylinder_track_e(p, u, s_max):\\n    p = np.asarray(p, dtype=float)\\n    u = np.asarray(u, dtype=float)\\n    tz_in, tz_out = None, None\\n    if abs(u[2]) > 1e-12:\\n        t1 = (cyl_z_min - p[2]) / u[2]\\n        t2 = (cyl_z_max - p[2]) / u[2]\\n        tz_in, tz_out = min(t1,t2), max(t1,t2)\\n    a = u[0]**2 + u[1]**2\\n    b = 2*(p[0]*u[0] + p[1]*u[1])\\n    c = p[0]**2 + p[1]**2 - cyl_radius**2\\n    ts_in, ts_out = None, None\\n    if a > 1e-12:\\n        disc = b*b - 4*a*c\\n        if disc >= 0:\\n            sd = math.sqrt(disc)\\n            t1 = (-b - sd)/(2*a)\\n            t2 = (-b + sd)/(2*a)\\n            ts_in, ts_out = t1, t2\\n    enters = []\\n    if tz_in is not None:\\n        xp = p[0] + tz_in*u[0]; yp = p[1] + tz_in*u[1]\\n        if xp*xp + yp*yp <= cyl_radius*cyl_radius + 1e-8:\\n            enters.append(tz_in)\\n    if ts_in is not None:\\n        zp = p[2] + ts_in*u[2]\\n        if cyl_z_min <= zp <= cyl_z_max + 1e-8:\\n            enters.append(ts_in)\\n    if not enters:\\n        if is_in_cylinder(p[0], p[1], p[2]):\\n            t_entry = 0.0\\n        else:\\n            return 0.0\\n    else:\\n        t_entry = min(enters)\\n        if t_entry > s_max: return 0.0\\n        t_entry = max(0.0, t_entry)\\n    exits = []\\n    if tz_out is not None:\\n        xp = p[0] + tz_out*u[0]; yp = p[1] + tz_out*u[1]\\n        if xp*xp + yp*yp <= cyl_radius*cyl_radius + 1e-8:\\n            exits.append(tz_out)\\n    if ts_out is not None:\\n        zp = p[2] + ts_out*u[2]\\n        if cyl_z_min - 1e-8 <= zp <= cyl_z_max + 1e-8:\\n            exits.append(ts_out)\\n    t_exit = min(exits) if exits else s_max\\n    if t_exit > s_max: t_exit = s_max\\n    track = t_exit - t_entry\\n    if track < 0: return 0.0\\n    pmid = p + u * (t_entry + t_exit)/2\\n    if not is_in_cylinder(pmid[0], pmid[1], pmid[2]):\\n        return 0.0\\n    return track\\n\\ndef multiple_scatter_angle(E, s):\\n    if E < 0.02: return 1.0\\n    beta_pc = math.sqrt(E*(E+2*mec2))\\n    X0 = 36.1\\n    x_over_X0 = max(s / X0, 1e-6)\\n    theta_0 = 13.6 / beta_pc * math.sqrt(x_over_X0) * (1 + 0.038*math.log(x_over_X0))\\n    theta = abs(np.random.normal(0, theta_0))\\n    return math.cos(theta)\\n\\ndef rotate_dir_e(u, ct_sc, phi):\\n    sin_t = math.sqrt(max(0.0, 1 - ct_sc*ct_sc))\\n    u = np.asarray(u, dtype=float)\\n    if abs(u[2]) < 0.99:\\n        n_perp = np.cross(u, np.array([0.0, 0.0, 1.0]))\\n    else:\\n        n_perp = np.cross(u, np.array([1.0, 0.0, 0.0]))\\n    n_perp = n_perp / np.linalg.norm(n_perp)\\n    n_perp2 = np.cross(u, n_perp)\\n    n_perp2 = n_perp2 / np.linalg.norm(n_perp2)\\n    u_new = ct_sc * u + sin_t * (math.cos(phi) * n_perp + math.sin(phi) * n_perp2)\\n    return u_new / np.linalg.norm(u_new)\\n\\ndef make_elec_scoring():\\n    return {'e_fluence': 0.0, 'e_spec': np.zeros(25), 'e_ang': np.zeros(10), 'e_dose': 0.0}\\n\\ndef transport_electron(p0, u0, T0, scoring_elec, ds=0.02):\\n    p = p0.copy()\\n    u = u0.copy()\\n    T = T0\\n    delta_rays = []\\n    \\n    if T < 0.010: return delta_rays\\n    range_max = R_csda_water(T)\\n    max_steps = int(1.5 * range_max / ds) + 50\\n    if max_steps > 5000: max_steps = 5000\\n    \\n    for _ in range(max_steps):\\n        if T < 0.010: break\\n        s = min(ds, range_max)\\n        L = segment_cylinder_track_e(p, u, s)\\n        if L > 1e-12:\\n            scoring_elec['e_fluence'] += L\\n            idx = np.searchsorted(electron_energy_edges, T, side='right') - 1\\n            if 0 <= idx < 25:\\n                scoring_elec['e_spec'][idx] += L\\n            idx_a = int((u[2]+1)/0.2); idx_a = min(9, max(0, idx_a))\\n            scoring_elec['e_ang'][idx_a] += L\\n            scoring_elec['e_dose'] += L * S_col_water(T)\\n        \\n        new_p = p + s*u\\n        if new_p[2] < 0 or new_p[2] > phantom_depth: break\\n        if abs(new_p[0]) > phantom_half or abs(new_p[1]) > phantom_half: break\\n        p = new_p\\n        \\n        dE = S_total_water(T) * s\\n        T_new = T - dE\\n        if T_new < 0.010: break\\n        T = T_new\\n        \\n        ct_scat = multiple_scatter_angle(T, s)\\n        phi = np.random.rand() * 2 * np.pi\\n        u = rotate_dir_e(u, ct_scat, phi)\\n    \\n    return delta_rays\\n\\n# Test with electrons starting near cylinder\\nscoring_elec_test = make_elec_scoring()\\nt0 = time.time()\\nfor i in range(200):\\n    p0 = np.array([0.0, 0.0, 9.8])\\n    u0 = np.array([0.0, 0.0, 1.0])\\n    deltas = transport_electron(p0, u0, 1.0, scoring_elec_test)\\nprint(f\\\"200 electrons ({time.time()-t0:.2f}s)\\\")\\nprint(f\\\"Fluence track: {scoring_elec_test['e_fluence']:.2f} cm\\\")\\nprint(f\\\"Dose: {scoring_elec_test['e_dose']:.2f} MeV\\\")\\nprint(f\\\"Expected approximate: ~{200*0.2*some_factor:.0f} cm (if no scattering)\\\")\\n\\n# Test with electrons at angle\\nscoring_elec_test2 = make_elec_scoring()\\nfor i in range(200):\\n    p0 = np.array([0.0, 0.0, 9.8])\\n    u0 = np.array([0.3, 0.0, math.sqrt(1-0.09)])\\n    transport_electron(p0, u0, 1.0, scoring_elec_test2)\\nprint(f\\\"\\\\nAngled electrons: fluence=\\\", scoring_elec_test2['e_fluence'])\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I forgot to define rho and mec2 in the second cell. Let me fix and consolidate.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 123126,
+  "completion_tokens": 3025,
+  "total_tokens": 126151,
+  "cost": 0.003867136,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 108350,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.003867136,
+   "upstream_inference_prompt_cost": 0.003316586,
+   "upstream_inference_completions_cost": 0.00055055
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 19,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791820319-5utFEcoconcJEKePX8WO",
+ "object": "chat.completion",
+ "created": 1791820319,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "With 1e6 photons taking 5.5s, I can scale up to 2e7 in about 2 minutes, which is reasonable. Checking the normalized fluence values, the scattered contribution comes out to 0.397 and the primary to 0.614, which matches expectations.\n\nThe scatter-to-primary ratio of about 0.65 seems physically reasonable \u2014 for 2 MeV beams at 10 cm depth, dose scatter fractions of 0.3-0.4 are typical, so this is in a plausible range. I also want to double check the interaction counting: primary interactions per photon should be track-length times attenuation coefficient, which checks out at 156 interactions per million photons.\n\nI'll plan to run the full 2e7 photon simulation as a batch of smaller runs (maybe 20 batches of 1e6 with different seeds) in a single call, keeping total runtime around 2 minutes and memory manageable.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01MxB2kqh6roY3Ns2b2nUMW1",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport sys, time, pickle; sys.path.insert(0,'/tmp/work')\\nimport numpy as np, mcph, mcph2\\nt=time.time()\\ntot=None; births=[]\\nNB=20; NP=1000000\\nfor b in range(NB):\\n    r=mcph2.run(NP,100+b)\\n    births.append(r['births'])\\n    if tot is None:\\n        tot={k:(r[k] if not isinstance(r[k],dict) else {kk:vv.copy() for kk,vv in r[k].items()}) for k in ['flu_E','flu_c','en_fl','intr','etr','Qslab']}\\n    else:\\n        for k in ['flu_E','flu_c','en_fl','Qslab']: tot[k]=tot[k]+r[k]\\n        for k in ['intr','etr']:\\n            for kk in tot[k]: tot[k][kk]=tot[k][kk]+r[k][kk]\\ntot['births']=np.vstack(births); tot['N']=NB*NP\\npickle.dump(tot,open('/tmp/work/tot.pkl','wb'))\\nprint(time.time()-t, tot['births'].shape)\\nprint(tot['flu_E'].sum(axis=1)/tot['N']/(mcph.VCYL*mcph.PHI0_PER_SRC))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "With 1e6 photons taking 5.5s, I can scale up to 2e7 in about 2 minutes, which is reasonable. Checking the normalized fluence values, the scattered contribution comes out to 0.397 and the primary to 0.614, which matches expectations.\n\nThe scatter-to-primary ratio of about 0.65 seems physically reasonable \u2014 for 2 MeV beams at 10 cm depth, dose scatter fractions of 0.3-0.4 are typical, so this is in a plausible range. I also want to double check the interaction counting: primary interactions per photon should be track-length times attenuation coefficient, which checks out at 156 interactions per million photons.\n\nI'll plan to run the full 2e7 photon simulation as a batch of smaller runs (maybe 20 batches of 1e6 with different seeds) in a single call, keeping total runtime around 2 minutes and memory manageable.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "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.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 98489,
+  "completion_tokens": 1170,
+  "total_tokens": 99659,
+  "cost": 0.00164459,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 97839,
+   "cache_write_tokens": 648,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00164459,
+   "upstream_inference_prompt_cost": 0.00105959,
+   "upstream_inference_completions_cost": 0.000585
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 692,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

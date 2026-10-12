@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791817909-iZmyBz2neECo1Mujs3yc",
+ "object": "chat.completion",
+ "created": 1791817909,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "The source list has about 3.6\u00d710\u2075 samples and a total interaction rate consistent with the tallies. Now the Layer 4 electron transport: CSDA energy loss with ESTAR stopping powers, M\u00f8ller delta rays, and Highland multiple scattering.",
+    "refusal": null,
+    "reasoning": "I'm double-checking the pair production weighting \u2014 confirming the electron and positron samples each carry the correct total weight matching the production rate, and verifying that the scattered pair weight properly incorporates the attenuation factor consistent with how I handled Compton and photoelectric weights.\n\nI'm sanity-checking the total interaction rates by summing contributions from scattering (Compton, photoelectric, pair) and comparing against the primary beam attenuation rate, getting numbers in the right ballpark before moving forward.\n\nNow I'm moving on to writing the electron transport code.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01CkdQ5egVyGHE114YWWio6d",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\ncode7 = r'''\\nimport numpy as np, sys\\nsys.path.insert(0,'/tmp/work')\\nfrom phys import *\\nfrom deposit import Yrad\\nME=0.51099895\\nNE=3.343e23   # electrons per cm^3 water\\nK_M=2*np.pi*re*re*ME   # MeV cm^2\\nX0=36.08\\nEBe=np.array([0.01,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1,1.05,1.1,1.15,1.2,1.4])\\nCB=np.array([-1,-0.8,-0.6,-0.4,-0.2,0,0.2,0.4,0.6,0.8,1.0])\\n# ---- Moller tables: eps grid, E rows\\nDEL=0.01\\nEPS=np.exp(np.linspace(np.log(1e-3),np.log(0.5),1500))\\nELG=np.exp(np.linspace(np.log(0.0105),np.log(2.5),300))\\ndef moller_f(eps,E):\\n    tau=E/ME\\n    return 1/eps**2+1/(1-eps)**2+(tau/(tau+2))**2-(2*tau+1)/((tau+1)**2)/(eps*(1-eps))\\ndef build_moller():\\n    K=len(ELG); J=len(EPS)\\n    cdf=np.zeros((K,J)); lam=np.zeros(K)\\n    for k,E in enumerate(ELG):\\n        beta2=1-(ME/(E+ME))**2\\n        epmin=DEL/E\\n        m=(EPS>=epmin)&(EPS<=0.5)\\n        if m.sum()<3: continue\\n        pref=K_M/(beta2*E)\\n        f=np.where(m, moller_f(EPS,E)*pref, 0.0)\\n        # cumulative integral over eps (trapezoid), normalized later\\n        cum=np.concatenate([[0],np.cumsum(0.5*(f[1:]+f[:-1])*np.diff(EPS))])\\n        lam[k]=cum[-1]*NE\\n        if cum[-1]>0: cdf[k]=cum/cum[-1]\\n        else: cdf[k]=0\\n    return cdf,lam\\nCDF,LAM=build_moller()\\nJ=len(EPS)\\nOFF=(CDF+1.5*np.arange(len(ELG))[:,None]).ravel()\\ndef sample_delta_T(E,rng):\\n    \\\"\\\"\\\"E: parent energies (array). returns T of delta rays (>= DEL) for given parent; uses nearest ELG row\\\"\\\"\\\"\\n    k=np.clip(np.round((np.log(E)-np.log(ELG[0]))/(np.log(ELG[1])-np.log(ELG[0]))).astype(int),0,len(ELG)-1)\\n    u=rng.random(len(E))\\n    g=np.searchsorted(OFF,u+1.5*k)\\n    j=g-k*J\\n    j=np.clip(j,1,J-1)\\n    c0=CDF[k,j-1]; c1=CDF[k,j]\\n    t=np.where(c1>c0,(u-c0)/np.maximum(c1-c0,1e-300),0.5)\\n    lg0=np.log(EPS[j-1]); lg1=np.log(EPS[j])\\n    eps=np.exp(lg0+t*(lg1-lg0))\\n    return eps*E\\ndef lam_of_E(E):\\n    k=np.clip(np.round((np.log(E)-np.log(ELG[0]))/(np.log(ELG[1])-np.log(ELG[0]))).astype(int),0,len(ELG)-1)\\n    return LAM[k]\\ndef rot_dir(u,cth,phi):\\n    return rotate(u,cth,phi)\\ndef transport(T0,u0,w0,ps0,rng,maxit=5000):\\n    \\\"\\\"\\\"electron transport (CSDA + Moller deltas + Highland MS) in infinite medium.\\n       tallies per unit weight; returns dictionary\\\"\\\"\\\"\\n    E=T0.copy(); u=u0.copy(); w=w0.copy(); ps=ps0.copy(); isd=np.zeros(len(E),bool)\\n    tb=np.zeros(len(EBe)); tbd=np.zeros(len(EBe)); tcos=np.zeros(10); tcosd=np.zeros(10)\\n    tot_track=0.0; del_track=0.0; sumE=0.0; sumSc=0.0; sumSr=0.0\\n    tot_ps_track=0.0\\n    it=0\\n    nd_created=0\\n    # losses for dose check\\n    Lcol=0.0\\n    while len(E)>0 and it<maxit:\\n        it+=1\\n        keep=E>=DEL\\n        if not keep.all():\\n            E=E[keep];u=u[keep];w=w[keep];ps=ps[keep];isd=isd[keep]\\n            if len(E)==0: break\\n        S=Stot(E); Sc=Scol(E); Sr=Srad(E)\\n        dE=0.03*E\\n        ds=dE/S\\n        Em=E-dE/2\\n        # tallies\\n        wd=w*ds\\n        bi=np.digitize(Em,EBe)-1   # -1 below 0.01 (never), 25 = overflow\\n        ok=(bi>=0)&(bi<25)\\n        np.add.at(tb,bi[ok],wd[ok])\\n        np.add.at(tbd,bi[ok],wd[ok]*isd[ok])\\n        cb=np.clip(np.digitize(u[:,2],CB)-1,0,9)\\n        np.add.at(tcos,cb,wd)\\n        np.add.at(tcosd,cb,wd*isd)\\n        tot_track+=wd.sum(); del_track+=(wd*isd).sum(); sumE+=(wd*Em).sum()\\n        sumSc+=(wd*Sc).sum(); sumSr+=(wd*Sr).sum()\\n        # deltas\\n        lam=lam_of_E(E)*ds\\n        nd=rng.poisson(lam)\\n        idx=np.repeat(np.arange(len(E)),nd)\\n        # parents' energies after step\\n        Enew=E-dE\\n        # multiple scattering on parents\\n        nd_tot=len(idx)\\n        if nd_tot>0:\\n            Tp=sample_delta_T(E[idx],rng)\\n            # keep T < E/2 (Moller max) automatically; also T< dE allowed\\n            Tsum=np.zeros(len(E)); np.add.at(Tsum,idx,Tp)\\n            cth=np.sqrt(np.clip(Tp*(E[idx]+2*ME)/(E[idx]*(Tp+2*ME)),0,1))\\n            phi=rng.uniform(0,2*np.pi,nd_tot)\\n            ud=rotate(u[idx],cth,phi)\\n            # parent direction update by momentum conservation\\n            pp=np.sqrt(E*(E+2*ME)); pd=np.sqrt(Tp*(Tp+2*ME))\\n            # update parent direction for each parent with deltas: approximate using summed momentum\\n            pvec=np.zeros_like(u); np.add.at(pvec,idx,pd[:,None]*ud)\\n            newp=pp[:,None]*u-pvec\\n            nrm=np.linalg.norm(newp,axis=1)\\n            good=(nrm>0)&(np.repeat(True,len(E)))\\n            u=np.where((nrm>1e-12)[:,None], newp/np.maximum(nrm,1e-300)[:,None], u)\\n            # new delta electrons\\n            Dw=w[idx]; Dps=ps[idx]\\n            nd_created+=nd_tot\\n        else:\\n            Tp=np.zeros(0)\\n        # Multiple scattering for parents (after momentum update) \\n        x=ds\\n        pc=np.sqrt(E*(E+2*ME)); beta=pc/(E+ME)\\n        th0=13.6/(beta*pc)*np.sqrt(np.maximum(x,1e-30)/X0)*(1+0.038*np.log(np.maximum(x,1e-30)/X0))\\n        th0=np.clip(th0,0,np.pi)\\n        e1,e2=_orth(u)\\n        g1=rng.normal(size=len(E))*th0; g2=rng.normal(size=len(E))*th0\\n        un=u+g1[:,None]*e1+g2[:,None]*e2\\n        u=un/np.linalg.norm(un,axis=1,keepdims=True)\\n        # Enew\\n        E=Enew\\n        isd_p=isd\\n        # append deltas\\n        if nd_tot>0:\\n            # delta electrons: energies Tp, directions ud (already computed before ms, fine)\\n            E=np.concatenate([E,Tp]); u=np.concatenate([u,ud]); w=np.concatenate([w,Dw]); ps=np.concatenate([ps,Dps]); isd=np.concatenate([isd,np.ones(nd_tot,bool)])\\n    Lcol=sumSc\\n    return dict(tb=tb,tbd=tbd,tcos=tcos,tcosd=tcosd,tot=tot_track,delt=del_track,sumE=sumE,Sc=sumSc,Sr=sumSr,nd=nd_created,it=it)\\ndef _orth(d):\\n    a=np.where(np.abs(d[:,0:1])<0.9, np.array([[1.,0,0]]), np.array([[0,1.,0]]))\\n    e1=np.cross(d,a); e1/=np.linalg.norm(e1,axis=1,keepdims=True)\\n    e2=np.cross(d,e1)\\n    return e1,e2\\n'''\\nopen('/tmp/work/electrons.py','w').write(code7)\\nimport sys, importlib, time\\nsys.path.insert(0,'/tmp/work')\\nimport electrons\\nprint(\\\"LAM sample\\\", electrons.LAM[::60])\\nrng=np.random.default_rng(3)\\nt=time.time()\\nr=electrons.transport(np.full(2000,1.0),np.tile([[0,0,1.]],(2000,1)),np.ones(2000),np.zeros(2000,bool),rng)\\nprint(time.time()-t, r['it'], r['tot']/2000, r['delt']/r['tot'], r['nd']/2000)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I'm double-checking the pair production weighting \u2014 confirming the electron and positron samples each carry the correct total weight matching the production rate, and verifying that the scattered pair weight properly incorporates the attenuation factor consistent with how I handled Compton and photoelectric weights.\n\nI'm sanity-checking the total interaction rates by summing contributions from scattering (Compton, photoelectric, pair) and comparing against the primary beam attenuation rate, getting numbers in the right ballpark before moving forward.\n\nNow I'm moving on to writing the electron transport code.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "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.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 119828,
+  "completion_tokens": 4166,
+  "total_tokens": 123994,
+  "cost": 0.070329,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.070329,
+   "upstream_inference_prompt_cost": 0.059914,
+   "upstream_inference_completions_cost": 0.010415
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 535,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

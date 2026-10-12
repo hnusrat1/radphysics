@@ -1,0 +1,9 @@
+{
+ "stdout": "Calculating Klein-Nishina distribution for 2.0 MeV photons\nalpha = 3.9139\nIntegrated Klein-Nishina: 0.586687\n",
+ "stderr": "Traceback (most recent call last):\n  File \"/tmp/work/_call_007.py\", line 88, in <module>\n    num_int, _ = quad(weighted_scattered_E, -1, 1)\n                 ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/venv/lib/python3.13/site-packages/scipy/integrate/_quadpack_py.py\", line 479, in quad\n    retval = _quad(func, a, b, args, full_output, epsabs, epsrel, limit,\n                   points)\n  File \"/opt/venv/lib/python3.13/site-packages/scipy/integrate/_quadpack_py.py\", line 626, in _quad\n    return _quadpack._qagse(func,a,b,args,full_output,epsabs,epsrel,limit)\n           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: weighted_scattered_E() missing 1 required positional argument: 'cos_theta'\n",
+ "exit_code": 1,
+ "timed_out": false,
+ "wall_s": 0.5,
+ "stdout_truncated": false,
+ "stderr_truncated": false
+}

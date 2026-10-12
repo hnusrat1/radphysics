@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791819931-Q6M4TF0wB6jZmFq35I5L",
+ "object": "chat.completion",
+ "created": 1791819931,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Relace",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "So 10000 dots (10k) was not truncated. Let's try 100k characters.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_448b74aaf95849e9b5df4b49",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import sys\\nsys.stdout.write(\\\".\\\"*100000)\\nsys.stdout.flush()\\nprint(\\\"done\\\")\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "So 10000 dots (10k) was not truncated. Let's try 100k characters.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 95745,
+  "completion_tokens": 85,
+  "total_tokens": 95830,
+  "cost": 0.00298115,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 95488,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00298115,
+   "upstream_inference_prompt_cost": 0.00287235,
+   "upstream_inference_completions_cost": 0.0001088
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 17,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

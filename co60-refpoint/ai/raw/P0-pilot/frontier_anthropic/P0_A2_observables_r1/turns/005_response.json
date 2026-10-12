@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791817682-CcdovyfSX6IzYLM1Wq5u",
+ "object": "chat.completion",
+ "created": 1791817682,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "The KN sampler and cross-section lookups behave sensibly (mean scattered fraction \u22480.47 at 2 MeV). Now the photon transport loop with segment recording.",
+    "refusal": null,
+    "reasoning": "I'm checking the mean fraction of scattered photon energy from Compton scattering at 2 MeV against known mass energy-transfer coefficient ratios for water, trying to verify the approximate 0.47 value.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_018P8qoYtVHLGrRUsDZtMaPX",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\ncode2 = r'''\\nimport numpy as np\\nfrom phys import *\\nZMIN,ZMAX=0.0,30.0\\nHALF=15.0\\ndef run_photons(N, seed=0, Emin=0.01, maxcoll=200):\\n    rng=np.random.default_rng(seed)\\n    # generate primaries: uniform in solid angle in pyramid: sample tan-plane uniform, accept cos^3\\n    n_gen=0; tx=[];ty=[]\\n    need=N\\n    tx_all=[];ty_all=[]\\n    while sum(len(a) for a in tx_all)<N:\\n        m=int(N*1.2)+100\\n        a=rng.uniform(-0.05,0.05,m); b=rng.uniform(-0.05,0.05,m)\\n        cos3=(1+a*a+b*b)**-1.5\\n        acc=rng.random(m)<cos3\\n        tx_all.append(a[acc]); ty_all.append(b[acc])\\n    tx=np.concatenate(tx_all)[:N]; ty=np.concatenate(ty_all)[:N]\\n    d=np.stack([tx,ty,np.ones(N)],axis=1); d/=np.linalg.norm(d,axis=1,keepdims=True)\\n    # entry at z=0: position = 100*tan\\n    r=np.stack([100*tx,100*ty,np.zeros(N)],axis=1)\\n    # primaries start at the surface: note start at z=0 (entry); ray from source\\n    E=np.full(N,2.0)\\n    flag=np.zeros(N,bool)  # scattered flag\\n    # active photon arrays\\n    seg_r=[];seg_d=[];seg_E=[];seg_f=[];seg_l=[]\\n    # annihilation photons appended\\n    act = dict(r=r,d=d,E=E,f=flag)\\n    alive=np.ones(len(E),bool)\\n    nproc=dict(coh=0,comp=0,pe=0,pair=0)\\n    it=0\\n    while act['E'].size>0 and it<maxcoll:\\n        it+=1\\n        r=act['r']; d=act['d']; En=act['E']; f=act['f']\\n        coh,inc,pe,pr,mt = mu_all(En)\\n        # distance to exit box\\n        with np.errstate(divide='ignore', invalid='ignore'):\\n            tx_=np.where(d[:,0]>0,(HALF-r[:,0])/d[:,0],np.where(d[:,0]<0,(-HALF-r[:,0])/d[:,0],np.inf))\\n            ty_=np.where(d[:,1]>0,(HALF-r[:,1])/d[:,1],np.where(d[:,1]<0,(-HALF-r[:,1])/d[:,1],np.inf))\\n            tz_=np.where(d[:,2]>0,(ZMAX-r[:,2])/d[:,2],np.where(d[:,2]<0,(ZMIN-r[:,2])/d[:,2],np.inf))\\n        texit=np.minimum(np.minimum(tx_,ty_),tz_)\\n        s=-np.log(rng.random(En.size))/mt\\n        leave = s>=texit\\n        L = np.where(leave,texit,s)\\n        seg_r.append(r); seg_d.append(d); seg_E.append(En); seg_f.append(f); seg_l.append(L)\\n        # interacting ones\\n        keep=~leave\\n        idx=np.where(keep)[0]\\n        if idx.size==0:\\n            act={'r':np.zeros((0,3)),'d':np.zeros((0,3)),'E':np.zeros(0),'f':np.zeros(0,bool)}\\n            break\\n        rn=r[idx]+s[idx,None]*d[idx]\\n        dn=d[idx]; En_=En[idx]; fn=f[idx]\\n        u=rng.random(idx.size)*mt[idx]\\n        c1=coh[idx]; c2=c1+inc[idx]; c3=c2+pe[idx]\\n        isC = (u>=c1)&(u<c2)\\n        isR = u<c1\\n        isP = (u>=c2)&(u<c3)\\n        isPair = u>=c3\\n        # Compton\\n        newr=[];newd=[];newE=[];newf=[]\\n        if isC.any():\\n            m=isC\\n            ep,ct = sample_KN(En_[m],rng)\\n            phi=rng.uniform(0,2*np.pi,m.sum())\\n            nd=rotate(dn[m],ct,phi)\\n            newr.append(rn[m]); newd.append(nd); newE.append(En_[m]*ep); newf.append(np.ones(m.sum(),bool))\\n            nproc['comp']+=m.sum()\\n        if isR.any():\\n            m=isR\\n            ct=sample_Rayleigh_cos(m.sum(),rng)\\n            phi=rng.uniform(0,2*np.pi,m.sum())\\n            nd=rotate(dn[m],ct,phi)\\n            newr.append(rn[m]); newd.append(nd); newE.append(En_[m]); newf.append(np.ones(m.sum(),bool))\\n            nproc['coh']+=m.sum()\\n        if isP.any():\\n            nproc['pe']+=isP.sum()\\n        if isPair.any():\\n            m=isPair\\n            nproc['pair']+=m.sum()\\n            # two annihilation photons back to back, isotropic\\n            cz=rng.uniform(-1,1,m.sum()); ph=rng.uniform(0,2*np.pi,m.sum())\\n            sz=np.sqrt(1-cz*cz)\\n            v=np.stack([sz*np.cos(ph),sz*np.sin(ph),cz],axis=1)\\n            newr += [rn[m],rn[m]]; newd += [v,-v]; newE += [np.full(m.sum(),0.511),np.full(m.sum(),0.511)]\\n            newf += [np.ones(m.sum(),bool),np.ones(m.sum(),bool)]\\n        # Low energy absorb: photons with E< Emin are absorbed at the collision (handled: they are not continued unless Compton/Rayleigh)\\n        if newr:\\n            nr=np.concatenate(newr); nd_=np.concatenate(newd); ne=np.concatenate(newE); nf=np.concatenate(newf)\\n            good = ne>=Emin\\n            act={'r':nr[good],'d':nd_[good],'E':ne[good],'f':nf[good]}\\n        else:\\n            act={'r':np.zeros((0,3)),'d':np.zeros((0,3)),'E':np.zeros(0),'f':np.zeros(0,bool)}\\n    SR=np.concatenate(seg_r); SD=np.concatenate(seg_d); SE=np.concatenate(seg_E); SF=np.concatenate(seg_f); SL=np.concatenate(seg_l)\\n    return dict(r=SR,d=SD,E=SE,f=SF,l=SL,N=N,nproc=nproc,iters=it)\\n'''\\nopen('/tmp/work/photon.py','w').write(code2)\\nimport importlib, photon\\nimportlib.reload(phys); importlib.reload(photon)\\nimport time\\nt=time.time()\\nres=photon.run_photons(100000, seed=1)\\nprint(time.time()-t, len(res['E']), res['nproc'], res['iters'], res['f'].mean())\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I'm checking the mean fraction of scattered photon energy from Compton scattering at 2 MeV against known mass energy-transfer coefficient ratios for water, trying to verify the approximate 0.47 value.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS9wgKEAgSGAI4AUIIdGhpbmtpbmcSDAI2AEs0WjGEIh2uXhoMmbiZTTsC5zkwrMDDIjBJ9dBbG+uWjdAJmF4W8A3dW0rFprLbUfJ24De/N3MMrdQ9frSvdKBLvhCXLJH9bzoqlAj4qhHbD5hK66osPxKERrI9Jc+y4vVfzHqSH83Rnx6rqX7HE4jDz3IQT1kTipGlabTQgVlvCIKvs0sKq78KD/tcVpWIsS8r5CtoHbgDQLrgmkSc6bS1GkQqQLOPeabfYxlYdVnxwLIRW25Iq6nu12T7S6sgAS1oywRVlZcoYpHkodnGG+Gx9JLTL/ba48V90RhoeIM9TsWiqtBL6QQwfFGxuyUJBbpg1G4YFePoEwzefKIJW636sZd3P5gFev8Ir283TXK4xhiJooO8pgdURr9WIxkJ7RimjiF1soQnV8MxQR+6A65BTNs3ySzf0ZQEJ03p7tl/AhuVCJaRSev+OqTP5jYmnR8lN+lqxM+8xGN9qJX/edOZFhe9KhA2kmFi97e8Nnd0gjv1Shcgn9KwdotUIyDfAtxRaURiH8M1rHT1XtZchFtIrg/UzcDXClB0ZEz6Msg0idskkEz/mPmR8lM2UeADIjKyL5pbAzLos38UGdhqs7uxSVMNtpd8D6RQloIqsUM9oGT+hB1Vig7r18+7e+e+5SEHhHB55vqlgCe0rIiqRLaog2XuYqYSKLuGsDLSLWSpnny4f/nGWVm22sH5InN0+TVpO0EbxF+uMtt7av3PWqHOp0c8UBA4lnURnyu7IYQFxSb+O9qrASxaqzfxLSMxHi3u6jSOilfJPzqyN+oh8cMJmjKXXWP+nutPkKhOSu8842FMnjUaeej1fxbXWuNT9Qo2zDopF2blN1sTsgHgbKlAEEPJlcgbMhB5V3EuPIAs9RxPLEL9+HT/PZjkKorKLfVqoImUkUDmbqEAGtKt7XzOtewyy10PIYq4AZH/DU5PvY+xrCXyJDaiiC33ECA9M9aX1LLJUkstD5uBAmZnA2tdw7k7Yi84bAICP8JCTbIBwU1IDUX2PA/or/PHTdxtGtGfrqiMoYh1lR0dmF2CKr5+wjJGg+X0tnCu1vTPwAFKhzdY1VkgBA607ZFFlK8DQm94xDGIbzU+cZxY6MGoTSvGiOfOfJWrZLWbnqv+7eY5OOWcRTVR3gdjq8qedhnOu4daCJUBlE8eGCXEAZ9lfIbe4J5Wo2Qsb1eh7B6IMq7KYHvGkIERfHhk81PqTrldEIGd41xD43Is7SqguXfluC1wwWnSI74YiVfMe7maOun6XEfn3kJtDUoR5kM4Poa1ug/+KqtbJJ7MtRdkU09w4V+BeTsYLmUEbZwCxlv7ofy2fT1YVVqqWqQIsCrANOGXlz8kuxMgJwJI0ZDP3wH2Qip0n6nZ8B+5iG5aAAB61hU35jO6+orrQkjxoJD9MUBy8TjXFtRPuasdmdshLV1XbbxC11H0TvzzS4VJxeS9L8gujWNc4EW+cAKm+WaTRfUUwIfaQ+QuoW0mfjKlTkatJD8YAQ==.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 95622,
+  "completion_tokens": 2842,
+  "total_tokens": 98464,
+  "cost": 0.0109832,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0109832,
+   "upstream_inference_prompt_cost": 0.0095622,
+   "upstream_inference_completions_cost": 0.001421
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 267,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

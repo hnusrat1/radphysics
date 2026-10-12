@@ -1,0 +1,57 @@
+{
+ "id": "gen-1791817135-jOMdlB0vQjy6M9S46Z8x",
+ "object": "chat.completion",
+ "created": 1791817135,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_012jYKYV7ShF7YXzEt24hgvF",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport sys; sys.path.insert(0,'/tmp/work')\\nimport importlib, numpy as np, json, time\\nimport mc\\nt0=time.time()\\nprim,nev,ncoll=mc.simulate(2000000)\\nprint(\\\"time\\\",time.time()-t0)\\ndef summarize(ev):\\n    W=ev['W']; out={}\\n    for p in ['compton','photoelectric','pair','rayleigh']:\\n        out[p]=round(float(W[ev['process']==p].sum()/W.sum()),5)\\n    return out\\nprint(\\\"primary W\\\",prim['W'].sum(),\\\"scatter W\\\",nev['W'].sum(), \\\"primary frac\\\",prim['W'].sum()/(prim['W'].sum()+nev['W'].sum()))\\nprint(\\\"prim process frac\\\",summarize(prim))\\nprint(\\\"nee process frac\\\",summarize(nev))\\n\"}"
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 76652,
+  "completion_tokens": 318,
+  "total_tokens": 76970,
+  "cost": 0.0078242,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0078242,
+   "upstream_inference_prompt_cost": 0.0076652,
+   "upstream_inference_completions_cost": 0.000159
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 0,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

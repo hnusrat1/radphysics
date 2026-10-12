@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791817182-2W8g8UkeHa6RYQdsgnXW",
+ "object": "chat.completion",
+ "created": 1791817182,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Since state isn't persisted between calls, I need to consolidate everything into a single script that runs all the computations and saves results to a file as JSON. I also need to handle the pair-production case correctly, setting the positron time and energy fields appropriately when that event type occurs.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01AvoPihmVfRYkxMgH1poPZ5",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nscript = r'''\\nimport sys; sys.path.insert(0,'/tmp/work')\\nimport numpy as np, json\\nimport mc\\nfrom collections import Counter\\nprim,nev,ncoll=mc.simulate(2000000)\\ndef summarize(ev):\\n    W=ev['W']; return {p: round(float(W[ev['process']==p].sum()/W.sum()),5) for p in ['compton','photoelectric','pair','rayleigh']}\\nprint(\\\"primary W\\\",prim['W'].sum(),\\\"scatter W\\\",nev['W'].sum(),\\\"primary frac\\\",prim['W'].sum()/(prim['W'].sum()+nev['W'].sum()))\\nprint(\\\"prim\\\",summarize(prim)); print(\\\"nee\\\",summarize(nev))\\nallev={k:np.concatenate([prim[k],nev[k]]) for k in prim}\\nprint(\\\"all\\\",summarize(allev))\\nperm=np.random.default_rng(7).permutation(len(allev['W']))\\nW=allev['W'][perm]; cw=np.cumsum(W); tot=cw[-1]\\nstep=tot/200; start=np.random.default_rng(11).uniform(0,step)\\npts=start+step*np.arange(200)\\nidx=np.searchsorted(cw,pts)\\nsel=perm[idx]\\nprint(\\\"unique\\\",len(np.unique(sel)))\\nevents=[]\\nfor i in sel:\\n    p=str(allev['process'][i])\\n    e={\\\"process\\\":p,\\\"e_in_MeV\\\":round(float(allev['e_in'][i]),5),\\n       \\\"e_out_MeV\\\":None if np.isnan(allev['e_out'][i]) else round(float(allev['e_out'][i]),5),\\n       \\\"cos_scatter\\\":None if np.isnan(allev['cos_s'][i]) else round(float(allev['cos_s'][i]),5),\\n       \\\"t_e_MeV\\\":round(float(allev['t_e'][i]),5),\\n       \\\"cos_electron\\\":None if np.isnan(allev['cos_e'][i]) else round(float(np.clip(allev['cos_e'][i],-1,1)),5),\\n       \\\"t_positron_MeV\\\":None if np.isnan(allev['t_pos'][i]) else round(float(allev['t_pos'][i]),5)}\\n    if p=='rayleigh': e['cos_electron']=None; e['t_e_MeV']=0.0\\n    if p in ('photoelectric','pair'): e['e_out_MeV']=None; e['cos_scatter']=None\\n    if p=='photoelectric': e['t_positron_MeV']=None\\n    if p!='pair': e['t_positron_MeV']=None\\n    events.append(e)\\nprint(Counter(e['process'] for e in events))\\nprint(\\\"e_in=2.0:\\\",sum(1 for e in events if e['e_in_MeV']==2.0))\\nprint(\\\"mean e_in\\\", np.mean([e['e_in_MeV'] for e in events]))\\nout={\\\"method\\\":\\\"placeholder\\\",\\\"events\\\":events}\\njson.dump(out,open('/tmp/work/events.json','w'))\\nprint(json.dumps(events[:5]))\\n'''\\nopen('/tmp/work/run_all.py','w').write(script)\\nimport subprocess\\nr=subprocess.run(['python3','/tmp/work/run_all.py'],capture_output=True,text=True,cwd='/tmp/work')\\nprint(r.stdout[-4000:], r.stderr[-3000:])\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Since state isn't persisted between calls, I need to consolidate everything into a single script that runs all the computations and saves results to a file as JSON. I also need to handle the pair-production case correctly, setting the positron time and energy fields appropriately when that event type occurs.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSnwgKEAgSGAI4AUIIdGhpbmtpbmcSDKZew2vaJGDTP50CzBoMfH0ruE+OZECHTuYwIjAL42ccmEoCxCJEjUCrCct4iUpfhoULZ5ea0W+PkPVo5IBwdRk3KBloY45S6BMjAD4qvAca0mBs+HMNYM0PGCruRiTYTmnltoeAocJTArspQLfuev/jJGDVysTxgfuSvsX78CPHZBR/PEwJAE4xw9eAH1cuNsmYJ1g1tIwmzPoW/pBoeg0PZz/CYDsMmekbKuqyRXf8lUP0Uqhc8mODX/tyn8X0krTWdz/Zrw//UxsaTbsCRKZ6vqcgj5Z/b05JI3myotu9afmlxX7ctiUzeZByqNxxRY3OCEsH9vo2t2mOeWQzf44QHHoaSgL7mHlA+7B5/DlZF8S/5HVBnoIDlKDtXn7JMI7UBSjF3Vk43kdEH4Reta3792tkrg0T92bbt5CrCCKumLz2embgqJPbIWnWfiy1S8mjPOrUmMQIQrxDlsJUI1MPN6AlLJYJm0c3X+2J7jhoFZsMGtSP5BT9BNBvietmwGmvJOQCzVwc8wfAeFTBgoMHMni2bmcQuGPNQKzse+J65t83T0StWvIAx7gE7zkYyGvsZrrxki+ghDt0ErtWbjQ2PsQu/YU2jhzj3pIoZ4z2/lFh0yEMk8R7PnJX6qir74Vn57r9J7lMXRUXdy0Js0/kDPG9YkTOvu6SINEh0KQdemzKMhtq19LKCtqlupni0T4dqBsI6LqeB9Edgh7F1PmV1J8kGtmp4Ez1JJi7cmymiLMLZBGZWH6INOjRgqNG+W/c7GnSPixWXdbMW6VrzUVg7Tv+2jNtr1YfvVj+ZLIC8AuSjHwnLgGnbuVTYxCzAAbQrBsrsxTY1G6H4WfXMcNpCKkeQ0ptH7N58HOhyJpPnqhRCviK5hLi2TFh/6MZrq5y3dhKOCujVMjq1i+WTRJ8eJd8vZPc35aQIXw57VYK2KZOWKa+chmutoFzkhHmIHcsnvIZJgB8F9QdEwQTPRrrFopBWudNayhbPtRyIEARTUPHhq9KVrH6583IMZIHWooo+7pe0vYErPYn1F0/WSrnCKbZp/tVvK0LqqkKo1G4XlZ/2yHTbVRsIx8xFSPmOMaWnrr1/WCvyaOtTaqGwtCUwcA7TUErQSq/7AgHLaUBCR1uTrQvDWy4d1pbhQuLGAkKuWmIG15Eoh+6alrfnPLFXLeHcyUxigXpAj0rNXTvJydcG0ux5i7TS396ZLRimEowMQRMHZG8au0CG8JbrWRj9tXq6TauoIjJorDrAmjZxbGEHoGXXHu9xAO+FdM5OkCMqAedLnJqwF1nx8DesZTAnTW49t6O9DAGApd93+HGUp3UEGDLSbIZLknxCLkp0rXOEpXCbjC66BUBg6MSPZ+u1kfrPKfdWp+xhBgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 78489,
+  "completion_tokens": 1262,
+  "total_tokens": 79751,
+  "cost": 0.0084799,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0084799,
+   "upstream_inference_prompt_cost": 0.0078489,
+   "upstream_inference_completions_cost": 0.000631
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 106,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

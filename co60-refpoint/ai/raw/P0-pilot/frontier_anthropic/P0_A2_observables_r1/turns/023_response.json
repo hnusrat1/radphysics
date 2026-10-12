@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791818056-sesRHcYjTcz1CsQuM9Ju",
+ "object": "chat.completion",
+ "created": 1791818056,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "That draft reused the name `L4` for two different objects, so I'll rewrite it cleanly as a file with distinct names.",
+    "refusal": null,
+    "reasoning": "My code got messy with overlapping variable names, so I'm cleaning it up into a new file with clearer naming, loading the L4 result separately as its own variable.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_017b2ziRzEBBuKjPLNREYgh8",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nfinal2 = r'''\\nimport sys, pickle\\nsys.path.insert(0,'/tmp/work')\\nimport numpy as np\\nimport phys, deposit, electrons, sources\\nfrom phys import mu_all, Yrad, Stot, Scol, Srad\\nS_phi0=0.009975072683099257*110.0**2; V=np.pi*1.0**2*0.2; Ntot=4000000\\nD=pickle.load(open('/tmp/work/photon_tallies.pkl','rb'))\\ntot=D['tot']; seg=D['seg']\\nER=pickle.load(open('/tmp/work/L4.pkl','rb'))\\nEBe=electrons.EBe\\nCB=np.array([-1,-0.8,-0.6,-0.4,-0.2,0,0.2,0.4,0.6,0.8,1.0])\\nPhi_p=float(np.exp(-mu_all(np.array([2.0]))[4][0]*10))\\nrng=np.random.default_rng(5)\\ncat=sources.build_sources(seg,Ntot,rng,Phi_p)\\nT=cat['T']; w=cat['w']; uz=cat['u'][:,2]; ps=cat['ps']; par=cat['par']; q=cat['q']\\ndef binspec(mask):\\n    tt=T[mask]; ww=w[mask]\\n    b=np.digitize(tt,EBe)-1\\n    good=(b>=0)&(b<25)&(tt>=0.01)\\n    s=np.zeros(25); np.add.at(s,b[good],ww[good])\\n    return s/s.sum()\\nL3_spec=binspec(np.ones(len(T),bool))\\nL3_spec_p=binspec(par==0)\\nL3_mean=float((w*T).sum()/w.sum())\\nL3_mean_p=float((w*T)[par==0].sum()/w[par==0].sum())\\ncb=np.clip(np.digitize(uz,CB)-1,0,9)\\ndirw=np.zeros(10); np.add.at(dirw,cb,w); L3_dir=dirw/dirw.sum()\\nY=Yrad(np.maximum(T,0.01))\\nK_all=1.602e-10*(w*T).sum()\\nKcol_all=1.602e-10*(w*T*(1-Y)).sum()\\ng=1-Kcol_all/K_all\\ndosefrac_scat=float((w*T*(1-Y))[ps].sum()/(w*T*(1-Y)).sum())\\ndep2=deposit.transfer_coeffs(np.array([2.0]))\\nZD=np.arange(0.25,20.0001,0.25)\\nKd=tot['Kd']; k10=np.argmin(np.abs(ZD-10.0))\\nprint(\\\"K/Phi0\\\",K_all,\\\"Kcol/Phi0\\\",Kcol_all,\\\"g\\\",g,\\\"dose frac scat\\\",dosefrac_scat)\\nprint(\\\"Kcol prim: sources\\\",1.602e-10*(w*T*(1-Y))[par==0].sum(),\\\"analytic\\\",1.602e-10*Phi_p*float(dep2['col'][0]))\\nprint(\\\"Kcol scat at 10cm: tally\\\",1.602e-10*Kd[k10],\\\"sources\\\",1.602e-10*(w*T*(1-Y))[ps].sum())\\nprint(\\\"K analytic total at 10cm approx: prim tr\\\",1.602e-10*Phi_p*float(dep2['tr'][0]), \\\"scat tr tally\\\", 1.602e-10*(tot['tr_sc'].sum()))\\n# ---- Layer 4\\ntb=ER['tb']; tcos=ER['tcos']; tt_=ER['tot']\\nL4_fl=float(tt_); L4_spec=list(map(float,tb))\\nL4_delfrac=float(ER['delt']/ER['tot'])\\nL4_meanE=float(ER['sumE']/ER['tot'])\\nL4_ang=list(map(float,tcos/tcos.sum()))\\nL4_rc=float(ER['Sr']/ER['Sc'])\\n# ---- Spencer-Attix s_w,air with Delta=10 keV\\nDl=0.01\\nZA_w=0.55508; ZA_a=0.49919\\ndef Bethe_unres(Tk,ZA,I_eV,delta):\\n    tau=Tk/0.51099895; b2=1-(1/(tau+1))**2\\n    I=I_eV*1e-6/0.51099895\\n    F=1-b2+(tau*tau/8-(2*tau+1)*np.log(2))/(tau+1)**2\\n    return 0.153536*ZA/b2*(np.log(tau*tau*(tau+2)/(2*I*I))+F-delta)\\ndef restricted(Tk,ZA,I_eV,delta,Dcut=Dl):\\n    tau=Tk/0.51099895; b2=1-(1/(tau+1))**2\\n    S=Bethe_unres(Tk,ZA,I_eV,delta)\\n    eps_c=Dcut/Tk\\n    if eps_c>=0.5: return S\\n    ee=np.linspace(eps_c,0.5,4000)\\n    f=1/ee**2+1/(1-ee)**2+(tau/(tau+2))**2-(2*tau+1)/((tau+1)**2)/(ee*(1-ee))\\n    loss=0.153536*ZA/b2*np.trapz(ee*f,ee)\\n    return S-loss\\n# validate water unrestricted Bethe vs ESTAR\\nfor Tk in [0.1,1.0,2.0]:\\n    dl_water=float(phys.Scol(np.array([Tk]))[0]) if False else 0\\nEcols=np.array([0.1,0.5,1.0,2.0])\\nimport phys as P\\nprint(\\\"Bethe water check\\\", [round(float(Bethe_unres(t,ZA_w,75.0,0.0)),4) for t in Ecols], \\\"ESTAR\\\", [round(float(P.Scol(np.array([t]))[0]),4) for t in Ecols])\\nEbin_mid=0.5*(EBe[:-1]+EBe[1:])\\npsi_bin=tb/np.diff(EBe)\\nLw=np.array([restricted(t,ZA_w,75.0,0.0) for t in Ebin_mid])\\nLa=np.array([restricted(t,ZA_a,85.7,0.0) for t in Ebin_mid])\\n# use ESTAR-based unrestricted water for Lw: scale correction factor\\ncorrw=np.array([float(P.Scol(np.array([t]))[0])/Bethe_unres(t,ZA_w,75.0,0.0) for t in Ebin_mid])\\nLw_est=np.array([float(P.Scol(np.array([t]))[0])-(Bethe_unres(t,ZA_w,75.0,0.0)-restricted(t,ZA_w,75.0,0.0)) for t in Ebin_mid])\\ndE=np.diff(EBe)\\nnum=np.sum(psi_bin*Lw_est*dE); den=np.sum(psi_bin*La*dE)\\n# track-end term: Delta * psi(Delta) * S_col(Delta); psi(Delta) from first bin average\\npsiD=psi_bin[0]\\nSw_D=float(P.Scol(np.array([Dl]))[0]); Sa_D=Bethe_unres(Dl,ZA_a,85.7,0.0)\\nTend_w=Dl*psiD*Sw_D; Tend_a=Dl*psiD*Sa_D\\ns_wa=(num+Tend_w)/(den+Tend_a)\\ns_wa_noend=num/den\\nprint(\\\"s_w,air (bins 0.01-1.4) with track-end\\\", s_wa, \\\"without\\\", s_wa_noend, \\\"Tend contribution\\\", Tend_w/num)\\nprint(\\\"L_w bins sample\\\", Lw_est[:3], La[:3])\\n# ---- PDD\\nmuT=mu2=float(mu_all(np.array([2.0]))[4][0])\\nPhi_pz=np.exp(-muT*ZD)\\nKcol_z=1.602e-10*(Phi_pz*float(dep2['col'][0])+Kd)\\nimax=np.argmax(Kcol_z)\\nk5=np.argmin(np.abs(ZD-5.0))\\nPDD5=100*Kcol_z[k5]/Kcol_z[imax]\\nprint(\\\"dmax (cm)\\\",ZD[imax],\\\"Kcol max\\\",Kcol_z[imax],\\\"Kcol(5)\\\",Kcol_z[k5],\\\"PDD5\\\",PDD5)\\nprint(\\\"Kcol depth profile:\\\",[ (round(z,2),float(f'{Kcol_z[i]:.4e}')) for i,z in enumerate(ZD) if i%4==0])\\nout=dict(L3_initial_spectrum=list(map(float,L3_spec)), L3_initial_spectrum_parent_primary=list(map(float,L3_spec_p)),\\n L3_mean_initial_energy_MeV=L3_mean, L3_mean_initial_energy_parent_primary_MeV=L3_mean_p, L3_initial_direction=list(map(float,L3_dir)),\\n L4_electron_fluence_per_phi0=L4_fl, L4_electron_fluence_spectrum=L4_spec, L4_delta_fraction=L4_delfrac, L4_mean_electron_energy_MeV=L4_meanE,\\n L4_angular=L4_ang, L4_radiative_to_collision=L4_rc,\\n L5_K_over_phi0_Gy_cm2=float(K_all), L5_Kcol_over_phi0_Gy_cm2=float(Kcol_all), L5_D_over_phi0_Gy_cm2=float(Kcol_all),\\n L5_beta=1.0, L5_g=float(g), L5_dose_fraction_parent_scattered=dosefrac_scat, L5_s_w_air=float(s_wa), L5_PDD5_percent=float(PDD5),\\n dmax_cm=float(ZD[imax]))\\npickle.dump(out,open('/tmp/work/final2.pkl','wb'))\\nprint({k:(v if not isinstance(v,list) else np.round(v,5).tolist()) for k,v in out.items() if k not in ['L3_initial_spectrum','L3_initial_spectrum_parent_primary','L4_electron_fluence_spectrum']})\\n'''\\nopen('/tmp/work/final2.py','w').write(final2)\\nimport subprocess\\nr=subprocess.run(['python3','/tmp/work/final2.py'],capture_output=True,text=True,cwd='/tmp/work')\\nprint(r.stdout[-6000:], r.stderr[-3000:])\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "My code got messy with overlapping variable names, so I'm cleaning it up into a new file with clearer naming, loading the L4 result separately as its own variable.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSzAcKEAgSGAI4AUIIdGhpbmtpbmcSDF951387ZQ6Q/+gBXhoMntrr8qloAb1LHkWCIjA9F16RCADD7GLNCHT7DH5Grx5Ineo9NlkNYObKCK1EtREJPadVaLW83Z82BUZ4m30q6QbgBnea+Diz82wS+JweWD3KAsHr6JbPfi8XRL6KeTXMKJ+NrtZbYbHIFzKiVqmVp0veWARNdcis/2Iz40IEwycI9XymRbCnQ0X4VzgaYGl/oZwaKyeruLEyQsEzayg6kcWac6WOhW5bmWAnUhfODhDFj4X/I3oH/xO8IDHOIx2ovHdclFYWPciWe8ZcUP1BGsBoO6JAhw6eyOkHeB2d3SS5EbOTKGbJzw16ptOw8am88YcSlQ7zjuJ0cjMJ8lW1NRn56dUTa+6qvgBPBkDJOzCVkyWz/BSLjWY7rcpHTSuh7aETgQZK+0Mt15h0/NNrO0jTYtT8HQae8mK29x25qDQIT3ygVcCaJGpyaqP3x2F++9cHX4itbR3Tz2s9Opk97zJg8ljLep7mEkeHScByy1x3irJ5Vi/Z8MENGnUQ4KN6wAv2WD/SXGjQyJZ2Xc3tB6pp8PCYTl5Oc8RjIVOH0eRWk34fyJ5pKEmHmIWGway36ftKSuNVaF7lsil7f6RkHcL/i1t/eeQ+0YHLJnNl0MAsufkyKxXT0aQhkw5FSWIMrhUsZV8p3bsMVJjm//49EjH6JWxV9Am0oYkTGLC79BE5vT2IcprujAl4+GEtNoT+OcWkZyyWEHHdx4GZP8qAF6StRlNsSvU4Qt9ru8DPARLJ8mXxNIUDCBM00nlFtkF21SsMdIXLT24obVfXnHWCCoSK/ROgZnUGzlSD76rIZQX3aMpK+2xzbmSCnphWIlAK2v+nTPlxrUu5Qv2nHVAT8pW+vrUmqUdiin2qPvf36wzJRqR4u7hIv6kuhZ4YgIXFhvu1CHj2kzgpozfk25m8cEXV+Bw5MBZWkHz1D91TA2SL+MJzxrZQXqk7gJDEvTqyboobRAt+zjKLm4T5ZH9sl7rrzWQC6ZzeVRKr6Ta/ugKd97z5w9YsgfhHmat2hjAeDDWBoylIU/AxD4esxo5v7pD5IGP5qelW+ft4p3WmSrSjDomXhl9kVWtYF1nqtzZUV9fBYw/xA3VaKRCC2xZBis5LICzqtCm8dQKuT6TnEGTKyOz6JW7NhEdD/6Ajdi4+7ZoUKY/zQ8fWZED4DekzI1EHXGmr+AbOZSsvfDo99OVcy0BN+VGioSGrgZnHP9ZlRiT+Pj9dWrn4ah9MCk+JWkOc6MNICmxl+rMYAQ==.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 144927,
+  "completion_tokens": 3754,
+  "total_tokens": 148681,
+  "cost": 0.0818485,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0818485,
+   "upstream_inference_prompt_cost": 0.0724635,
+   "upstream_inference_completions_cost": 0.009385
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 70,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

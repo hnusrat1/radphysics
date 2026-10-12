@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791817761-et4VS2ZwfPmT8rrXjHcu",
+ "object": "chat.completion",
+ "created": 1791817761,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "Each 2\u00d710\u2075-photon chunk takes about 6 s. I'll run 4\u00d710\u2076 photons in 20 chunks and save the accumulated tallies.",
+    "refusal": null,
+    "reasoning": "At 6 seconds per 2e5 photons, I'd need about 120 seconds for 4e6 photons total. I can run 20 chunks of 2e5 each in one call, staying under the 10-minute limit, accumulating results and saving averages to disk as I go.\n\nI'll keep lists of segments per chunk as I accumulate, and double-check the Kd dose-rate values I'm using at each depth, like 0.0018 MeV/g at 0.25 cm.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01AMoCqtiAnUusuE6suoALL2",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport sys, importlib, time, pickle\\nsys.path.insert(0,'/tmp/work')\\nimport numpy as np\\nimport sim\\nt=time.time()\\nchunks=[]\\nfor i in range(20):\\n    chunks.append(sim.run_chunk(200000,100+i))\\nprint(\\\"time\\\",time.time()-t)\\n# combine\\ndef comb(key):\\n    return np.mean([c[key] for c in chunks],axis=0)\\ntot={}\\nfor key in ['Kd','Fd','mu_sc','tr_sc','col_sc','K_sc','spec','ang','EFl','Fl_sc','spec_over']:\\n    tot[key]=comb(key)\\n# combined segments\\nseg={k:np.concatenate([c['seg'][k] for c in chunks]) for k in ['r','d','E','l']}\\nnproc={k:sum(c['nproc'][k] for c in chunks) for k in chunks[0]['nproc']}\\npickle.dump(dict(tot=tot,seg=seg,nproc=nproc),open('/tmp/work/photon_tallies.pkl','wb'))\\nprint({k:(tot[k] if np.ndim(tot[k])==0 else np.round(tot[k],5)) for k in ['Fl_sc','EFl','spec_over']})\\nprint(\\\"mu_sc\\\",tot['mu_sc'],\\\"tr_sc\\\",tot['tr_sc'],\\\"col\\\",tot['col_sc'],\\\"K\\\",tot['K_sc'])\\nprint(\\\"nseg in cyl\\\",len(seg['E']))\\nprint(\\\"Fl_sc stat check (per chunk std)\\\", np.std([c['Fl_sc'] for c in chunks])/np.sqrt(20))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "At 6 seconds per 2e5 photons, I'd need about 120 seconds for 4e6 photons total. I can run 20 chunks of 2e5 each in one call, staying under the 10-minute limit, accumulating results and saving averages to disk as I go.\n\nI'll keep lists of segments per chunk as I accumulate, and double-check the Kd dose-rate values I'm using at each depth, like 0.0018 MeV/g at 0.25 cm.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSngoKEAgSGAI4AUIIdGhpbmtpbmcSDMjBC93OxUmjQqfAxxoMrJB70tZdqrnTVqFKIjBQZe/bZzAVe2NWIkhFMnulK0dAD/PvZigpxqJys2tp7P/DskqKZuY002C/csRjl0gquwm0I4r5tvYh0adFrnISUfK8Rqt0IMSFjYJ0y/tJD3WP2YdSzwkg8cNzNU3LrRs+ZZv5OEErKLbO92i1Cz0TXOaPsmTd7GU9MnMBPWIOv8UmjcbQytJ5XL4wrQ2UEpkHIIkPxxEemqraSLk6LbdZr4cXsqvqIRXAXHO3CS22UtouTIT2SpQett7O+5VN86O1Z+91B4E/nDZme2jlAlSBIqgEU/PzatO2O4ZetmkLZWGjLz1gO8HgS8zCPeHMh0zSGexhVi26ytq8xeZvs7b8Wc3MnjT/OoULAbNNns+zDxUgOc254LHSGYBgAxgR4vBSxomYuppCxUqCgNeIpcdpjsPfoFmao1T9XogL00gU/CjLlgEghGn7QUCdymVxgoaNX6sfVuXiwb6agKrVUCAVPDCu+wUOg8DXjBKouG6ShRSALfZLlHYArbddSqrccW+rHnU+jmfYZke5VEmWtD77i1H/0U68ntqY7g02wKWr7+M9WU2mDOa11ILMk6KSXOdtfwfcJ7QMhUouyjSSv6REnaDnN3KExvd6NK+7Mb2aBsWWXG++qzd3hczLo8JWw8wTRnZ+tl257FMTrORXA1rFPE/N8/rTaQ8SD8lsxkEHPrJcn056MwzEhnfTKqZfBFqU7qn1iPuGE2KQc4WAht/T3JAukzTO1dQGz8uEGoYGd+ZQzaaI5Vuj5xL14mLjZv5VwZaDWlvzleYrplnmK5ezhjFhdPbmVppC9os93Lm93frjs/e39o/RooCmhmTx3rwmiZ5Fn50RozD/kL18n2GCZ2VmucBFW787nCF7Jbogq3T95MgsOJezi1ZNmyVTsHfqkvgBLHBwblvTVtwFQ3IRyo+drIOk5sKJ4HJ1adVtL4xAT7F4TLd/4zK+5NlOK7mZ7vWhXLbg7s1IfLX6QgaG2eLrFp+QGoIZOXL/GEwfJVoxEZSCovI0BwHGQ4N3aJ8I2yRz82UodDvt0nrvw5TjUjYLMDKStso36yd/ZN9RQ5HOPfqPRk0CHojjCJraciN6EV49mIO9P4xSSJqAv0CyGH4704cNxA5VjtKXjxmYWS6oFGKUxrILIdOHtkyjUI4GyIGv/nEF+RC0kwhHMbSJpHJLa/e/5kD/pS73XxmmNVtYjNZXKGcKegAjI5olYYxewuN0gB4Mp1TWcWRcLdWJOFsWeMKOn7erpYuBxhnlB2WtGbdkLb9ag5FR2xbhhuDOUN3hNI+hvBfvMMRGeKDQay/gJk28c86o7XiM1fev1gIXpswr8PvbPc9QIr+ITH1WXNmyGt6+w4dU1ok7FdXj6+jBtm89PdHZeAzcTS8o0wGtkoG8L9/TlM0LQi0dC0FKJJKSgvGayri8q9+RF+J/7esMEULob171udX7+qyEw/ZSvGF5NYY6CpLm64LzisfSdia2LqzpVvn4NlY88uRqiuqnBHsRFkGkutBUFx5TqqPS7d+tVf2nFbA3kJuyjVS2j2EBeFVW36GudY5KrTwBxjJ+gVokjavFBh+KWjmLpex8YiYa0+NOCTeOWCqg3lYcb9VKLuj1t+JbPhgTfTwv3qyvPAek7uSbXMlBMHIbbQkstSmZS6Qu58Q7aAW70Bjyc8KBckOLegoqj/Mj3RgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 109706,
+  "completion_tokens": 900,
+  "total_tokens": 110606,
+  "cost": 0.057103,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.057103,
+   "upstream_inference_prompt_cost": 0.054853,
+   "upstream_inference_completions_cost": 0.00225
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 249,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

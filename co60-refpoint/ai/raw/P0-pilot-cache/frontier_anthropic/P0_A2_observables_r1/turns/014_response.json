@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791820308-eA9MgIDasvG2uZ1fFp7I",
+ "object": "chat.completion",
+ "created": 1791820308,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "The 200000-photon run matches the expected value closely (0.00318 vs 0.00319), while the 20000-photon run reads about 18% low, which looks like plain statistical noise from having only a few hundred photons actually reaching the cylinder \u2014 consistent with Poisson fluctuations at that sample size.\n\nNext I'll run a bigger simulation, N=2e6, checking timing, and also verify the fraction of interactions that are Compton scattering versus other processes.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_015TPnsbgnQJ4ZmPB15F8nZ6",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport sys, time, pickle; sys.path.insert(0,'/tmp/work')\\nimport numpy as np, mcph, mcph2\\nt=time.time(); r=mcph2.run(1000000,11); print(time.time()-t)\\npickle.dump(r,open('/tmp/work/run1.pkl','wb'))\\nprint(r['flu_E'].sum(axis=1)/1e6, r['intr'], r['births'].shape)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The 200000-photon run matches the expected value closely (0.00318 vs 0.00319), while the 20000-photon run reads about 18% low, which looks like plain statistical noise from having only a few hundred photons actually reaching the cylinder \u2014 consistent with Poisson fluctuations at that sample size.\n\nNext I'll run a bigger simulation, N=2e6, checking timing, and also verify the fraction of interactions that are Compton scattering versus other processes.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS2woKEAgSGAI4AUIIdGhpbmtpbmcSDOMEWIXLpIGRKj97gRoMKTzZyje7LM2/VJf0IjDpkQEQ2CB2KkqycIPBD3oZo7aD31Pc+QgdYkI/X7JeW6DL6yLqE6/U3ZOZP31FDkoq+AmzhsHWhB2yqzGRWDSBJVrZlVG8tixgtwrnor8ZnKLatZ7CcTqdXR0cnUMDeWvkGx0NVJeHQPpW5x19JZkS9AeCGPOSNModqM1r7OMEheEuyrvUorbB0aBlmudRCOuTymJJNbU2nV39lX2c3Yo/U2BFu32c18PFsVM7yhKN13+vr192VCfYTtAhWZCY4WJGseIhkfW5m89o2ctM3pKcx0ATcNj1IvwWibDFUc3qIdBCt1j95nJzNHalpxpCbbFtODNIhSKw+9wGnwi32xHPquzlNVirhf19bsCeIrFHhgST/lXIvnynDce7JYMKmZwIR+Fy8wrXf0oGr0eoklZToHCG0I2wSpLa4Eej56e4CdC0BC+IbAewtIXRmCIeUMI31jobAkMOJSHmEIit8x5KgHJbypCikgTb6nmdj4QSlV19kxikYbiu1sKruB4gHhtbO0euyuBRXqPfSk771AcxuP7D3h2lPhh69e8Spv0aWmQ4q1kVq22qPgBQZ8udExfOvGphqDBGfybrBc/eFvxuk01BT1kySJZXL//lV29yM6KBk8m10uNQivrZD2VdoVZ73DiGH34HkwzZJBK6PcZCYt4Ow0fKE1INieyLAYlPU9OAzGSBbeOnuObpfPkivuwSeZmATfb4uSBuDp+LDuX3wcxY3ML5DEi34RQJqFLGbYv1y4l4pVvPz/D3i2zAMuulmqrtSe5CKdTmeMDa74YBoCcE0N04QDRsCtRw4qMpMmejHyhxDawrz6uP118ICgvMIKix4yorN7OiyIPcseQlwmtJSHYXPEGjF8N7mmQPgPNLwoSopMOTMlBtbkV+driRYvSrKcr4QIPlEgjcjF1znqB7hCzG5LwH152Jd2pTKed/6pJ7bG4G0BTLmCrusTtXRjVG/YHdSjmkvw6DO7fhnZkMunUL7a40nI1WJGcx/U9Mz0EhSHoK7N8Y7aiqc0f6fRVPqZjxuukECPe91osKlBHirUlbtvV2yOd2NtY/+OzPKP75wYNhF2Qkc3p2CQzeVYbjjsWXx4xzFiTESqGOWRfYUqWTQL1LaE9sgEv8MZFrv3Kh2ZQrC7EorpO56Lt1TXGLvBrVhcmPpWcWgylJZu8YrbzcP7iXoYlUk0elrSH1+HZFIWJiaWnVpWfL/JOkCf/648RE8bHfQP+Z0/saraydzX3ABR/YlnfBwEbQOKLyjuffsnXRjius5XSfp629Ag/yEK3Oa69hZk/YrKFiHG2TYbFO++iIj4bRAOMalwYtugtdOEBUjtqvLhUXsmFM1rvhSf9QTY5zkRZsBWcUMoYxN6h4jNaONUo/FaoPkPdd8EoYphcwUqLSxOWFT5AUj6GeqcsjKAyTYrHUeByWs9jq0hx9+jgG2ZS3il74eoobJ1ymnOHxwkgzm3AaN0ELWkA50pBoDtQ7++0t0mAwhV+UHbQqSTs8r5S2G8d0MKfAcV32lQdch+cZSKnttbW8oQfqsslqfvyxOOd/+puhjYczKaaLT56pqjz7YZcuR0yCzpXmWcVxB1dq3gumripF4b2pwRdJlOASv9cb89n1ixgtnK/Jp0JfGBvZsByyQfF7DHqlnfhHvMEswXSKMR0MFzycCwZo4OgS3LRVzWN+7ACsPPVg5W3zgwdKqUpcR1aGkV8HgPKiOiEXDuWegA3sLZ8dQF+3SO6AnX7HDnIFWvp4K2r+kQPT3nkYAQ==.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 97841,
+  "completion_tokens": 454,
+  "total_tokens": 98295,
+  "cost": 0.001332205,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 96738,
+   "cache_write_tokens": 1101,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001332205,
+   "upstream_inference_prompt_cost": 0.001105205,
+   "upstream_inference_completions_cost": 0.000227
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 263,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791817132-CBt03LLnVoxCCAb2Rtsz",
+ "object": "chat.completion",
+ "created": 1791817132,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I'm wondering if the working directory changed between calls, since mc.py was written to /tmp/work earlier but now it's not being found despite the sys.path fix working before. Let me check the current working directory and list the files there to confirm.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01RvZGpL8yfAA7hvFc35DMiw",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport os; print(os.getcwd(), os.listdir('.'))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I'm wondering if the working directory changed between calls, since mc.py was written to /tmp/work earlier but now it's not being found despite the sys.path fix working before. Let me check the current working directory and list the files there to confirm.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSugcKEAgSGAI4AUIIdGhpbmtpbmcSDMureNGT3JUd87vVgRoMETAjlRR+23tkkZMMIjBJaI9KcqlcKkSJsuOFtGKTAQlSAxmPbYTvP4fgxQmG8+j8MU9GWUC9FnlTP1c/Hn0q1wYvjUSEkHocdyD/lvJC+Yx08GPC1mNp1YKPEW5Yug/z9FRL2wQeU+nzkXCNA23U4UNcGm3JCu15XTtX9hOQUD3OXI9G6iSsPKjA70D4xtUJI2AB2Mw6zxoaJDOI/KJr+OgFKCRNevy6p9iv5jYGBL11a4EEJoOipfy4XWKEfTGITcgux7MVaORxJ0nM9A1NGp4uaykd175Aza+Ftmo7vAIqXWQP2BF4jcq1S/W4kCSdkyaocFN79GdxspSL3otcrThNQEKAnT7GS9q4jfBFCBhiOQuc1lFdwSTf4XLYB7CuwlDsfdAKHdBA71ya5B3eSCxH0GUASV638VozOjWIUPtDs8oZ+ZJ+jYmfY2VepxZkw5A+HswS84OSRZgu4rG1HTkPL9DDBZaipuK0gqJ/pjA+JQsd2Perxs+enLt+bRa8upxcY1fIToxdjPTkUC+OYUknW5sx04A/vd2lxSM/ebOxhx+pvahkjfmxiZP/JiC+bOMYJ5zJdhnupLjCOLb3gCMlSFMo0Cx3kISa2zv2IuwiigttKM1JnVxIJm7kxSiLwtyyc/hInaT6BubAvCEs10HRn/BL7E8VV5mJ+lME9nzkAczUq6WX2vMZgXF/1QWyifwb2eSBBGMnB2RfIW7MNZuebIfmAFaqR29+R06dq1t8MXET5RTlZjEJRvq3s34t3v2iqgtl6WNAiWDs34gHee/iVYjhaBjFuFbOy5GhNdZwkymFYMZ4WBdciapwnqa4F+XXJ+cu3krVPJN8tBowXXkhuj63yYW/+rOeXHWOuLWPMzwfuLDbcFncCPyO5T8PAWE52OUWSZQdsfqTALfEKhuRKFS9SdSRalrRm0DDTzJagwniVo0nemsSQv3/oB/fdKZLgodFjsWvLNRktqAfmZFQ5XPJJiaW77I6Ebh8ae1aLQUv6dTIWWz1hEzCnp/VEBiHJl1kCpqLBB/Div0lgxvbrnQmNeHbi9l0krLytHHyrns/1s/HIF1+Z2YxXAmgubgCNipZFMuC3f7u9ydt0aUAyuevxgIjY4O3G24w69IXQA1o/+aRNs8/MuMC08taCNWByC7w5qWk+H1iNpWquMqXj0xSFkGYFZcDF/Z+q1bvGoAG5zwnzBryxdG7KorPqhPg/S0VzHcYAQ==.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 76365,
+  "completion_tokens": 155,
+  "total_tokens": 76520,
+  "cost": 0.007714,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.007714,
+   "upstream_inference_prompt_cost": 0.0076365,
+   "upstream_inference_completions_cost": 7.75e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 86,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

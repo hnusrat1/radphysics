@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791817926-50CaklGxMr0IUgrZFOjs",
+ "object": "chat.completion",
+ "created": 1791817926,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I'm checking the lambda values at the energy grid points, verifying that at the low-energy end \u03bb=0 as expected, then estimating \u03bb at a higher energy bin (around 30 keV) by computing the stopping power integral with the electron density and energy-loss kernel.\n\nI cross-check against a known result: for a 1 MeV electron, the number of delta rays above a 10 keV threshold per cm should be roughly 9.7, and this matches the LAM value I'd expect around energy index 240, which is reassuring.\n\nI need to fix the numpy import in the cell.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_012fgY9jtXDdg6w9PgwyW7jm",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport sys, importlib, time\\nsys.path.insert(0,'/tmp/work')\\nimport numpy as np\\nimport electrons\\nrng=np.random.default_rng(3)\\nt=time.time()\\nr=electrons.transport(np.full(2000,1.0),np.tile([[0,0,1.]],(2000,1)),np.ones(2000),np.zeros(2000,bool),rng)\\nprint(time.time()-t, r['it'], \\\"track per electron (cm)\\\",r['tot']/2000, \\\"delta frac\\\",r['delt']/r['tot'], \\\"ndelta per e\\\",r['nd']/2000)\\nprint(\\\"Sr/Sc\\\",r['Sr']/r['Sc'])\\nprint(\\\"CSDA range of 1 MeV (ESTAR g/cm2 -> cm):\\\", np.interp(1.0,phys.EE,phys.E_[:,4]))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I'm checking the lambda values at the energy grid points, verifying that at the low-energy end \u03bb=0 as expected, then estimating \u03bb at a higher energy bin (around 30 keV) by computing the stopping power integral with the electron density and energy-loss kernel.\n\nI cross-check against a known result: for a 1 MeV electron, the number of delta rays above a 10 keV threshold per cm should be roughly 9.7, and this matches the LAM value I'd expect around energy index 240, which is reassuring.\n\nI need to fix the numpy import in the cell.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "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.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 124181,
+  "completion_tokens": 952,
+  "total_tokens": 125133,
+  "cost": 0.0644705,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0644705,
+   "upstream_inference_prompt_cost": 0.0620905,
+   "upstream_inference_completions_cost": 0.00238
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 625,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

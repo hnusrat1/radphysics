@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791820297-iofP8kSbrwwxji1W20Pe",
+ "object": "chat.completion",
+ "created": 1791820297,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Looks like each call runs in a fresh namespace, so state doesn't persist between calls\u2014that's why numpy isn't defined. I'll need to import it again within each call.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_014VQGGrPDvcZ1hp4BTdAPo6",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport sys; sys.path.insert(0,'/tmp/work')\\nimport numpy as np, mcph, mcph2\\nrng=np.random.default_rng(0)\\nN=200000\\nm=int(N*1.1)\\na=rng.uniform(-0.05,0.05,m); b=rng.uniform(-0.05,0.05,m)\\nok=rng.uniform(0,1,m)<(1+a*a+b*b)**(-1.5)\\nab=np.stack([a[ok],b[ok]],1)\\nD=np.column_stack([ab[:,0],ab[:,1],np.ones(len(ab))]); D/=np.linalg.norm(D,axis=1)[:,None]\\nt0=100/D[:,2]; P=np.column_stack([D[:,0]*t0,D[:,1]*t0,np.zeros(len(ab))])\\nL,lo,hi=mcph2.chord(P,D,np.full(len(P),50.0),1.0,9.9,10.1)\\nprint(len(P), (L>0).mean(), L.sum()/len(ab), np.pi/121*0.2)\\nprint(np.mean(D[:,2]), np.sqrt(np.mean(P[:,0]**2+P[:,1]**2)))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Looks like each call runs in a fresh namespace, so state doesn't persist between calls\u2014that's why numpy isn't defined. I'll need to import it again within each call.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS1AcKEAgSGAI4AUIIdGhpbmtpbmcSDDtTIH7OR+9HpJxKOBoMjuFxuDHsHjxjSxv0IjCjK0KPp3yLvKP+5j6ieue9FJBobNVH2I+HgMtN1JPT8Je1aJtNyB8gkfKihWu98lgq8QYXdz+e74qgIFG+ckz99cYbHmZkisVlU0Ze12S1PIVjltOBsaxMILwt27/O66RhBWRulhKv+Mq31nIIlTZVQPeO5AG7TfFDsiQGn/t3jnjheTOKpbkcvk57lj8yg0CthGAmHX1OFn2IZdHuXPepOclGo0QMpo7ct+NQ7WoXR6Q8WZ1RcNwjQA+wkdqrWZjZbn2Uwa+4YVgzGLVBuyhN+Z6N8ZJQ7oc919tUoODLkJPlYppq8jum9J0jWmlV8BOOiJ5gg3yP6yCSmdezWDBLs+aFll25IYmUR73DK1hFL6kfxM/p8ICKP9Rh5Js5tm9lhqb0SszZgt0CCSS0JyVgL3a5ZM9O4+hnFe0L5cpGv9c89h+1m1p/MWqbxu9X4WbhkILHpH2vO/n3j2bw+o0OYu0VSxBMGYrveYavwu9LFdRXyUgw1jcWCgj00m+L8v/Yh1DPoR2XITeX+TPJA0M2USutT3kDLTwMv7hj/kMl5hjeK5rRzsfLIFIlmom9dD2olCPsus9UlnJQTfWhNT8jei2MULeJEARtCXXQnPW9A5sbOUbSohqYK5iykapZwaH9pLanngsRysAH682LHUeozlawV9m5r/R/8tU9IfpdRojVpG/wyLBxBgTYkjHa+cl6kHxzJRMCx/U9jDNNBjtpI5Csun52VkhBdg4tqR1jOiPRBFAhbdQiSX9r9fwVIkFGYon/B/2QaeyhbqmtY+ZaJVbPeKEqQFij0j0RdOAykpWZ6d6/i1/ToIDug1C5nbasnAKZma79vO+xU/A4WikID05fa4uDr5pHknu74cfR58Pb56jEBTWXgdMY4FvuuB+lR353yEBkkcnTcPz8z/oz3RQSzZBERBitkXs7yherbQhUGlicRScyXhqFFbBVcWqD+BDpa8o6MA0k+ghuAlsFjQt3Jhu936RXvJ/fGys7rLPmbJIRaTTWHTgSZel1T0rDLTXYSd2lQX9+o9jwcL+xm/W1anak+AK7z0KHD19QU2WBJOh4UvL4cFCKR8TGkBjTFX0AVZNvgsd70neCCg6slcgoIBNXLaNntegGa4+dYpUDKVQXi1slaV82i7YF33v4BzQz8Q0UjSp8d1/bWcBCpFKt9SOGgdy0taprUhckr6K3MivEo8CJxbjpAlBx0/dCW/P5cogo6ZyDllqH1itKfpJAMhgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 96108,
+  "completion_tokens": 512,
+  "total_tokens": 96620,
+  "cost": 0.001478425,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 93835,
+   "cache_write_tokens": 2271,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001478425,
+   "upstream_inference_prompt_cost": 0.001222425,
+   "upstream_inference_completions_cost": 0.000256
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 54,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

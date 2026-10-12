@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791817270-VS1nQfhN9fy6GJ86D1A6",
+ "object": "chat.completion",
+ "created": 1791817270,
+ "model": "qwen/qwen3.7-flash",
+ "provider": "Alibaba",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Great! Now let me read theestar_water.txt file and understand its structure.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_e1970311b2be4ae99bf83855",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\n\\n# Read estar_water.txt\\ndata = []\\nwith open('/tmp/data/estar_water.txt', 'r') as f:\\n    for line in f:\\n        if not line.startswith('#'):\\n            parts = [float(x) for x in line.split()]\\n            data.append(parts)\\n\\nestar = np.array(data)\\nprint(\\\"ESTAR shape:\\\", estar.shape)\\nprint(\\\"Columns: electron kinetic energy (MeV), collision stopping power, radiative stopping power, total stopping power, CSDA range, radiation yield, density-effect parameter\\\")\\nprint(\\\"\\\\nFirst row:\\\", estar[0])\\nprint(\\\"\\\\nLast row:\\\", estar[-1])\\nprint(\\\"\\\\nElectron energy range:\\\", estar[:, 0].min(), \\\"to\\\", estar[:, 0].max(), \\\"MeV\\\")\\n\\n# Check where our energies of interest fall\\nfor e in [0.01, 0.511, 1.0, 2.0]:\\n    idx = np.argmin(np.abs(estar[:, 0] - e))\\n    print(f\\\"\\\\nClosest to {e} MeV: index {idx}, energy = {estar[idx, 0]} MeV\\\")\\n    print(f\\\"  Collision: {estar[idx, 1]:.6e}, Radiative: {estar[idx, 2]:.6e}, Total: {estar[idx, 3]:.6e}\\\")\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Great! Now let me read theestar_water.txt file and understand its structure.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 6280,
+  "completion_tokens": 346,
+  "total_tokens": 6626,
+  "cost": 0.000104356,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 5376,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000104356,
+   "upstream_inference_prompt_cost": 5.9376e-05,
+   "upstream_inference_completions_cost": 4.498e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 16,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

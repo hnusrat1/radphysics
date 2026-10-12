@@ -127,10 +127,20 @@ class OpenAIChatConversation(Conversation):
 
     def init(self, user):
         role = self.settings.pop("system_role", "system") if isinstance(self.settings, dict) else "system"
+        self.cache = self.settings.pop("prompt_cache", False)
         self.messages += [{"role": role, "content": self.system}, {"role": "user", "content": user}]
 
     def request(self):
-        p = {"model": self.model, "messages": self.messages, **self.settings}
+        msgs = self.messages
+        if self.cache:
+            # Anthropic prompt caching through OpenRouter: breakpoints on the system prompt and the newest message,
+            # so each turn reads the conversation so far from the cache. What the model sees is unchanged.
+            msgs = [dict(m) for m in self.messages]
+            for i in (0, len(msgs) - 1):
+                if isinstance(msgs[i].get("content"), str) and msgs[i]["content"]:
+                    msgs[i]["content"] = [{"type": "text", "text": msgs[i]["content"],
+                                           "cache_control": {"type": "ephemeral"}}]
+        p = {"model": self.model, "messages": msgs, **self.settings}
         if self.tools:
             p["tools"] = [{"type": "function", "function": t} for t in self.tools]
         base = self.slot.get("base_url", "https://api.openai.com/v1")
