@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791826388-8Evz9RDLbQ9Jel3GQExu",
+ "object": "chat.completion",
+ "created": 1791826388,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "All quantities are computed. I'll print the list-valued results so I can assemble the final JSON.",
+    "refusal": null,
+    "reasoning": "I'm confirming the dose conversion value in Gy cm\u00b2 checks out, then double-checking the angular and directional fractions before assembling the final JSON output with all the computed values.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_012tAciSDipNjMJDod9FkzJM",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport pickle, json, numpy as np\\nL=pickle.load(open('/tmp/work/final.pkl','rb'))\\ndef r(x,n=5):\\n    if isinstance(x,list): return [r(y,n) for y in x]\\n    if isinstance(x,dict): return {k:r(v,n) for k,v in x.items()}\\n    return float(f\\\"{x:.{n}g}\\\")\\nfor k in ['L1_photon_fluence_spectrum_primary','L1_photon_fluence_spectrum_scattered','L1_angular_primary','L1_angular_scattered','L2_interaction_fractions','L2_energy_transfer_fractions','L2_interaction_fractions_primary','L2_interaction_fractions_scattered','L3_initial_spectrum','L3_initial_spectrum_parent_primary','L3_initial_direction','L4_electron_fluence_spectrum','L4_angular']:\\n    print(k, json.dumps(r(L[k],4)))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I'm confirming the dose conversion value in Gy cm\u00b2 checks out, then double-checking the angular and directional fractions before assembling the final JSON output with all the computed values.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS/AkKEAgSGAI4AUIIdGhpbmtpbmcSDAB+vvtgQbeJb86WWBoMkF1GzhUQFo5IwbgDIjDcz4AHWx4K4jITTMaYfAWOoKdcVx5InPeJi1ERlXUM3CALUTlBAoRkE//XfKMjWREqmQkqBxKOxR3pH5tcf4PoTPBJyTlNAQRAf2UY5iew2CbHmVT51XyIgtYd9qr0l6F8itnYSyGStD3aS1jbFauvZIlQMXXaPsmSPVkrSP3qyUCCcKwpbLGIWoj2ushXAk0z3qzlbYcz97nXh0YTOb6w1qDg1OJXN3pRcVfTCIPAAfvbMqYPnqV8b0k9bWlDjr/Ud2zjMC/cBS3QF+SOAgb6dbnmEcW1saHLLR9TTWH7m4X4H3JBz1yN0TWN23dP1kFRRMCefaTAgSEB2CA4OjjaxRMVFmVQdbRh0iPCPJkuqbAdY1V0QfHeMEMIg6jgsvxRwFIfQDi97vBUPocYcnWLd0BiCWoBeOv78Mb5DpH8qNF40jV8ClXABEKzVpHROf3Ke1dEcq2aH+8Tyt4hAnXDoZf6q0FVUueTzyiPSvZ4avb3HOSodJMSv2IT/5A4yNY/Zi8WYZmCbrLtRP6nBMJY3GxB8OEYyye/DzgULQm9AnziWhj4u+y8Ze5k+8TTdATxV3gJNGpLmFuQmxDl2/rwGN1KjBzaycvb3a1cLzL91//6my+u/qAY8h1Fo+5qqzpvQOs1mApQHWckwFvDLfqty44qtHFx24LDO1Yeih7yWeMTCD0SSwcjS4HHfDMguXFqskO/YmXP8Am3JVUN6RVGMKMKG0ATwMVtF661RXRkV7NMwYVJOJNcDB0KG7u8simP6JeuX0xRMGwcWri8kKkEDRAx1GYH4FuJ87xcmq16z9fZZFdT1jcjbv/WffdIAEA3uKUY3yvaYJw2k6lAVB8Vnb66g2W1nzvQ1oO/AtpcxRVJ+2m65G0pZY0uEj9cPQq2Au3nNoT+kazT/09S0YnHhc4oxqAw3w2vMUynA+ySgm0A4SAoZwqpgCTsTJseFs1AWEtYFFECT6DGVkLsihc4O7z3F0Txn/QQQR56EhlbLnbZLGLNFtFMr3Wisa/++DnKLCp/miefqtQrGnKfRZAW551v5fZc72JzpDcjYRlUTuZv5u9pr8zWyVxEHVWd0ePvHZGMvnSQzv25iMwXT9U2TuZeQNyiBgaX3HiXXYHUgxK84ExX7Zc5hpcvrzWzBuHCQO9KuM91tyHJ4I1w7DB+cbhoXmTWN/ogwW+QZw1FhpJcxGZ66Xqi4XPQQmBCaytCWyWo3DVpa639VWlo2nmh+uAkgcx5m52GjZfHDJQuVRZVeD0a0agX74t1SllE8dS3zJsGIOCG5E1xenVmwRSLMvQayiyKdKzW+JKKeSD49Vc5pwjC8GBwlLh4XB09pObkLjMvVkiENe3eACfTZ8UDRqpZ1apyuE6/mJe6cofgWKwtP40G1d/kU+KkzpfnOm0k6HF1Q0nRE6nIIjULM4H7ttu8JFSYesb0zMgbCd8SxcFn35sJDC+iDfICvlyJGP/wxIfPrHkPXm02+hLWnrRxYZ41Og3p419WbODhMywPjc/murBU4EnGyQ4/AaWga/h8ZRAkp3ononyRte9DhXqxMWPrf+6JGOE2n/Xk7jThSNhQ62Y/kRBosaNT61DcTgM20P0oq8L1DmLUnyHMhsuD1DA6Hs3GqUrwGLFiGAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 183797,
+  "completion_tokens": 584,
+  "total_tokens": 184381,
+  "cost": 0.01225845,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 180999,
+   "cache_write_tokens": 2796,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.01225845,
+   "upstream_inference_prompt_cost": 0.01079845,
+   "upstream_inference_completions_cost": 0.00146
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 186,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

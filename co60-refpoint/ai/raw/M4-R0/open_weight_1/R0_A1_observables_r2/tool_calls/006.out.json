@@ -1,0 +1,9 @@
+{
+ "stdout": "0.05 mu_tot 0.24739863289129155 comp/coh/pho/pair 0.1877003222777729 0.04 0.01969831061351866 0.0\n0.1 mu_tot 0.18171577225843205 comp/coh/pho/pair 0.16471577225843204 0.015 0.002 0.0\n1.1732 mu_tot 0.06625872104838514 comp/coh/pho/pair 0.0651977271818888 0.0003800021651270208 5.917013693007308e-07 0.0006804\n1.3325 mu_tot 0.06277906993857467 comp/coh/pho/pair 0.061061400018382804 0.0003200312075983718 3.887125934921502e-07 0.0013972499999999998\ntest seg_in_cyl 0.09999999999999964\n",
+ "stderr": "Traceback (most recent call last):\n  File \"/tmp/work/_call_006.py\", line 356, in <module>\n    res = run_mc(20000, seed=1)\n  File \"/tmp/work/_call_006.py\", line 289, in run_mc\n    costh = sample_compton_cos(Ecomp, rcomp)\n  File \"/tmp/work/_call_006.py\", line 104, in sample_compton_cos\n    return np.interp(r, CDFcomp[idx], cos_tab)\n           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py\", line 1686, in interp\n    return interp_func(x, xp, fp, left, right)\nValueError: object too deep for desired array\n",
+ "exit_code": 1,
+ "timed_out": false,
+ "wall_s": 1.83,
+ "stdout_truncated": false,
+ "stderr_truncated": false
+}

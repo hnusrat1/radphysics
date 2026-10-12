@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791826345-yVZ9Izc8amTgDdzU2Sx9",
+ "object": "chat.completion",
+ "created": 1791826345,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "The code block wasn't properly formatted. Let me retry.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_4aa531c7735449d09c647cf0",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nfrom scipy.interpolate import interp1d\\nimport math\\n\\nnp.random.seed(12345)\\n\\n# Cross section data for water (mass attenuation * density = linear, density=1.0)\\ndata_E = np.array([0.01, 0.05, 0.1, 0.2, 0.5, 1.0, 2.0, 5.0, 10.0])\\ndata_coh = np.array([1.114, 0.0709, 0.0195, 0.00512, 0.00091, 0.000247, 0.000119, 0.000032, 0.000013])\\ndata_incoh = np.array([0.2941, 0.1379, 0.1470, 0.1277, 0.09477, 0.06958, 0.04877, 0.02377, 0.01301])\\ndata_photo = np.array([1.274, 0.00574, 0.00422, 0.00397, 0.00127, 0.000798, 0.000383, 0.000053, 0.000008])\\ndata_pair = np.array([0.0, 0.0, 0.0, 0.0, 0.000013, 0.000049, 0.000089, 0.000524, 0.001764])\\n\\ndata_total = data_coh + data_incoh + data_photo + data_pair\\n\\ndef interp_log_log(x_vals, y_vals, x_new):\\n    \\\"\\\"\\\"Interpolate in log-log space\\\"\\\"\\\"\\n    # Filter to positive values\\n    mask = y_vals > 0\\n    x_pos = x_vals[mask]\\n    y_pos = y_vals[mask]\\n    \\n    x_new = np.atleast_1d(np.asarray(x_new, dtype=float))\\n    result = np.empty_like(x_new)\\n    \\n    for i, x in enumerate(x_new):\\n        if x < x_pos.min():\\n            # Extrapolate using first two points\\n            logx = np.log(x_pos[:2])\\n            logy = np.log(y_pos[:2])\\n            slope = (logy[1] - logy[0]) / (logx[1] - logx[0])\\n            result[i] = np.exp(slope * (np.log(x) - logx[0]) + logy[0])\\n        elif x > x_pos.max():\\n            # Extrapolate using last two points\\n            logx = np.log(x_pos[-2:])\\n            logy = np.log(y_pos[-2:])\\n            slope = (logy[1] - logy[0]) / (logx[1] - logx[0])\\n            result[i] = np.exp(slope * (np.log(x) - logx[0]) + logy[0])\\n        else:\\n            # Interpolate\\n            logx = np.log(x_pos)\\n            logy = np.log(y_pos)\\n            result[i] = np.exp(np.interp(np.log(x), logx, logy))\\n    \\n    return result.item() if result.size == 1 else result\\n\\n# Cross section functions (linear attenuation, cm^-1)\\ndef mu_R(E):\\n    return float(interp_log_log(data_E, data_coh, E))\\n\\ndef mu_C(E):\\n    return float(interp_log_log(data_E, data_incoh, E))\\n\\ndef mu_PE(E):\\n    return float(interp_log_log(data_E, data_photo, E))\\n\\ndef mu_PP(E):\\n    return float(interp_log_log(data_E, data_pair, E))\\n\\ndef mu_total(E):\\n    return mu_R(E) + mu_C(E) + mu_PE(E) + mu_PP(E)\\n\\n# Test\\nprint(\\\"Cross sections at key energies:\\\")\\nfor E in [0.05, 0.1, 0.2, 0.5, 1.0, 2.0]:\\n    t = mu_total(E)\\n    r = mu_R(E) / t * 100\\n    c = mu_C(E) / t * 100\\n    p = mu_PE(E) / t * 100\\n    pp = mu_PP(E) / t * 100\\n    print(f\\\"E={E:.3f} MeV: mu={t:.5f}, R={r:.2f}%, C={c:.2f}%, PE={p:.2f}%, PP={pp:.2f}%\\\")\\n\\nprint(f\\\"Mean free path at 2.0 MeV: {1/mu_total(2.0):.3f} cm\\\")\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The code block wasn't properly formatted. Let me retry.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 13489,
+  "completion_tokens": 1082,
+  "total_tokens": 14571,
+  "cost": 0.001347799068,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 1024,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001347799068,
+   "upstream_inference_prompt_cost": 0.001151178028,
+   "upstream_inference_completions_cost": 0.00019662104
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 13,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

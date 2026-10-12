@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791826462-mwVaXgTbM6oGBGLoi3nL",
+ "object": "chat.completion",
+ "created": 1791826462,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Let me check what happened - the output is empty. The previous code had errors. Let me rewrite everything cleanly.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_bf19ec4a3fdb4ec0b8858df9",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nimport math\\nimport json\\n\\nnp.random.seed(42)\\n\\n# Constants\\nm_e_c2 = 0.511  # MeV\\nE_source = 2.0  # MeV\\n\\n# Cross section data (linear attenuation, cm^-1 for water at density 1.0)\\nE_xs = np.array([0.01, 0.05, 0.1, 0.2, 0.5, 1.0, 2.0, 5.0, 10.0])\\nmu_R = np.array([1.114, 0.0709, 0.0195, 0.00512, 0.00091, 0.000247, 0.000119, 0.000032, 0.000013])\\nmu_C = np.array([0.2941, 0.1379, 0.1470, 0.1277, 0.09477, 0.06958, 0.04877, 0.02377, 0.01301])\\nmu_PE = np.array([1.274, 0.00574, 0.00422, 0.00397, 0.00127, 0.000798, 0.000383, 0.000053, 0.000008])\\nmu_PP = np.array([0.0, 0.0, 0.0, 0.0, 0.000013, 0.000049, 0.000089, 0.000524, 0.001764])\\n\\ndef get_mu(E, mu_data):\\n    \\\"\\\"\\\"Log-log interpolation of mu at energy E\\\"\\\"\\\"\\n    mask = mu_data > 0\\n    E_pos = E_xs[mask]\\n    mu_pos = mu_data[mask]\\n    if len(E_pos) < 2:\\n        return 0.0\\n    log_E = np.log(E_pos)\\n    log_mu = np.log(mu_pos)\\n    e = np.clip(E, E_pos[0], E_pos[-1])\\n    return float(np.exp(np.interp(np.log(e), log_E, log_mu)))\\n\\ndef mu_total(E):\\n    return get_mu(E, mu_R) + get_mu(E, mu_C) + get_mu(E, mu_PE) + get_mu(E, mu_PP)\\n\\ndef sample_interaction_process(E):\\n    \\\"\\\"\\\"Sample which interaction occurs, return process string\\\"\\\"\\\"\\n    r = get_mu(E, mu_R)\\n    c = get_mu(E, mu_C)\\n    p = get_mu(E, mu_PE)\\n    pp = get_mu(E, mu_PP)\\n    total = r + c + p + pp\\n    if total <= 0:\\n        return None\\n    xi = np.random.random() * total\\n    if xi < r:\\n        return \\\"rayleigh\\\"\\n    xi -= r\\n    if xi < c:\\n        return \\\"compton\\\"\\n    xi -= c\\n    if xi < p:\\n        return \\\"photoelectric\\\"\\n    return \\\"pair\\\"\\n\\n# Test\\nprint(\\\"Interaction probabilities at 2.0 MeV:\\\")\\nr = get_mu(2.0, mu_R)\\nc = get_mu(2.0, mu_C)\\np = get_mu(2.0, mu_PE)\\npp = get_mu(2.0, mu_PP)\\nt = r + c + p + pp\\nprint(f\\\"  Rayleigh: {r/t*100:.3f}%\\\")\\nprint(f\\\"  Compton: {c/t*100:.3f}%\\\")\\nprint(f\\\"  Photoelectric: {p/t*100:.3f}%\\\")\\nprint(f\\\"  Pair production: {pp/t*100:.3f}%\\\")\\nprint(f\\\"  Total mu: {t:.5f} cm^-1\\\")\\nprint(f\\\"  Mean free path: {1/t:.3f} cm\\\")\\n\\nprint(\\\"\\\\nInteraction probabilities at 0.6 MeV:\\\")\\nr = get_mu(0.6, mu_R)\\nc = get_mu(0.6, mu_C)\\np = get_mu(0.6, mu_PE)\\npp = get_mu(0.6, mu_PP)\\nt = r + c + p + pp\\nprint(f\\\"  Rayleigh: {r/t*100:.3f}%\\\")\\nprint(f\\\"  Compton: {c/t*100:.3f}%\\\")\\nprint(f\\\"  Photoelectric: {p/t*100:.3f}%\\\")\\nprint(f\\\"  Pair production: {pp/t*100:.3f}%\\\")\\nprint(f\\\"  Total mu: {t:.5f} cm^-1\\\")\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Let me check what happened - the output is empty. The previous code had errors. Let me rewrite everything cleanly.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 27528,
+  "completion_tokens": 1073,
+  "total_tokens": 28601,
+  "cost": 0.0012075294,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 20480,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0012075294,
+   "upstream_inference_prompt_cost": 0.00101254384,
+   "upstream_inference_completions_cost": 0.00019498556
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 24,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}
