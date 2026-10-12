@@ -1,0 +1,57 @@
+{
+ "id": "gen-1791827853-T3S4IPJ0RMAZ1T8NL0uX",
+ "object": "chat.completion",
+ "created": 1791827853,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01NbSxchUWQNKK1o3GdYS589",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport subprocess, sys\\ndef runpy(path):\\n    r=subprocess.run([sys.executable,path],capture_output=True,text=True,cwd='/tmp/work')\\n    return r.stdout, r.stderr[-3000:]\\no,e=runpy('/tmp/work/an2.py'); print(o[-5000:], e[-3000:])\\n\"}"
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 116384,
+  "completion_tokens": 161,
+  "total_tokens": 116545,
+  "cost": 0.012205475,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 105977,
+   "cache_write_tokens": 10405,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.012205475,
+   "upstream_inference_prompt_cost": 0.011802975,
+   "upstream_inference_completions_cost": 0.0004025
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 0,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

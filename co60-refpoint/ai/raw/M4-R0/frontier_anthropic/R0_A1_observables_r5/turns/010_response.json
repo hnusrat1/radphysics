@@ -1,0 +1,57 @@
+{
+ "id": "gen-1791827498-rkryJKJELTJbXRf6ccwU",
+ "object": "chat.completion",
+ "created": 1791827498,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01MsyE4SFtbx98MUF8sx5qG5",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport numpy as np, sys, time\\nsys.path.insert(0,'/tmp/work')\\nimport sim, mc, phys\\nV=np.pi*1.0**2*0.2\\nN=2000000\\nt=time.time()\\nseg,dep=sim.run(N,7)\\nprint(\\\"time\\\",time.time()-t)\\nprim=seg['prim']\\nratio=lambda tl: tl.sum()/V/N * mc.Omega*105**2\\nprint(\\\"primary ratio MC\\\", ratio(seg['tl'][prim]))\\nmu1=mc.mu_c(1.1732)+mc.mu_pe(1.1732)+mc.mu_coh(1.1732)\\nmu2=mc.mu_c(1.3325)+mc.mu_pe(1.3325)+mc.mu_coh(1.3325)\\nprint(\\\"analytic\\\", 0.5*(np.exp(-mu1*5)+np.exp(-mu2*5)), mu1, mu2)\\nprint(\\\"total ratio\\\", ratio(seg['tl']), \\\"scattered\\\", ratio(seg['tl'][~prim]))\\n\"}"
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 67206,
+  "completion_tokens": 395,
+  "total_tokens": 67601,
+  "cost": 0.000955415,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 66459,
+   "cache_write_tokens": 745,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000955415,
+   "upstream_inference_prompt_cost": 0.000757915,
+   "upstream_inference_completions_cost": 0.0001975
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 0,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

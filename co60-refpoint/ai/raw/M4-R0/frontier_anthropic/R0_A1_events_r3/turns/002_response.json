@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791827654-HnFedy55iNxEm4GKG0mJ",
+ "object": "chat.completion",
+ "created": 1791827654,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I'm cross-checking the mass attenuation coefficient values for water against NIST tables at these photon energies, trying to reconcile my computed value near 1.17 MeV with reference data around 1 and 1.25 MeV.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01BYN5R2S4SnsucW7H9z1r3S",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nfor E in [0.5,1.0,1.25]:\\n    print(E, NE_WATER*sigma_KN(E)*1e24, \\\"b/e ; mu=\\\", NE_WATER*sigma_KN(E))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I'm cross-checking the mass attenuation coefficient values for water against NIST tables at these photon energies, trying to reconcile my computed value near 1.17 MeV with reference data around 1 and 1.25 MeV.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSlAkKEAgSGAI4AUIIdGhpbmtpbmcSDPcko1b5sANKqzKDjxoMaSUQ53S24+L3TYD7IjDOa81zBi8MD//4DmNe1Pgj5qWob/ZAtuNkfEBncyUWRQHI/8sAzkfwsgZqoT5i+TsqsQhsIHZncV9nL3BEw0xxoU+MpCOKJdQSRbkLJRV4UYpS0SnvwbL58eRv8NMC8yZ69mjMaVR/VqoA/v+awUKWXhxNzvOn2HF6HhA753MrpGTg3kv9OhVZ8tbLMaNuWAFIo0Mv/1SvLTII6iegXcAXOUl85lmrOcm7HMT1lEIalWdJ8qZ0WwNpM5BeALLKYOGcbKvyoZIolNPMmwkuCmanU8gbXfNZsTHyyuR7OGbn3+vUg+EwIuR3Tt+HVaHWLDz2aJY8A4/X4SOZXYi9MIoHJ2u0oFXKkp5qYINoUBZY9BrRdp3PkYgOdFfMrS+VkJp1CqldkG83HZ8JtKF7h/NlKgu2Z6CjJJepnyxExyWjw46lT8ACb0dDcyuhHqLrZdh9sCiJCU5oQkkh2RLRVHzJpKimmU1a85GMXB8I49RjxcONoxIlmGa17W8juND8IUViQWP1MezkGa1MjmxpoAJaMrJXpre0CPWs3yMdatHW3kzVFzuAGLhX6hgOtu/0AutUP+28RtXwb9zIHs4Gnol7LjYniMHWrp3QGP/8aDrfG/AKzfO3BtUW5GINYywlSQGsi82uIvP8G1apytKiYPYNVsVkSkP0JdQOUKXTpipQEiebYezWaK2kQ3TjSoXC3zK9MzBA6L/aiGCfGq6BHY7aA0yGbERI+iq8QF3lY2tIlVrwn6AY4ZGWh+LbNHKRUyDYta0JAuVZ+gyWBqASdY6RvcLupY+HPZ2VfnFBM3bREk4agNW9p2HySRvpaPVP3iDEltx0r2v/7qpCwUSK/6lTesR9ZlhqZvECm31Nwd73QOxQHZwKoFGhUUzZA/yMlpuxpTNO93GJmVKLrQA4TBX/pHEjfdUkMk3T6jjglwgWsHHE1zllzBoF7MjHbjfPcPReAII+Y3Xz7KYKVysbFLK3X8CgKXstxtM2yX4A3b7wLug0747WKZPhRaW17yDtPqGBcHXeIzQ7Yhb0G/H06Wj2WGziQLDUjsMgs19xxXqNtvPK9kVb1uC70/MaChPBcga5ZY6HlZXLSb/qUeBu1L8Ru2kMF58x/NNHeLduvYQD92a0Q6817l7N2hijI2UnX6XGI+Z1OYDTCm0Pw0EzhuXnduCa/VSnbvERpEf28kAmv6/OSyMAlVvOP5RnvfTxlLcu1u+blmPVcXNzA7JQcaDu1w/eEAzAMVME1Ww1IPeObf0fWbUJ1HOIUu4zcuCMjaIkkHj0xcO5vuzIkgcT/XpxLPZsvfZPMH2uVV8IY15APmy1BkpdGw5euI8sNPo0Y/hD2NRPMiyaFF4Far0jc6hOLJeQchZSDc4sdKCQi9F7pCXfHciYIVnB4sH2NExQWFGC84sKGb1vrzL0owPnFefx/BQ6SXoeFiRNzTmEUEFpQ8CmzCvACuquYHDJ8V4Z4urfxAuToxQaofLeulQDb3XSwRY+lRgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 38592,
+  "completion_tokens": 398,
+  "total_tokens": 38990,
+  "cost": 0.00478237,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 2092,
+   "cache_write_tokens": 36498,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00478237,
+   "upstream_inference_prompt_cost": 0.00458337,
+   "upstream_inference_completions_cost": 0.000199
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 281,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

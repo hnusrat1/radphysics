@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791827394-iMLPebVGChG3vi80ocBL",
+ "object": "chat.completion",
+ "created": 1791827394,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I'm checking the weight fractions for the Rayleigh and pair-production NEE contributions, confirming they're small enough relative to the total not to be a concern, and now considering how pair production photon pairs at 0.511 MeV factor into the analog cross-section calculation.\n\nFor selecting 200 events from the ~325 total without replacement, I'm weighing two approaches: an exponential-sorting key method versus systematic PPS sampling with equally-spaced cumulative points, verifying that the max candidate weight is well under the spacing needed to avoid duplicate selections.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_016WpJZzFWNbKz9VocgGXEum",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport subprocess\\nt=r'''\\nimport numpy as np, json\\nfrom phys import *\\nimport sim as S\\nrng=np.random.default_rng(777)\\nC=np.load('C.npy')\\nperm=rng.permutation(len(C)); C=C[perm]\\nw=C[:,1]; W=w.sum(); cum=np.cumsum(w)\\nu0=rng.random()\\npts=(u0+np.arange(200))*W/200\\nidx=np.searchsorted(cum,pts)\\nsel=C[idx]\\nassert len(np.unique(idx))==200\\nevents=[]\\nfor typ,_,Earr in sel:\\n    Earr=float(Earr); typ=int(typ)\\n    mc=float(mu_c(Earr)); mR=float(mu_R(Earr)); mP=float(mu_pair(Earr)); mpe=float(mu_pe(Earr))\\n    mt=mc+mR+mP+mpe\\n    # photon at x: process selection\\n    r=rng.random()*mt\\n    if r<mc: proc='compton'\\n    elif r<mc+mR: proc='rayleigh'\\n    elif r<mc+mR+mP: proc='pair'\\n    else: proc='photoelectric'\\n    if proc=='compton':\\n        eps=float(S.KN_eps(np.array([Earr]))[0]); a=Earr/me\\n        cth=1-(1/eps-1)/a\\n        Eout=eps*Earr\\n        th2=np.arccos(np.clip(cth,-1,1))/2\\n        tt=np.tan(th2)\\n        cosphi=(1+a)*tt/np.sqrt(1+((1+a)*tt)**2) if tt<1e6 else 1.0\\n        cos_e=float(cosphi)\\n        ev=dict(process='compton',e_in_MeV=Earr,e_out_MeV=Eout,cos_scatter=float(cth),\\n                t_e_MeV=Earr-Eout,cos_electron=cos_e,t_positron_MeV=None)\\n    elif proc=='rayleigh':\\n        cth=float(S.rayl_sample(np.array([Earr]))[0])\\n        ev=dict(process='rayleigh',e_in_MeV=Earr,e_out_MeV=Earr,cos_scatter=cth,\\n                t_e_MeV=0.0,cos_electron=None,t_positron_MeV=None)\\n    elif proc=='pair':\\n        avail=Earr-2*me\\n        te=avail*rng.random(); tp=avail-te\\n        sig=me/(te+me)\\n        th=abs(rng.normal(0,sig))\\n        ev=dict(process='pair',e_in_MeV=Earr,e_out_MeV=None,cos_scatter=None,\\n                t_e_MeV=float(te),cos_electron=float(np.cos(th)),t_positron_MeV=float(tp))\\n    else:\\n        ev=dict(process='photoelectric',e_in_MeV=Earr,e_out_MeV=None,cos_scatter=None,\\n                t_e_MeV=Earr,cos_electron=float(0.5+0.5*rng.random()),t_positron_MeV=None)\\n    events.append(ev)\\nfrom collections import Counter\\nprint(Counter(e['process'] for e in events))\\nprint(Counter(round(e['e_in_MeV'],4) for e in events).most_common(8))\\nprint('mean e_in', np.mean([e['e_in_MeV'] for e in events]))\\nprint('pair in sample: ', [e for e in events if e['process']=='pair'][:3])\\nout={\\\"method\\\": \\\"\\\", \\\"events\\\": events}\\njson.dump(out, open('events.json','w'))\\n'''\\nopen('sample.py','w').write(t)\\nr=subprocess.run(['python','sample.py'],capture_output=True,text=True,cwd='.'); print(r.stdout,r.stderr[-3000:])\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I'm checking the weight fractions for the Rayleigh and pair-production NEE contributions, confirming they're small enough relative to the total not to be a concern, and now considering how pair production photon pairs at 0.511 MeV factor into the analog cross-section calculation.\n\nFor selecting 200 events from the ~325 total without replacement, I'm weighing two approaches: an exponential-sorting key method versus systematic PPS sampling with equally-spaced cumulative points, verifying that the max candidate weight is well under the spacing needed to avoid duplicate selections.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "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.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 109395,
+  "completion_tokens": 1986,
+  "total_tokens": 111381,
+  "cost": 0.012763825,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 105344,
+   "cache_write_tokens": 4049,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.012763825,
+   "upstream_inference_prompt_cost": 0.007798825,
+   "upstream_inference_completions_cost": 0.004965
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 663,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

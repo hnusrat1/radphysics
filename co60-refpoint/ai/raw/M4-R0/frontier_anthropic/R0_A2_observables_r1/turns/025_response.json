@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791827596-e0aBI0kjz4LKrdwEZJO5",
+ "object": "chat.completion",
+ "created": 1791827596,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "Seed 13 was killed, so I have 3e6 photons from three seeds. Next I'll run the full analysis on those.",
+    "refusal": null,
+    "reasoning": "Seed 13 got killed, likely an OOM from concurrency spikes, but I still have 3e6 photons from the other runs so I'll move on and maybe retry it later. Now I'm checking that main.py's analysis pipeline correctly globs all the H_r*.npz files while excluding test files, so it should pick up the valid runs properly.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01Go3jmjDoTJTYoeVzJwsGt8",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport subprocess, sys, time, json\\nt0=time.time()\\np=subprocess.run([sys.executable,'/tmp/work/main.py'],capture_output=True,text=True,cwd='/tmp/work')\\nprint(p.returncode, p.stderr[-3000:], time.time()-t0)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Seed 13 got killed, likely an OOM from concurrency spikes, but I still have 3e6 photons from the other runs so I'll move on and maybe retry it later. Now I'm checking that main.py's analysis pipeline correctly globs all the H_r*.npz files while excluding test files, so it should pick up the valid runs properly.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSkgkKEAgSGAI4AUIIdGhpbmtpbmcSDCwcPuso97mt6eBBpRoMZMdRUNZj2hlQCnH3IjAOJMoUniUioM8QoLoxnf9/rN6jthDQ3dUPAvqiW5s2MwMYbFUgseAL9xXYNGLVljQqrwhper9XCycu8fM5e7OQsxmDdlv82nhF9/UQ1diaCk5dDmMpDCsHds7iK5NtuRG4VX8GF+0lRgXO7SV2sp+CB3Q5qz3lyPn0UTRrUqj4lSGLmQ08G5BzfveJZhtsVwtwfW/tkdvzY1KWAifmTjk1WwBvkY+kqcpNn0E7YcBW2hesosOUZpchQuz3bBAsM/y/XVwluCvrMwYxnURhJRhmI2ZzcG5ZWFxY+UJoyxAls/u/B1o/HDzlagnOXjzfkqEmjmJPRpRM3Mw11GkLbI14CKZBdIK5FzHD9+5WoYhQ7PPjGqH2yd6ONkvlakQ4ojzA/F4dFZiqaTGPs6sPjKq7lFdwEnIKkwMmAeP25ELEvjj5WNKgBJLRdvGSyw6lo4hG/ySNK7Tap5bICUN5Yeh1Sr34zj2yDaFP6L49dwdNp1xUzxuscDPpFYInXyP3J+hqb+7pR6wahCeIQ+OQcbYftJ0ufYQsKFVUta3RHVB6l0gOIca58a/b7Uardz5yLpg7m1rjWAbaIB2G7BTo2HgmIem50GXY4oDIfFClOvILPxdEMCRWDplS+95k1Odmg3wCSFb9JTDqTRmTgWc1d9Tsx8aqE/8bq5x9VtFz7R9BTNG2qAQ8YdVtvyleBGdMAYM18ba+5c54TdNjtkQVFEhWRqGEQNm4EDsE9UzzRsUtHkwv2+pKFFbmc79HmtWG3AgGsE+O+me3bRhoV59FvufpFRmfuQbhaa8RypjOUax1tJ7xuUxUZ2DNkNrSkdHSpu8MTVLmoAqqpYYmo95ui3AdydKH8Yi3TrUil9XnQ6SVwLlJQ5fwezz4Z/ERUdB92DgxfBtIQe9Vz5rfIahLsiGYInbEUUElQiCGwqKur8ziX2LAhYJj7n7g13Wy6wq6gsn+oLdUNtsFDRUJTsxCtRAiZEH7B6oxGjDhZ0hlOlophqWs+xF80hPmNZQwlQ4cz7kZh3+7oZ3QOIqOt/a0VGphfFAAWvsr17+ULeQ8NCtSYEvU7rm4pzORtoEgPfwB86m2b9JFjP+QaBXPLWolCdOcpCt/dmEIpVHybiyMknKs06Mj+bQ/Y7jdBA9XcLniCcM+6zgqn2mqSFYOBgJS7c5VjbK/ju5UZeChUSbHAb7Vp0Jut87eY4NTMuEgk4l7Lwz1c4ijqri2hguzGyxC4QzonNiY4Zh3H6/hf0pmfPLSgFMsZM6qd9fHzEbDh+2URoxJaw7GBaJ+P9dNamLhnq2He5T4G/KvLSoz5Ok4X0gC1dibfX47S0Q7xOnx6GZWAXp/fwmi+5m0wU8xEznXTBxujlJG1TTd1kBvmeNvS4uRwGg281GsUPTtbcoXwa9XL0EVBfLlbmTDCLQw8PINZxbwm3p32YU35eJ4HUAUB+dR9bufTx6dw3VR713tnXbaL2LAdkv4M5wXfxdTJmSU52g+JaMYAQ==.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 141040,
+  "completion_tokens": 343,
+  "total_tokens": 141383,
+  "cost": 0.0082462,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 140454,
+   "cache_write_tokens": 584,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0082462,
+   "upstream_inference_prompt_cost": 0.0073887,
+   "upstream_inference_completions_cost": 0.0008575
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 157,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

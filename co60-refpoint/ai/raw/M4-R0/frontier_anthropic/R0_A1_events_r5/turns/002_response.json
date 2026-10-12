@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791828062-I6qmFuP4MsJPE9n8t69K",
+ "object": "chat.completion",
+ "created": 1791828062,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I need to fix the integration to use np.trapezoid, and I'm rewriting the Klein-Nishina cross-section using the standard closed-form total formula rather than my messy version.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_017z32f1pUHESpoSVYrULpa2",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\ndef kn_sigma(E):\\n    k = E/me\\n    return 2*np.pi*r_e**2*((1+k)/k**2*(2*(1+k)/(1+2*k)-np.log(1+2*k)/k) + np.log(1+2*k)/(2*k) - (1+3*k)/(1+2*k)**2)\\n\\ndef rayleigh_sigma(lam_A):\\n    a = 0.3\\n    th = np.linspace(1e-9, np.pi, 2000001)\\n    s = np.sin(th/2)/lam_A\\n    F2 = 100/(1+(s/a)**2)**4\\n    f = 0.5*(1+np.cos(th)**2)*F2*2*np.pi*np.sin(th)\\n    return r_e**2*np.trapezoid(f, th)\\n\\nmu = {}\\nfor E in energies:\\n    sig_inc = kn_sigma(E)\\n    lam = 12.398/(E*1000)\\n    sig_coh = rayleigh_sigma(lam)\\n    mu[E] = dict(inc=NA_e*sig_inc, coh=N_mol*sig_coh, pair=MU_PAIR_CM, pe=MU_PE_CM)\\n    print(E, {k:round(v,6) for k,v in mu[E].items()}, \\\"total\\\", sum(mu[E].values()))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I need to fix the integration to use np.trapezoid, and I'm rewriting the Klein-Nishina cross-section using the standard closed-form total formula rather than my messy version.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS/QcKEAgSGAI4AUIIdGhpbmtpbmcSDLKZHNQo6QLlWhXo9BoM3VkZaRrpOgvyWARpIjB1nddBu6uy7DKGmyJAAVxQcjvAwKPyVYia1DR/+6U8104RuG8HjknonJGd1Oo5ifEqmgcVukdkQQKHQNNOJa/Cd56GEq3OL1p4KSTlTS+Ezt+eV8DZi1ifTr0w71BgE9iO1LGwRdRFP0WlLwe3okNKzafikhEuTzKpaeSweHc+9zqTIf+PA3bBe2KOKxnbXvBnBz1g09N9G7YZamcUWRLiXGHMlVQjlFuulsT1Yap8PMzzfDM/KgEkdYOC5M3eK7ddK5Il4vx8Gwaa8+tKf50XgCV95KLkSyejlJEVNsPKmhjeTAp/P8vHh4PIKnkrHReXv/lfDxEj0UGCpDC0kecTw60P0M6F6Kcgo0HWSn1Yx1HxbEM2VRMzfrtPiMYNIMf9RSJgL8khLo2sDRaBnfqp8+OEEwLk5eLSakK67dKb/7djT9KyaVdaOpvG6zx+pPMm79yts6NfOufhPbZ7Ab/g3buMa6O44mIzmlYB3cGPO4N3Pt1HEmFBJzj1T76de7Wck7Np0nsaYgsvzrtHk6mP8mGKKnxK5Pw/9p314eJk/M4GKJHV40/JJEfLWiPfP2H5V/tw1E0eE8i61AlSMpEDcyHNPb0SvLy+dwgVrHvh7o2KFcUE/8kQ4wn7geVtWw8iqzl1yJ9z27h6/ca/l04qp4hwENyOMgT877xKbLQ5vFfeV2tfDFyhGIUcMA+R4Hg2qRPrHg7VWPlQoy5ijxf2T2rYOCs94NpEN72EtfKNNyftBXM+dAa+zkrPO2V3sn54iAuGXkFTNd35NbOUgz63d+EE463+uScI7ybhEA0EQRJiOVO8XTH7WHMISCVHTOZAkKoJVaCmNGQcPAgunU78JMn099dHTaWRc2d81M/g0OWqmAMOWe3wF8Nfpjko0JJZC4kfS9TrunPQysPh4xAJ+o1d6naY6jsejCM0D4YtSx6qkCcgEtOd/odGh2GUFnijaGLGWkEwPWjuFuV3QlQZg+/pwD94pqvOgfU+yKu9qykdHydXuMwg9D5X4AfD5aTUTdGsxrVFuBMpmKUX5SaOoXrs5fmE+08dCpkdJWcj245P5xUfnisgku4WqQ4O8G1EJyu6z2JYTL5gMe/QnldnRPJ7rem5pmK7VgE+bMy8faEDse15e9SZBLAAzPKEDAloshgcegrWggvHLI64nCfTtUniyWxmb03wStGI3iNrFjib/FFqD8115Ays07OQMdRmHPWuYGAzfsweu9spKvNLCAv/kOrs3/7HR3esvx5tWDX2mFhydMXZz+yjlz7UFN71YkIxqcZc2/wdkkyfGAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 22244,
+  "completion_tokens": 681,
+  "total_tokens": 22925,
+  "cost": 0.00288037,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 2092,
+   "cache_write_tokens": 20150,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00288037,
+   "upstream_inference_prompt_cost": 0.00253987,
+   "upstream_inference_completions_cost": 0.0003405
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 198,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

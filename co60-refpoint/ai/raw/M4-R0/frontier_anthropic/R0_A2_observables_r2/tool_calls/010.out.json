@@ -1,0 +1,9 @@
+{
+ "stdout": "",
+ "stderr": "Traceback (most recent call last):\n  File \"/tmp/work/_call_010.py\", line 12, in <module>\n    M.run(20000,1,t)\n    ~~~~~^^^^^^^^^^^\n  File \"/tmp/mc.py\", line 89, in run\n    tallies['fl_E']+=np.bincount(fl*NEB+np.minimum((Es/DE).astype(int),NEB-1), weights=TLs, minlength=2*NEB).reshape(2,NEB)\n                                 ~~^~~~\nOverflowError: Python integer 280 out of bounds for int8\n",
+ "exit_code": 1,
+ "timed_out": false,
+ "wall_s": 0.59,
+ "stdout_truncated": false,
+ "stderr_truncated": false
+}

@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791827785-0p5E6aoLvK6UCbIOaaA1",
+ "object": "chat.completion",
+ "created": 1791827785,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "The tool output is being truncated, so I'll print the 200 events in four compact chunks.",
+    "refusal": null,
+    "reasoning": "The output is still being truncated, so I only have partial event data from the earlier calls. I need to piece together the full event list from these fragmented displays rather than relying on one complete dump.\n\nI still have a gap between event #4 and the event with cos_electron 0.998229 that I haven't actually seen. Rather than keep reasoning about what's missing, the practical fix is to re-print events in smaller compact batches, maybe 40 at a time, to stay under the truncation limit.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_015Rvk5teyRJ7UtHeSrB3P5d",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import json\\nd=json.load(open(\\\"answer.json\\\"))\\nev_=d[\\\"events\\\"]\\nfor e in ev_[0:50]:\\n    print(json.dumps(e,separators=(\\\",\\\",\\\":\\\")))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The output is still being truncated, so I only have partial event data from the earlier calls. I need to piece together the full event list from these fragmented displays rather than relying on one complete dump.\n\nI still have a gap between event #4 and the event with cos_electron 0.998229 that I haven't actually seen. Rather than keep reasoning about what's missing, the practical fix is to re-print events in smaller compact batches, maybe 40 at a time, to stay under the truncation limit.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "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.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 83916,
+  "completion_tokens": 1216,
+  "total_tokens": 85132,
+  "cost": 0.00305389,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 69944,
+   "cache_write_tokens": 13970,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00305389,
+   "upstream_inference_prompt_cost": 0.00244589,
+   "upstream_inference_completions_cost": 0.000608
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 1081,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

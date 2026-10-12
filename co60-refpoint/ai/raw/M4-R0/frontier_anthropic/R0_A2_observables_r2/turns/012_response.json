@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791828125-niyeJIk9MCtnpcrm29MP",
+ "object": "chat.completion",
+ "created": 1791828125,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Since each call runs as a fresh process, I'll need to re-import everything each time, like importing the module fresh at the start of every call -- the earlier path adjustments won't persist, so I'll redo those too.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01Qt9BtM4PE87kYusC29QiqJ",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport sys, time\\nsys.path.insert(0,'/tmp')\\nimport numpy as np\\nimport mc as M\\ndef new_tallies():\\n    return dict(fl_E=np.zeros((2,M.NEB)), fl_cos=np.zeros((2,10)), W_int=np.zeros((2,4)), W_etr=np.zeros((2,4)),\\n                slab_TL=np.zeros((2,M.NSLAB)), slab_K=np.zeros((2,M.NSLAB)),\\n                recs=dict(T=[],cos=[],w=[],flag=[],proc=[]))\\nt=new_tallies()\\nt0=time.time()\\nM.run(20000,1,t)\\nprint('time',time.time()-t0)\\nprint(t['fl_E'].sum(axis=1), t['W_int'])\\nprint(M.OMEGA)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Since each call runs as a fresh process, I'll need to re-import everything each time, like importing the module fresh at the start of every call -- the earlier path adjustments won't persist, so I'll redo those too.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSrggKEAgSGAI4AUIIdGhpbmtpbmcSDEj2GN1zmK+1WUlZohoMsAK3C9WNJSQrX3zdIjDX8WqMwPljTBXSEA8mFnCO/wLjgntZH57bzwDhzwtX8pbpfJlBly+jv1DGFBaSHXAqyweeos1Uc8YW9up/fv9KynV0Mnhfwkobj4FJdBer+AL8I+YJlMJX/5jD8aRmOjzPU7wG4dGYbYbX+FWP8KIr1n7CVW3dlbBJ7QQcenv+AoRitv48FPBYYRQwd9BLCkMmTlM+z5u11Oq/qIb0Cfjq9nPrwQQzdiBgqhgg8MyTzyInKXunGuxN8Kqy6d4joSZJXDZZxSDTrVlX8/cDDVR8BwT2NEZa/kO5MUFucfGvbyvmoMNHRhngcC78qk5ykqImB7P9EM+55nprsnJ0kyIjirAUA+/I3ENysWcQCyU8sXqjhMXaNanu8L1y31kzAA8U/ZOEx7Hqwc98T9/Hef3YWF6BWHS/FUyio8/wCvkgoILEcjxOGDm7ul6XV60n5RdGV+vL16DcG29cTGXOBBtYy0eSLCjInq7YYKEJiJjOq9WWkuo6YywehusYzdQM9uRVRxAr1xX4ySye8CXa3Y9lX5NEWamuE7YNmCKunoQnHgavrgpq+L0sphF5NnkYMQRk2sOGAhI75FFJtWlea2sGy9YMB3svEoz4LOQksuM6tLmnO05tbAbIOdywrT6d/Yl5KGsz6zlx2l9cxrxMsDg6Xjet+7COAZE/CX3Q5C22jyx4AjCycO8vXUDZ5vP27bmfO59I+aVV70x8CsjcQZXYnZ9Ue8y2NlGNfA2Y65Vz3UNbl3f+7qPTo/y1nMtfko7qu+GmcnWPa5GpPp9xbHRaK1qF+msgxNrVBgK+ke4KffFnJ3Dd6VPpUm7MoVGdUfhXfVUaNIK+FJqTwnjUwdrfjkdZCSUSaj8ESKUCgss10zMb/HPNbP655IrASXuBRcIjB9kiWwc6JZwrRu/Nx+bh1LG5tIMYhUosQhN3UP8oGYf+XwwPV5PnZVpRUq6azdeq0iBT5BV7r6G2auyggLt8ngjU6Jo9qkbKTk0Vd2AJXWpVHrac8hot3qyYSt8auM767i2xMBlLpqKPKVL4mMDu0qkYu7on6XkpZ8mR8aRosXRpg4cNAd1mMs8bSnyiySATBqXE+eWL7OD/nt12MHEGcJfqpjd2FR4LGaI+o3HpB+PPPla8YgX6qQQaysBucQLwfhtyb0Iftn6hLZviYaG8TpdAoZBtf0G5CAQGGJlkIPcL+GsPBAdIy1g3ynHadOOIfyjsnTJaFDdNHYPI20UK1RhiKnzcOYx/4SQGUMgNn/tQ5E8M83u+MMfyVkOiPOhlPGPTaPPK7yWWNKmza4cawUqOGI+NnNTYkdiWifra3tCqbTol7lcj7DfZ9CIQuObH1WQr2CPxE9ALDA80uBgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 97413,
+  "completion_tokens": 401,
+  "total_tokens": 97814,
+  "cost": 0.001222075,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 97000,
+   "cache_write_tokens": 411,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001222075,
+   "upstream_inference_prompt_cost": 0.001021575,
+   "upstream_inference_completions_cost": 0.0002005
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 79,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

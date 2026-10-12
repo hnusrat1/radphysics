@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791827414-oZGpF3ErFcZkNmg6GwUt",
+ "object": "chat.completion",
+ "created": 1791827414,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "Each call starts a fresh process, so I'll put the shared code in a module file.",
+    "refusal": null,
+    "reasoning": "Since state isn't persisted between calls and each call runs fresh, I need to write all the code to a module file and import it rather than relying on in-memory state.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01MAkx5r653npbFX1Qx5Qdq7",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\ncode = r'''\\nimport numpy as np\\nfrom scipy import integrate\\nre=2.8179403e-13; me=0.51099895\\nNA=6.02214076e23\\nwH,wO=0.111894,0.888106\\nZA_w=wH*1/1.00794+wO*8/15.9994\\nne_w=NA*ZA_w\\nZA_air=0.49919\\nne_air=NA*ZA_air\\ndef kn_sigma(E):\\n    k=E/me\\n    t1=(1+k)/k**2*(2*(1+k)/(1+2*k)-np.log(1+2*k)/k)\\n    t2=np.log(1+2*k)/(2*k)\\n    t3=(1+3*k)/(1+2*k)**2\\n    return 2*np.pi*re**2*(t1+t2-t3)\\ndef dsig_dOmega(E,c):\\n    k=E/me\\n    eps=1/(1+k*(1-c))\\n    return 0.5*re**2*eps**2*(eps+1/eps-(1-c**2))\\n'''\\nopen('phys.py','w').write(code)\\nimport importlib, sys\\nsys.path.insert(0,'.')\\nimport phys\\nfrom scipy import integrate\\nimport numpy as np\\nfor E in [0.1,1.25]:\\n    s,_=integrate.quad(lambda c: phys.dsig_dOmega(E,c)*2*np.pi,-1,1)\\n    print(E,s,phys.kn_sigma(E))\\n    tr,_=integrate.quad(lambda c: phys.dsig_dOmega(E,c)*2*np.pi*E*(1-1/(1+E/phys.me*(1-c))),-1,1)\\n    print(' tr/rho', tr*phys.ne_w, 'frac',tr/s)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Since state isn't persisted between calls and each call runs fresh, I need to write all the code to a module file and import it rather than relying on in-memory state.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS+gYKEAgSGAI4AUIIdGhpbmtpbmcSDADMBwOQcl0LOepFORoMSldn8+/O/Qlmedr+IjAdw3F6NBy7BVCFtspD80+KXSfvFUlOI5+dPwrWIoT9THIA+4alsHZ5mR/n0qkNc74qlwbu8zfv+EIlP93cPdQ7Hw1Jm/zx2+DvmwUIT6xLX7CD+X0eGZ+DnQyBqhdcMcz9P5ZXxZIHPUFkRbyHbvPvvRkxZuO9kATIqywZj1E4TW67Q0oxvfHQeeMYdZYa5cxZQx4okHVIvmQm76ZWmgcNxCSDizmENPCIy9yA7FCcwinYv5PJghWCLAwFzoLYLjxqGHZMvAjdoe4nhWkCujMzkLx4Nf9QYHjBA+oH1WPH9QOOJBILTnk25245ohVi4BtnnUjo78DKO/ukEBCKdSM5mN1gND59JhHACg/ku7ba6nXS0E01xXFHS+iiL10zxfwJBe+hlou1JhjfND8wPFQGdeyqkEoh9WacCgePBbbvye98B9w8s0uMjsTlCAoEcDAWEDn4oJJC3hLeZi1vziUAFRG4RlsQSRik3HyoQuXycYVrZ2EC0AVzWQr0Y1WfH4pCv+hie6h8NGKzXxpDzEELG6SzfXcQxpu4VkjarsIC8gbK0ialNTfxNLOLsxwdl/JfWa7FZmykUPNxsR2X+cIf08yxvW96OTpaoxJFxjzOfxKSmeFkj3ymffYzjv4A1BVAh7Rc/RkTneRjI5A0WJJC5Qj1C8n5EoFrkuhoJmweOkVcuL+eg7PmyT5IqDwjKbF88c3DbJ+mqC3RnHCUN+401L6g0ErdwXmDO54s5vltA2PydM15dt9xsovzFtBvU7YVdIOd66/wLexaV2BwBK6oFHkhfQHudMgtAGfPCI24NlpdkrR4VDv6asrVpWiP5LX8PEeiVhqhk31DrJK02jbckE8qC4VOx4WRTap/IlW9UNNVFrOMicaKdKUDf9QwVsFSA7NKdSFZyqNu6iLDTTgKTLAq8OFTcCojCIasOPQWb5RK48Z0QbAl4mRH11itmS6UEtQEkL1tz4HmUh5xfwxxVIc88mH+UXGZlJvGNSknCzAE1+2yxTrOmy+B1WPxshXI23HkHxEfAa6XKbeGiryV9dvQMoxkeCwjHUuLPJrBgudktIokaVB/Oln1ydKaYm31tY4x2XNg1TjsFnJn6ENvEkfBRIonk/zZzxgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 49121,
+  "completion_tokens": 695,
+  "total_tokens": 49816,
+  "cost": 0.00096562,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 48017,
+   "cache_write_tokens": 1102,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00096562,
+   "upstream_inference_prompt_cost": 0.00061812,
+   "upstream_inference_completions_cost": 0.0003475
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 45,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

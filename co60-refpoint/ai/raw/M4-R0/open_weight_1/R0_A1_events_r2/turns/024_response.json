@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791827757-rXHdrHKnmadum68g9Lew",
+ "object": "chat.completion",
+ "created": 1791827757,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Good, the cross sections work. Now let me define the sampling functions.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_cfaf5a313ecf46518ce11f6f",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\n\\nme = 0.5109989461\\nr_e = 2.8179403227e-13\\n\\n# Compton sampling\\ndef sample_compton_cos(E):\\n    alpha = E / me\\n    while True:\\n        mu = np.random.uniform(-1, 1)\\n        f = 1.0 / (1.0 + alpha * (1.0 - mu))\\n        dcs = f**2 * (f + 1.0/f - (1.0 - mu**2))\\n        if np.random.random() < dcs / 2.0:\\n            return mu\\n\\ndef compton_electron_cos(E, cos_theta):\\n    sin_theta = np.sqrt(1 - cos_theta**2)\\n    tan_half = sin_theta / (1 + cos_theta)\\n    alpha = E / me\\n    cot_phi = (1 + alpha) * tan_half\\n    if cot_phi == 0:\\n        return 0.0\\n    tan_phi = 1.0 / cot_phi\\n    cos_phi = 1.0 / np.sqrt(1.0 + tan_phi**2)\\n    return cos_phi\\n\\n# Test\\ncos_t = sample_compton_cos(1.1732)\\nprint(\\\"cos_theta:\\\", cos_t)\\nE_out = 1.1732 / (1 + (1.1732/me)*(1-cos_t))\\nprint(\\\"E_out:\\\", E_out)\\ncos_e = compton_electron_cos(1.1732, cos_t)\\nprint(\\\"cos_electron:\\\", cos_e)\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Good, the cross sections work. Now let me define the sampling functions.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 56639,
+  "completion_tokens": 401,
+  "total_tokens": 57040,
+  "cost": 0.00521908926,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00521908926,
+   "upstream_inference_prompt_cost": 0.00514621954,
+   "upstream_inference_completions_cost": 7.286972e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 15,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791827350-tvgEkUDuUcuVUg6Py6Ce",
+ "object": "chat.completion",
+ "created": 1791827350,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I'm wondering if the other processes failed silently due to memory pressure\u2014with 56 points each holding arrays of around 1.5 million floats, multiple processes running simultaneously could easily consume 1-2GB each, which might explain the blowup across 4 processes.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_0197gJmp2d4pd7e8MfHVpqxh",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport subprocess\\nprint(subprocess.run(['bash','-lc','free -m; cat /sys/fs/cgroup/memory.max 2>/dev/null'],capture_output=True,text=True).stdout)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I'm wondering if the other processes failed silently due to memory pressure\u2014with 56 points each holding arrays of around 1.5 million floats, multiple processes running simultaneously could easily consume 1-2GB each, which might explain the blowup across 4 processes.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSwQoKEAgSGAI4AUIIdGhpbmtpbmcSDD6srM3s3Yjxo0n2NRoMXZInAK+5LLOz9k6qIjDAADx6Dz+E3aMPjK/GdBbRvYhoHaNuiZ9gR+H6npAHn2CvhOJFLTteJfgyoIyqGU8q3gn5w7dvzyy3TTuEBiLWMDZVO98wWXDfDnZIScPOKLsp9J7tl+uVgWWJj+zm9yEykQwenFtjC0Cmwd7H2DipyHF4DYwH+f7Vt7CDWP2hhFug08c1tEROcZUktjp26S1XdDD2yzUGL44YjgJrrhpPl/RtMwkpKBUm42Yqv7EGt/2/RH8Bd4RXIw5mEi7+g1zDZ3k6El5Rdkg9EXcZ1YksGJmByJwwfBekw1rbHC/JpijWsqim0E4SCxU4aT4RUtwJxjim+wXOZoTH6a1mJIoLWOYJqUrOSYp8OmUWPFxwTIkJMQVVFC6ZFas8iiC1pzon8HIwi4pt4TrkeVXUcjXViqNEl5QkXIlvmMIrPvDfnJw52J+QtRcs4a8ulNHIZmzS3n3igWVtXAxv5A0blnLiODdgwKEpGchdXdEZ2y7ANGZEWZvWiPS2x5yQJFergep94DTCqR6/+n601m2VGsIxQ/3hnogrHGAy0ifDNFwioN9ilmmXQvdsAhJR8deUuX7VkocMreR00+ncJ+Cr/GmhlfA1IhH5TliKOqPFak5WlO3Him/By5M8EYug8XkXpXKfrSiX0nVnE7Q8ElcQwBbhQuUQ4PjLwUCtldJivYkEa5nYXr57bQAd2bnK7S21omEIwfL/WFZzvBepKA8PynPrmJWFZCzIAzV6W0BwkkZWMDgZRIWDCZxpKIEAwquh2NOer/xcy/Ldaouyce9QQwmHByAiui3qodFKDZeUkYg69WNA1C9hXeiVbqnKbxYc3qnExAN6cxsWBlHR09Y5xUeQigLT/+H0ZfKURsm+gQcRhhIV5hxGX7BwtnqjT+O9+lzdV3vNn4m+2hExUFcTXlzLcginTHLgafTwoNulHub5BN5UsY6civcdoBXQkSFiMmFf8VWeAPea7S1BgwY2PE3xwVi5r1lhKOOh5gMjHlRWygVDFSdsauHMmvXwY/1EntGnwqs8NRY8v7XxnVWKnz4rKEaQKm9eCRtJ5TsQgcrW0QTqiaZ7zwXZoxE+0PXiYD7CfTS+t9YMtFxZx73BMYVP0BvDw/mAeNSlo09FJWOoXXrZ7l/E9lE9j98bsIX9SYJQwCVWu0ACzsgxeWDbVfmmagBar7fPdU//KpAXaitbsWk2W8XqBLQB5QA/sIEm4F1Eczy458lPpIKpxVMNkNor94qVfab9kJCXtQ6KjEb2nOfHUJgvkvVQW/RvA5wD4+c1qFHV/uF43cT+kOPUgBD2PMSDSep3pBFmgZl7tCU2oUqsRZn57sdpI3/3RpgKCfkxdCvYcRktqYJ0JKutunYn8G15ATJdRTKCxreYpyURppDI2YZRd6XlqZNR/83KWUCeTkhgJJTWTfzVtCLVZw8TPAz4UC1ubsQx4tOWZ/9fUE0wQdpoYxc3SliBHJuOMqVbpDfrrn8pKh7CQSdffMxG8ZtqzFG/e4/JCbXZIS17XD7Wl/8D6OoFdWRBl02UyKmp4MM9cnQyVBZrSctFy0N0k65BW4DbRpFekY/aLiU8DpfefE7a7y+meakKn7p90T2h6SPku9e9sYJIx2PhSKNvh8lW/6yZ2XBKZU+JEJxnR/cQikhjjIYjUADYIcKFMaYhsFU7juzc1e0RFrUZMaAH5JmU8xgniKC08/y9YerYoX1zFapIqXvtV3ydNAm97WPtGAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 139474,
+  "completion_tokens": 328,
+  "total_tokens": 139802,
+  "cost": 0.0079372,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 139224,
+   "cache_write_tokens": 248,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0079372,
+   "upstream_inference_prompt_cost": 0.0071172,
+   "upstream_inference_completions_cost": 0.00082
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 211,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

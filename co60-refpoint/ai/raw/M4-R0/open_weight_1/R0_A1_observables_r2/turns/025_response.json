@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791827851-XyXTagrscuM6hUrskqAm",
+ "object": "chat.completion",
+ "created": 1791827851,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "SiliconFlow",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Now random cube hits 0.06% (expected ~0.1% by Steiner formula; close enough given segments are truncated at 15 cm and constrained in cube; 0.0006 plausible). Good \u2014 the cylinder geometry is fixed.\n\nNow re-run the instrumented MC to see scattered fluence. Let me rerun run_mc with 50k.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "01a131435ec5d4315449b288af106e58",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import sys, os\\nsys.path.insert(0, os.getcwd())\\nimport numpy as np\\nimport importlib, mc_photon\\nimportlib.reload(mc_photon)\\nres = mc_photon.run_mc(50000, seed=11)\\nprint('time', round(res['t'],1))\\nprint('N', res['N'])\\nprint('flu pri total (cm)', res['flu_pri_ph'].sum(), 'flu sct total', res['flu_sct_ph'].sum())\\n# per phi0\\nprint('primary flu/phi0', res['flu_pri_ph'].sum()/mc_photon.Vcyl/res['N']*mc_photon.Phi0_area)\\nprint('scattered flu/phi0', res['flu_sct_ph'].sum()/mc_photon.Vcyl/res['N']*mc_photon.Phi0_area)\\nprint('interactions', res['n_int'], 'pri', res['n_int_pri'], 'sct', res['n_int_sct'])\\nprint('N_int_cyl', res['N_int_cyl'], 'scat share', res['n_scat_inter']/max(res['N_int_cyl'],1))\\nprint('E_tr total', round(sum(res['E_tr_by_proc'].values()),4), 'scat E_tr', round(res['E_tr_scat'],4))\\nprint('N_el_e', res['N_el_e'], 'N_el_pos', res['N_el_pos'])\\nprint('time/10k', round(res['t']/5,3))\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Now random cube hits 0.06% (expected ~0.1% by Steiner formula; close enough given segments are truncated at 15 cm and constrained in cube; 0.0006 plausible). Good \u2014 the cylinder geometry is fixed.\n\nNow re-run the instrumented MC to see scattered fluence. Let me rerun run_mc with 50k.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 119664,
+  "completion_tokens": 459,
+  "total_tokens": 120123,
+  "cost": 0.00524004,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 102400,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00524004,
+   "upstream_inference_prompt_cost": 0.00511152,
+   "upstream_inference_completions_cost": 0.00012852
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 76,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

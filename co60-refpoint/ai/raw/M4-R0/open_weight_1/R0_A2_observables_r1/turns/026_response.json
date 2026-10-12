@@ -1,0 +1,57 @@
+{
+ "id": "gen-1791827768-Mjq2fiQJwdKeOrxeGSxv",
+ "object": "chat.completion",
+ "created": 1791827768,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "GMICloud",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_1e3b825100d244fb9cb02ec7",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np, math\\nA = np.load('/tmp/mc_tallies_5e6.npy', allow_pickle=True)\\nflu_p,flu_s,inter_a,inter_p,inter_s,trans,e_all,e_prim,e_cos,e_sum,e_sum_prim,slab_src,Ntot = A\\nNtot=int(Ntot); V_cyl=math.pi*0.2; PHI0=1/10.5**2\\nph_edges=np.array([0,.05,.1,.15,.2,.25,.3,.35,.4,.45,.5,.55,.6,.65,.7,.75,.8,.85,.9,.95,1,1.05,1.1,1.15,1.2,1.25,1.3,1.35,1.4])\\nel_edges=np.array([0.01,.05,.1,.15,.2,.25,.3,.35,.4,.45,.5,.55,.6,.65,.7,.75,.8,.85,.9,.95,1,1.05,1.1,1.15,1.2,1.4])\\ncos_edges=np.linspace(-1,1,11)\\nEmid=(ph_edges[:-1]+ph_edges[1:])/2\\nfp = flu_p.sum(1)/Ntot/V_cyl/PHI0\\nfs = flu_s.sum(1)/Ntot/V_cyl/PHI0\\nmc2=0.5109989461\\nd = np.loadtxt('/tmp/data/xcom_water.txt', comments='#')\\nE_x=d[:,0]; mu_co=d[:,1]; mu_in=d[:,2]; mu_pe=d[:,3]; mu_pn=d[:,4]; mu_pef=d[:,5]; mu_tot=d[:,6]\\ndef interp(x,xp,yp): return np.interp(x,xp,yp)\\ndef mu_inc(E): return interp(E,E_x,mu_in)\\ndef mu_pe_(E): return interp(E,E_x,mu_pe)\\ndef el_bin(E): return np.clip(np.searchsorted(el_edges,E,side='right')-1,0,24)\\ndef cos_bin(c): return np.clip(np.searchsorted(cos_edges,c,side='right')-1,0,9)\\ndef KNf(alpha,cos):\\n    x=1+alpha*(1-cos); r=1/x; return r*r*(r+x-(1-cos*cos))\\ndef sample_kn(E, n, rng):\\n    cos_s=np.zeros(n); Te=np.zeros(n); cose=np.zeros(n); done=np.zeros(n,bool); idx=np.arange(n)\\n    alpha=E/mc2\\n    while True:\\n        sub=idx[~done]\\n        if sub.size==0: break\\n        cs=rng.uniform(-1,1,sub.size)\\n        f=KNf(alpha,cs); acc=rng.random(sub.size)<(f/2.0)\\n        if acc.any():\\n            ai=sub[acc]; cos_s[ai]=cs[acc]\\n            Ep=E/(1+alpha*(1-cs[acc])); Te[ai]=E-Ep\\n            cose[ai]=(E-Ep*cs[acc])/np.sqrt(E**2+Ep**2-2*E*Ep*cs[acc]); done[ai]=True\\n    return Te,cose\\nrng=np.random.default_rng(42)\\ne_ha=np.zeros(25); e_hp=np.zeros(25); c_ha=np.zeros(10); c_hp=np.zeros(10)\\nsA=0.0; nA=0.0; sAp=0.0; nAp=0.0\\nfor Eline,bi in ((1.1732,23),(1.3325,26)):\\n    w=fp[bi]; mu=mu_inc(Eline); n=int(w*mu*2e5)\\n    Te,cose=sample_kn(Eline,n,rng)\\n    wt=w*mu/n\\n    eb=np.clip(np.searchsorted(el_edges,Te,side='right')-1,0,24); cb=np.clip(np.searchsorted(cos_edges,cose,side='right')-1,0,9)\\n    np.add.at(e_ha,eb,wt); np.add.at(e_hp,eb,wt); np.add.at(c_ha,cb,wt); np.add.at(c_hp,cb,wt)\\n    sA+=(Te*wt).sum(); nA+=wt.sum(); sAp+=(Te*wt).sum(); nAp+=wt.sum()\\n    wt_pe=w*mu_pe_(Eline)\\n    eb=el_bin(Eline-0.0005)\\n    np.add.at(e_ha,eb,wt_pe); np.add.at(e_hp,eb,wt_pe); np.add.at(c_ha,9,wt_pe); np.add.at(c_hp,9,wt_pe)\\n    sA+=(Eline-0.0005)*wt_pe; nA+=wt_pe; sAp+=(Eline-0.0005)*wt_pe; nAp+=wt_pe\\nfor bi,E in enumerate(Emid):\\n    w=fs[bi]\\n    if w<=0 or E<=0.011: continue\\n    mu=mu_inc(E); n=int(w*mu*2e5)\\n    Te,cose=sample_kn(E,n,rng)\\n    wt=w*mu/n\\n    eb=np.clip(np.searchsorted(el_edges,Te,side='right')-1,0,24); cb=np.clip(np.searchsorted(cos_edges,cose,side='right')-1,0,9)\\n    np.add.at(e_ha,eb,wt); np.add.at(c_ha,cb,wt)\\n    sA+=(Te*wt).sum(); nA+=wt.sum()\\n    wt_pe=w*mu_pe_(E)\\n    if wt_pe>0 and E>0.0105:\\n        eb=el_bin(E-0.0005); np.add.at(e_ha,eb,wt_pe); np.add.at(c_ha,9,wt_pe)\\n        sA+=(E-0.0005)*wt_pe; nA+=wt_pe\\nprint('L3_initial_spectrum:', e_ha/e_ha.sum())\\nprint('L3_initial_spectrum_parent_primary:', e_hp/e_hp.sum())\\nprint('L3_mean_initial_energy_MeV:', sA/nA)\\nprint('L3_mean_initial_energy_parent_primary_MeV:', sAp/nAp)\\nprint('L3_initial_direction:', c_ha/c_ha.sum())\\nprint('MC means:', e_sum/e_all.sum(), e_sum_prim/e_prim.sum())\\n\\n# L4 plus L4 angular\\nfine=np.arange(0.01,1.401,0.005); df=fine[1]-fine[0]\\nre2=2.8179403262e-13**2; Ne=3.343e23\\nqr=np.zeros_like(fine)\\nfor i,E in enumerate(Emid):\\n    if E<=0.011: continue\\n    w=fp[i]+fs[i]\\n    if w<=0: continue\\n    alpha=E/mc2; Epmax=E/(1+2*alpha); E0s=E-fine\\n    valid=(E0s>=Epmax)&(E0s<=E)&(fine>0)&(fine<E)\\n    if not valid.any(): continue\\n    xg=E/E0s[valid]; cosg=1-(xg-1)/alpha; sin2=1-cosg**2\\n    dsdc=math.pi*re2*(E0s[valid]/E)**2*((E0s[valid]/E)+(E/E0s[valid])-sin2)\\n    dsdE0=dsdc*(E/(alpha*E0s[valid]**2)); qr[valid]+=w*Ne*dsdE0\\n    if mu_pe_(E)>0 and E>0.0005:\\n        e0=E-0.0005\\n        if e0>=0.01: qr[np.argmin(np.abs(fine-e0))]+=w*mu_pe_(E)/df\\ns2=np.loadtxt('/tmp/data/estar_water.txt', comments='#'); Ee=s2[:,0]; Scol=s2[:,1]\\ndef moller_n(T,W):\\n    tau=T/mc2; beta2=tau*(tau+2)/(tau+1)**2; Wmax=T/2.0\\n    out=np.zeros_like(W); v=(W>0.009)&(W<Wmax-1e-9)\\n    if v.any():\\n        Wv=W[v]; out[v]=(2.5504e-25*Ne/beta2)*(1/Wv**2)*(1-beta2*Wv/Wmax+(Wv/Wmax)**2/2)\\n    return out\\nPhi=np.zeros_like(fine); Qn=0.0\\nfor i in range(len(fine)-1,-1,-1):\\n    E0=fine[i]; s=0.0\\n    for j in range(len(fine)-1,i,-1):\\n        if E0<fine[j]/2 and Phi[j]>0: s+=Phi[j]*moller_n(fine[j],E0)*df\\n    Q=(Qn if i+1<len(fine) else 0)+(qr[i]+s)*df; Qn=Q\\n    Phi[i]=Q/interp(fine[i],Ee,Scol)\\np0=c_ha/c_ha.sum()\\nang=np.zeros(10)\\nfor i,E in enumerate(fine):\\n    w_iso=max(0,min(1,1-E/1.3))\\n    ang += Phi[i]*((1-w_iso)*p0 + w_iso*0.1)*df\\nang/=ang.sum()\\nprint('L4_angular:', ang)\\nprint('L4 fluence integral:', np.trapezoid(Phi,fine))\"}"
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 186705,
+  "completion_tokens": 2260,
+  "total_tokens": 188965,
+  "cost": 0.0053045174,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 166167,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0053045174,
+   "upstream_inference_prompt_cost": 0.0048931974,
+   "upstream_inference_completions_cost": 0.00041132
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 0,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

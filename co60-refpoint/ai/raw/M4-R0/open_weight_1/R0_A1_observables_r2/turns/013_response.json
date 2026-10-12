@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791827503-RH0tSSSSC6NXcWzANqFf",
+ "object": "chat.completion",
+ "created": 1791827503,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "SiliconFlow",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Now import and test with N=50000.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "01a1313df130d2af27144683f92bac8f",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport mc_photon as mcp\\nres = mcp.run_mc(50000, seed=11)\\nprint('time', round(res['t'],1))\\nprint('N', res['N'])\\nprint('flu pri total (cm)', res['flu_pri_ph'].sum(), 'flu sct total', res['flu_sct_ph'].sum())\\nprint('interactions', res['n_int'], 'pri', res['n_int_pri'], 'sct', res['n_int_sct'])\\nprint('N_int_cyl', res['N_int_cyl'], 'scat share', res['n_scat_inter']/max(res['N_int_cyl'],1))\\nprint('E_tr total', sum(res['E_tr_by_proc'].values()), 'scat E_tr', res['E_tr_scat'])\\nprint('N_el_e', res['N_el_e'], 'N_el_pos', res['N_el_pos'])\\nprint('time/10k', round(res['t']/5,2))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Now import and test with N=50000.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 99901,
+  "completion_tokens": 271,
+  "total_tokens": 100172,
+  "cost": 0.00366269,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 92160,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00366269,
+   "upstream_inference_prompt_cost": 0.00358681,
+   "upstream_inference_completions_cost": 7.588e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 11,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

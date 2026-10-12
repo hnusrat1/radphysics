@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791827741-HbqJrsgs14wq6UkKbIqs",
+ "object": "chat.completion",
+ "created": 1791827741,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I should keep physics helper functions in a reusable module, like ea.py, covering things like beta2, collision/radiation stopping power fits, and Moller scattering, so I can import it consistently rather than redefine them each time.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_012iJjXUQbqHWnBdGwVm72fg",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\ncode = r'''\\nimport numpy as np\\nfrom phys import re, me, ne_w as ne, ne_air, NA\\nalpha=1/137.036\\ndef beta2_T(T):\\n    tau=T/me; return tau*(tau+2)/(tau+1)**2\\ndef S_col_bethe(T,I=75e-6,n=ne):\\n    tau=T/me; b2=beta2_T(T)\\n    F=(1-b2)*(1+tau**2/8-(2*tau+1)*np.log(2))\\n    L=np.log(tau**2*(tau+2)/(2*(I/me)**2))\\n    return 2*np.pi*re**2*me*n/b2*(L+F)\\ndef moller_f(x,tau):\\n    return 1/x**2+1/(1-x)**2+(tau/(tau+1))**2-(2*tau+1)/((tau+1)**2*x*(1-x))\\ndef dsig_deps(T,eps):\\n    tau=T/me; b2=beta2_T(T)\\n    x=eps/T\\n    return 2*np.pi*re**2*me/(b2*T**2)*moller_f(x,tau)\\ndef S_rad(T):\\n    # empirical: S_rad/S_col ~ 0.0075*T (MeV), consistent with ESTAR-like values (~0.013 at 1 MeV, ~0.18 at 10 MeV)\\n    return S_col_bethe(T)*0.0075*T\\n'''\\nopen('/tmp/work/ea.py','w').write(code)\\nimport sys; sys.path.insert(0,'/tmp/work')\\nimport importlib, ea; importlib.reload(ea)\\nimport numpy as np\\nfrom scipy import integrate\\nfor T in [0.1,0.5,1.0,1.3]:\\n    val,_=integrate.quad(lambda e: e*ea.dsig_deps(T,e)*ea.ne,75e-6,T/2,limit=500,points=[1e-3,1e-2])\\n    print(T, val, ea.S_col_bethe(T), ea.S_col_bethe(T)-val)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I should keep physics helper functions in a reusable module, like ea.py, covering things like beta2, collision/radiation stopping power fits, and Moller scattering, so I can import it consistently rather than redefine them each time.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSyAcKEAgSGAI4AUIIdGhpbmtpbmcSDNFsE527KChXs3I8OxoMa8SK6yanspmAfjGKIjD8uw4NTj1vgXlAh0IUCs+Ok0mQ/V96yk4s/w9N2Qd2Uvp6QZTN4VBcHPDvc3X44cAq5QazL0Q6kuc5I/wjgE8/GQ4SXcYI2O5w496KZS1lJ+Bo+Q5azNwSJVsVCsT6hB6znZ/Sr0ug90DLpepAvhSYwgXsspwtC1lw2GDlgJqP0ZSZupLiPedQvSr+AeXgVkfASJ3cc95pS0uU/A/RwCDsoJm9A027oByZ6rw8bWfcciNyFeyGFzlL7nhpNIIQMd2viCGkG6FcFVs8mWkMkwXX1Kq71jtyarTI6bmY5Z5YAEwr3bRk/nigbRDheTQLvUSs8ejNYJc8bXClFgS8Gei9fWq8shFMcBQhDDaEbXUsZdEwrfPuM2aSqHm+XGsF6n9or3T9to4twqcrOC1xm3uOopJZc2vdpLeO8dsTOANAiJ56ZBZTXvNjjJV/+eaUsX4vGAhEy0MsZ35xvAGQ2EHmYOy6x/gMo6p3kTt4krQv25bVbhEqqxEnQV4MrPx0PtcAorWljUhNlhwB0MszdPtJ8Pi0/n5I9kfnIVv1TNYJzKL4J+eye7sULN0hHwBUrVgAR3vhRDRhEv23Ss7+xYLqAFt6QJJHEvACohguqYfobbY3P2OysPhc3wePxlP++HBQAWAVTEkgs42JRGZa4DgcmvJ4SNphkOjMWwJP338son5v70g0Navj57aHz1HiMccu6BzytMorHmioh9eBXBvux/GBt9eaJTm8TpmEy+YonxAb0Lpbk2aPYNBkNnZI8uXsiZUanNAHVm7/7/q5nn+Up6mMD2oq10HHMc8Csm+niuC45lZsj0P09QvX0eWIGO2T7GYkhV0QWBsFbPZ1QU1uyay8PhPhxU6mLcH8PoWIUNzGqLYpXI6XFvgwXr1Hf7v2wcEOs+1uiivaETn+W/cJQ9WfRUJXYiHj/sxjkOU0k2bhWJgEzIu60i+G8mKn3UrL/KL3gaJLXsYGhYzv7JNcRupIMU7XtkOyMqeu4dr8L437fcF/kfkUjj49f2lFdTtYbY4HE7Dg4T2jDzT+4ApDd+0wBjK/aDFRx6+RDxB6aj++50+epmFdOqSBYYrKa15IZVwFCqMi8+KRQRUfjh4L8MOUTRLiofFM1n7Mw+FFGpfTmC22vd2GRLhIv9jSWsnCDT44Coqs9/J5M1ieyaH1Jwu4cPgqxef8a8dcxpe/ffxhoGegIcvUlZctmxYIAT1KaVRhuFT8lhgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 89250,
+  "completion_tokens": 785,
+  "total_tokens": 90035,
+  "cost": 0.00216424,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 81604,
+   "cache_write_tokens": 7644,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00216424,
+   "upstream_inference_prompt_cost": 0.00177174,
+   "upstream_inference_completions_cost": 0.0003925
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 60,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

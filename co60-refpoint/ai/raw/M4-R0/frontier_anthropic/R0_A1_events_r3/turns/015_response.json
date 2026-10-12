@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791827793-89w5E5y2d7Sf4Czacrw0",
+ "object": "chat.completion",
+ "created": 1791827793,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I have events 0-49 so far and need to track down 50-199, checking where the compact tail display picks back up. I'll print the ranges 50-100, 100-150, and 150-200 to gather the rest, keeping in mind the final JSON answer will be quite large across all 200 events.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01SwMXuW7vTJiPaif3r6yAot",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import json\\nd=json.load(open(\\\"answer.json\\\"))\\nfor e in d[\\\"events\\\"][50:110]:\\n    print(json.dumps(e,separators=(\\\",\\\",\\\":\\\")))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I have events 0-49 so far and need to track down 50-199, checking where the compact tail display picks back up. I'll print the ranges 50-100, 100-150, and 150-200 to gather the rest, keeping in mind the final JSON answer will be quite large across all 200 events.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS/AkKEAgSGAI4AUIIdGhpbmtpbmcSDOmtpvj5CrzhSfihvRoMr6V0YDmjhK4Q/4bhIjCNxr35aG0NtO3TWvGuV6jONXZH8uMH3gVEMcp1E6aWVCVCwBMhkUgPOYQo4/V1tvMqmQmpVkJHKAtCRjIrPYjy05xinHlYvHsi7IPkjQ5XJ82qt3u4Y2CLlyI6f7JLc9/ahrYZuEURgf4T8qaPZhbHTRbdGcPL2b2ZDvn5W7E6dR6fuEivSrV6UJ7Q8eNgxAELGpc+YGnDT1cwvmZ5xyUSgC7pN87VqTVuoN5Q+4lMKY6hixfQYvrLo7SejhGfArysENAy4jafDqEZTPYjQZCO9ytXyHbHtbTigPMMzBSAEmWkYbXfbSPFfWs0tqztnQhpBqAM2k11jk8ca7QHbXKXmpqbGF7zmKdF2Jsx6MHfxFVtMh4CCph5nXJBJwSd1xGkDXVzzOMsfAQxXpCkzlIcnf3efp0X42HojclA7842zOEwAcfmF47JtnguyEH9gkg10HuE7i09zdcGbOJ8IqFcnNqpIYILley6oHXqggpqhgdq4Dazm6VtKu8h7LhYQNcNQHrLnlFTn93Ow+hv+/9MV2pCF4ZGGV3/BIKyiJ/LHt7CiVSP8ohWorazBlWcCHPu9OXmtTspWkeMD93Q3D5NCXeWFuuJew8ErQ3d4PnKu4WvwsjEi1ZpMHt68vokCeZf/5XtwpQuVfIjXPP14L9KqQLLALBnKXbDbz8uhDer6kmmEp3iwJC4T/Wa0jKbw8CB3p4Lv5nSKNt+LfMqS6TAuaYKB6TL5HlGCwK7rtCzHQ9Defwk6BXogieHHljdkrH9DF9m54PWUfKxf50l2SFwuagMTkKJEWveh71LFXFIB+9UifoQUatluXlsdroo8fvpPFt4qkQGiehPCTL/HAZBzyLcrqUGA5EqDCcBa/Ci/jcdqTH1QiVo8CrC9Gh/ZFGGBSysYEbUXMJYzjrsfHVsxiu6d7/zS508b0MkjEE8BP9HQeE75y16OS3L4l0UIt3ZwJAqzh98bjctKRnAi+Nph48I1Y27c8HgTv0F+NxVzgXInZlof3d29K1cyu6I0cT1/2YWYnoJkY4WWSd/bjC25b3nJKpsQzVIyZx1qSknRx0qcP2ao4PU/cutsdIptMSJMNaRBiO+65iQCugDY9gq9u0L+WxCXoV/jHjFUetesOQ5/MF+tkqKgpqAwIkJQhVhohW8TrjjFWYjADDCbfAHDAQgpIcYNsdEXlha+ZyNemc7/aqhHfggH78L/IdT2WNYwg9eYiblUrd8dL3X7phHnbtCX4Z1tNWpDzQykpEqRXHIMRvTru7ig0FMTQr5kTwMRWzLdOQbUjOfyQn1rwx3/7q9A/y6uG/LiQoZancMiY6ok86LwnAoH82lrNH1RJVC5nJJl9CZ20JfrgF1LG6+LQEzM2GNCl17D9L65V3Gm4Fq7tw9DHKUCDPzifO8fbs3xzZyLC0asS061NPlenB6dvQmCkF+XnacYiuFY7ojgpNdmT85mqbqT9vlY7Hw7UynR1eZBxt/CXAS2AiY1fOyJATfAK7uYPv7+2r157Ucu2nmefdbjTFq9PXBZ45L/9kzqu+2SThMSK8Za7fy00rQvVmDzd0NZsTCLcfiy/ekLQ+FvJAjbdMM6JRKl8S2wjfG9fb7pxTGlC+RLzFMuftjys/biPX0JRqJebPJGAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 90488,
+  "completion_tokens": 265,
+  "total_tokens": 90753,
+  "cost": 0.00179334,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 83914,
+   "cache_write_tokens": 6572,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00179334,
+   "upstream_inference_prompt_cost": 0.00166084,
+   "upstream_inference_completions_cost": 0.0001325
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 167,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

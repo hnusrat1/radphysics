@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791828098-9fw8BxQrOuXsaMsifMnD",
+ "object": "chat.completion",
+ "created": 1791828098,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "Each call runs in a fresh process, so I'll put the whole simulation in one script.",
+    "refusal": null,
+    "reasoning": "It seems each call runs as a fresh process, so variables don't persist between them. I need to write the entire script in one single call instead of splitting it up.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_011PtKUT9jtLMrHE7ZnAAUXV",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\ncode = r'''\\nimport numpy as np, time, json\\nrng=np.random.default_rng(12345)\\nre=2.8179403e-13; ne=3.3428e23; me=0.51099895\\ndef sigma_KN(E):\\n    k=E/me\\n    t1=(1+k)/k**2*(2*(1+k)/(1+2*k)-np.log(1+2*k)/k)\\n    t2=np.log(1+2*k)/(2*k)-(1+3*k)/(1+2*k)**2\\n    return 2*np.pi*re**2*(t1+t2)\\ndef mu_parts(E):\\n    sKN=ne*sigma_KN(E)\\n    coh=sKN*0.032*(E/0.1)**(-1.2)\\n    pe=0.0028*(E/0.1)**(-3.0)\\n    pair=np.where(E>1.022, 0.0005*np.clip((E-1.022)/0.978,0,None)**2, 0.0)\\n    return sKN,coh,pe,pair\\nmm=np.linspace(-1,1,4001)\\nfor E in [0.02,0.1,0.5,1.1732,1.3325]:\\n    k=E/me; eps=1/(1+k*(1-mm)); f=eps**2*(eps+1/eps-(1-mm**2)); print('fmax',E,f.max())\\n'''\\nopen('mc_base.py','w').write(code)\\nimport subprocess\\nprint(subprocess.run(['python','mc_base.py'],capture_output=True,text=True).stdout)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "It seems each call runs as a fresh process, so variables don't persist between them. I need to write the entire script in one single call instead of splitting it up.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSzwcKEAgSGAI4AUIIdGhpbmtpbmcSDA34jM1/G54nqbLn1RoM5yVmupcNBOxMI0qRIjAouFtIXXGRQWTC941jjTD6IbBj4iEA959tlSFVUOhk5yMbYU8HCadk4ZH+HL+wY8sq7AZsU9tGTx/QSL25q7sH0LhQvaCHjrNxHm/A7jJ5eau2XVhbItfK6IHdjxjOw5peMadmxg+m+rdJ9a7JDvAGYiQZOrb1U3biWnMCvNW9vidJAnCwphRroRD8XCduQuhCJeCSsn5Gu2RsJ43W5n28z+k61nrGogjF6i19VEZIwzUl/kTnZESlWEhkEiiiKlA6nLuM1Tkq29JVhC7ZyUK/WV5w0mxL/r33ua0JUkBRFn6EVqCPExtF/DM8+XsSLIlzeUniLTLC9iF2hHW1mkPL6yFJ02W9QiG8Edd8Obu3eXzGHEfZ/t8lHVsTtdB7OV8CCZVTl9Mw21ny7I0jpyfsq+k0ipWthj4EBRjo20d5bK1/P70ccD36tpZ5yxJzhb+Q0xy47m9yYQo1gugHnZQDa3OLOBSHxCYh7T2Om8aCgoDxBpHmM4joDkFvC8ph0cJq6hcWf+NqrxrKMhaMA792/35lGtz8GFxzDFyn2NoiZXMlt6+3NIf6BV8K+vEjy8eOMHhgbNEzGfaBYq+fTqh2Qn6qZwFG6SpgD5ttZzrrFu6I9KxsdJr8Faz7xkiKSx4RLjrCFmi8oNuYwurMp6Q1l9p/2scaG+vA6HLi71Cn8eksx2nj/WLka1zzFMjXFugJQ+3rywvRwLyv2J0KAyf2R6vp3Ji3PojpNs4pmI6II1+8OvKqYNb7iEPmlD6gd+lQyDgfLv3FvzmfQQZ7nyD0ry3MSLyrvbzftaskXxT8MiHzsIRhmaEZxSEjBb+olnzdES2ZRLQFslhpUXlIffxowgzVvtauv8uRvs84piLdeEr/7uYKi4tNZqfnCFTM/Wn5xqNMTfo3kdKPxTQIzUc318JqNeUTHzQGGbcXwsMFzQKh9U7lPn7L5R8BumcKxCTfvj0VQCRBq4rudLObyskAyiMxbiPvibmTjZs91WmCabAqbeq+Lxlwch42kxkvR6XPya9bqntNEEBr1c85XOWCp4MMPpyX8GrNNWtlUpCB1OvFEI/LmQRsqip6FyGINpdKuVGMdM4XLiY9aXYRqxwMTnjKOS+3h+Owuvf0Xv8TE1lJ6s9RpFKKcCyfKI9zlUiI3fz35J1CNThACdCSZaj3fA8vkDCXOIXZow99rqVm9DPKTFT4x/fasCJ9pPOLoFqriQ8cHvf7uTKNTLTSfRQYAQ==.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 47566,
+  "completion_tokens": 642,
+  "total_tokens": 48208,
+  "cost": 0.001134365,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 44629,
+   "cache_write_tokens": 2935,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001134365,
+   "upstream_inference_prompt_cost": 0.000813365,
+   "upstream_inference_completions_cost": 0.000321
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 71,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791827849-EI8T4ptWyy7pYWRKWnzb",
+ "object": "chat.completion",
+ "created": 1791827849,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "The distribution still has 40 photoelectric (20%), which is too high. This is because my scattered energy distribution includes many low-energy photons (down to 0.1 MeV) where photoelectric is significant. In reality, at 5 cm depth in water, the number of photons below 0.1 MeV is small because they are highly attenuated.\n\nLet me adjust the scattered energy distribution to have a minimum of 0.3 MeV. Also, I should increase the fraction of primary interactions to be more realistic.\n\nLet me look at typical values: For Co-60 in water at 5 cm depth, the primary dose contribution is about 80% (build-up factor ~1.25). The scattered contribution to dose is about 20%. Since the average energy of scattered photons is lower, the number of interactions from scattered photons might be slightly higher than their dose contribution. But probably still less than 30% of interactions.\n\nI'll set scattered fraction to 0.25 and change the scattered energy distribution to be from 0.2 to 1.33 MeV (log-uniform).",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_50b996d63cb54f4cb4173f3e",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nimport json\\nfrom collections import Counter\\n\\n# Constants\\nme = 0.5109989461\\nr_e = 2.8179403227e-13\\nNA = 6.02214076e23\\nM_H2O = 18.015\\nN_e = 10\\nE1 = 1.1732\\nE2 = 1.3325\\n\\nnp.random.seed(12345)\\n\\n# Cross sections\\ndef sigma_KN(E):\\n    k = E / me\\n    term1 = ((1+k)/(k*k)) * (2*(1+k)/(1+2*k) - np.log(1+2*k)/k)\\n    term2 = np.log(1+2*k)/(2*k)\\n    term3 = (1+3*k)/(1+2*k)**2\\n    return 2 * np.pi * r_e**2 * (term1 + term2 - term3)\\n\\ndef partial_mu(E):\\n    mu_comp = N_e * sigma_KN(E) * NA / M_H2O\\n    mu_rayl = 0.0014 * (1.0 / max(E, 0.01))**2\\n    mu_pe = 0.0016 * (1.0 / max(E, 0.01))**3.5\\n    if E > 1.022:\\n        mu_pair = 0.00087 * (E - 1.022) / (1.25 - 1.022)\\n    else:\\n        mu_pair = 0.0\\n    mu_tot = mu_comp + mu_rayl + mu_pe + mu_pair\\n    return mu_tot, mu_comp, mu_rayl, mu_pe, mu_pair\\n\\n# Sampling functions\\ndef sample_compton_cos(E):\\n    alpha = E / me\\n    while True:\\n        mu = np.random.uniform(-1, 1)\\n        f = 1.0 / (1.0 + alpha * (1.0 - mu))\\n        dcs = f**2 * (f + 1.0/f - (1.0 - mu**2))\\n        if np.random.random() < dcs / 2.0:\\n            return mu\\n\\ndef compton_electron_cos(E, cos_theta):\\n    sin_theta = np.sqrt(1 - cos_theta**2)\\n    tan_half = sin_theta / (1 + cos_theta)\\n    alpha = E / me\\n    cot_phi = (1 + alpha) * tan_half\\n    if cot_phi == 0:\\n        return 0.0\\n    tan_phi = 1.0 / cot_phi\\n    cos_phi = 1.0 / np.sqrt(1.0 + tan_phi**2)\\n    return cos_phi\\n\\ndef sample_rayleigh_cos():\\n    return np.random.uniform(0.999, 1.0)\\n\\ndef sample_pe_electron_cos(E_kin):\\n    E_tot = E_kin + me\\n    beta = np.sqrt(1 - (me/E_tot)**2)\\n    mus = np.linspace(-1, 1, 1001)\\n    vals = (1 - mus**2) / (1 - beta*mus)**4\\n    max_val = np.max(vals)\\n    while True:\\n        mu = np.random.uniform(-1, 1)\\n        val = (1 - mu**2) / (1 - beta*mu)**4\\n        if np.random.random() < val / max_val:\\n            return mu\\n\\ndef sample_pair(K_avail):\\n    t_e = np.random.uniform(0, K_avail)\\n    t_p = K_avail - t_e\\n    cos_e = np.random.uniform(0.98, 1.0)\\n    cos_p = np.random.uniform(0.98, 1.0)\\n    return t_e, t_p, cos_e, cos_p\\n\\n# Generate 200 events\\nevents = []\\n# Fraction of interactions from scattered photons: approximate 0.25\\nscattered_frac = 0.25\\n\\nwhile len(events) < 200:\\n    is_scattered = np.random.random() < scattered_frac\\n    \\n    if not is_scattered:\\n        E_in = E1 if np.random.random() < 0.5 else E2\\n    else:\\n        # Scattered photon energy: log-uniform from 0.2 to 1.3325\\n        u = np.random.random()\\n        E_in = 0.2 * (1.3325 / 0.2)**u\\n    \\n    # Sample process\\n    mt, mc, mr, mp, mpr = partial_mu(E_in)\\n    p_comp = mc / mt\\n    p_rayl = mr / mt\\n    p_pe = mp / mt\\n    \\n    xi = np.random.random()\\n    if xi < p_comp:\\n        process = 'compton'\\n    elif xi < p_comp + p_rayl:\\n        process = 'rayleigh'\\n    elif xi < p_comp + p_rayl + p_pe:\\n        process = 'photoelectric'\\n    else:\\n        process = 'pair'\\n        if E_in <= 1.022:\\n            continue\\n    \\n    ev = {'process': process, 'e_in_MeV': E_in,\\n          'e_out_MeV': None, 'cos_scatter': None,\\n          't_e_MeV': 0.0, 'cos_electron': None, 't_positron_MeV': None}\\n    \\n    if process == 'compton':\\n        cos_s = sample_compton_cos(E_in)\\n        E_out = E_in / (1 + (E_in/me) * (1 - cos_s))\\n        t_e = E_in - E_out\\n        cos_e = compton_electron_cos(E_in, cos_s)\\n        ev['e_out_MeV'] = E_out\\n        ev['cos_scatter'] = cos_s\\n        ev['t_e_MeV'] = t_e\\n        ev['cos_electron'] = cos_e\\n    elif process == 'rayleigh':\\n        cos_s = sample_rayleigh_cos()\\n        ev['e_out_MeV'] = E_in\\n        ev['cos_scatter'] = cos_s\\n    elif process == 'photoelectric':\\n        t_e = E_in\\n        cos_e = sample_pe_electron_cos(t_e)\\n        ev['t_e_MeV'] = t_e\\n        ev['cos_electron'] = cos_e\\n    else:\\n        K_avail = E_in - 2*me\\n        if K_avail <= 0:\\n            continue\\n        t_e, t_p, cos_e, cos_p = sample_pair(K_avail)\\n        ev['t_e_MeV'] = t_e\\n        ev['cos_electron'] = cos_e\\n        ev['t_positron_MeV'] = t_p\\n    \\n    events.append(ev)\\n\\nprint(f\\\"Generated {len(events)} events\\\")\\nprocesses = [ev['process'] for ev in events]\\ncnt = Counter(processes)\\nfor p, c in cnt.most_common():\\n    print(f\\\"  {p}: {c}\\\")\\nprim_count = sum(1 for ev in events if ev['e_in_MeV'] in (E1, E2))\\nprint(f\\\"Primary: {prim_count}, Scattered: {len(events)-prim_count}\\\")\\n\\n# Print first 3\\nfor ev in events[:3]:\\n    print(json.dumps(ev, indent=2))\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The distribution still has 40 photoelectric (20%), which is too high. This is because my scattered energy distribution includes many low-energy photons (down to 0.1 MeV) where photoelectric is significant. In reality, at 5 cm depth in water, the number of photons below 0.1 MeV is small because they are highly attenuated.\n\nLet me adjust the scattered energy distribution to have a minimum of 0.3 MeV. Also, I should increase the fraction of primary interactions to be more realistic.\n\nLet me look at typical values: For Co-60 in water at 5 cm depth, the primary dose contribution is about 80% (build-up factor ~1.25). The scattered contribution to dose is about 20%. Since the average energy of scattered photons is lower, the number of interactions from scattered photons might be slightly higher than their dose contribution. But probably still less than 30% of interactions.\n\nI'll set scattered fraction to 0.25 and change the scattered energy distribution to be from 0.2 to 1.33 MeV (log-uniform).",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 65648,
+  "completion_tokens": 1892,
+  "total_tokens": 67540,
+  "cost": 0.002140370848,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 57344,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.002140370848,
+   "upstream_inference_prompt_cost": 0.001796556608,
+   "upstream_inference_completions_cost": 0.00034381424
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 222,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

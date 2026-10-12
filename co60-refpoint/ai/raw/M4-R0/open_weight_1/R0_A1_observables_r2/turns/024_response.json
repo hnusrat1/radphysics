@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791827845-eKzM1PjTV8YXOaoOmNPl",
+ "object": "chat.completion",
+ "created": 1791827845,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "SiliconFlow",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Need import numpy too. The patch itself likely succeeded (file updated before the error? The error is after writing file). Let me rerun the test with numpy import.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "01a1314366866fc45df88131791d9d29",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import sys, os\\nsys.path.insert(0, os.getcwd())\\nimport numpy as np\\nimport importlib, mc_photon\\nimportlib.reload(mc_photon)\\nrng=np.random.default_rng(3); N=200000\\np0=rng.uniform([-15,-15,0],[15,15,30],(N,3))\\nth=rng.uniform(0,2*np.pi,N); ph=np.arccos(rng.uniform(-1,1,N))\\nd=np.stack([np.sin(ph)*np.cos(th), np.sin(ph)*np.sin(th), np.cos(ph)],axis=1)\\np1=p0+d*rng.exponential(15.0,N)[:,None]\\nL=mc_photon.seg_in_cyl_vec(p0,p1)\\nprint('random cube hits', (L>0).sum(), 'of', N, 'frac', (L>0).mean(), 'meanL', L[L>0].mean() if (L>0).any() else 0)\\nprint('onaxis', mc_photon.seg_in_cyl_vec(np.array([[0,0,4.95]]),np.array([[0,0,5.05]])))\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Need import numpy too. The patch itself likely succeeded (file updated before the error? The error is after writing file). Let me rerun the test with numpy import.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 119200,
+  "completion_tokens": 343,
+  "total_tokens": 119543,
+  "cost": 0.003554408,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 118016,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.003554408,
+   "upstream_inference_prompt_cost": 0.003458368,
+   "upstream_inference_completions_cost": 9.604e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 35,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

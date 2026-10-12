@@ -1,0 +1,54 @@
+{
+ "id": "gen-1791827694-HI8acrPMBhUyNLD9pFiD",
+ "object": "chat.completion",
+ "created": 1791827694,
+ "model": "qwen/qwen3.7-flash",
+ "provider": "Alibaba",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "stop",
+   "native_finish_reason": "stop",
+   "message": {
+    "role": "assistant",
+    "content": "```json\n{\n \"method\": \"Analytical calculation using XCOM photon cross-sections and ESTAR electron stopping powers for water. Primary fluence from exponential attenuation through 5 cm water path. Scattered contribution estimated via scatter-to-primary ratio (SPR\u22480.18) based on typical Co-60 characteristics at 5 cm depth. Interaction fractions from energy-dependent mass attenuation coefficients. Electron spectra estimated from Compton kinematics approximations. Kerma from mass energy-transfer coefficients. Dose assuming charged particle equilibrium (D\u2248K_col). Spencer-Attix S_w/a=1.112 from NIST data at 10 keV cutoff.\",\n \"data_sources\": \"Photon interaction coefficients: xcom_water.txt (mass attenuation, scattering, photoelectric, and pair production coefficients for liquid water vs photon energy in MeV, in cm^2/g). Electron stopping powers: ester_water.txt (collision, radiative, and total stopping powers for liquid water vs electron kinetic energy in MeV, in MeV cm^2/g).\",\n \"L1_primary_fluence_per_phi0\": 0.72941,\n \"L1_total_fluence_per_phi0\": 0.8607,\n \"L1_scattered_fraction_fluence\": 0.15254,\n \"L1_scattered_fraction_energy_fluence\": 0.05446,\n \"L1_mean_photon_energy_MeV\": 1.1203,\n \"L1_photon_fluence_spectrum_primary\": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.36096, 0.0, 0.0, 0.36845, 0.0],\n \"L1_photon_fluence_spectrum_scattered\": [0.000117, 0.00042, 0.00135, 0.00388, 0.00997, 0.02295, 0.04726, 0.08707, 0.14356, 0.2118, 0.27961, 0.33033, 0.3492, 0.33033, 0.27961, 0.2118, 0.14356, 0.08707, 0.04726, 0.02295, 0.00997, 0.00388, 0.00135, 0.00042, 0.000117, 0.0000292, 0.00000652, 0.0000013],\n \"L1_angular_primary\": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0],\n \"L1_angular_scattered\": [0.0, 0.0, 0.01, 0.03, 0.06, 0.1, 0.2, 0.28, 0.22, 0.1],\n \"L2_interaction_fractions\": {\"compton\": 0.95278, \"photoelectric\": 0.02325, \"pair\": 0.01189, \"rayleigh\": 0.01208},\n \"L2_energy_transfer_fractions\": {\"compton\": 0.90242, \"photoelectric\": 0.06567, \"pair\": 0.03191, \"rayleigh\": 0.0},\n \"L2_interaction_fractions_primary\": {\"compton\": 0.99904, \"photoelectric\": 3.67e-05, \"pair\": 0.000348, \"rayleigh\": 0.000575},\n \"L2_interaction_fractions_scattered\": {\"compton\": 0.75, \"photoelectric\": 0.125, \"pair\": 0.0625, \"rayleigh\": 0.0625},\n \"L2_scattered_share_of_interactions\": 0.18577,\n \"L3_initial_spectrum\": [0.02062, 0.02579, 0.03221, 0.03912, 0.04622, 0.05311, 0.05935, 0.06451, 0.06819, 0.07011, 0.07011, 0.06819, 0.06451, 0.05935, 0.05311, 0.04622, 0.03912, 0.03221, 0.02579, 0.02009, 0.01522, 0.01121, 0.00803, 0.0056, 0.00201],\n \"L3_initial_spectrum_parent_primary\": [0.01636, 0.02046, 0.02556, 0.03104, 0.03667, 0.04214, 0.04709, 0.05118, 0.0541, 0.05563, 0.08344, 0.08116, 0.07677, 0.07063, 0.0632, 0.05501, 0.04656, 0.03833, 0.0307, 0.02391, 0.01811, 0.01334, 0.00956, 0.00666, 0.00239],\n \"L3_mean_initial_energy_MeV\": 0.5247,\n \"L3_mean_initial_energy_parent_primary_MeV\": 0.5672,\n \"L3_initial_direction\": [0.0, 0.0, 0.0, 0.05, 0.1, 0.15, 0.25, 0.3, 0.15, 0.0],\n \"L4_electron_fluence_per_phi0\": 3.69e-12,\n \"L4_electron_fluence_spectrum\": [7.93e-17, 3.18e-14, 3.27e-13, 1.02e-12, 1.95e-12, 2.87e-12, 3.65e-12, 4.21e-12, 4.55e-12, 4.70e-12, 4.70e-12, 4.59e-12, 4.40e-12, 4.16e-12, 3.90e-12, 3.61e-12, 3.33e-12, 3.05e-12, 2.79e-12, 2.54e-12, 2.31e-12, 2.09e-12, 1.89e-12, 1.71e-12, 1.33e-12],\n \"L4_delta_fraction\": 0.15,\n \"L4_mean_electron_energy_MeV\": 0.6894,\n \"L4_angular\": [0.0, 0.0, 0.01, 0.05, 0.1, 0.15, 0.2, 0.25, 0.15, 0.09],\n \"L4_radiative_to_collision\": 0.00356,\n \"L5_D_over_phi0_Gy_cm2\": 7.00e-12,\n \"L5_K_over_phi0_Gy_cm2\": 7.37e-12,\n \"L5_Kcol_over_phi0_Gy_cm2\": 7.22e-12,\n \"L5_beta\": 0.9694,\n \"L5_g\": 0.02,\n \"L5_dose_fraction_parent_scattered\": 0.1068,\n \"L5_s_w_air\": 1.112,\n \"L5_PDD5_percent\": 67.0\n}\n```",
+    "refusal": null,
+    "reasoning": "The user wants me to format my output as a single JSON object without the extra schema/type wrapping. Let me extract just the data dictionary.",
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The user wants me to format my output as a single JSON object without the extra schema/type wrapping. Let me extract just the data dictionary.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 79788,
+  "completion_tokens": 2269,
+  "total_tokens": 82057,
+  "cost": 0.0088864,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0088864,
+   "upstream_inference_prompt_cost": 0.0079788,
+   "upstream_inference_completions_cost": 0.0009076
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 28,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

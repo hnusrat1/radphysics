@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791827421-z8Acj4Fnn4VYJD8fkwjm",
+ "object": "chat.completion",
+ "created": 1791827421,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "The output is still getting truncated and I'm burning tokens, so I need to split the full 200-event answer into about three chunks to fit within display limits while keeping decimal rounding and key formatting consistent.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01A5fUUhmKUF1FugBUkhYJSB",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nL=open('lines.txt').read().split('\\\\n')\\nprint(len(L))\\nshort=[]\\nimport json\\nfor l in L:\\n    o=json.loads(l)\\n    short.append([o['process'][:2] if o['process']!='photoelectric' else 'pe', o['e_in_MeV'], o['e_out_MeV'], o['cos_scatter'], o['t_e_MeV'], o['cos_electron']])\\nprint(json.dumps(short[:100],separators=(',',':')))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The output is still getting truncated and I'm burning tokens, so I need to split the full 200-event answer into about three chunks to fit within display limits while keeping decimal rounding and key formatting consistent.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "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.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 143892,
+  "completion_tokens": 477,
+  "total_tokens": 144369,
+  "cost": 0.017526475,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 127997,
+   "cache_write_tokens": 15893,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.017526475,
+   "upstream_inference_prompt_cost": 0.016333975,
+   "upstream_inference_completions_cost": 0.0011925
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 273,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

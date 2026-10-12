@@ -1,0 +1,57 @@
+{
+ "id": "gen-1791827592-tD9aDPx6yNb9y2wtyLBY",
+ "object": "chat.completion",
+ "created": 1791827592,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01G7RJ2fVJx4QrNH3SCNgiYb",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport numpy as np, sys, time, pickle, importlib\\nsys.path.insert(0,'/tmp/work')\\nimport sim; importlib.reload(sim)\\nt=time.time()\\nallseg={}; hist=np.zeros(300)\\nNB=8; NPER=2000000\\nfor b in range(NB):\\n    seg,dd=sim.run(NPER,100+b)\\n    for k,v in seg.items(): allseg.setdefault(k,[]).append(v)\\n    hist+=dd['hist_d']\\nseg={k:np.concatenate(v) for k,v in allseg.items()}\\nNTOT=NB*NPER\\npickle.dump((seg,hist,NTOT),open('/tmp/work/tallies.pkl','wb'))\\nprint(time.time()-t, NTOT, seg['tl'].size)\\n\"}"
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 70305,
+  "completion_tokens": 315,
+  "total_tokens": 70620,
+  "cost": 0.001014945,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 68962,
+   "cache_write_tokens": 1341,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001014945,
+   "upstream_inference_prompt_cost": 0.000857445,
+   "upstream_inference_completions_cost": 0.0001575
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 0,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

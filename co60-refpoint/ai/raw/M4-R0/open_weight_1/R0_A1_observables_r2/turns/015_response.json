@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791827531-VfocK3891AepyaLPWFA1",
+ "object": "chat.completion",
+ "created": 1791827531,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "SiliconFlow",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "mc_photon.py exists in cwd but '' (current dir) isn't in sys.path? Actually sys.path usually includes ''? It shows only lib dirs. Python's sys.path may not include cwd in this environment? Let me add via sys.path.insert(0,'.') or import via importlib from file. I'll do sys.path.insert(0, os.getcwd()).",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "01a1313e6702f95399fe43be785c7a56",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import sys, os\\nsys.path.insert(0, os.getcwd())\\nimport mc_photon as mcp\\nres = mcp.run_mc(50000, seed=11)\\nprint('time', round(res['t'],1))\\nprint('N', res['N'])\\nprint('flu pri total (cm)', res['flu_pri_ph'].sum(), 'flu sct total', res['flu_sct_ph'].sum())\\nprint('interactions', res['n_int'], 'pri', res['n_int_pri'], 'sct', res['n_int_sct'])\\nprint('N_int_cyl', res['N_int_cyl'], 'scat share', res['n_scat_inter']/max(res['N_int_cyl'],1))\\nprint('E_tr total', sum(res['E_tr_by_proc'].values()), 'scat E_tr', res['E_tr_scat'])\\nprint('N_el_e', res['N_el_e'], 'N_el_pos', res['N_el_pos'])\\nprint('time/10k', round(res['t']/5,2))\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "mc_photon.py exists in cwd but '' (current dir) isn't in sys.path? Actually sys.path usually includes ''? It shows only lib dirs. Python's sys.path may not include cwd in this environment? Let me add via sys.path.insert(0,'.') or import via importlib from file. I'll do sys.path.insert(0, os.getcwd()).",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 100675,
+  "completion_tokens": 359,
+  "total_tokens": 101034,
+  "cost": 0.00587691,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 71680,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00587691,
+   "upstream_inference_prompt_cost": 0.00577639,
+   "upstream_inference_completions_cost": 0.00010052
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 83,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

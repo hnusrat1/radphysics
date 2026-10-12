@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791827484-ZIXhVMz9SaoPEGjkATXH",
+ "object": "chat.completion",
+ "created": 1791827484,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "A single run works, so I'll run the remaining two seeds in one blocking call.",
+    "refusal": null,
+    "reasoning": "Running concurrently seemed to cause failures, so I'll just run them sequentially instead\u2014each takes about 2 minutes, keeping total time well within limits.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01JdaJTHYLiaD2mbJqCJ3sqw",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport subprocess, sys, time\\nt0=time.time()\\nps=[subprocess.Popen([sys.executable,'/tmp/work/sim.py','1000000',str(s),f'r{s}'],stdout=open(f'/tmp/work/log{s}.txt','w'),stderr=subprocess.STDOUT,cwd='/tmp/work') for s in [13,14]]\\nfor p in ps: p.wait()\\nprint([p.returncode for p in ps], time.time()-t0)\\nimport glob; print(sorted(glob.glob('/tmp/work/H_*.npz')))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Running concurrently seemed to cause failures, so I'll just run them sequentially instead\u2014each takes about 2 minutes, keeping total time well within limits.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQShQoKEAgSGAI4AUIIdGhpbmtpbmcSDPiGi4PGJGHmiTY4dBoMadGKDeIfn+NRwnsYIjBeEZDY9zCWjkXnWMaKTeWf0mPXW3qu2B8xwm5tM6hCjw24jTm5GLmXUOMhlvRXm5oqoglf41IbCOFz0DKclYReKvZClUdPplzI8rOj4C9SxQfteD8CXSZtFl8Sie8pDAlWB09BpxGBI3MJOjO/7FVGUItTtD55vmj+A1XLzV1dYwr7rtxpkIbavaCX5O1N/bmNdAth0XQRJY4Nsv0v6p/NS6FzV0GzXIp9t3bMPMa2UUk4wCKm7ZAYsVBGLkwcNjC75WgP+1zpIgOd6yKChv5CYSvl4OxyAngPTUolttme7tFKG/cA7XbFHanqzcfpr1sFLs63LMQ74Hm5XlduSqTnwaoqQbIY6h+bVi7Gc1Q9kz8PNMtnE/Kin7Pyh/14vuXsQfVINHtYo9FF0L7OqXT66NTmjho1MD6idswaxpeqRyd+G5iQLvbKKY/o4lKJSnXqt6J75k23vdwqzFHINueNL7PF+TApeL/I0dJUtN0RCRcfeJ93761qvxQPCntyz03nsQGaVnjfuvgAA4P7Pa+8Q70quosnrZzICIfypBONNf2DMkySgCK4s50rIfIg1IFyAsAVYwZULyjZA8Gol5u0ZkCzHYadbIkp1Zu3EYKSAPHI6sWyrMtUd+mq19YSwfjYmn55CIv2Oqui0fy93bbAUSTr5L41BB+hBSA+KViLeaNTJ00YYywCRzvFbGzxuHTrLgB2FtkeOA0WdqyfgbizmgAuUO5dY0ma0Q19B6NJKU2enYhZJz6z4tSCAq9Cl02saZ/lKGhMdOY5Lp4aMrJEKFQbR3SBuFAPb7cSr1qtsR/flR6js8tzuPATStFGWkVK5ygju4wL4smZi92hb/JlLaFkPuxbO2fuActmCMExqoW3lRV7wb2bT5t20pKns+Zxj7T0+Lvj8kJMnLwgMFgEXH8bPLGeNsXOL1SlASH70E6c3tXl6gmLUlLbJ86GWapaqCL2TnmZDQXPtFicOHVC+sBqbZnSro5W6dpJavfK/HS8WAuZwqcjxDWhu9GJmGNY9GooPfrWj7qmnP+431YUsDpFdEYKGJnT2jncVUQFy06za8CXxUPP+8vdai2IErNDlSofMEHUdL/Q2CRwS6X5qXAmR91GaRmbTNY3K07TYksAO53HYyzUn4b9UEaKn5FYxhPbsfbAR1YLijlrxNiEN9Fe9z54tKuD/aAAvhBYkW5vhjJD0Q1dJy8WX+lJui6zwYJYGfOzHnmsgZyhyBddOftCxQLIvO570mDlvX8iKcBGjTa/+9MdcObZpYJaKCI+OlBAPEuFK5JNlbrSR1Hm7YebaojL6zcAOc87dZZTaaUtzgaNbIIYN5tYMOzxRjz81EkJj1Fw0cwIiCoXdr7zaZpbsJ5NAF4znCSdg2TUhtpqcOmuRNgdkBstoK02NB1WHbH4UGCu8Zjlleierw2FC7MxlrpmADZc86Gg4hFzhBLvE54Ct4trfQ5fZ61PfrbgR0glQbD31WFEM8bo4yJtj9hsF7qQsPDmylYayN71do9tkBadarPQMpNOAsmh/7UsEEHT+4UK1TKCxIf0zwj6yoZnmLs6tKdd0TYKuWPZ7FFeHh9kW6TwFKSNpcFOdGOxwZYKEKojZj65zu7Yxbh2nhEBmNt4no3abCMvV7NF+zNngtv0GAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 140456,
+  "completion_tokens": 432,
+  "total_tokens": 140888,
+  "cost": 0.00840845,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 139924,
+   "cache_write_tokens": 530,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00840845,
+   "upstream_inference_prompt_cost": 0.00732845,
+   "upstream_inference_completions_cost": 0.00108
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 166,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

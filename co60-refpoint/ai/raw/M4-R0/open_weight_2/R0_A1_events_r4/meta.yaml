@@ -1,0 +1,131 @@
+slot: open_weight_2
+provider: open-weight via OpenRouter (pinned weights)
+api: openai_compatible
+model_requested: qwen/qwen3.7-flash
+settings:
+  reasoning:
+    effort: high
+  usage:
+    include: true
+condition: A1
+task: events
+config: R0
+prompt_version: v1
+prompt_sha256:
+  system_A1.txt: e06e9a5ea06c2f5ca29739818f324713f2dbbf775f019c11018d1aa7ef5416b8
+  task_events_R0.txt: 871cffaf3fb764b91cfda15169f125951e9eb985bfe79f27e1ac8bc6b710cf73
+started_utc: '2026-10-12T17:43:37Z'
+turns:
+- n: 1
+  usage:
+    input_tokens: 1571
+    output_tokens: 5215
+    reasoning_tokens: 4149
+  stop: tool_calls
+  wall_s: 51.91
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 1
+- n: 2
+  usage:
+    input_tokens: 18236
+    output_tokens: 1505
+    reasoning_tokens: 486
+  stop: tool_calls
+  wall_s: 14.01
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 1
+- n: 3
+  usage:
+    input_tokens: 19812
+    output_tokens: 240
+    reasoning_tokens: 183
+  stop: tool_calls
+  wall_s: 3.48
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 1
+- n: 4
+  usage:
+    input_tokens: 20181
+    output_tokens: 76
+    reasoning_tokens: 16
+  stop: tool_calls
+  wall_s: 1.97
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 1
+- n: 5
+  usage:
+    input_tokens: 30653
+    output_tokens: 171
+    reasoning_tokens: 100
+  stop: tool_calls
+  wall_s: 4.28
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 1
+- n: 6
+  usage:
+    input_tokens: 30893
+    output_tokens: 54658
+    reasoning_tokens: 227
+  stop: stop
+  wall_s: 369.32
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 0
+- n: 7
+  usage:
+    input_tokens: 80441
+    output_tokens: 1104
+    reasoning_tokens: 168
+  stop: tool_calls
+  wall_s: 13.14
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 1
+- n: 8
+  usage:
+    input_tokens: 92903
+    output_tokens: 1046
+    reasoning_tokens: 86
+  stop: tool_calls
+  wall_s: 9.74
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 1
+- n: 9
+  usage:
+    input_tokens: 94021
+    output_tokens: 88
+    reasoning_tokens: 38
+  stop: tool_calls
+  wall_s: 7.96
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 1
+- n: 10
+  usage:
+    input_tokens: 105557
+    output_tokens: 38807
+    reasoning_tokens: 422
+  stop: stop
+  wall_s: 223.84
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 0
+tool_calls: 8
+retries: 1
+outcome: parse_failure
+model_reported: qwen/qwen3.7-flash
+first_parse_errors:
+- '$.events: 694 items, expected 150-250'
+parse_errors:
+- '$.events: 488 items, expected 150-250'
+finished_utc: '2026-10-12T17:55:17Z'
+usage_total:
+  input_tokens: 494268
+  output_tokens: 102910
+  reasoning_tokens: 5875

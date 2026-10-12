@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791827764-FMknJNgHU0stxbHFXomu",
+ "object": "chat.completion",
+ "created": 1791827764,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "State doesn't persist between calls, so I need to consolidate everything into a single script instead.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01PSLMLkpnxXDbfeahbpX7j7",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport json, numpy as np, collections\\nev=[]\\nfor s in range(1,5):\\n    ev+=json.load(open(f\\\"run{s}.json\\\"))\\nW=np.array([e[\\\"w\\\"] for e in ev]); w=W/W.sum()\\nprint(\\\"ESS\\\", 1/np.sum(w**2), \\\"N\\\", len(ev))\\nprim=np.array([e[\\\"e_in_MeV\\\"] in (1.1732,1.3325) for e in ev])\\nprint(\\\"primary-energy weight fraction\\\", W[prim].sum()/W.sum(), \\\"count\\\", prim.sum())\\nprint(\\\"top weights\\\", np.sort(w)[-5:])\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "State doesn't persist between calls, so I need to consolidate everything into a single script instead.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSlgcKEAgSGAI4AUIIdGhpbmtpbmcSDL2WlGQ+m4WlylW8LxoMKN885GjL26dnQAU7IjC+NUocNPMIapuOAC/CCeEWA5bjH9dksiwBlg0SsY3SGgYF9eNKai6opOmI0bj8m+8qswb8CXGXXA8DxU8OI+rU7iIRrgGeIix/lIxt/V8+WsX5Bw2I5meDqd6i8W5fIZPpJhF2oEItx3Xyg5sOnqLmpyOLx57h3f8Kyb/gxcQWOzNnBE9PZDZ4UJeL9fbYbV3S8GsgktSFjuRQTNvG+/3ytOT5F71fEMUubhuMyt1NsIDgGwO3N/E1BB1p2qsuc3Tg83EAhhEX5pioDPey5lZCa8wiQQQGgXO+m00413x8jHjxIt/pQlWleNPNeOx4T0ue2IqkSj0RZIZ4opytA7nyxuTikLdm83kgV9CPNcU4Lvi2Gnv5FlvUj9ssUTKSLASuDEkNffluqWrZKU7VeFwXr394G9bdardCh835khJLzxM/AEhFrmfXMhIlxekaAgbT+FMTWt3fv/WkBJ9rGknlDFncsMwcHeQnccYF/5t2AMSw32U8t8iBwbH588vjirsXEV5SpUlpus5SZm93Ij/7mC+/nrU9OwC2SvYkjhlvpxNfqWQRb8/hCCREpTdysDd54ryxTaKrNLA1GRU+rr+V5KWRZHTziDefNaAFkmToFODIgCCUld3rdru1fck5anAxLF8VVdH+nRUqaMgPgmbctWwtiOroYHLrTz5aj17n92tcLu93gkIW7CNHkyAQdbAF+ZmU+1IKl9GHFhff2BUwinUB8sWFY+3hz31ulZDeqG+tFHbNdAbdGjFK5Z1YHBSIbVWIOfQ5OGU+3UZPtS34Cg2AjoFzJY7B29hzzST/cKa9QmcdrcWwfU1s5Eod018QBg8t0ySpFBxs8hOyiHAz81gKYmxPT9NVoLwFa0+qa72DEWHuN55LOz+6R2xFdG5EaiNCm7zHAZJrg0ftFZKEBrGhiq7niD2UQlq/9X3+J8xtFmvOrTUVeqACyPuxPkY0+0akiACPwdYOLpjM7goBudpIxaWXfMJ4Vfl7x8ueSYIfrJ9xibySa9h+JAnXc32A8RMjqowvZQwu2R5jVpNpWgEkqvOPoAIA7Ih+t6bSPGdQAcUCtqeGvaLQgMcL+PttA108Xxd3jRMkokR1nn1lPehlFuyBbZLEtsRRTA4eeYX29JRJzwOjF6hvPtZ6aIhKG1Ja5WwYAQ==.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 52117,
+  "completion_tokens": 275,
+  "total_tokens": 52392,
+  "cost": 0.001075725,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 48490,
+   "cache_write_tokens": 3625,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001075725,
+   "upstream_inference_prompt_cost": 0.000938225,
+   "upstream_inference_completions_cost": 0.0001375
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 30,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

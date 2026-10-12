@@ -1,0 +1,57 @@
+{
+ "id": "gen-1791828013-qTzW7HBT41FOuhySh8LR",
+ "object": "chat.completion",
+ "created": 1791828013,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_016mLUs4cyN95vWRBJvqBV48",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport sys; sys.path.insert(0,'/tmp')\\nimport numpy as np\\nfrom scipy.integrate import quad\\nimport work_base as wb\\nes=wb.es; mec2=wb.mec2; re=2.8179403e-13\\ndef beta2(T): \\n    g=1+T/mec2; return 1-1/g**2\\ndef moller_dsde(T,eps,variant):\\n    tau=T/mec2; x=eps/T\\n    b2=beta2(T)\\n    c = (2*tau+1)/(tau+2)**2 if variant==1 else (2*tau+1)/(tau+1)**2\\n    B=1/x**2+1/(1-x)**2+(tau/(tau+2))**2-c/(x*(1-x))\\n    return 2*np.pi*re**2*mec2/(b2*T**2)*B\\nNeW=6.02214076e23*0.55509\\ndef Scol(T,variant,I=75e-6):\\n    f=lambda eps: eps*moller_dsde(T,eps,variant)\\n    val,err=quad(f,I,T/2,limit=500,points=[1e-3,1e-2] if T>0.02 else None)\\n    return NeW*val\\nfor T in [0.1,0.5,1.0,2.0]:\\n    row=es[np.argmin(abs(es[:,0]-T))]\\n    print(T, row[0], Scol(T,1), Scol(T,2), 'ESTAR', row[1])\\n\"}"
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 70719,
+  "completion_tokens": 516,
+  "total_tokens": 71235,
+  "cost": 0.00245324,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 57779,
+   "cache_write_tokens": 12938,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00245324,
+   "upstream_inference_prompt_cost": 0.00219524,
+   "upstream_inference_completions_cost": 0.000258
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 0,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791828068-lS9M3bN2J0Ry4nhN3mGt",
+ "object": "chat.completion",
+ "created": 1791828068,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "State doesn't seem to persist between calls, so I'll need to write the full script file each time instead of relying on incremental state.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01V6mrJXbgFR5MUGFDeT7efT",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\ncode = r'''\\nimport numpy as np\\nme = 0.51099895\\nNA_e = 3.3428e23\\nN_mol = 3.3428e22\\nr_e = 2.8179403e-13\\nMU_PAIR_CM = 0.0001\\nMU_PE_CM = 0.0\\n\\ndef kn_sigma(E):\\n    k = E/me\\n    return 2*np.pi*r_e**2*((1+k)/k**2*(2*(1+k)/(1+2*k)-np.log(1+2*k)/k) + np.log(1+2*k)/(2*k) - (1+3*k)/(1+2*k)**2)\\n\\ndef rayleigh_sigma(lam_A):\\n    a = 0.3\\n    th = np.linspace(1e-9, np.pi, 2000001)\\n    s = np.sin(th/2)/lam_A\\n    F2 = 100/(1+(s/a)**2)**4\\n    f = 0.5*(1+np.cos(th)**2)*F2*2*np.pi*np.sin(th)\\n    return r_e**2*np.trapezoid(f, th)\\n\\nenergies = [1.1732, 1.3325]\\nfor E in energies:\\n    sig_inc = kn_sigma(E)\\n    lam = 12.398/(E*1000)\\n    sig_coh = rayleigh_sigma(lam)\\n    print(E, \\\"inc\\\", NA_e*sig_inc, \\\"coh\\\", N_mol*sig_coh, \\\"sig_inc_b\\\", sig_inc/1e-24, \\\"coh_sig_b\\\", sig_coh/1e-24)\\n'''\\nopen('xs.py','w').write(code)\\nimport subprocess\\nprint(subprocess.run(['python','xs.py'],capture_output=True,text=True))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "State doesn't seem to persist between calls, so I'll need to write the full script file each time instead of relying on incremental state.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSvAYKEAgSGAI4AUIIdGhpbmtpbmcSDDB8jsh3SHGZ9GXQCBoM7KX2pPAXpnz+aULGIjBJnVj8FUKTs9Z+1zDVsy0K1oHo9iih45AmiTGlU5P+PiuZB1klTsfwuH42ceTshTMq2QUK50rMbW2F+NzEWaZNiIMsA6XZkatbP9fFD+b4zYWYGAK4CWrswz3+N6btz17j8idFNrIItagZeCru5LxQrsKW6WdJEGwN4oAwbWeNnZJ3GVXIDBBDwrfcNrMRNFIWFayzZiLvZ5HQlLvaWgpyla5Bp+jWZ1onr+PJ/L0VGAJCjmX7qVYDyi/4A68ZR2IQesVA9YQyNfvtNi5zUoBiYgYRQdN5ai9lqX8Jdt+ipIouV5pVZN9XANi5AF0PAHCiSEjeqjQUgWO3XNs6HsKmZjJHaFbcePvp4nO7kPXdRNXVi4dp3voJDoyb9Qa7smULejuMicCGDkEba3hbOpNZvBpf3bHFBM08hO1KFvYa8Yc6YFOLBzMiXHppcgMk3jp22C18q4KzabyvyFIVruK4KVTw3Y8iQDbsjVTtMODijZFa4qogmGMD+p/COC52Al9I32CHRzK9OChxJ41RM6E0s/BlxqhhiJu4GbUnrXRiKQ0+bPxcl5gBDHeM9PjL7FdwBWYm/H+ur7wVdyN2eaD4P2DAbiQS6tqd0DKXCKXDKpcK3e+1h5KSL+573/c2b9B2fa0h51aewR5zDY1EOje6DaJJWpG9jdY8vjlLe+bIHWyVFQ25QyqkJaLuJ5sV6iFptjPuwMBVlElFKDeJUN7BnDJkqImCN+exZF6SIyo5Fmso8uXxDQX4IglFfqdK9HYzU9lHfjyLjI8nF5HdkcadhOtJESBozLoLQswrAbnvk6pm3WzptmvY4bVAw7bqTrQLUVCRSqlPbSmcl1QBSAb+SY4vcibWKMFSXgBXaKeGmfa+4NX/iqAKrxy9Mfe4wt+KY85zW3OUVHo9DGdKWbuC32lc7iZ48MewC/HZ1hN9I6Jz+6mHHdNskx5b5vyeAysay87zL29h+qkQrZ3TSRMgfqlMAS8VZQph7jXvS8i7oHhebyToZdjSrPWGoE35Vo072ZThgiqAtMpkrZQYAQ==.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 23578,
+  "completion_tokens": 632,
+  "total_tokens": 24210,
+  "cost": 0.00060992,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 23072,
+   "cache_write_tokens": 504,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00060992,
+   "upstream_inference_prompt_cost": 0.00029392,
+   "upstream_inference_completions_cost": 0.000316
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 25,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

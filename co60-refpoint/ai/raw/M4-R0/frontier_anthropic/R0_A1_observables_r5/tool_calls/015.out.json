@@ -1,0 +1,9 @@
+{
+ "stdout": "",
+ "stderr": "Traceback (most recent call last):\n  File \"/tmp/work/_call_015.py\", line 12, in <module>\n    val,_=integrate.quad(lambda e: e*dsig_deps(T,e)*ne,Ic,T/2,limit=200,points=[1e-3,1e-2])\n          ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/venv/lib/python3.13/site-packages/scipy/integrate/_quadpack_py.py\", line 479, in quad\n    retval = _quad(func, a, b, args, full_output, epsabs, epsrel, limit,\n                   points)\n  File \"/opt/venv/lib/python3.13/site-packages/scipy/integrate/_quadpack_py.py\", line 639, in _quad\n    return _quadpack._qagpe(func, a, b, the_points, args, full_output,\n           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n                            epsabs, epsrel, limit)\n                            ^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/work/_call_015.py\", line 12, in <lambda>\n    val,_=integrate.quad(lambda e: e*dsig_deps(T,e)*ne,Ic,T/2,limit=200,points=[1e-3,1e-2])\n                                     ~~~~~~~~~^^^^^\n  File \"/tmp/work/_call_015.py\", line 6, in dsig_deps\n    tau=T/me; b2=beta2(T)\n          ^^\nNameError: name 'me' is not defined\n",
+ "exit_code": 1,
+ "timed_out": false,
+ "wall_s": 0.54,
+ "stdout_truncated": false,
+ "stderr_truncated": false
+}

@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791827860-MYjzRs15OF6rR7k2KTZ0",
+ "object": "chat.completion",
+ "created": 1791827860,
+ "model": "qwen/qwen3.7-flash",
+ "provider": "Alibaba",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Good. Now let me calculate Layer 2 (Photon interactions at the point), Layer 3 (Electrons set in motion), and remaining layers. This is getting complex - I need to write a comprehensive script that calculates all quantities systematically.\n\nLet me continue with more detailed calculations.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_07655401f4d7452fa20038ae",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nfrom scipy.special import eval_legendre\\n\\n# Reload data\\nwith open('/tmp/data/xcom_water.txt', 'r') as f:\\n    xcom_lines = f.readlines()\\nwith open('/tmp/data/estar_water.txt', 'r') as f:\\n    estar_lines = f.readlines()\\n\\nxcom_data = [np.array([float(p) for p in line.split()]) \\n             for line in xcom_lines[4:] if len(line.split()) >= 7]\\nxcom_array = np.array(xcom_data)\\n\\nestar_data = [np.array([float(p) for p in line.split()]) \\n              for line in estar_lines[4:] if len(line.split()) >= 7]\\nestar_array = np.array(estar_data)\\n\\ndef interpolate_xlog(E, col_idx):\\n    energies = xcom_array[:, 0]\\n    idx = np.searchsorted(energies, E)\\n    if idx == 0 or idx >= len(energies):\\n        return None\\n    log_E_low = np.log10(energies[idx-1])\\n    log_E_high = np.log10(energies[idx])\\n    t = (np.log10(E) - log_E_low) / (log_E_high - log_E_low)\\n    val_low, val_high = xcom_array[idx-1, col_idx], xcom_array[idx, col_idx]\\n    if val_low > 0 and val_high > 0:\\n        return val_low * (val_high/val_low)**t\\n    elif val_high > 0:\\n        return val_high\\n    return 0.0\\n\\ndef interpolate_estar_log(E):\\n    energies = estar_array[:, 0]\\n    idx = np.searchsorted(energies, E)\\n    if idx == 0 or idx >= len(energies):\\n        return None\\n    log_E_low = np.log10(energies[idx-1])\\n    log_E_high = np.log10(energies[idx])\\n    t = (np.log10(E) - log_E_low) / (log_E_high - log_E_low)\\n    result = {}\\n    for name, idx_col in [('collision',1), ('radiative',2), ('total',3)]:\\n        val_low, val_high = estar_array[idx-1, idx_col], estar_array[idx, idx_col]\\n        if val_low > 0 and val_high > 0:\\n            result[name] = val_low * (val_high/val_low)**t\\n        else:\\n            result[name] = val_high if val_high > 0 else 0.0\\n    return result\\n\\nE_co1, E_co2 = 1.1732, 1.3325\\nrho = 1.0\\ndepth = 5.0\\n\\n# Cross sections\\nxs = {}\\nfor E in [E_co1, E_co2]:\\n    xs[E] = {k: interpolate_xlog(E, i+1) for i, k in enumerate(['coherent','incoherent','photoelectric','pair_nuclear','pair_electron','total'])}\\n\\nprint(\\\"Layer 2: Photon Interactions\\\")\\n\\n# Interaction fractions by type (averaged over two lines)\\nfrac_types_avg = {}\\nfor key in ['compton', 'photoelectric', 'pair', 'rayleigh']:\\n    if key == 'compton':\\n        key_xs = 'incoherent'\\n    elif key == 'photoelectric':\\n        key_xs = 'photoelectric'\\n    elif key == 'pair':\\n        key_xs = 'pair_nuclear' + xs[E_co2]['pair_electron']  # Sum pair contributions\\n        frac_types_avg[key] = 0.5*(xs[E_co1]['pair_nuclear']+xs[E_co1]['pair_electron'])/(xs[E_co1]['total']) \\\\\\n                             + 0.5*(xs[E_co2]['pair_nuclear']+xs[E_co2]['pair_electron'])/(xs[E_co2]['total'])\\n        continue\\n    else:\\n        key_xs = 'coherent'\\n    \\n    frac_types_avg[key] = 0.5*xs[E_co1][key_xs]/xs[E_co1]['total'] + 0.5*xs[E_co2][key_xs]/xs[E_co2]['total']\\n\\n# Better calculation for pair\\nfrac_types_avg['pair'] = 0.5*(xs[E_co1]['pair_nuclear']+xs[E_co1]['pair_electron'])/(xs[E_co1]['total']) \\\\\\n                        + 0.5*(xs[E_co2]['pair_nuclear']+xs[E_co2]['pair_electron'])/(xs[E_co2]['total'])\\nfrac_types_avg['compton'] = 0.5*xs[E_co1]['incoherent']/xs[E_co1]['total'] + 0.5*xs[E_co2]['incoherent']/xs[E_co2]['total']\\nfrac_types_avg['photoelectric'] = 0.5*xs[E_co1]['photoelectric']/xs[E_co1]['total'] + 0.5*xs[E_co2]['photoelectric']/xs[E_co2]['total']\\nfrac_types_avg['rayleigh'] = 0.5*xs[E_co1]['coherent']/xs[E_co1]['total'] + 0.5*xs[E_co2]['coherent']/xs[E_co2]['total']\\n\\nprint(f\\\"Interaction fractions (average):\\\")\\nfor k,v in frac_types_avg.items():\\n    print(f\\\"  {k}: {v:.6f}\\\")\\nprint(f\\\"  Sum: {sum(frac_types_avg.values()):.6f}\\\")\\n\\n# Energy transfer fractions\\n# For Compton: weighted by mean energy transfer <T>/E ~ 0.37 for Co-60\\n# For photoelectric: essentially full energy (~1.0)\\n# For pair: ~E - 1.022 MeV transferred (minus annihilation)\\n# For Rayleigh: 0\\n\\nalpha_co1 = E_co1/0.511\\nalpha_co2 = E_co2/0.511\\n\\n# Mean Compton energy transfer fraction\\ndef mean_compton_frac(E):\\n    costheta = np.linspace(-1, 1, 1000)\\n    alpha = E/0.511\\n    sigma_ws = []\\n    T_over_E_ws = []\\n    for ct in costheta:\\n        theta = np.arccos(np.clip(ct, -1, 1))\\n        E_prime = E / (1 + alpha*(1-ct))\\n        T = E - E_prime\\n        r0sq = 0.066524e-24/(4*np.pi)\\n        factor = (1+ct**2)/2\\n        epe = E_prime/E\\n        sig = factor * epe**2 * r0sq\\n        sigma_ws.append(sig)\\n        T_over_E_ws.append(T/E)\\n    sigma_ws = np.array(sigma_ws)\\n    T_over_E_ws = np.array(T_over_E_ws)\\n    return np.sum(T_over_E_ws*sigma_ws)/np.sum(sigma_ws)\\n\\nmean_T_over_E_co1 = mean_compton_frac(E_co1)\\nmean_T_over_E_co2 = mean_compton_frac(E_co2)\\nprint(f\\\"\\\\nMean Compton energy transfer fractions:\\\")\\nprint(f\\\"  E={E_co1}: {mean_T_over_E_co1:.4f}\\\")\\nprint(f\\\"  E={E_co2}: {mean_T_over_E_co2:.4f}\\\")\\n\\n# Energy transfer fractions weighted\\n# Primary photons only first\\nenergy_transfer_fractions = {}\\nfor key in ['compton', 'photoelectric', 'pair', 'rayleigh']:\\n    if key == 'compton':\\n        avg_frac = 0.5*mean_T_over_E_co1 + 0.5*mean_T_over_E_co2\\n    elif key == 'photoelectric':\\n        avg_frac = 1.0  # Full energy transfer\\n    elif key == 'pair':\\n        # Average energy transfer = E - 1.022 (approx, ignoring recoil)\\n        avg_frac = lambda E: max(0, (E - 1.022)/E)\\n        avg_frac = 0.5*(E_co1-1.022)/E_co1 + 0.5*(E_co2-1.022)/E_co2\\n    else:  # rayleigh\\n        avg_frac = 0.0\\n    \\n    weight = frac_types_avg[key]\\n    energy_transfer_fractions[key] = weight * avg_frac\\n\\n# Normalize\\net_sum = sum(energy_transfer_fractions.values())\\nfor key in energy_transfer_fractions:\\n    energy_transfer_fractions[key] /= et_sum\\n\\nprint(f\\\"\\\\nEnergy transfer fractions:\\\")\\nfor k,v in energy_transfer_fractions.items():\\n    print(f\\\"  {k}: {v:.6f}\\\")\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Good. Now let me calculate Layer 2 (Photon interactions at the point), Layer 3 (Electrons set in motion), and remaining layers. This is getting complex - I need to write a comprehensive script that calculates all quantities systematically.\n\nLet me continue with more detailed calculations.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 22920,
+  "completion_tokens": 2034,
+  "total_tokens": 24954,
+  "cost": 0.0004605,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 20480,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0004605,
+   "upstream_inference_prompt_cost": 0.00019608,
+   "upstream_inference_completions_cost": 0.00026442
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 57,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

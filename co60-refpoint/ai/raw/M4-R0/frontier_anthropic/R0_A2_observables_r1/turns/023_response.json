@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791827354-7cGTau575EgqhoFmBZmr",
+ "object": "chat.completion",
+ "created": 1791827354,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "With 16GB total memory that shouldn't be the bottleneck, so I'm wondering why three processes failed silently with no stderr or output file\u2014maybe they got killed abruptly, possibly from a memory spike during the per-event array allocation step rather than a clean timeout.\n\nI think the best approach now is just to rerun one failing seed in isolation and actually capture its return code and stderr to see what's really happening.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01AvSKsMBS9HKW92rX8EJYzQ",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport subprocess, sys, time\\nt0=time.time()\\np=subprocess.run([sys.executable,'/tmp/work/sim.py','1000000','12','r12'],capture_output=True,text=True,cwd='/tmp/work')\\nprint(p.returncode, p.stdout[-500:], p.stderr[-1500:], time.time()-t0)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "With 16GB total memory that shouldn't be the bottleneck, so I'm wondering why three processes failed silently with no stderr or output file\u2014maybe they got killed abruptly, possibly from a memory spike during the per-event array allocation step rather than a clean timeout.\n\nI think the best approach now is just to rerun one failing seed in isolation and actually capture its return code and stderr to see what's really happening.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSnQsKEAgSGAI4AUIIdGhpbmtpbmcSDEOYD4G1Eqb3sJadKhoMB+rAcTplsvRZNFAQIjDOZTgirIX5CQa/piIlBThEIv9Gqv/ChzTZcfiezskRD12F1qp7jTwPX7J9QeP8YVYqugolPvmHitsfwd+WqNDhI7KEdkBjRLZbR0t91m41/+qjgVp1N5C0TK7Bi59EuCO3Hgo0+s8654VZYgzPkOqVJGF1mJu5b0tQeVRbxauCGEzuSdWArl2jvE279urk2SDeT70ET4BxrqKDYZ+OqE1bSqJ+04cqkIacLqv/MzUsfnwuYPL/WVs21p1kQcuNP246ZkjemJ8lf1BfTnbS5g3nQPxvTFEtCpjKBGjimYEdTCrYtjY9q0+ngadEwmE1klp4a9bG+xtYlLspGfxvoBbZpvjz4XW7/Jj8sJHMczS4w7xPAXRI6CpndUoz9lgFN1jKXyOKF4XqutJ8kp6lvOs4LMhACDhSkSx4xFzNh7C1vIFKnYkLe7D0FNnbZBTT9mF7ef1a0Nqds5wYIwBrMuDfbPC5Q01jlVjELOVzO4sfkYhVjVrI3Nl5DEw4OY6eiXSn7ftn42CA1bI4b9SBFijT/ffjCFywgYbqGlgtgTywl2ZJTgqkvwjh1JD/TuLNMz70O4/55HHIQ9bCXMw5wMkGB8UVXO25b57IML/B+NoYVhHda/fGtGbJ93sfFL4r0DohovBGHCzsGl3c6mJQSzaCquVE0YJcuK6p1Nx+KR0Ublu7LPyhdqTq5KmCc2/kOguQdLhlrxhZSgn86RUaevDi9KVniYQsE7ONADtblZF82xlYR9KN3N5sz09Z0Y+mIUqA5x0KmNHu0CakbvGUWWMXvjTKVC26GxlD06at3tE46wjw0Wjeen2p2zns70SA23p7qRnG5iBmOW97l8Tn8RKLFEoN3nNwmQCrJbe4H+zIASMjt/JHmrFUAaRp9FuzgpgD2f52agFGM/1w3GYsooBOnSKKyUuI4hMWOzZjloy8cXWVzwyLLzcSZVPwfUprIXp6p6VNQEXgYRnKh3ACzu48zbk7okdzPoOCqeyDbi3ilkM6YjimOp/cMsfIgemg00uWd5VkVVigAubGiL+9rmsnqdo1P2X+LYeDsrwrtCSPO3CJVT9Gqb1WrjiFhxOPleW24a3qA+ResrU5XU57i0TC9bf2mfgi3dM/LMpCRdXjMqSQ01SWCZ87vYvHE5gb1mrasoLSXBMaCF0fReLem8OQ4EpHGi4d7/1X0N9UhMleCjk22O1CBJ0VH0WsFy9YGdrmrJ4Qp3sFRTqSVmOxctiVLm8wxfuTMGm5HrBwYI3H1N3IIeF63wzcMq8SuZIGFn2z91aBp2GRunZW+iirFxQqaj0++gc+D0Wtf1vnKQQ7QQ0OcVrkptGhOkBc2+V+Lm8VBzjZmljHdVbxQJcn86sSrmyHCXMfidYVcfTGLzNPpqWp4t2XGJCCuxbhNOY47jgra1cDqOA0CB4jhCZqSq6ttUkEne86QQ6Q29izjLp+JHjV2a3rIjcHIHWGsu1I3vXTfnOQIYK78dEz1N/a1sdbRHEOGFnisqkgEYwdy+MH4m8nTlgFVrpS8qP+Sgxi3ql3B6PJjdr5OntRhpVGT0/UWZfEau/S9a/dB3cNWKtzsukdcBp6hkcBjjyafLQKHz40P4eAc8G5SrVEdFksaSlU08UbXpzGg9Oa3wcxupgpdTnB0yMc92sOLCV0b9WwIfvJeR5KSHkk7UZF0DwHQTaNUcMQqYACvb8etKYHXtdFdTwze7WjipnLwp4dSuGa1ZMP9RuzfloMZ12jnD0nr17ttgXdwNW/tL+TLIbwRKknhcGbVdXirXXUZTfvfPRfnm1rS0HTBFIMHCBQDDNC2QNHes9YgVoJZsQzSjToTaO9698riUe+ENRsqUtrypEYAQ==.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 139926,
+  "completion_tokens": 429,
+  "total_tokens": 140355,
+  "cost": 0.0083296,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 139472,
+   "cache_write_tokens": 452,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0083296,
+   "upstream_inference_prompt_cost": 0.0072571,
+   "upstream_inference_completions_cost": 0.0010725
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 265,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

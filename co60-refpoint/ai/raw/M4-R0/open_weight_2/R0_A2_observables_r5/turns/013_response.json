@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791827878-L1mi7XPHGFzkCImfsT5P",
+ "object": "chat.completion",
+ "created": 1791827878,
+ "model": "qwen/qwen3.7-flash",
+ "provider": "Alibaba",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "There's an issue with parsing - some lines have '#' prefix. Let me fix the parsing to handle comment lines properly.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_f9cd0a15802a4bfc9b612143",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\n\\n# Reload data with proper parsing\\nwith open('/tmp/data/xcom_water.txt', 'r') as f:\\n    xcom_lines = f.readlines()\\nwith open('/tmp/data/estar_water.txt', 'r') as f:\\n    estar_lines = f.readlines()\\n\\nxcom_data = []\\nfor line in xcom_lines[4:]:  # Skip headers (first 4-5 lines)\\n    if line.startswith('#'):\\n        continue\\n    parts = line.split()\\n    if len(parts) >= 7:\\n        try:\\n            vals = [float(p) for p in parts]\\n            xcom_data.append(vals)\\n        except:\\n            pass\\nxcom_array = np.array(xcom_data)\\n\\nestar_data = []\\nfor line in estar_lines[4:]:\\n    if line.startswith('#'):\\n        continue\\n    parts = line.split()\\n    if len(parts) >= 7:\\n        try:\\n            vals = [float(p) for p in parts]\\n            estar_data.append(vals)\\n        except:\\n            pass\\nestar_array = np.array(estar_data)\\n\\nprint(f\\\"XCOM entries: {len(xcom_array)}, shape: {xcom_array.shape}\\\")\\nprint(f\\\"ESTAR entries: {len(estar_array)}, shape: {estar_array.shape}\\\")\\n\\ndef interpolate_xlog(E, col_idx):\\n    energies = xcom_array[:, 0]\\n    idx = np.searchsorted(energies, E)\\n    if idx == 0 or idx >= len(energies):\\n        return None\\n    log_E_low = np.log10(max(energies[idx-1], 1e-20))\\n    log_E_high = np.log10(max(energies[idx], 1e-20))\\n    t = (np.log10(max(E, 1e-20)) - log_E_low) / (log_E_high - log_E_low)\\n    val_low, val_high = xcom_array[idx-1, col_idx], xcom_array[idx, col_idx]\\n    if val_low > 0 and val_high > 0:\\n        return val_low * (val_high/val_low)**t\\n    elif val_high > 0:\\n        return val_high\\n    return 0.0\\n\\ndef interpolate_estar_log(E):\\n    energies = estar_array[:, 0]\\n    idx = np.searchsorted(energies, E)\\n    if idx == 0 or idx >= len(energies):\\n        return None\\n    log_E_low = np.log10(max(energies[idx-1], 1e-20))\\n    log_E_high = np.log10(max(energies[idx], 1e-20))\\n    t = (np.log10(max(E, 1e-20)) - log_E_low) / (log_E_high - log_E_low)\\n    result = {}\\n    for name, idx_col in [('collision',1), ('radiative',2), ('total',3)]:\\n        val_low, val_high = estar_array[idx-1, idx_col], estar_array[idx, idx_col]\\n        if val_low > 0 and val_high > 0:\\n            result[name] = val_low * (val_high/val_low)**t\\n        else:\\n            result[name] = val_high if val_high > 0 else 0.0\\n    return result\\n\\nE_co1, E_co2 = 1.1732, 1.3325\\nrho = 1.0\\ndepth_cm = 5.0\\n\\n# Cross sections\\nxs = {}\\nfor E in [E_co1, E_co2]:\\n    xs[E] = {k: interpolate_xlog(E, i+1) for i, k in enumerate(['coherent','incoherent','photoelectric','pair_nuclear','pair_electron','total'])}\\n\\nprint(\\\"\\\\nCross sections at Co-60 energies:\\\")\\nfor E, label in [(E_co1, \\\"E1\\\"), (E_co2, \\\"E2\\\")]:\\n    print(f\\\"\\\\n{label} ({E} MeV):\\\")\\n    for k, v in xs[E].items():\\n        print(f\\\"  {k}: {v:.6e}\\\")\\n\\n# Interaction fractions\\nfrac_types = {}\\nfor key in ['compton', 'photoelectric', 'pair', 'rayleigh']:\\n    if key == 'compton':\\n        key_names = ['incoherent']\\n    elif key == 'photoelectric':\\n        key_names = ['photoelectric']\\n    elif key == 'pair':\\n        key_names = ['pair_nuclear', 'pair_electron']\\n    else:  # rayleigh\\n        key_names = ['coherent']\\n    \\n    frac_val = 0.0\\n    for kn in key_names:\\n        frac_val += 0.5 * xs[E_co1][kn]/xs[E_co1]['total'] + 0.5 * xs[E_co2][kn]/xs[E_co2]['total']\\n    frac_types[key] = frac_val\\n\\nprint(\\\"\\\\nInteraction fractions (averaged over two lines):\\\")\\nfor k,v in frac_types.items():\\n    print(f\\\"  {k}: {v:.6f}\\\")\\nprint(f\\\"  Sum: {sum(frac_types.values()):.6f}\\\")\\n\\n# Mean Compton energy transfer fraction\\ndef mean_compton_frac(E):\\n    costheta = np.linspace(-1, 1, 1000)\\n    alpha = E/0.511\\n    sigma_ws = []\\n    T_over_E_ws = []\\n    for ct in costheta:\\n        theta = np.arccos(np.clip(ct, -1, 1))\\n        E_prime = E / (1 + alpha*(1-ct))\\n        T = E - E_prime\\n        r0sq = 0.066524e-24/(4*np.pi)\\n        factor = (1+ct**2)/2\\n        epe = E_prime/E\\n        sig = factor * epe**2 * r0sq\\n        sigma_ws.append(sig)\\n        T_over_E_ws.append(T/E)\\n    sigma_ws = np.array(sigma_ws)\\n    T_over_E_ws = np.array(T_over_E_ws)\\n    return np.sum(T_over_E_ws*sigma_ws)/np.sum(sigma_ws)\\n\\nmean_T_over_E_co1 = mean_compton_frac(E_co1)\\nmean_T_over_E_co2 = mean_compton_frac(E_co2)\\nprint(f\\\"\\\\nMean Compton energy transfer fractions:\\\")\\nprint(f\\\"  E={E_co1}: {mean_T_over_E_co1:.4f}\\\")\\nprint(f\\\"  E={E_co2}: {mean_T_over_E_co2:.4f}\\\")\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "There's an issue with parsing - some lines have '#' prefix. Let me fix the parsing to handle comment lines properly.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 25090,
+  "completion_tokens": 1530,
+  "total_tokens": 26620,
+  "cost": 0.000407856,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 22656,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000407856,
+   "upstream_inference_prompt_cost": 0.000208956,
+   "upstream_inference_completions_cost": 0.0001989
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 24,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

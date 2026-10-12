@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791828056-11BMUlRrY3zaxtDB8YLK",
+ "object": "chat.completion",
+ "created": 1791828056,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "Each call starts fresh, so I'll put all the physics into one module file and import it.",
+    "refusal": null,
+    "reasoning": "Since state doesn't persist across calls, I'll need to write a complete module file, like \"phys.py\", containing all the functions, and import it fresh each time.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_017JXEAHELweHwqppwqknGz6",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nphys = r'''\\nimport numpy as np\\nfrom scipy.integrate import quad\\nfrom scipy.interpolate import interp1d\\nmec2=0.51099895\\nre=2.8179403e-13\\nNA=6.02214076e23\\nxc=np.loadtxt('/tmp/data/xcom_water.txt'); es=np.loadtxt('/tmp/data/estar_water.txt')\\nEx=xc[:,0]\\ndef lli(col):\\n    f=interp1d(np.log(Ex),np.log(np.maximum(col,1e-30)),kind='linear',fill_value='extrapolate')\\n    return lambda E: np.exp(f(np.log(E)))\\nmu_coh=lli(xc[:,1]); mu_inc=lli(xc[:,2]); mu_pe=lli(xc[:,3]); mu_pn=lli(xc[:,4]); mu_pe_=lli(xc[:,5])\\ndef mu_pair(E): return mu_pn(E)+mu_pe_(E)\\ndef mu_tot_fn(E): return mu_coh(E)+mu_inc(E)+mu_pe(E)+mu_pair(E)\\nNeW=NA*0.55509   # electrons per gram water\\nNeAir=NA*0.49919\\ndef kn_eps_sample(E,rng):\\n    k=E/mec2\\n    n=len(E); out=np.empty(n); todo=np.arange(n)\\n    emin=1/(1+2*k)\\n    while todo.size:\\n        kk=k[todo]; em=emin[todo]\\n        e=em+(1-em)*rng.random(todo.size)\\n        cost=1-(1/e-1)/kk; sin2=1-cost**2\\n        f=e+1/e-sin2\\n        fmax=em+1/em\\n        acc=rng.random(todo.size)*fmax<f\\n        out[todo[acc]]=e[acc]\\n        todo=todo[~acc]\\n    return out\\ndef beta2(T):\\n    g=1+T/mec2; return 1-1/g**2\\ndef moller_dsde(T,eps,variant=1):\\n    tau=T/mec2; x=eps/T\\n    b2=beta2(T)\\n    c = (2*tau+1)/(tau+2)**2 if variant==1 else (2*tau+1)/(tau+1)**2\\n    B=1/x**2+1/(1-x)**2+(tau/(tau+2))**2-c/(x*(1-x))\\n    return 2*np.pi*re**2*mec2/(b2*T**2)*B\\ndef above(T,D,variant=1,Ne=NeW):\\n    if D>=T/2: return 0.0\\n    f=lambda eps: eps*moller_dsde(T,eps,variant)\\n    pts=[x for x in [D*3,D*10,T/10] if D<x<T/2]\\n    v,_=quad(f,D,T/2,limit=500,points=pts or None)\\n    return Ne*v\\ndef estar(T):\\n    # interpolate ESTAR columns in log-log: returns Scol, Srad, Stot, CSDA, Yrad, delta\\n    lT=np.log(es[:,0])\\n    out=[]\\n    for j in [1,2,3,4,5]:\\n        out.append(np.exp(np.interp(np.log(T),lT,np.log(np.maximum(es[:,j],1e-30)))))\\n    return out\\n'''\\nopen('/tmp/phys.py','w').write(phys)\\nimport sys; sys.path.insert(0,'/tmp')\\nimport importlib, phys; importlib.reload(phys)\\nimport numpy as np\\ndef Fminus(tau):\\n    b2=1-1/(1+tau)**2\\n    return 1-b2+(tau**2/8-(2*tau+1)*np.log(2))/(tau+1)**2\\ndef bethe_part(tau): return np.log(tau**2*(tau+2)/2)+Fminus(tau)\\nD=0.01\\nfor T in [0.1,0.3,0.5,1.0,2.0]:\\n    tau=T/phys.mec2\\n    Scol_E=phys.estar(T)[0]\\n    a1=phys.above(T,D,1); a2=phys.above(T,D,2)\\n    print(T, round(Scol_E,4), round(a1,5), round(a2,5), 'bethe_part',round(bethe_part(tau),4))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Since state doesn't persist across calls, I'll need to write a complete module file, like \"phys.py\", containing all the functions, and import it fresh each time.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS6wcKEAgSGAI4AUIIdGhpbmtpbmcSDF8RLSyxxZqotO3wlRoMdT1MKSfV1JMlJty1IjBKozZZT3yxMVSQSz42pukIAVWLTeTgp6nkWnXHN7SrJGUCsSk9XeodG9cQR1gHc3cqiAf6TSLU7FHj44Pph7wYle+KqM+d4EoCa/iNKNpa6KmdIvn+ZWEEhSBNFgSwb1vxZpQ3CZFB/D3HgnaTYA7RayhsTczmFaB30oyFQtQpA6wWtYlOqvM8uy75sWTgnaXWFrVzXDggw4XeqOXLPPNve6rWnyIYNkhCOKy/idShl7+kqu2jA+x9kp/OYIyokeaPiMKa1/mtiqxUeTi+on0sPI+Xw0KifagYHph8OAXzeG54cRFnDbcxh6oIN3oGTllHUj3edgAbsnBD5JxpdVVOydZAEvEMQICmpU1wBbruQ4/7J5wHP7vt0pYG24qnCWZU+tv73wKcdBWbsJzHSWqkIqlAr9koDMdhC9RSA3+3SqQ7KwZEcc9cNVVSwQHvyh8FcxavuUaeKyw5lDZ4ritCXV2YC66ZtNQcxhOnaK65db5YcArUXZwVcRTnK+2ceeikV7VNdVnwwIsdd64L/Z7jRtgRfXgSGqBa3GiigncCWKdpj7XM1DxcITXA1MUKMCchmYyw3gI9KmQV/TWO1cJ7YImyooaMgLDFUWBkCu/caoOPx+HBe+4+vs9fCtviaDrgGfEquiAtpDpBU+Twf77uaGUczu53HSNPup/xboVDsGG2fujrkd93lDXAmEXkOoAlKe38K6AtmDgMXtl6vPneihaXvxUxUwSw2Tuh/QnvbhhRT6HAkWN9YDkIAnOpxF0MNL61UAPgS+H/Kr2eKU2YmV5l6fRkI+lFq42aE31ivMrj5P0uJ600etMAM8wbaOZ3SSflQWw52CBoBPoYJwWAZVHa7w2Ot0QC4L+kdTghc/ofcfW7QWOWOFKR2nL+FLjXRrO+Q7+fTOoyvqHe8Vk8/+gFI57dlGviSy/MzY3HjOul0ACCJTVQ4T7P8ue4gaFl2SlMZBGlemlH7yLWQnIAaZBf3EE+8MeTeWHEjXXfa6VaWnc4fnSHY7jKJln4JND7jAgWC3g/+2RPMCn6UqyGbbJ8pgm8qiRrl4p0EplLZkNyDz2taPc6l81ZlQLQDgGS+j5xhvRoYLzpDLNEpm1CC6MAC5KQ6A6N0viaXk+l16uG5Fk4GhJEVs7zDxxiIJ2QAGKkrIW7Mvi3a3pFmEHnuqxnf2OorPcXXiqrthi1ylcG6PTFPndmF7dByly8uBdUhAvbn/+ACeGHTGB31gBQXUFGqKKRjLCxe8rvWDzBftM07VoXVaLj3I0LGAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 80720,
+  "completion_tokens": 1557,
+  "total_tokens": 82277,
+  "cost": 0.002651125,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 71455,
+   "cache_write_tokens": 9263,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.002651125,
+   "upstream_inference_prompt_cost": 0.001872625,
+   "upstream_inference_completions_cost": 0.0007785
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 55,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

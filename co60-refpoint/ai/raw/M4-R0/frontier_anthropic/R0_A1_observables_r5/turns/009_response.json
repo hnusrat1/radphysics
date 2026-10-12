@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791827494-3S7JNJQ8Za534jJno4qv",
+ "object": "chat.completion",
+ "created": 1791827494,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "The transport runs quickly. Now a sanity check: the primary track-length tally should match the analytic attenuation value.",
+    "refusal": null,
+    "reasoning": "That seems surprisingly fast for 20000 histories, so I want to sanity-check that photons are being transported correctly by comparing the primary fluence reaching the SV against the analytic expectation based on attenuation and solid angle. I'll try scaling up to N=2e6 to verify the primary count check holds up consistently.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01EdXcTUYZXcDtEkpxsUdb4B",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport numpy as np, sys\\nsys.path.insert(0,'/tmp/work')\\nimport sim, mc, phys\\nfrom importlib import reload\\nV=np.pi*1.0**2*0.2\\nN=2000000\\nt=time.time()\\nseg,dep=sim.run(N,7)\\nprint(\\\"time\\\",time.time()-t)\\nprim=seg['prim']\\nratio=lambda tl: tl.sum()/V/N * mc.Omega*105**2\\nprint(\\\"primary ratio MC\\\", ratio(seg['tl'][prim]))\\nmu1=mc.mu_c(1.1732)+mc.mu_pe(1.1732)+mc.mu_coh(1.1732)\\nmu2=mc.mu_c(1.3325)+mc.mu_pe(1.3325)+mc.mu_coh(1.3325)\\nprint(\\\"analytic\\\", 0.5*(np.exp(-mu1*5)+np.exp(-mu2*5)), mu1, mu2)\\nprint(\\\"total ratio\\\", ratio(seg['tl']), \\\"scattered\\\", ratio(seg['tl'][~prim]))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "That seems surprisingly fast for 20000 histories, so I want to sanity-check that photons are being transported correctly by comparing the primary fluence reaching the SV against the analytic expectation based on attenuation and solid angle. I'll try scaling up to N=2e6 to verify the primary count check holds up consistently.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSgwkKEAgSGAI4AUIIdGhpbmtpbmcSDEqSwYlblnjzG+zyAhoMgeDNNmy14orWBONiIjDiUgbiHPJRQo+xXAMBsDnstVUR4vFE9drbXg6pNvqb5/m4Lb9uOnrf997ZdJpzlxcqoAipBCxLOALuOGkKj9CQLn1oH1kGGMjVA459lLPZIpUhFCjhTGBijiK1yQealfdFV3ZqUblHoBJhVkKi8JwCxEdI3mEUb0AGXn2g6PXCLtlhtyNLfKfTAywWUoHkBFzYS1HTn8NisE+Wb1mS2wNKQme6Ht4/YGwLSZzlg+bngAwEZ5lDVtuXVLHSHe+qNlXZWmw9RkXZWiZwX+idct5GlpYGWrQc1Oedoq6PDllaHxxpiCn7/mtit694RkYO0dN3J+US0sn++a7167cTPvQ+HMC8NI9lmcwX8HQqkU1tYddVjA8E2LU4G8x0DpHi08ffQCNKydR5CSgl9Zy9W5V7YJiz/XD2g7u726SykXkKPVabPJq6We4nOU6SjEUes2AfU+K/ETmvwun1dXmmrVpTd8bkWO9bj3ubAvP4UNVqhaVGMaQgFKiFTtNAMW9WAUhYx8PL3HP35czDVUrPd6mMaayDxUrt0s+9qi7Q56M46YDQRjtBXalOGCvifEG7f8sVxMG4oxaBPU9AAW4WYjbLa6ZofM4ZQlrm3P8TutvtMVNXQvFw7VDnLzoRJ71GnVbhocMW7ZPgkiUldy0AV0eMiI7+1tQkm9GYAXZmIQQ9yJgP8HGJJk6ivSoqCsZzDG2RraGVggiSPZMmukSz5UXKVuidGmbiC65YIz/hVQ9G9NnIV116nTgM8dG0YqIHqbQa2H65gl0tVoaz+mQ3hzqPeyld0d5GxfNBeQYGSKidt52ZztI7kPrZPpmvAzMgrALhXLHwj0l60cYAx3sLglzOJ36JtdANLoVGWH1FjJIo8rmdeVj45NUUNauC++ps/0PjciLAnsX2TT/D7V1HDSEIaIrYPeCVNipaQkir3tuRnq+IpxTCEeMFyo4Z10QySZxuWLxkInyyHGBfVbX7ZdwO3WJSJQ85g5IEhugj8ZDzNlT1/hlg/7Uv1T3+fCrkA4RNUxgIBl83SeOzAuEkwzD5DsYf7T6EG/WRr0fN9c77RqR9bqHFpwCt0OXrYyQpGOVmP5FRUCtKyHasNo8LkKEofVBV/NmN50tGr+aPGEwIua/az3IYoGnWq8jXAHbHFv3RGqpFMmmgevFAIeXanoo91J8v1XOXoLOygpKdfu4ITBWghhgXCPlIXSnkmLC4ewkmkI645kWCowGfFHdUahoyD+BgLyIjPmcx8kXAF9bGG0nOB2LD5RYSm+IlC0YX2KbTpm0Dz/g3p9OSsuu6L+trXnKGKnJAHGzPHudfVdCq874FvLcgMiBn8Azrp+PQsaVy4vn+d8X0eKWc6slH73BHMaUh45NqoH1D+yLKi/Qr4KIIhrU968leXJMBEpvzqpJV4nhxrv7cpXD5osWOooAgST23EnJMlaPgbQl9/7mmuVSpPJ9s+USDzBb/ieprjg6KGMYYAQ==.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 66461,
+  "completion_tokens": 588,
+  "total_tokens": 67049,
+  "cost": 0.00099881,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 66111,
+   "cache_write_tokens": 348,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00099881,
+   "upstream_inference_prompt_cost": 0.00070481,
+   "upstream_inference_completions_cost": 0.000294
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 149,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

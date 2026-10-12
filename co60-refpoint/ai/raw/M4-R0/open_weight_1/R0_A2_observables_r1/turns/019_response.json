@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791827567-c7FtyjjsMkFZnMKgfm0X",
+ "object": "chat.completion",
+ "created": 1791827567,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "GMICloud",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "slab_src[25].sum() = 2590. src per volume per Phi0 = 0.0909 cm\u207b\u00b9 \u2014 that's about equal to the q\u0303 integral (0.0854) but note this is per BIN-summed (the q\u0303 integral 0.0854 is the integral over E0 of q\u0303 per MeV; while here we sum per-bin source = \u222bq\u0303 dE0 = 0.0854 \u00d7 ... hmm: q\u0303 integral = 0.0854 cm\u207b\u00b9 = total electrons per unit volume per Phi0? Earlier q\u0303 was per cm\u207b\u00b9 MeV\u207b\u00b9; \u222bq\u0303 dE0 = cm\u207b\u00b9. And src per volume per Phi0 = 0.0909 cm\u207b\u00b9. They match! Great: so q\u0303 (the source density per cm\u00b3 per Phi0, integrated) = 0.085-0.091. So my q\u0303 equations are consistent with the MC tallies. (Earlier q\u0303 units confusion resolved: q\u0303 has units cm\u207b\u00b9 and represents electrons per unit volume per unit Phi0\u00b7MeV... but numerically consistent.)\n\nSo the electron source per unit volume per Phi0 at 5 cm: 0.091 electrons/cm\u207b\u00b9\u00b7... equivalent to 0.091 electrons per cm\u00b3 per Phi0-unit... whatever; it matches the analytic q\u0303.\n\nEnergy source per volume per Phi0: (src_vol * emid).sum() should \u2248 0.091\u00d7meanE ~0.036 MeV/cm\u00b3 per Phi0. Compare Kcol/Phi0 = 0.0335 MeV/cm\u00b3 per Phi0 (same units? Kcol/Phi0 in MeV cm\u00b2/g \u2014 since cm\u00b2/g \u00d7 (g/cm\u00b3)... with \u03c1=1, MeV cm\u00b2/g = MeV/cm\u00b3 per (cm\u207b\u00b2)?). The energy source per volume per Phi0 should equal Kcol per unit mass per Phi0 in equilibrium: yes 0.0335 vs 0.036 (source includes all transferred energy = K~0.0337). \u2713 Great.\n\nSo the earlier 1D model formula was right except missing /V_slab and the s-point accumulation bug. The D(z)/Phi0 = \u03a3 sources(per unit volume per Phi0)\u00d7dz0\u00d7S_c(E)/\u03bc. Let me redo the 1D model carefully with /V_slab and verify smoothness and normalization: D(5)/Phi0 should come out \u22480.0335 MeV cm\u00b2/g\u21925.4e-12 Gy cm\u00b2.\n\nRegarding the oscillations: with per-\u03bc-bin and per-energy-bin discrete sources and the 1/\u03bc factor, the profile may be noisy but not oscillatory unless the z-mapping has gaps. The earlier wild values (0.8 at z=1.0) might be due to the missing /V_slab making things huge plus bad indexing; let me rewrite cleanly.\n\nActually wait, I realize the earlier code had `E_along = np.interp(R0-s_path, np.sort(Rcsda), np.sort(Ee))` \u2014 for s_path up to R0, rem=R0\u2212s from R0 down to 0; interp over Rcsda (0.00025..9) returns energies from E0 down to 0.01 \u2713. That's okay.\n\nLet me rewrite the 1D transport cleanly, with:\n- weight = counts/N/PHI0/V_slab \u00d7 dz0 (sources per unit area per Phi0... no: sources per unit volume per Phi0 \u00d7 dz0 = sources per unit area per Phi0? S_vol (cm\u207b\u00b9 per Phi0) \u00d7 dz0 (cm) \u2192 cm\u2070\u00b7... = S per unit area (cm\u207b\u00b2 per Phi0)?? cm\u207b\u00b9\u00d7cm = dimensionless... hmm: S_vol = electrons per cm\u00b3 per Phi0 (per \"unit Phi0 cm\u207b\u00b2\"): S_vol\u00d7dz0 = electrons per cm\u00b2 per unit Phi0. Then dose = S_vol dz0 \u00d7 S_c/\u03bc \u2713 (MeV/g per unit Phi0\u00b7cm\u00b2? \u2192 MeV cm\u00b2/g per...). Good.\n\nLet me test numerically: D(5) should be ~0.0335 MeV cm\u00b2/g.\n\nLet me rewrite and test the profile. I'll also treat the nearly-sideways electrons: for |\u03bc|<0.05, using \u03bc=\u00b10.05 deposits energy over a huge depth range (range/0.05). That's physical for sideways electrons (they deposit their energy over a large depth interval). Fine.\n\nLet me code it cleanly.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_cf6b75f07b374af097c4f239",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np, math\\nA = np.load('/tmp/mc_tallies_5e6.npy', allow_pickle=True)\\nslab_src=A[11]; Ntot=int(A[12])\\nPHI0=1/10.5**2\\ns = np.loadtxt('/tmp/data/estar_water.txt', comments='#')\\nEe=s[:,0]; Scol=s[:,1]; Rcsda=s[:,4]\\ndef interp(x,xp,yp): return np.interp(x,xp,yp)\\nV_slab=math.pi*0.2\\nel_edges=np.array([0.01,.05,.1,.15,.2,.25,.3,.35,.4,.45,.5,.55,.6,.65,.7,.75,.8,.85,.9,.95,1,1.05,1.1,1.15,1.2,1.4])\\nemid=(el_edges[:-1]+el_edges[1:])/2\\ncos_mid=np.linspace(-0.9,0.9,10)\\ndz=0.02; zg=np.arange(0,30+dz*0.5,dz); NZ=len(zg)\\nD=np.zeros(NZ)\\n# precompute range inverse table on dense grid\\nRinv_E=np.linspace(0, interp(1.4,Ee,Rcsda), 2000)\\nRinv_val=np.interp(Rinv_E, Rcsda, Ee)\\nfor k in range(150):\\n    z0=0.1+0.2*k\\n    cnt=slab_src[k]\\n    if cnt.sum()==0: continue\\n    for b in range(25):\\n        E0=emid[b]; R0=interp(E0,Ee,Rcsda)\\n        if R0<=0: continue\\n        for c in range(10):\\n            mu0=cos_mid[c]\\n            n=cnt[b,c]\\n            if n<=0: continue\\n            mu_use=mu0 if abs(mu0)>=0.05 else (0.05 if mu0>=0 else -0.05)\\n            if abs(mu_use)<1e-9: mu_use=0.05\\n            # path grid\\n            ns=max(2,int(R0/0.001)+1)\\n            sp=np.linspace(0,R0,ns)\\n            rem=R0-sp\\n            Ea=np.interp(rem, Rinv_E, Rinv_val)\\n            Sc=interp(Ea,Ee,Scol)\\n            contrib_base = Sc/abs(mu_use)\\n            zpos = z0 + mu_use*sp\\n            idx=np.clip((zpos/dz).astype(int),0,NZ-1)\\n            # weight per source: n / (N PHI0 V_slab) per unit volume; *dz0=0.2 per unit area\\n            w = n/Ntot/PHI0/V_slab*0.2\\n            valid=(zpos>=0)&(zpos<=30)\\n            if not valid.any(): continue\\n            np.add.at(D, idx[valid], w*contrib_base[valid])\\n# Now D(z)/Phi0 in MeV cm^2/g? we expect D(5)~0.0335\\nprint('raw D(5)/Phi0:', D[int(5.0/dz)])\\nimax=int(np.argmax(D))\\nprint('dmax at', zg[imax], 'Dmax', D[imax])\\nprint('PDD5', 100*D[int(5.0/dz)]/D[imax])\\nfor zz in [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,1.0,1.2,1.5,2.0,3.0,4.0,5.0,6.0,8.0,10.0,15.0,20.0]:\\n    print(f'{zz:5.1f}  {100*D[int(zz/dz)]/D[imax]:7.2f}')\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "slab_src[25].sum() = 2590. src per volume per Phi0 = 0.0909 cm\u207b\u00b9 \u2014 that's about equal to the q\u0303 integral (0.0854) but note this is per BIN-summed (the q\u0303 integral 0.0854 is the integral over E0 of q\u0303 per MeV; while here we sum per-bin source = \u222bq\u0303 dE0 = 0.0854 \u00d7 ... hmm: q\u0303 integral = 0.0854 cm\u207b\u00b9 = total electrons per unit volume per Phi0? Earlier q\u0303 was per cm\u207b\u00b9 MeV\u207b\u00b9; \u222bq\u0303 dE0 = cm\u207b\u00b9. And src per volume per Phi0 = 0.0909 cm\u207b\u00b9. They match! Great: so q\u0303 (the source density per cm\u00b3 per Phi0, integrated) = 0.085-0.091. So my q\u0303 equations are consistent with the MC tallies. (Earlier q\u0303 units confusion resolved: q\u0303 has units cm\u207b\u00b9 and represents electrons per unit volume per unit Phi0\u00b7MeV... but numerically consistent.)\n\nSo the electron source per unit volume per Phi0 at 5 cm: 0.091 electrons/cm\u207b\u00b9\u00b7... equivalent to 0.091 electrons per cm\u00b3 per Phi0-unit... whatever; it matches the analytic q\u0303.\n\nEnergy source per volume per Phi0: (src_vol * emid).sum() should \u2248 0.091\u00d7meanE ~0.036 MeV/cm\u00b3 per Phi0. Compare Kcol/Phi0 = 0.0335 MeV/cm\u00b3 per Phi0 (same units? Kcol/Phi0 in MeV cm\u00b2/g \u2014 since cm\u00b2/g \u00d7 (g/cm\u00b3)... with \u03c1=1, MeV cm\u00b2/g = MeV/cm\u00b3 per (cm\u207b\u00b2)?). The energy source per volume per Phi0 should equal Kcol per unit mass per Phi0 in equilibrium: yes 0.0335 vs 0.036 (source includes all transferred energy = K~0.0337). \u2713 Great.\n\nSo the earlier 1D model formula was right except missing /V_slab and the s-point accumulation bug. The D(z)/Phi0 = \u03a3 sources(per unit volume per Phi0)\u00d7dz0\u00d7S_c(E)/\u03bc. Let me redo the 1D model carefully with /V_slab and verify smoothness and normalization: D(5)/Phi0 should come out \u22480.0335 MeV cm\u00b2/g\u21925.4e-12 Gy cm\u00b2.\n\nRegarding the oscillations: with per-\u03bc-bin and per-energy-bin discrete sources and the 1/\u03bc factor, the profile may be noisy but not oscillatory unless the z-mapping has gaps. The earlier wild values (0.8 at z=1.0) might be due to the missing /V_slab making things huge plus bad indexing; let me rewrite cleanly.\n\nActually wait, I realize the earlier code had `E_along = np.interp(R0-s_path, np.sort(Rcsda), np.sort(Ee))` \u2014 for s_path up to R0, rem=R0\u2212s from R0 down to 0; interp over Rcsda (0.00025..9) returns energies from E0 down to 0.01 \u2713. That's okay.\n\nLet me rewrite the 1D transport cleanly, with:\n- weight = counts/N/PHI0/V_slab \u00d7 dz0 (sources per unit area per Phi0... no: sources per unit volume per Phi0 \u00d7 dz0 = sources per unit area per Phi0? S_vol (cm\u207b\u00b9 per Phi0) \u00d7 dz0 (cm) \u2192 cm\u2070\u00b7... = S per unit area (cm\u207b\u00b2 per Phi0)?? cm\u207b\u00b9\u00d7cm = dimensionless... hmm: S_vol = electrons per cm\u00b3 per Phi0 (per \"unit Phi0 cm\u207b\u00b2\"): S_vol\u00d7dz0 = electrons per cm\u00b2 per unit Phi0. Then dose = S_vol dz0 \u00d7 S_c/\u03bc \u2713 (MeV/g per unit Phi0\u00b7cm\u00b2? \u2192 MeV cm\u00b2/g per...). Good.\n\nLet me test numerically: D(5) should be ~0.0335 MeV cm\u00b2/g.\n\nLet me rewrite and test the profile. I'll also treat the nearly-sideways electrons: for |\u03bc|<0.05, using \u03bc=\u00b10.05 deposits energy over a huge depth range (range/0.05). That's physical for sideways electrons (they deposit their energy over a large depth interval). Fine.\n\nLet me code it cleanly.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 158337,
+  "completion_tokens": 1924,
+  "total_tokens": 160261,
+  "cost": 0.0048457318,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 136169,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0048457318,
+   "upstream_inference_prompt_cost": 0.0044955638,
+   "upstream_inference_completions_cost": 0.000350168
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 976,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}
