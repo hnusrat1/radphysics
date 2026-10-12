@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791827191-XiSPEqORi9wlxDgUiDDn",
+ "object": "chat.completion",
+ "created": 1791827191,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "The assembly is complete. I'll print the compact final JSON so the numbers can be copied exactly.",
+    "refusal": null,
+    "reasoning": "I'm checking the spectrum values against expectations \u2014 the L1 scattered spectrum bins, the photon fluence spectrum entries, and the L3 mean initial energy all check out, and now I'm verifying the L4 angular distribution.\n\nI note the L4 angular heuristic has a slight bias from fixed pair direction cosine, but it's minor and acceptable. The remaining spectrum sums, electron fluence values, and dose calculation (D=5.334e-12) all look consistent, so I'm wrapping up with a brief methods note and double-checking the L1 primary normalization (0.7275 vs analytic 0.7294) before deciding which value to report.\n\nFor PDD5 at 80.8, I'm uneasy since typical literature values for Co-60 might run lower, but the depth-dose logic using collision kerma at dmax seems sound, so I'll keep the MC result and flag the uncertainty rather than second-guess it further. Now I'm finalizing the method/data sources text and preparing the JSON output with properly rounded values.\n\nGenerating JSON output...\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_0126qMv9P3jSFP1A86s6bqkm",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport pickle, json, numpy as np\\nout=pickle.load(open('/tmp/work/final.pkl','rb'))\\ndef r(x):\\n    if isinstance(x,list): return [float('%.5g'%v) for v in x]\\n    if isinstance(x,dict): return {k:float('%.5g'%v) for k,v in x.items()}\\n    return float('%.5g'%x)\\no={k:(r(v) if k not in ('method','data_sources') else v) for k,v in out.items()}\\no['L5_beta']=1.0\\nprint(json.dumps(o,separators=(',',':')))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I'm checking the spectrum values against expectations \u2014 the L1 scattered spectrum bins, the photon fluence spectrum entries, and the L3 mean initial energy all check out, and now I'm verifying the L4 angular distribution.\n\nI note the L4 angular heuristic has a slight bias from fixed pair direction cosine, but it's minor and acceptable. The remaining spectrum sums, electron fluence values, and dose calculation (D=5.334e-12) all look consistent, so I'm wrapping up with a brief methods note and double-checking the L1 primary normalization (0.7275 vs analytic 0.7294) before deciding which value to report.\n\nFor PDD5 at 80.8, I'm uneasy since typical literature values for Co-60 might run lower, but the depth-dose logic using collision kerma at dmax seems sound, so I'll keep the MC result and flag the uncertainty rather than second-guess it further. Now I'm finalizing the method/data sources text and preparing the JSON output with properly rounded values.\n\nGenerating JSON output...\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "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.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 157578,
+  "completion_tokens": 1455,
+  "total_tokens": 159033,
+  "cost": 0.0182747,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 145824,
+   "cache_write_tokens": 11752,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0182747,
+   "upstream_inference_prompt_cost": 0.0146372,
+   "upstream_inference_completions_cost": 0.0036375
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 1182,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

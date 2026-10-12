@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791827193-EuAnrYDVJ9Jn2AVO0dgb",
+ "object": "chat.completion",
+ "created": 1791827193,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "GMICloud",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Now the MC at 1e6 gives:\n- primary flu/Phi0 = 0.7334 (analytic 0.7288, close)\n- scattered flu/Phi0 = 0.4308 (total 1.164), scattered fraction fluence 0.37\n- energy fluence scattered fraction 0.184\n- mean photon energy all 0.965, primary 1.250, scattered 0.479. Hmm scattered mean energy 0.479: the scattered fluence includes many low-energy photons. This seems plausible-ish but let me sanity-check against known Co-60 data.\n\nAt 5 cm depth, 10x10 Co-60: scattered photon fluence fraction ~? I recall in a 60Co beam at 5 cm, ~25-30% of photon fluence is scattered; here 37%. The energy fluence scattered fraction ~18%. Dose from scattered photons ~20-25%? Hmm. We got inter_scat/(inter_all) = 275/542 = 51% of interactions in the cylinder are from scattered photons! That seems very high... but wait, in the scoring volume, scattered photons may dominate interactions because the scattered photon fluence is 0.43 (37% of total fluence) and their energies are lower (higher \u03bc). Interaction rate \u221d fluence\u00d7\u03bc: primary: 0.733\u00d70.063=0.046; scattered: 0.43\u00d7~0.11 (avg \u03bc for 0.48 MeV ~0.105)=0.045. So about equal interactions! Indeed L2_scattered_share_of_interactions \u2248 51%. OK that's consistent with the MC tallies (inter_scat 275 vs inter_prim 267). Interesting.\n\nThis means at 5 cm, scattered photons cause half the interactions/electrons. And dose fraction from scattered (energy fluence \u00d7 \u03bc_en): primary energy fluence 0.733\u00d71.25=0.916; with \u03bc_en/\u03c1 ~0.030 \u2192 kerma \u221d 0.0275. Scattered energy fluence 0.43\u00d70.479=0.206; \u03bc_en/\u03c1 at 0.48 MeV ~0.032 \u2192 0.0066. Ratio scat/(total)=0.0066/(0.0341)=0.19. So dose fraction parent scattered ~19%. That matches energy fluence scattered fraction 18%.\n\nHmm wait, but is it plausible that at 5 cm depth, ~19% of dose comes from scattered photons and ~50% of interactions are from scattered? Probably yes for a 10x10 Co-60 field at shallow depth (scatter increases with depth). Actually, at 5 cm the scatter dose fraction for 10x10 is often quoted ~10-20%. OK.\n\nBut the primary mean electron energy from MC: 0.582 MeV vs analytic: primary Compton T\u0304 weighted: for 1.17: mean T 0.543; 1.33: 0.642 \u2192 mean ~0.592. MC got 0.582 \u2713.\n\nMean initial all: 0.359 (includes scattered-parent electrons with lower energy; and pe electrons high but rare). OK.\n\nNow the scattered spectrum shows non-zero in bin 27 (1.35-1.4)? It shows 0 at the end actually: last value 0. Fine. And scattered spectrum: significant low-energy: bin 0 (0-0.05) 0.0055, bin1 (0.05-0.1) 0.033... There's a weird peak at 0.05-0.15 and 0.4-0.5. Hmm the scattered spectrum is ~flat 0.01-0.03 per bin across 0.1-1.1 with a bump at 0.4-0.6? Fine.\n\nHmm, but I'm a bit suspicious about scattered fluence 0.43: let me estimate first-scatter analytically to cross-check. Let me do the numerical first-scatter integral over the phantom (primary photons only) using the formula:\n\u03a6_scat(P)/Phi0 = \u03a3_i w_i \u222b_V exp(-\u03bc_i z')\u00d7(105/r')\u00b2 \u00d7 N_e (d\u03c3/d\u03a9)_KN(\u03b8_s;E_i) \u00d7 exp(-\u03bc(E'_i) R)/R\u00b2 dV / ... wait per Phi0: the primary fluence at Q per Phi0 = exp(-\u03bc z') (since Phi0 is at 105 cm and primary fluence \u221d 1/r\u00b2; the (105/r')\u00b2 factor: for on-axis rates near the axis ~ (105/(100+z'))\u00b2; for general points, r' = distance source\u2192Q, and Phi0 is at r=105: fluence(Q)/Phi0 = (105/r')\u00b2 exp(-\u03bc z').\n\nLet me compute this integral to validate the MC scattered fluence (which includes multiple scatter, so should be \u2265 first scatter). Let me do numerical integration over the pyramid \u2229 cube.\n\nFor a point Q=(x,y,z) inside phantom (z\u22650), primary direction from source \u2248 +z (small angle). The scattering angle \u03b8_s between photon direction (nearly +z) and direction Q\u2192P: cos\u03b8_s = ( (P\u2212Q)\u00b7\u1e91 )/R = (5\u2212z)/R (since primary direction ~ +z; for Q off-axis the primary direction has small deviation but approximately +z; we can do exact with primary dir but negligible).\n\nE' = E/(1+\u03b1(1\u2212cos\u03b8_s)).\n\u03bc(E') = \u03bc_tot(E') in cm\u207b\u00b9.\nd\u03c3/d\u03a9(\u03b8_s) per electron for energy E: (r_e\u00b2/2)(E'/E)\u00b2(E'/E + E/E' \u2212 sin\u00b2\u03b8_s). r_e\u00b2=7.9408e-26 cm\u00b2.\nN_e = 3.343e23 e/cm\u00b3.\n\nIntegrate over the pyramid volume: z from 0 to 30; x,y from -min(15, 5(100+z)/100) to +... (field expands with depth: half-width = 5(100+z)/100 = 5+0.05z, capped at 15). Sign.\n\nAlso would include Rayleigh; small. Compute \u03a6_scat_first/Pi0 per line, sum with w_i=0.5.\n\nThen compare with MC 0.43 (which includes multiple scatter; first scatter should be maybe 60-70% of total).\n\nLet me code the integral.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_fc08b4c6fcbe4fbb945e1fda",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np, math\\nmc2=0.5109989461\\nd = np.loadtxt('/tmp/data/xcom_water.txt', comments='#')\\nE_x=d[:,0]; mu_co=d[:,1]; mu_in=d[:,2]; mu_pe=d[:,3]; mu_pn=d[:,4]; mu_pef=d[:,5]; mu_tot=d[:,6]\\ndef interp1(x,xx,yy): return np.interp(x,xx,yy)\\ndef mu_tot_cm(E): return interp1(E,E_x,mu_tot)*1.0\\nre2 = 2.8179403262e-13**2  # cm^2\\nNe = 3.343e23   # e/cm^3  (rho=1)\\n# numerical first-scatter integral on a grid\\n# P=(0,0,5). Q=(x,y,z). primary dir ~ zhat.\\nEs = [1.1732,1.3325]\\nws = [0.5,0.5]\\ndef integrand(E,z,x,y):\\n    # primary fluence per Phi0 at Q\\n    rp = math.sqrt(x*x+y*y+(100+z)**2)\\n    f_prim = (105.0/rp)**2 * math.exp(-mu_tot_cm(E)*z)\\n    R = math.sqrt(x*x+y*y+(5-z)**2)\\n    cos_s = (5-z)/R\\n    cs2 = cos_s*cos_s\\n    alpha=E/mc2\\n    xk = 1+alpha*(1-cos_s)\\n    Ep = E/xk\\n    dsdO = (re2/2.0)*(Ep/E)**2*((Ep/E)+(E/Ep)-(1-cs2))\\n    mu_sc = mu_tot_cm(Ep)\\n    return f_prim*Ne*dsdO*math.exp(-mu_sc*R)/R**2\\n\\ntot=0.0\\n# integrate over pyramid: z 0..30, half width hw=min(15,5+0.05*z)\\nfor E,w in zip(Es,ws):\\n    s=0.0\\n    nz=120; \\n    for iz in range(nz):\\n        z=(iz+0.5)*30.0/nz\\n        hw=min(15.0,5+0.05*z)\\n        nx=40; ny=40\\n        for ix in range(nx):\\n            x=(-hw+ (ix+0.5)*2*hw/nx)\\n            for iy in range(ny):\\n                y=(-hw+(iy+0.5)*2*hw/ny)\\n                s+= integrand(E,z,x,y)*(2*hw/nx)*(2*hw/ny)*(30.0/nz)\\n    tot+=w*s\\n    print('line',E,'single scatter flu/Phi0 =',s)\\nprint('total first-scatter flu/Phi0 =',tot)\\nprint('MC scattered total was ~0.43 (includes multiple scatter)')\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Now the MC at 1e6 gives:\n- primary flu/Phi0 = 0.7334 (analytic 0.7288, close)\n- scattered flu/Phi0 = 0.4308 (total 1.164), scattered fraction fluence 0.37\n- energy fluence scattered fraction 0.184\n- mean photon energy all 0.965, primary 1.250, scattered 0.479. Hmm scattered mean energy 0.479: the scattered fluence includes many low-energy photons. This seems plausible-ish but let me sanity-check against known Co-60 data.\n\nAt 5 cm depth, 10x10 Co-60: scattered photon fluence fraction ~? I recall in a 60Co beam at 5 cm, ~25-30% of photon fluence is scattered; here 37%. The energy fluence scattered fraction ~18%. Dose from scattered photons ~20-25%? Hmm. We got inter_scat/(inter_all) = 275/542 = 51% of interactions in the cylinder are from scattered photons! That seems very high... but wait, in the scoring volume, scattered photons may dominate interactions because the scattered photon fluence is 0.43 (37% of total fluence) and their energies are lower (higher \u03bc). Interaction rate \u221d fluence\u00d7\u03bc: primary: 0.733\u00d70.063=0.046; scattered: 0.43\u00d7~0.11 (avg \u03bc for 0.48 MeV ~0.105)=0.045. So about equal interactions! Indeed L2_scattered_share_of_interactions \u2248 51%. OK that's consistent with the MC tallies (inter_scat 275 vs inter_prim 267). Interesting.\n\nThis means at 5 cm, scattered photons cause half the interactions/electrons. And dose fraction from scattered (energy fluence \u00d7 \u03bc_en): primary energy fluence 0.733\u00d71.25=0.916; with \u03bc_en/\u03c1 ~0.030 \u2192 kerma \u221d 0.0275. Scattered energy fluence 0.43\u00d70.479=0.206; \u03bc_en/\u03c1 at 0.48 MeV ~0.032 \u2192 0.0066. Ratio scat/(total)=0.0066/(0.0341)=0.19. So dose fraction parent scattered ~19%. That matches energy fluence scattered fraction 18%.\n\nHmm wait, but is it plausible that at 5 cm depth, ~19% of dose comes from scattered photons and ~50% of interactions are from scattered? Probably yes for a 10x10 Co-60 field at shallow depth (scatter increases with depth). Actually, at 5 cm the scatter dose fraction for 10x10 is often quoted ~10-20%. OK.\n\nBut the primary mean electron energy from MC: 0.582 MeV vs analytic: primary Compton T\u0304 weighted: for 1.17: mean T 0.543; 1.33: 0.642 \u2192 mean ~0.592. MC got 0.582 \u2713.\n\nMean initial all: 0.359 (includes scattered-parent electrons with lower energy; and pe electrons high but rare). OK.\n\nNow the scattered spectrum shows non-zero in bin 27 (1.35-1.4)? It shows 0 at the end actually: last value 0. Fine. And scattered spectrum: significant low-energy: bin 0 (0-0.05) 0.0055, bin1 (0.05-0.1) 0.033... There's a weird peak at 0.05-0.15 and 0.4-0.5. Hmm the scattered spectrum is ~flat 0.01-0.03 per bin across 0.1-1.1 with a bump at 0.4-0.6? Fine.\n\nHmm, but I'm a bit suspicious about scattered fluence 0.43: let me estimate first-scatter analytically to cross-check. Let me do the numerical first-scatter integral over the phantom (primary photons only) using the formula:\n\u03a6_scat(P)/Phi0 = \u03a3_i w_i \u222b_V exp(-\u03bc_i z')\u00d7(105/r')\u00b2 \u00d7 N_e (d\u03c3/d\u03a9)_KN(\u03b8_s;E_i) \u00d7 exp(-\u03bc(E'_i) R)/R\u00b2 dV / ... wait per Phi0: the primary fluence at Q per Phi0 = exp(-\u03bc z') (since Phi0 is at 105 cm and primary fluence \u221d 1/r\u00b2; the (105/r')\u00b2 factor: for on-axis rates near the axis ~ (105/(100+z'))\u00b2; for general points, r' = distance source\u2192Q, and Phi0 is at r=105: fluence(Q)/Phi0 = (105/r')\u00b2 exp(-\u03bc z').\n\nLet me compute this integral to validate the MC scattered fluence (which includes multiple scatter, so should be \u2265 first scatter). Let me do numerical integration over the pyramid \u2229 cube.\n\nFor a point Q=(x,y,z) inside phantom (z\u22650), primary direction from source \u2248 +z (small angle). The scattering angle \u03b8_s between photon direction (nearly +z) and direction Q\u2192P: cos\u03b8_s = ( (P\u2212Q)\u00b7\u1e91 )/R = (5\u2212z)/R (since primary direction ~ +z; for Q off-axis the primary direction has small deviation but approximately +z; we can do exact with primary dir but negligible).\n\nE' = E/(1+\u03b1(1\u2212cos\u03b8_s)).\n\u03bc(E') = \u03bc_tot(E') in cm\u207b\u00b9.\nd\u03c3/d\u03a9(\u03b8_s) per electron for energy E: (r_e\u00b2/2)(E'/E)\u00b2(E'/E + E/E' \u2212 sin\u00b2\u03b8_s). r_e\u00b2=7.9408e-26 cm\u00b2.\nN_e = 3.343e23 e/cm\u00b3.\n\nIntegrate over the pyramid volume: z from 0 to 30; x,y from -min(15, 5(100+z)/100) to +... (field expands with depth: half-width = 5(100+z)/100 = 5+0.05z, capped at 15). Sign.\n\nAlso would include Rayleigh; small. Compute \u03a6_scat_first/Pi0 per line, sum with w_i=0.5.\n\nThen compare with MC 0.43 (which includes multiple scatter; first scatter should be maybe 60-70% of total).\n\nLet me code the integral.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 105159,
+  "completion_tokens": 2092,
+  "total_tokens": 107251,
+  "cost": 0.0033664722,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 90436,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0033664722,
+   "upstream_inference_prompt_cost": 0.0029857282,
+   "upstream_inference_completions_cost": 0.000380744
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 1394,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791826994-TOi5XMHsJRPGEFMaxZMq",
+ "object": "chat.completion",
+ "created": 1791826994,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "The stopping powers agree with ESTAR (water 4.115 at 0.1 MeV, 2.034 at 0.5 MeV) to within 0.5%. Now the slowing-down recursion for Layer 4, including delta rays from the M\u00f8ller cross section.",
+    "refusal": null,
+    "reasoning": "Checking my stopping power values against ESTAR tables for water and air \u2014 the numbers line up well, with water/air ratio at 0.5 MeV coming out to about 1.129, consistent with expected mass collision stopping power ratios.\n\nNow moving to the recursion involving M\u00f8ller scattering.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01DQGWjbf1mfbRktZNK3neMY",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\ndef moller_dsig(T, eps):\\n    # dsigma/deps per electron (cm2/MeV), T kinetic of primary, eps delta energy (<= T/2)\\n    b2=beta2(T); tau=T/me\\n    x=eps/T\\n    f=1/x**2+1/(1-x)**2+(tau/(tau+1))**2-(2*tau+1)/((tau+1)**2*x*(1-x))\\n    return 2*np.pi*re**2*me/b2/T**2*f\\ndef Ldelta(T, Dcut=0.01):\\n    # int_{Dcut}^{T/2} eps dsig/deps d eps  (cm2 MeV/electron)\\n    out=np.zeros_like(T)\\n    for i,t in enumerate(np.atleast_1d(T)):\\n        if t/2<=Dcut: continue\\n        e=np.exp(np.linspace(np.log(Dcut),np.log(t/2),400))\\n        out[i]=np.trapezoid(e*moller_dsig(t,e),e)\\n    return out\\ndef Sres_mass(T,mat,Dcut=0.01):\\n    # restricted (delta < Dcut) collision stopping power per gram\\n    Sc=Scol_per_mass(T,mat)\\n    Ld=Ldelta(T,Dcut)*(mat['ne'])  # MeV/cm per electron-density\\n    return Sc*1.0 - Ld\\nprint('check Sres water 0.1', Sres_mass(np.array([0.1]),WATER), 'Ldelta(0.1)*ne', Ldelta(np.array([0.1]))*WATER['ne'])\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Checking my stopping power values against ESTAR tables for water and air \u2014 the numbers line up well, with water/air ratio at 0.5 MeV coming out to about 1.129, consistent with expected mass collision stopping power ratios.\n\nNow moving to the recursion involving M\u00f8ller scattering.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSzAgKEAgSGAI4AUIIdGhpbmtpbmcSDIg07wEc/cBI9QnQ2hoMJzYYYndBhxnGhpGbIjBnk5is553YHBvS5WwLnMoHFDWFmYG/wUK3157YMWqAV7UiafOXE/tFT4LQR6Mb7ekq6QcwvDk5/QST/eQBWwtKkVMhtwmN5jvaqjBIcTvzWajGipBpflj3G+KFmnBu/mK3no/jHFqaupkqW4T5FGNtr+h65OIZW0PHMn1HFLVv0PTk29rVz4fK3GQ+IfC3ykNkANY1Onv28EzurnPD8EvLDFrc5Ey4eUXjEFBA/Pk4NySQFzzJKr+kheJFXd8IlqGAQ/cy6M08PGuFJfzNvAthPsbgCpfSdHFYAjxqa2+MQ2oSm/giGBBPFlLU1057aKXkd/RC7Iiz5dsA0SXHrkPsKoraIa62jQ8frbR4Kw8PZePRk5Ha54nHKFRj6tlw6fQZJ9X7UCqmCV1moUVkx3BHNBmAI1utHCXWcQE9bpnoV0e5YcFzztHRNF+N8QO8hFaBfxEZXZvf4Ra1o74s7sIUjNvpe8gRp7+X7LyzbSKgx+wW1OK0XvbG6xETFwyTVcgxwhnmybwgcMfGsL2XJTRg7sjXfl3Jw40MwVC7t8IEGWHRPQjw9fXhhlceMGK5vrU2g75G6bUKVHSC7fPqW6QdO5vWzRFsuCiOBkt+OhwNFuDtFsT3Nbe8QmRzQnG3dQDp3ubVBHYPt9nyX+HnCXQ4uuAxML+nOoRVWMt/aVPkZmi+Xw1vWZTZ2gwD0l9zijA+YU0K6jqj2UCdqe7S5nD03eZgw36fsorVLl+Uv1sJBh1SLg0lOdO5e6VpFzkOXB8fKPk0KTEAbvpDV98XXxR7Vjb882jnWQT2yegOs2B6biw1+epjViaX5bj+PYdt256ElF0C9JZz3z2ruQfCmPBP1gY6kZ0M8dg3whbb9aoTxIDO8L80U7tF/e5t0zivnaFdwfLVDQyYx33AAalPwJ2swZAegPZLsYr3/RhUjyYn6fqAUAjmv71k3OccHWMH982QjX4nKhUDmrSMYzJAcPt5zRbPurwS1+U1rNSJod8x01jRlHDW8b4r3AR2cFb5ZptcjWVp5bfz12oWu3XsGLsCW3Kf5hyJTm/IPmoprCN7wKuyGqSPXs/GNnsfLWttPF2TLPCIqyi6ENEMg21JoqMXj1pgXL+J/jWmc9zE4YbtRBcQKkQ8JfbczrwXXfN8iRmwUhyg6Q4yK4i4TxR5EfjoDXKh5cTkAxgvs108ocVeJ9rWfygjevRp+8d+Qg2IVgNsV2U36ahaqMpC0THLarGjBueziPRxmgkj0eOz/GpAXn/q5VJSeEBFXroBhRoSbdC3uUehIar0kNm120+iVawDMhdLLgGtdT0LMtRODOCGIfFbVoQeSE96R8brR7LMIrgPtvAI8K3GY6bz0/JTHQevSPKqQ90vxRSNB2r5ZndsAKCqYwJlUtj39j4b9RgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 109286,
+  "completion_tokens": 847,
+  "total_tokens": 110133,
+  "cost": 0.0101449,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 104828,
+   "cache_write_tokens": 4456,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0101449,
+   "upstream_inference_prompt_cost": 0.0080274,
+   "upstream_inference_completions_cost": 0.0021175
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 172,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

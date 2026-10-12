@@ -1,0 +1,9 @@
+{
+ "stdout": "XCOM first column (energy in MeV):\n[1.000e-03 1.500e-03 2.000e-03 3.000e-03 4.000e-03 5.000e-03 6.000e-03\n 8.000e-03 1.000e-02 1.500e-02 2.000e-02 3.000e-02 4.000e-02 5.000e-02\n 6.000e-02 8.000e-02 1.000e-01 1.500e-01 2.000e-01 3.000e-01 4.000e-01\n 5.000e-01 6.000e-01 8.000e-01 1.000e+00 1.022e+00 1.250e+00 1.500e+00\n 2.000e+00 2.044e+00 3.000e+00 4.000e+00 5.000e+00 6.000e+00 7.000e+00\n 8.000e+00 9.000e+00 1.000e+01 1.100e+01 1.200e+01 1.300e+01 1.400e+01\n 1.500e+01 1.600e+01 1.800e+01 2.000e+01]\n\nXCOM columns:\nCol 0: Energy (MeV)\nCol 1: Total\nCol 2: Coherent (Rayleigh)\nCol 3: Incoherent (Compton)\nCol 4: Photoelectric\nCol 5: Pair production (nuclear)\nCol 6: Pair production (electron)\nCol 7: Total (uncorrected?)\n\n---\n\nESTAR columns:\n",
+ "stderr": "Traceback (most recent call last):\n  File \"/tmp/work/_call_002.py\", line 23, in <module>\n    print(f\"Col {i} min/max:\", ester[:, i].min(), ester[:, i].max())\n                               ^^^^^\nNameError: name 'ester' is not defined. Did you mean: 'estar'?\n",
+ "exit_code": 1,
+ "timed_out": false,
+ "wall_s": 0.21,
+ "stdout_truncated": false,
+ "stderr_truncated": false
+}

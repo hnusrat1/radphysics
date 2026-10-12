@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791826609-5rys17Uwxf8mNqp6SFmd",
+ "object": "chat.completion",
+ "created": 1791826609,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I need to fix the mu_parts arrays by converting them properly\u2014photoelectric, pair production, and coherent scattering are already in cm\u00b2/g, but the incoherent term needs multiplying by density since it's per-electron times electron density.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_011A4pzxekpdyGm58rBnqi7D",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nfor E in [0.1,0.2,0.5,1.0,1.1732,1.25,1.3325]:\\n    print(E,[float(np.round(x,6)) for x in mu_parts(np.array(E))])\\nfor E in Es:\\n    a=E/me; c=np.cos(ths); Ep=E/(1+a*(1-c)); eps=Ep/E\\n    f=eps**2*(eps+1/eps-np.sin(ths)**2)\\n    print(E,f.max())\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I need to fix the mu_parts arrays by converting them properly\u2014photoelectric, pair production, and coherent scattering are already in cm\u00b2/g, but the incoherent term needs multiplying by density since it's per-electron times electron density.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSjwcKEAgSGAI4AUIIdGhpbmtpbmcSDH9DY2G2CfJya1syWhoM1FFltW/M27EhEPKJIjDJRAIpJByvZCmD9WtO1/G/GqQpbEn0LHvDampwVLYd9xZE/S12UczY4MOyeXDlyjoqrAY3+DvaPeX7PBUkpaOoUkz3Ryd4vOMlhhRAXXsxtLFYPb3Njwr5otJs5B8xcL2AdIUpFuTZNnCIuP4oDCYwBQjiWlRGxv74bXhl/s5OKShonISUACSzBJYwX7d5SS6mz1tlG2gbq4MredGrgACH+vsPv9H/gDboFg3VGfrC4NvC628MDb8JNH6Fi7hoYVwIE0V71h5ViVTGFB4E5WxAjHCCdNoad9LeOvO5tw4x5z3vipcpgDkU8gKNqqE4PjWAWsdcY8zqDWwr6Z+Yxfm5k3eccBLU6E71tXOPT8T10nRAhsqXDH3UTwN3oZ8J+4ZdTSlAOzIOdsFeVzuWcShLGBcfW+cJ2MjEc6I6mRgX5FwEGccx8EkxBiROdhzfzGCjtEgDs004pSBzYmH+QB1G8se59nATkvO/Ky+y5mn7LgQDrgOL1JUBVtQ8viyu/47O5O7Tik0ku0aVvd7rEgTs3QYaUf4Qf05iWx8/W5uiujGh9kBuCCOuWSQib74UkDxyvgWTzWAP5fjG2QrWP73EpCp3wj6fIaabP4JNbWaRBFFK5fDlTuAy8LqeAq5w5JCqv04II5MjUSOuMUKUar+U8gGJ7+9+wA6doBHww+Sfk2FHS2c2GB1dgQYCU+gDp8GY9apYQa26ciy4HySUgCfNz76HO9uDb0aavkZC+JjcAo/rGPr6KS3mz1kJ8emcRba3yVhBCLRPUfHs4juuoORYbdQepjtCp95j5Zsze1PIzWia/oCWbdjjYVlNo1H+F/w2EOq2choe6N52KnZNj3DfGPhJ6J4j22IsJdBaimXC66GKpVCPf1HGmKosSZIQEP1hnihv6BRqONebAAVo3O56oGRMnYKJhSToFImmBLi1HHICVGfMzrl5z7Zx8vA3trYTV1zfvOQPQHtecPieWTuJlipG+RQpUJF8meSnvSSxjNTlgOMZDHlYsMZNXEbdwhxBcR7/+UG390fSHY4DwtOm97kaEolJJj3wfwVSAAEo5yJrc5F7plhCfStTPAJZOc2gd9oasHy/EKYn5FKaHQKAMZuSYKRDLtycougFOevymhcxMwua6lIRsv92o03RgxgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 16392,
+  "completion_tokens": 293,
+  "total_tokens": 16685,
+  "cost": 0.00195487,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 2092,
+   "cache_write_tokens": 14298,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00195487,
+   "upstream_inference_prompt_cost": 0.00180837,
+   "upstream_inference_completions_cost": 0.0001465
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 88,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

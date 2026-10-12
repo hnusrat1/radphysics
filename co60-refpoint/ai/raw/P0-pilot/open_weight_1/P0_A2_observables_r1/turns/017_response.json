@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791826708-HPwC5DLu5FAZ3W6BONMM",
+ "object": "chat.completion",
+ "created": 1791826708,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I keep having trouble with the tool invocations. There seems to be some kind of encoding issue with long code blocks. Let me try a much simpler approach, writing the code to a file first, or using very short code blocks.\n\nActually, let me try to write the full calculation in a single clean Python file.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_ab4b37c2359f4dffb4dbc14b",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nprint(\\\"test\\\")\\nxcom = np.loadtxt('/tmp/data/xcom_water.txt')\\nprint(xcom.shape)\\nestar = np.loadtxt('/tmp/data/estar_water.txt')\\nprint(estar.shape)\\nprint(\\\"OK\\\")\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I keep having trouble with the tool invocations. There seems to be some kind of encoding issue with long code blocks. Let me try a much simpler approach, writing the code to a file first, or using very short code blocks.\n\nActually, let me try to write the full calculation in a single clean Python file.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 34665,
+  "completion_tokens": 159,
+  "total_tokens": 34824,
+  "cost": 0.001392175092,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 24576,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001392175092,
+   "upstream_inference_prompt_cost": 0.001363281612,
+   "upstream_inference_completions_cost": 2.889348e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 64,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

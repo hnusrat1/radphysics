@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791826791-ibSProTRnSmMsibUDqiS",
+ "object": "chat.completion",
+ "created": 1791826791,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Good. Now let me compute the scattered component using a first-scatter integration. Let me write this in a clean, short way.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_c3f1eafa04e44d348dd5d28d",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nfrom scipy.interpolate import interp1d\\n\\nxcom = np.loadtxt('/tmp/data/xcom_water.txt')\\nx_e = xcom[:,0]; x_inc = xcom[:,2]; x_tot = xcom[:,6]\\nestar = np.loadtxt('/tmp/data/estar_water.txt')\\nes_e = estar[:,0]; es_coll = estar[:,1]; es_rad = estar[:,2]; es_csda = estar[:,3]; es_ry = estar[:,4]\\n\\nf_inc = interp1d(x_e, x_inc, kind='linear', bounds_error=False, fill_value=0.0)\\nf_tot = interp1d(x_e, x_tot, kind='linear', bounds_error=False, fill_value=0.0)\\nf_coll = interp1d(es_e, es_coll, kind='linear', bounds_error=False, fill_value=0.0)\\nf_rad = interp1d(es_e, es_rad, kind='linear', bounds_error=False, fill_value=0.0)\\nf_csda = interp1d(es_e, es_csda, kind='linear', bounds_error=False, fill_value=0.0)\\n\\nmec2=0.511; rho=1.0; E0=2.0; SSD=100.0\\nmu_tot_0 = float(f_tot(E0)); mu_inc_0 = float(f_inc(E0))\\nL1_pri = np.exp(-mu_tot_0*10.0)\\nprint(f\\\"L1_pri = {L1_pri:.6f}\\\")\\n\\n# First scatter integration\\nnz=60; nr=30\\nz_a = np.linspace(0.25, 29.75, nz)\\nr_a = np.linspace(0.15, 14.85, nr)\\ndz=30.0/nz; dr=15.0/nr\\n\\nph_bins = np.array([0,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1,1.05,1.1,1.15,1.2,1.25,1.3,1.35,1.4])\\ncos_bins = np.array([-1,-0.8,-0.6,-0.4,-0.2,0,0.2,0.4,0.6,0.8,1])\\nNA=6.022e23; Ne_g=NA*10/18.015; re=2.818e-13\\n\\nL1_scat=0.0; sc_spec=np.zeros(28); sc_ang=np.zeros(10)\\n\\nfor iz in range(nz):\\n    z = z_a[iz]\\n    hw = 5.0*(z+SSD)/SSD\\n    for ir in range(nr):\\n        r = r_a[ir]\\n        if r > hw: continue\\n        dV = 2*np.pi*r*dr*dz\\n        d_sv = np.sqrt(r**2 + (z+SSD)**2)\\n        ca = (z+SSD)/d_sv\\n        pw = z/ca\\n        pf = (110.0/(z+SSD))**2 * np.exp(-mu_tot_0*pw)\\n        dNs = pf * mu_inc_0 * dV\\n        \\n        dzs = 10.0 - z\\n        ds = np.sqrt(r**2 + dzs**2)\\n        if ds < 0.01: continue\\n        \\n        cts = (r*(-1) + 0 + (z+SSD)*dzs) / (d_sv*ds)\\n        cts = np.clip(cts, -1, 1)\\n        ts = np.arccos(cts)\\n        Ep = E0/(1+(E0/mec2)*(1-cts))\\n        \\n        r_kn = Ep/E0\\n        s2 = np.sin(ts)**2\\n        dsdO = (re**2/2)*r_kn**2*(1/r_kn+r_kn-s2)\\n        \\n        cb = dzs/ds\\n        Om = np.pi*1.0**2*abs(cb)/ds**2\\n        sig_inc = mu_inc_0/Ne_g\\n        p_sc = (dsdO/sig_inc)*Om/(4*np.pi)\\n        \\n        mut_sc = float(f_tot(Ep))\\n        att_sc = np.exp(-mut_sc*ds)\\n        \\n        proj = np.pi*1.0**2*abs(cb)\\n        if proj > 1e-10:\\n            dPh = dNs * p_sc * att_sc / proj\\n            L1_scat += dPh\\n            if 0 < Ep <= 1.4:\\n                bi = np.searchsorted(ph_bins, Ep) - 1\\n                if 0 <= bi < 28: sc_spec[bi] += dPh\\n            cth = dzs/ds\\n            bi = np.searchsorted(cos_bins[1:], cth, side='right')\\n            bi = min(bi, 9)\\n            sc_ang[bi] += dPh\\n\\nprint(f\\\"\\\\nL1_scattered_fluence = {L1_scat:.6f}\\\")\\nprint(f\\\"L1_total_fluence = {L1_pri+L1_scat:.6f}\\\")\\nsf = L1_scat/(L1_pri+L1_scat)\\nprint(f\\\"Scattered fraction fluence = {sf:.6f}\\\")\\nprint(f\\\"\\\\nScattered spectrum sum = {np.sum(sc_spec):.6f}\\\")\\nprint(f\\\"Scattered angular sum = {np.sum(sc_ang):.6f}\\\")\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Good. Now let me compute the scattered component using a first-scatter integration. Let me write this in a clean, short way.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 42093,
+  "completion_tokens": 1379,
+  "total_tokens": 43472,
+  "cost": 0.00109786138,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 40960,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00109786138,
+   "upstream_inference_prompt_cost": 0.0008472695,
+   "upstream_inference_completions_cost": 0.00025059188
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 27,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

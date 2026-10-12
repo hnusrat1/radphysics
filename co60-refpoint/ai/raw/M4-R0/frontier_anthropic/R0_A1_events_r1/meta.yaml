@@ -1,0 +1,173 @@
+slot: frontier_anthropic
+provider: Anthropic via OpenRouter
+api: openai_compatible
+model_requested: anthropic/claude-haiku-5.5
+settings:
+  reasoning:
+    effort: high
+  usage:
+    include: true
+  max_tokens: 128000
+  prompt_cache: true
+  provider:
+    order:
+    - anthropic
+    allow_fallbacks: true
+condition: A1
+task: events
+config: R0
+prompt_version: v1
+prompt_sha256:
+  system_A1.txt: e06e9a5ea06c2f5ca29739818f324713f2dbbf775f019c11018d1aa7ef5416b8
+  task_events_R0.txt: 871cffaf3fb764b91cfda15169f125951e9eb985bfe79f27e1ac8bc6b710cf73
+started_utc: '2026-10-12T17:35:40Z'
+turns:
+- n: 1
+  usage:
+    input_tokens: 2096
+    output_tokens: 14119
+    reasoning_tokens: 13512
+  stop: tool_calls
+  wall_s: 68.05
+  http_attempts: 1
+  model_reported: anthropic/claude-haiku-5.5
+  tool_calls: 1
+- n: 2
+  usage:
+    input_tokens: 16392
+    output_tokens: 293
+    reasoning_tokens: 88
+  stop: tool_calls
+  wall_s: 3.32
+  http_attempts: 1
+  model_reported: anthropic/claude-haiku-5.5
+  tool_calls: 1
+- n: 3
+  usage:
+    input_tokens: 16865
+    output_tokens: 640
+    reasoning_tokens: 30
+  stop: tool_calls
+  wall_s: 3.16
+  http_attempts: 1
+  model_reported: anthropic/claude-haiku-5.5
+  tool_calls: 1
+- n: 4
+  usage:
+    input_tokens: 17830
+    output_tokens: 5443
+    reasoning_tokens: 1533
+  stop: tool_calls
+  wall_s: 22.82
+  http_attempts: 1
+  model_reported: anthropic/claude-haiku-5.5
+  tool_calls: 1
+- n: 5
+  usage:
+    input_tokens: 23550
+    output_tokens: 4169
+    reasoning_tokens: 1069
+  stop: tool_calls
+  wall_s: 14.22
+  http_attempts: 1
+  model_reported: anthropic/claude-haiku-5.5
+  tool_calls: 1
+- n: 6
+  usage:
+    input_tokens: 27812
+    output_tokens: 657
+    reasoning_tokens: 483
+  stop: tool_calls
+  wall_s: 5.09
+  http_attempts: 1
+  model_reported: anthropic/claude-haiku-5.5
+  tool_calls: 1
+- n: 7
+  usage:
+    input_tokens: 28587
+    output_tokens: 905
+    reasoning_tokens: 276
+  stop: tool_calls
+  wall_s: 5.49
+  http_attempts: 1
+  model_reported: anthropic/claude-haiku-5.5
+  tool_calls: 1
+- n: 8
+  usage:
+    input_tokens: 29645
+    output_tokens: 738
+    reasoning_tokens: 49
+  stop: tool_calls
+  wall_s: 3.3
+  http_attempts: 1
+  model_reported: anthropic/claude-haiku-5.5
+  tool_calls: 1
+- n: 9
+  usage:
+    input_tokens: 31724
+    output_tokens: 225
+    reasoning_tokens: 169
+  stop: tool_calls
+  wall_s: 3.63
+  http_attempts: 1
+  model_reported: anthropic/claude-haiku-5.5
+  tool_calls: 1
+- n: 10
+  usage:
+    input_tokens: 45698
+    output_tokens: 456
+    reasoning_tokens: 203
+  stop: tool_calls
+  wall_s: 3.59
+  http_attempts: 1
+  model_reported: anthropic/claude-haiku-5.5
+  tool_calls: 1
+- n: 11
+  usage:
+    input_tokens: 46299
+    output_tokens: 270
+    reasoning_tokens: 0
+  stop: tool_calls
+  wall_s: 2.1
+  http_attempts: 1
+  model_reported: anthropic/claude-haiku-5.5
+  tool_calls: 1
+- n: 12
+  usage:
+    input_tokens: 50140
+    output_tokens: 59
+    reasoning_tokens: 0
+  stop: tool_calls
+  wall_s: 1.38
+  http_attempts: 1
+  model_reported: anthropic/claude-haiku-5.5
+  tool_calls: 1
+- n: 13
+  usage:
+    input_tokens: 50356
+    output_tokens: 78
+    reasoning_tokens: 0
+  stop: tool_calls
+  wall_s: 1.38
+  http_attempts: 1
+  model_reported: anthropic/claude-haiku-5.5
+  tool_calls: 1
+- n: 14
+  usage:
+    input_tokens: 54032
+    output_tokens: 18548
+    reasoning_tokens: 514
+  stop: stop
+  wall_s: 50.57
+  http_attempts: 1
+  model_reported: anthropic/claude-haiku-5.5
+  tool_calls: 0
+tool_calls: 13
+retries: 0
+outcome: ok
+model_reported: anthropic/claude-haiku-5.5
+finished_utc: '2026-10-12T17:41:29Z'
+usage_total:
+  input_tokens: 441026
+  output_tokens: 46600
+  reasoning_tokens: 17926

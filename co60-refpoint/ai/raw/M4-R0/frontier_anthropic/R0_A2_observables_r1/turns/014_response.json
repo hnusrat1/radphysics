@@ -1,0 +1,57 @@
+{
+ "id": "gen-1791827153-F316hUeKtWxpAuJHiGAo",
+ "object": "chat.completion",
+ "created": 1791827153,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01Er6VgNt5mnE7KUDCjavVb2",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport numpy as np, sys\\nsys.path.insert(0,'/tmp/work'); import lib\\nd=np.load('/tmp/work/H_test.npz')\\nH=d['H']; N=float(d['N']); dep=d['depths']\\nOm=lib.Om_p; fac=Om*105**2\\nfor j,z in enumerate(dep):\\n    prim=0.5*(np.exp(-lib.mutot(np.array([1.1732]))[0]*z)+np.exp(-lib.mutot(np.array([1.3325]))[0]*z))*(105/(100+z))**2\\n    s=H[j].sum()/N*fac\\n    print(f\\\"z={z}: scattered/Phi0={s:.4f}, primary/Phi0={prim:.4f}, S/P={s/prim:.3f}\\\")\\n\"}"
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 116251,
+  "completion_tokens": 312,
+  "total_tokens": 116563,
+  "cost": 0.009749625,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 110760,
+   "cache_write_tokens": 5489,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.009749625,
+   "upstream_inference_prompt_cost": 0.008969625,
+   "upstream_inference_completions_cost": 0.00078
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 0,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

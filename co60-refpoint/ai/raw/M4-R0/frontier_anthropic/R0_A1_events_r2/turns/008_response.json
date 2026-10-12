@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791827211-5qta3faH9y9nk97FGIk5",
+ "object": "chat.completion",
+ "created": 1791827211,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "It seems each call runs in a fresh process, so the subprocess import doesn't persist \u2014 I'll need to import it again each time.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01UBwWbsGkwDa1vUdwc9CaC7",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport subprocess\\nr=subprocess.run(['python','t2.py'],capture_output=True,text=True,cwd='.'); print(r.stdout,r.stderr[-2000:])\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "It seems each call runs in a fresh process, so the subprocess import doesn't persist \u2014 I'll need to import it again each time.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS+QYKEAgSGAI4AUIIdGhpbmtpbmcSDCfSr7mKaVSBxL9XOxoMx2aT4XEV53to9J1MIjCOSW+UfqPNb5W446i+eaDudBFp/9eAvQ9P1OWIaTbhXqxOqL7Qi8grDSOlaM0EKpEqlgZ6Ggq/1YpGk/KsrrhtqibSGRbjVGWZ6d+qRDWDQF1vpvsereJ79aITPpIN3vU63Gl/oegamdZk5zrUkk4qvRgpgB06AhQc4wwu+GkcozST52KeLYCe6xDnevTmZ03wyZb0tTrB6ZtM99u7Dx4CrVZx7x5Bj6xVQz/9H6HwxwA46q99DYv+dwf0W8e5uKfJCQK2NFmN5zwVgngheNrQ4vc5EJRAjto9fAjOJT1NsrKWVIWVMjK5qg3g+sU80ZwmLbTbdi+3mVYC3GGl8Qrml+plBqDT32NiHhU6/2bsmIoX4I92rN2kced31qkpo+HviiN74rlv835AUDANGkI9awIXPwx18mbpCVLmDRMFu/HTFfTXP/qzy0NR82UqC7orwZwbuvlVCSiVyAh5/MjWLmq+fXJ7oDIaTus5+T4+OUxwUaU+v6f979mD6iLZCvXOx4h131027jFxWgmP4xHKMZQR0scEh966MxsNtpiRk7EMzpO9VAt9CuDdTWbdW5bEBS6MIRnq1Wdc3Uvl7x3tITfNPdZI+9PIfQZlfFT9L1LbOnu3aE/UrnuGoMdRSEoT2Nmsp+LLIpwfA4ZFvVdcq6flamZPoiMXp4MQzdlJX4bEn5xXttVBZNFDq9w9X/sweMVO21/1LQnunN50LsZfQS88YuI0Fn3/ooHbVcHXuh367uTN/jFQx4/HU+V/pqY3wt8XYqWBrvOjldJqKodKQO4xQaDc7BdhNragi03gblZZvAmuBbw11vtmeaO8UBHxt3wQfbzVw4FCAkg/kSeeAXsn53BqaMlbtrVntIepZrLeAj3PaQ4cgJCHqesDrdH1rh/7f4g/8+UHN5dBEju1pSXFX15hrqrcSLuSMQMz4Oomcg7hUZoBxZUjXzU8XIC9kjDGEPEACthDJDmmQhQGyzM52UM3p4Hsifd67GtH5yi5yy3BI0Fef1moNOiJgk/o2TjbPDSyyEd8MBQAX4x4rjYeZMNTMBkZqsLOFz2T/4Y6lOuLIKY+TDjmwcVpLT7v+Td/Ov3hLfHsFnO1RigVQ/U0NfbM77nvGAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 72655,
+  "completion_tokens": 139,
+  "total_tokens": 72794,
+  "cost": 0.00106602,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 70307,
+   "cache_write_tokens": 2346,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00106602,
+   "upstream_inference_prompt_cost": 0.00099652,
+   "upstream_inference_completions_cost": 6.95e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 31,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

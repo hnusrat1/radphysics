@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791826797-igUlUtrhS73bHeEwOEHJ",
+ "object": "chat.completion",
+ "created": 1791826797,
+ "model": "qwen/qwen3.7-flash",
+ "provider": "Alibaba",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Good. Now I need to consider the energy transfer fractions. For Compton scattering, not all photon energy is transferred to electrons - some goes to scattered photons. For photoelectric absorption, essentially all energy goes to electrons (minus binding energy). For pair production, about (E - 1.022) MeV goes to kinetic energy of e+e- pairs plus annihilation photons.\n\nLet me estimate energy transfer fractions:",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_2bb935907e8f4d6fb53ae0fa",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\n\\n# For energy transfer fractions, I need mean energy transferred per interaction\\n# For Compton scattering at Co-60 energies, the average fractional energy transfer can be estimated\\n# Using the Klein-Nishina cross section integration or approximate formulas\\n\\n# For Rayleigh scattering, essentially no energy is transferred (elastic scattering)\\n# For photoelectric, nearly all photon energy transfers (binding energy is small compared to 1.25 MeV)\\n# For pair production, about E - 2*m_e*c^2 = E - 1.022 MeV transfers to kinetic energy\\n\\n# Let me use simplified estimates:\\n# Mean energy transfer fraction for Compton scattering ~ 0.2-0.3 for Co-60 energies\\n# This depends on scattering angle distribution\\n\\n# From ESTAR, I can compute collision kerma more directly later\\n# For now, let's compute energy-weighted interaction fractions\\n\\n# Rough estimate of mean energy transfer per interaction process:\\n# Rayleigh: f_energy_transfer \u2248 0 (coherent elastic)\\n# Compton: f_energy_transfer \u2248 0.25 (average for Co-60 energies in water)  \\n# Photoelectric: f_energy_transfer \u2248 1.0 (all energy to electrons)\\n# Pair: f_energy_transfer \u2248 (E - 1.022)/E \u2248 0.18 for E~1.25 MeV\\n\\n# Energy transfer fractions weighted by interaction probabilities and energy transfer efficiency:\\nf_transfer_rayleigh = 0.0\\nf_transfer_compton = 0.25  # approximate\\nf_transfer_photo = 1.0\\nf_transfer_pair = 0.18\\n\\n# Weighted by interaction fractions calculated earlier:\\nfraction_rayleigh = 0.0005844\\nfraction_compton = 0.998919\\nfraction_photo = 3.784e-05\\nfraction_pair = 0.0004598\\n\\nenergy_transfer_weighted = (fraction_rayleigh * f_transfer_rayleigh + \\n                           fraction_compton * f_transfer_compton + \\n                           fraction_photo * f_transfer_photo + \\n                           fraction_pair * f_transfer_pair)\\n\\nprint(f\\\"Total energy transfer weight: {energy_transfer_weighted:.6f}\\\")\\n\\n# Fractional contribution to energy transfer from each process:\\net_frac_rayleigh = fraction_rayleigh * f_transfer_rayleigh / energy_transfer_weighted if energy_transfer_weighted > 0 else 0\\net_frac_compton = fraction_compton * f_transfer_compton / energy_transfer_weighted if energy_transfer_weighted > 0 else 0\\net_frac_photo = fraction_photo * f_transfer_photo / energy_transfer_weighted if energy_transfer_weighted > 0 else 0\\net_frac_pair = fraction_pair * f_transfer_pair / energy_transfer_weighted if energy_transfer_weighted > 0 else 0\\n\\nprint(\\\"\\\\nEnergy transfer fractions:\\\")\\nprint(f\\\"  Rayleigh: {et_frac_rayleigh:.6e}\\\")\\nprint(f\\\"  Compton: {et_frac_compton:.6f}\\\")\\nprint(f\\\"  Photoelectric: {et_frac_photo:.6e}\\\")\\nprint(f\\\"  Pair: {et_frac_pair:.6e}\\\")\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Good. Now I need to consider the energy transfer fractions. For Compton scattering, not all photon energy is transferred to electrons - some goes to scattered photons. For photoelectric absorption, essentially all energy goes to electrons (minus binding energy). For pair production, about (E - 1.022) MeV goes to kinetic energy of e+e- pairs plus annihilation photons.\n\nLet me estimate energy transfer fractions:",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 18518,
+  "completion_tokens": 802,
+  "total_tokens": 19320,
+  "cost": 0.00024508,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 17280,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00024508,
+   "upstream_inference_prompt_cost": 0.00014082,
+   "upstream_inference_completions_cost": 0.00010426
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 88,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

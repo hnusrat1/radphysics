@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791826870-Abd0iadazp0buqNLpPFU",
+ "object": "chat.completion",
+ "created": 1791826870,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Let me compute the key quantities one at a time.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_0ce1a72bed0e4eaaac30c523",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nfrom scipy.interpolate import interp1d\\n\\nx = np.loadtxt('/tmp/data/xcom_water.txt')\\ny = np.loadtxt('/tmp/data/estar_water.txt')\\n\\nx_e = x[:,0]\\nx_tot = x[:,6]\\nx_inc = x[:,2]\\nx_coh = x[:,1]\\nx_pho = x[:,3]\\nx_pn = x[:,4]\\nx_pe = x[:,5]\\n\\ny_e = y[:,0]\\ny_coll = y[:,1]\\ny_rad = y[:,2]\\ny_csda = y[:,3]\\n\\nf_tot = interp1d(x_e, x_tot, kind='linear', bounds_error=False, fill_value=0.0)\\nf_inc = interp1d(x_e, x_inc, kind='linear', bounds_error=False, fill_value=0.0)\\nf_coh = interp1d(x_e, x_coh, kind='linear', bounds_error=False, fill_value=0.0)\\nf_pho = interp1d(x_e, x_pho, kind='linear', bounds_error=False, fill_value=0.0)\\nf_pn = interp1d(x_e, x_pn, kind='linear', bounds_error=False, fill_value=0.0)\\nf_pe = interp1d(x_e, x_pe, kind='linear', bounds_error=False, fill_value=0.0)\\nf_coll = interp1d(y_e, y_coll, kind='linear', bounds_error=False, fill_value=0.0)\\nf_rad = interp1d(y_e, y_rad, kind='linear', bounds_error=False, fill_value=0.0)\\nf_csda = interp1d(y_e, y_csda, kind='linear', bounds_error=False, fill_value=0.0)\\n\\nE0 = 2.0\\nmec2 = 0.511\\n\\nmu_tot = float(f_tot(E0))\\nmu_inc = float(f_inc(E0))\\nmu_coh = float(f_coh(E0))\\nmu_pho = float(f_pho(E0))\\nmu_pair = float(f_pn(E0)) + float(f_pe(E0))\\n\\nprint(\\\"Cross sections at 2.0 MeV (cm^2/g):\\\")\\nprint(f\\\"  total={mu_tot:.6f}\\\")\\nprint(f\\\"  incoherent={mu_inc:.6f}\\\")\\nprint(f\\\"  coherent={mu_coh:.6e}\\\")\\nprint(f\\\"  photo={mu_pho:.6e}\\\")\\nprint(f\\\"  pair={mu_pair:.6e}\\\")\\n\\n# Primary attenuation at 10 cm depth\\natt_10 = np.exp(-mu_tot * 10.0)\\nprint(f\\\"\\\\nAttenuation at 10 cm: {att_10:.6f}\\\")\\n\\n# Interaction fractions for primaries\\nfi_inc = mu_inc / mu_tot\\nfi_coh = mu_coh / mu_tot\\nfi_pho = mu_pho / mu_tot\\nfi_pair = mu_pair / mu_tot\\nprint(f\\\"\\\\nInteraction fractions (primary):\\\")\\nprint(f\\\"  Compton: {fi_inc:.6f}\\\")\\nprint(f\\\"  Rayleigh: {fi_coh:.6e}\\\")\\nprint(f\\\"  Photo: {fi_pho:.6e}\\\")\\nprint(f\\\"  Pair: {fi_pair:.6f}\\\")\\n\\n# Stopping powers for electrons\\n# For primary electrons from Compton scattering at 2.0 MeV\\n# The average electron energy from Compton scattering\\n# Let's compute the average using Klein-Nishina distribution\\n\\n# The total Compton cross section integrated over angles\\n# We can use the tabulated value: mu_inc = 0.048903 cm^2/g\\n# The average energy transferred to electrons:\\n# sigma_tr = mu_tr / (electrons/g)\\n# where mu_tr is the energy transfer coefficient\\n\\n# Let me compute the average electron energy from the KN distribution\\n# by numerical integration\\n\\nre = 2.818e-13\\nNA = 6.022e23\\nNe_g = NA * 10 / 18.015\\n\\n# Numerical integration over theta\\nn_theta = 1000\\ntheta_arr = np.linspace(0, np.pi, n_theta)\\ndtheta = np.pi / n_theta\\n\\nEe_arr = np.zeros(n_theta)\\nds_arr = np.zeros(n_theta)\\ncos_el_arr = np.zeros(n_theta)\\n\\nfor i in range(n_theta):\\n    th = teta_arr[i]\\n    Ep = E0 / (1 + (E0/mec2)*(1-np.cos(th)))\\n    Ee = E0 - Ep\\n    r = Ep/E0\\n    ds = (re**2/2) * r**2 * (1/r + r - np.sin(th)**2) * 2*np.pi * np.sin(th) * dtheta\\n    E_arr[i] = Ee\\n    ds_arr[i] = ds\\n    # Electron cos theta relative to incident direction\\n    tan_e = Ep * np.sin(th) / (E - Ep * np.cos(th))\\n    cos_el_arr[i] = np.cos(np.arctan(Ep * np.sin(th) / max(E0 - Ep*np.cos(th), 1e-10)))\\n\\n# Actually let me just compute the total and average\\ntotal_ds = np.sum(ds_arr)\\navg_Ee = np.sum(Ee_arr * ds_arr) / total_ds if total_ds > 0 else 0\\nprint(f\\\"\\\\nTotal Compton cross section (integrated): {total_ds:.6e} cm^2/electron\\\")\\nprint(f\\\"Sigma_inc from mu_inc: {mu_inc / Ne_g:.6e} cm^2/electron\\\")\\nprint(f\\\"Average electron energy: {avg_Ee:.4f} MeV\\\")\\n\\n# The ratio should match</parameter>\\n</invoke>\\n</\uff5cDSML\uff5ctool_calls"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Let me compute the key quantities one at a time.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 49470,
+  "completion_tokens": 1325,
+  "total_tokens": 50795,
+  "cost": 0.002056052768,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 36864,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.002056052768,
+   "upstream_inference_prompt_cost": 0.001815273768,
+   "upstream_inference_completions_cost": 0.000240779
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 11,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

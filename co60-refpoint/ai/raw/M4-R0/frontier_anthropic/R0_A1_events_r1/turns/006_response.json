@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791826654-yaH6VN2hZFXyrwwUrYKi",
+ "object": "chat.completion",
+ "created": 1791826654,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I'm checking that annihilation photons get placed correctly and that photons escaping the cube or killed below the energy cutoff are properly dropped from the simulation pool.\n\nWith 112 events in 200k histories matching the expected ~120, I'll need roughly 1e7 histories for good statistics on ~5600 events. Given memory constraints with large arrays, I should run this in batches of a few million across multiple seeds rather than one massive 2e7 run.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01WfppfzHh4inxBqQA3vkHwT",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport subprocess, json, collections\\ntot=[]\\nfor sd in range(2,22):\\n    r=subprocess.run(['python','sim.py',str(sd),'2000000'],capture_output=True,text=True,cwd='.')\\n    tot+=json.load(open(f'ev_{sd}.json'))\\nprint(len(tot))\\nprint(collections.Counter(e[0] for e in tot))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I'm checking that annihilation photons get placed correctly and that photons escaping the cube or killed below the energy cutoff are properly dropped from the simulation pool.\n\nWith 112 events in 200k histories matching the expected ~120, I'll need roughly 1e7 histories for good statistics on ~5600 events. Given memory constraints with large arrays, I should run this in batches of a few million across multiple seeds rather than one massive 2e7 run.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "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.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 27812,
+  "completion_tokens": 657,
+  "total_tokens": 28469,
+  "cost": 0.00109693,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 23548,
+   "cache_write_tokens": 4262,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00109693,
+   "upstream_inference_prompt_cost": 0.00076843,
+   "upstream_inference_completions_cost": 0.0003285
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 483,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

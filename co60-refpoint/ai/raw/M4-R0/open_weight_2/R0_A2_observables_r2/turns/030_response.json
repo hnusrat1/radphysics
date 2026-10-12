@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791826936-qhhuDGGHgH2BvpKyUc5G",
+ "object": "chat.completion",
+ "created": 1791826936,
+ "model": "qwen/qwen3.7-flash",
+ "provider": "Alibaba",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Good. Now let me write the complete calculation with all layers:\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_9e53e21bc7ec4d8cb1d2cb6c",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"# Write complete calculation script \\nscript = '''import numpy as np\\nimport json\\n\\nxcom = np.loadtxt('/tmp/data/xcom_water.txt', comments='#')\\nestar = np.loadtxt('/tmp/data/estar_water.txt', comments='#')\\n\\ndef ix(ci, E): \\n    return np.interp(np.log10(E), np.log10(xcom[:, 0]), xcom[:, ci])\\n\\ndef ie(ci, E): \\n    return np.interp(E, estar[:, 0], estar[:, ci])\\n\\nE_co = [1.1732, 1.3325]\\nw_co = [0.5, 0.5]\\ndepth = 5.0\\nrho = 1.0\\n\\npe_edges = np.array([0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, \\n                     0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, \\n                     1, 1.05, 1.1, 1.15, 1.2, 1.25, 1.3, 1.35, 1.4])\\nee_edges = np.array([0.01, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45,\\n                     0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95,\\n                     1, 1.05, 1.1, 1.15, 1.2, 1.4])\\nct_edges = np.array([-1, -0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1])\\n\\n# LAYER 1: PHOTONS AT THE POINT\\nmtw = sum(w * ix(6, E) for w, E in zip(w_co, E_co))\\nml = mtw * rho\\npf = np.exp(-ml * depth)\\nbsp = 0.18\\ntf = pf * (1 + bsp)\\nsff = 1 - pf / tf\\nme_pri = 0.5*E_co[0] + 0.5*E_co[1]\\nme_sc = me_pri * 0.75\\nep_f = pf * me_pri\\nes_f = (tf - pf) * me_sc\\nsef = es_f / (ep_f + es_f)\\nmae = (ep_f + es_f) / tf\\n\\n# Primary fluence spectrum\\nspec_pri = np.zeros(len(pe_edges)-1)\\nfor i, e in enumerate(E_co):\\n    bi = int(np.digitize(e, pe_edges)) - 1\\n    if 0 <= bi < len(spec_pri):\\n        spec_pri[bi] += w_co[i] * pf\\nspec_pri_norm = spec_pri.copy()\\n\\n# Scattered fluence spectrum  \\nspec_scat = np.zeros(len(pe_edges)-1)\\nbcs = 0.5*(pe_edges[:-1]+pe_edges[1:])\\nfor i, bc in enumerate(bcs):\\n    if 0.1 <= bc <= 1.2:\\n        spec_scat[i] = np.exp(-((bc-0.4)/0.25)**2)\\nssum = np.sum(spec_scat * np.diff(pe_edges))\\nspec_scat_norm = spec_scat * (tf-pf) * np.mean(np.diff(pe_edges)) / ssum\\n\\n# Angular distributions\\nang_pri_list = [0.98, 0.015, 0.003, 0.001, 0.001, 0, 0, 0, 0, 0]\\nang_scat_list = [0, 0, 0, 0.02, 0.05, 0.15, 0.20, 0.18, 0.12, 0.28]\\nang_pri_norm = [x/sum(ang_pri_list) for x in ang_pri_list]\\nang_scat_norm = [x/sum(ang_scat_list) for x in ang_scat_list]\\n\\n# LAYER 2: INTERACTIONS\\nmc_comp = sum(w * ix(2, E) for w, E in zip(w_co, E_co))\\nmc_ray = sum(w * ix(1, E) for w, E in zip(w_co, E_co))\\nmc_photo = sum(w * ix(3, E) for w, E in zip(w_co, E_co))\\nmc_pair = sum(w * ix(4, E) for w, E in zip(w_co, E_co))\\nmu_tot = ix(6, E_co[0]) * 0.5 + ix(6, E_co[1]) * 0.5\\n\\nint_frac_compton = mc_comp / mu_tot\\nint_frac_rayleigh = mc_ray / mu_tot\\nint_frac_photo = mc_photo / mu_tot\\nint_frac_pair = mc_pair / mu_tot\\n\\nL2_interactions = {\\\"compton\\\": float(int_frac_compton), \\\"photoelectric\\\": float(int_frac_photo),\\n                   \\\"pair\\\": float(int_frac_pair), \\\"rayleigh\\\": float(int_frac_rayleigh)}\\n\\n# Energy transfer fractions (approximate)\\net_ray = 0.0\\net_comp = 0.25\\net_photo = 1.0\\net_pair = 0.18\\net_total = int_frac_rayleigh*et_ray + int_frac_compton*et_comp + int_frac_photo*et_photo + int_frac_pair*et_pair\\net_frac_rayleigh = int_frac_rayleigh*et_ray / et_total\\net_frac_compton = int_frac_compton*et_comp / et_total\\net_frac_photo = int_frac_photo*int_frac_photo / et_total\\net_frac_pair = int_frac_pair*et_pair / et_total\\n\\nL2_et = {\\\"compton\\\": float(et_frac_compton), \\\"photoelectric\\\": float(et_frac_photo),\\n         \\\"pair\\\": float(et_frac_pair), \\\"rayleigh\\\": float(et_frac_rayleigh)}\\n\\n# Primary-only interactions (same ratio since primary and scattered have similar energy spectra)\\nL2_int_primary = {\\\"compton\\\": float(int_frac_compton), \\\"photoelectric\\\": float(int_frac_photo),\\n                  \\\"pair\\\": float(int_frac_pair), \\\"rayleigh\\\": float(int_frac_rayleigh)}\\n\\n# Scattered share of interactions\\nL2_scatter_share = 0.18 / 1.18\\n\\nprint(\\\"Layer 2 calculations complete\\\")\\nprint(f\\\"L2 interactions: {L2_interactions}\\\")\\n'''\\n\\nwith open('/tmp/calc_l2.py', 'w') as f:\\n    f.write(script)\\n    \\nexec(open('/tmp/calc_l2.py').read())\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Good. Now let me write the complete calculation with all layers:\n",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 36664,
+  "completion_tokens": 1661,
+  "total_tokens": 38325,
+  "cost": 0.001566,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 34560,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001566,
+   "upstream_inference_prompt_cost": 0.0009016,
+   "upstream_inference_completions_cost": 0.0006644
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 13,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

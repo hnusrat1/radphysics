@@ -1,0 +1,57 @@
+{
+ "id": "gen-1791826735-AYL8XGk0JllVahEOLE1e",
+ "object": "chat.completion",
+ "created": 1791826735,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_015gYkopC2pNX7F8qeA1SiLE",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\ntrap=np.trapezoid\\ndef kn_tr_frac(E):\\n    k=E/me\\n    c=np.linspace(-1,1,40001)\\n    eps=1/(1+k*(1-c))\\n    f=eps**2*(eps+1/eps-(1-c**2))\\n    sig=np.pi*re**2*trap(f,c)\\n    sigf=np.pi*re**2*trap(f*(1-eps),c)\\n    return sig,sigf\\nfor E in [0.1,0.5,1.0,1.1732,1.25,1.3325]:\\n    s,sf=kn_tr_frac(E)\\n    print(E, round(kn_sigma(E)*ne_w,5), round(s*ne_w,5), round(sf*ne_w,5), 'tab',mu_tab(E), 'resid', round(mu_tab(E)-kn_sigma(E)*ne_w,5), 'frac',round(sf/s,4))\\n\"}"
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 75289,
+  "completion_tokens": 352,
+  "total_tokens": 75641,
+  "cost": 0.009587075,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 75287,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.009587075,
+   "upstream_inference_prompt_cost": 0.009411075,
+   "upstream_inference_completions_cost": 0.000176
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 0,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

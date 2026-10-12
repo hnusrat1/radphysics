@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791827108-hu119czUdxis8jAeBff3",
+ "object": "chat.completion",
+ "created": 1791827108,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I keep making errors because I'm trying to write code too quickly. Let me write the entire simulation as a Python script more carefully. I'll use the editor to write precise code.\n\nActually, let me take a step back and think about a better approach. Instead of writing a full MC transport code (which I seem unable to do correctly right now due to syntax errors), let me use a more analytical approach.\n\nI'll:\n1. Compute the primary photon fluence at the scoring volume\n2. Compute the scattered photon fluence using a first-scatter approximation\n3. Generate events by sampling from these distributions\n\nFor this approach, I'll write the code more carefully in smaller pieces.\n\nLet me write just the key functions I need and generate the events.\n\nActually, let me just try to write the complete simulation very carefully, testing each part.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_75b7adcfcbbb42c9ae9faaa4",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nfrom numpy.random import default_rng\\nimport time\\n\\nrng = default_rng(42)\\n\\n# ============================================================\\n# Physics\\n# ============================================================\\nmec2 = 0.5110034\\nre = 2.8179e-13\\nnel_cm3 = 6.022e23 * 10 / 18.015\\n\\ndef sigma_KN(E):\\n    a = E / mec2\\n    term = ((1+a)/a**2 * (2*(1+a)/(1+2*a) - np.log(1+2*a)/a) +\\n            np.log(1+2*a)/(2*a) - (1+3*a)/(1+2*a)**2)\\n    return 2 * np.pi * re**2 * term\\n\\ndef mu_c(E): return nel_cm3 * sigma_KN(E)\\ndef mu_p(E): return 0.00057 * (1.0/E)**3.5\\ndef mu_pp(E):\\n    if E <= 1.022: return 0.0\\n    return 0.00035 * (E-1.022)/(1.3325-1.022)\\ndef mu_r(E): return 0.00033 * (1.0/E)**2\\ndef mu_t(E): return mu_c(E)+mu_p(E)+mu_pp(E)+mu_r(E)\\n\\n# ============================================================\\n# Geometry\\n# ============================================================\\nsrc = np.array([0.0, 0.0, -100.0])\\ndef in_scoring(p):\\n    return 4.9 <= p[2] <= 5.1 and (p[0]**2 + p[1]**2) <= 1.0\\n\\ndef dist_exit(pos, di):\\n    \\\"\\\"\\\"Distance from pos along di to exit 30x30x30 phantom at [0,30]x[-15,15]x[-15,15]\\\"\\\"\\\"\\n    e = 1e-12\\n    tmin = float('inf')\\n    for zval in [0.0, 30.0]:\\n        dz = zval - pos[2]\\n        if abs(di[2]) > e and dz/di[2] > 0:\\n            t = dz / di[2]\\n            if t > e:\\n                cp = pos + t * di\\n                if abs(cp[0]) <= 15+e and abs(cp[1]) <= 15+e:\\n                    tmin = min(tmin, t)\\n    for xval in [-15.0, 15.0]:\\n        dx = xval - pos[0]\\n        if abs(di[0]) > e and dx/di[0] > 0:\\n            t = dx / di[0]\\n            if t > e:\\n                cp = pos + t * di\\n                if -e <= cp[2] <= 30+e and abs(cp[1]) <= 15+e:\\n                    tmin = min(tmin, t)\\n    for yval in [-15.0, 15.0]:\\n        dy = yval - pos[1]\\n        if abs(di[1]) > e and dy/di[1] > 0:\\n            t = dy / di[1]\\n            if t > e:\\n                cp = pos + t * di\\n                if -e <= cp[2] <= 30+e and abs(cp[0]) <= 15+e:\\n                    tmin = min(tmin, t)\\n    return tmin\\n\\ndef source_E():\\n    return 1.1732 if rng.random() < 0.5 else 1.3325\\n\\ndef source_dir():\\n    x = rng.uniform(-5.0, 5.0)\\n    y = rng.uniform(-5.0, 5.0)\\n    di = np.array([x, y, 100.0])\\n    return di / np.linalg.norm(di)\\n\\ndef choos_proc(E):\\n    mt = mu_t(E)\\n    r = rng.random() * mt\\n    if r < mu_c(E): return 'compton'\\n    r -= mu_c(E)\\n    if r < mu_p(E): return 'photoelectric'\\n    r -= mu_p(E)\\n    if r < mu_pp(E): return 'pair'\\n    return 'rayleigh'\\n\\nprint(\\\"Basic functions defined\\\")\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I keep making errors because I'm trying to write code too quickly. Let me write the entire simulation as a Python script more carefully. I'll use the editor to write precise code.\n\nActually, let me take a step back and think about a better approach. Instead of writing a full MC transport code (which I seem unable to do correctly right now due to syntax errors), let me use a more analytical approach.\n\nI'll:\n1. Compute the primary photon fluence at the scoring volume\n2. Compute the scattered photon fluence using a first-scatter approximation\n3. Generate events by sampling from these distributions\n\nFor this approach, I'll write the code more carefully in smaller pieces.\n\nLet me write just the key functions I need and generate the events.\n\nActually, let me just try to write the complete simulation very carefully, testing each part.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 62913,
+  "completion_tokens": 1148,
+  "total_tokens": 64061,
+  "cost": 0.001756669068,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 57344,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001756669068,
+   "upstream_inference_prompt_cost": 0.001548054508,
+   "upstream_inference_completions_cost": 0.00020861456
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 171,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

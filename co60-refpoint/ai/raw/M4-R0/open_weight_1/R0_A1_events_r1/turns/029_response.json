@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791827133-UYUr7AAVEFYsCJdyIaGr",
+ "object": "chat.completion",
+ "created": 1791827133,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Now let me write the main simulation loop. I'll be very careful with the syntax.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_e68ab1fb0e0e4781997662de",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"# Main simulation loop\\nimport time\\n\\ndef run_simulation(max_photons=600000):\\n    events = []\\n    n_histories = 0\\n    t0 = time.time()\\n    \\n    for i in range(max_photons):\\n        n_histories += 1\\n        \\n        # Source photon\\n        Ein = source_E()\\n        di = source_dir()\\n        \\n        # Entry at phantom surface (z=0)\\n        t_surf = -src[2] / di[2]\\n        pos = src + t_surf * di\\n        \\n        # Track through phantom\\n        mu = mu_t(Ein)\\n        active = True\\n        \\n        while active:\\n            d_int = -np.log(1.0 - rng.random()) / mu\\n            d_ext = dist_exit(pos, di)\\n            \\n            if d_int > d_ext:\\n                break\\n            \\n            pos_int = pos + d_int * di\\n            \\n            if in_scoring(pos_int):\\n                proc = choose_proc(Ein)\\n                \\n                if proc == 'compton':\\n                    E_out, ct, te, ce = comp_scat(Ein)\\n                    events.append({\\n                        'process': 'compton',\\n                        'e_in_MeV': Ein,\\n                        'e_out_MeV': E_out,\\n                        'cos_scatter': ct,\\n                        't_e_MeV': te,\\n                        'cos_electron': ce,\\n                        't_positron_MeV': None\\n                    })\\n                    if E_out > 0.01:\\n                        di = scatter_dir(di, ct)\\n                        pos = pos_int\\n                        Ein = E_out\\n                        mu = mu_t(Ein)\\n                    else:\\n                        active = False\\n                        \\n                elif proc == 'photoelectric':\\n                    events.append({\\n                        'process': 'photoelectric',\\n                        'e_in_MeV': Ein,\\n                        'e_out_MeV': None,\\n                        'cos_scatter': None,\\n                        't_e_MeV': Ein,\\n                        'cos_electron': rng.uniform(0.9, 1.0),\\n                        't_positron_MeV': None\\n                    })\\n                    active = False\\n                    \\n                elif proc == 'pair':\\n                    _, _, te, ce, tp, _ = pair_proc(Ein)\\n                    events.append({\\n                        'process': 'pair',\\n                        'e_in_MeV': Ein,\\n                        'e_out_MeV': None,\\n                        'cos_scatter': None,\\n                        't_e_MeV': te,\\n                        'cos_electron': ce,\\n                        't_positron_MeV': tp\\n                    })\\n                    active = False\\n                    \\n                elif proc == 'rayleigh':\\n                    E_out, ct, _, _ = ray_scat(Ein)\\n                    events.append({\\n                        'process': 'rayleigh',\\n                        'e_in_MeV': Ein,\\n                        'e_out_MeV': E_out,\\n                        'cos_scatter': ct,\\n                        't_e_MeV': 0.0,\\n                        'cos_electron': None,\\n                        't_positron_MeV': None\\n                    })\\n                    if E_out > 0.01:\\n                        di = scatter_dir(di, ct)\\n                        pos = pos_int\\n                        # Rayleigh: energy unchanged\\n                        mu = mu_t(Ein)\\n                    else:\\n                        active = False\\n            else:\\n                # Interaction not in scoring volume\\n                # Process scatter or absorb for tracking\\n                proc = choose_proc(Ein)\\n                if proc == 'compton':\\n                    E_out, ct, _, _ = comp_scat(Ein)\\n                    if E_out > 0.01:\\n                        di = scatter_dir(di, ct)\\n                        pos = pos_int\\n                        Ein = E_out\\n                        mu = mu_t(Ein)\\n                    else:\\n                        active = False\\n                elif proc == 'rayleigh':\\n                    E_out, ct, _, _ = ray_scat(Ein)\\n                    if E_out > 0.01:\\n                        di = scatter_dir(di, ct)\\n                        pos = pos_int\\n                        mu = mu_t(Ein)\\n                    else:\\n                        active = False\\n                else:\\n                    # photoelectric or pair: absorbed\\n                    active = False\\n        \\n        if len(events) >= 200:\\n            break\\n            \\n        if n_histories % 100000 == 0:\\n            print(f\\\"  {n_histories} histories, {len(events)} events, {time.time()-t0:.1f}s\\\")\\n    \\n    print(f\\\"Done: {n_histories} histories, {len(events)} events in {time.time()-t0:.1f}s\\\")\\n    return events\\n\\n# Run with 600k photons\\nprint(\\\"Starting simulation...\\\")\\nevents = run_simulation(600000)\\nprint(f\\\"Got {len(events)} events\\\")\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Now let me write the main simulation loop. I'll be very careful with the syntax.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 64848,
+  "completion_tokens": 1074,
+  "total_tokens": 65922,
+  "cost": 0.00162130584,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 61440,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00162130584,
+   "upstream_inference_prompt_cost": 0.00142613856,
+   "upstream_inference_completions_cost": 0.00019516728
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 18,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

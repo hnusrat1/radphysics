@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791827086-fS6Eg4juzzgVgOHzu8CG",
+ "object": "chat.completion",
+ "created": 1791827086,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I should consolidate everything into a single script, l4.py, that runs the full analysis and saves the results to a pickle file, then execute it.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01QvqReMZpYHQoZE64F8GMoG",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nl4 = r'''\\nimport sys; sys.path.insert(0,'/tmp/work')\\nimport pickle, numpy as np, mc as MC, elec\\nTc,kerma,flu,ev,Ntot=pickle.load(open('/tmp/work/comb.pkl','rb'))\\nVOL=MC.VOL; F0=MC.F0; conv=1.602176634e-10\\nK_per_phi0 = kerma[0]/Ntot*F0/VOL*conv\\nedges=np.exp(np.linspace(np.log(0.01),np.log(1.4),301)); cent=np.sqrt(edges[1:]*edges[:-1]); dE=np.diff(edges)\\nT=ev[:,0]; w=ev[:,2]\\nh,_=np.histogram(T,bins=edges,weights=w); Qsrc=h/(Ntot*VOL*dE)\\nNe=elec.WATER['ne']\\nSres=elec.Sres_mass(cent,elec.WATER); Scol=elec.Scol_per_mass(cent,elec.WATER); Srad=elec.Srad_per_mass(cent)\\nn=len(cent); Phi=np.zeros(n); Qd=np.zeros(n)\\nfor i in range(n-1,-1,-1):\\n    if i<n-1:\\n        ks=np.where(cent>=2*cent[i])[0]\\n        if ks.size>0: Qd[i]=np.sum(Phi[ks]*Ne*elec.moller_dsig(cent[ks],np.full(ks.size,cent[i]))*dE[ks])\\n    Phi[i]=np.sum((Qsrc[i:]+Qd[i:])*dE[i:])/Sres[i]\\nPhid=np.array([np.sum(Qd[i:]*dE[i:])/Sres[i] for i in range(n)])\\nFl=Phi*F0; Fld=Phid*F0\\nEred=np.sum(Fl*Sres*dE)*conv\\nEcol=np.sum(Fl*Scol*dE)*conv\\nEin_src=np.sum(Qsrc*cent*dE)*VOL*F0*conv  # not used\\nEin=np.sum(T*w)*F0/(Ntot*VOL)*conv\\nElow=np.sum(T[T<0.01]*w[T<0.01])*F0/(Ntot*VOL)*conv\\nprint('K_per_phi0',K_per_phi0,'Ein(all source events)',Ein)\\nprint('sum Phi*Sres',Ered,'ratio to photon K',Ered/K_per_phi0)\\nprint('sum Phi*Scol',Ecol,'ratio',Ecol/K_per_phi0)\\nprint('delta frac',np.sum(Phid*dE)/np.sum(Phi*dE),' Ldelta part of Scol:', np.sum(Fl*elec.Ldelta_per_e(cent)*Ne*dE)*conv)\\n'''\\nopen('/tmp/work/l4.py','w').write(l4)\\nimport subprocess\\nprint(subprocess.run(['python','/tmp/work/l4.py'],capture_output=True,text=True,cwd='/tmp/work'))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I should consolidate everything into a single script, l4.py, that runs the full analysis and saves the results to a pickle file, then execute it.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSvgcKEAgSGAI4AUIIdGhpbmtpbmcSDKWt7JobkzthW5MK/hoMisVGynAhEevReXDLIjD0VNH/nsg6nhEN0KrA8Nw/nvmfhmSNPGgwfmjc2UgmP3ud4MTqelwsKY4qwPcq594q2waubKaCwvom8FvS0hXmssuZm6Ll1gZ4D983JKcz5rLajxR35rjQXjkIV8RWJVilY6LJXJSWXgLJmxjiLGvjen8MRuM778QoGlgdvdXd1dJuQeQ1S6jKIzrNDVEqs2L9KPjQYZHKcFGfmHTx70c2QWCgxnhiHNyg0HPVu+lRNkCtAN0+aslhMKxFODVcBoEZgQpujXvRH9RYJsCep4UGybj2Sn80xm4xOJMI8sANVmiEN1NAHZNAmiL0A33pPqs9qmCJqKVzIbZjlArK2HibEb57LI0d4qEAnsVnHkxfCr+VBtjXpapyO9suYC0AO0j7RYrTs9uVgKl0Fr2bJx2HbqmpNmJ7KkGyGkicbtW2YjXj3Aoq753XaDxpeAB5Zoeh1MNNMNFiduiFaX1i+mu7wmBsGA0Gar1Xzs0g4+zQmyYBZ5yrITay3/rLG+smydzu1Es4SGp6DQ9smjZdEZg0eJRjM0Z8PVsTVBFUFm4I3TIyBqAWNCSch83nK/A4EqFz8mwg5MHOFVAGeH2MSFL5M+7hJ/HaVXH7j1RIMUdM3/03qnqYU70AtBH4xHLBn0VmL6IqaHDeCVFBzQYFyvj9zNo0Bbpe6x2213+AU5E/xNWDPgUcf5tAgafBMfAoVR9SPfvgdLqwOGKfQxk75IbOAwTdec/6vJueb9Hh75TlueEYPo8TWTKmaOPrG+aLurQQ+bDuSJIh+c3I+o7ah2Q2pNAGXs4YIlNgu/LIwF0ceQ9bNbCL/s3QUg2dDacrBKJW3Ep7w7n692SAgxdTVIKMrw3lWE4Kk2hXOgpdo30ytEM9fPaj1iV2EOg8dKz0gNXIHAK6305wlhtPmNaYpkR1Nd7Wl1gAoDiCUCzI85/GdlbiP5EPV4OwLTl8V7fTOFPkJ11Fh7R5vBSF2boHvHpxIYGHZlrPF+cKdRANtUhJxCs0lPig/BHa1ptc96qfXUlZESBuF/ynVc7FziO/csFA4NFSUENh/dm3yjuHidKD4ath41wgjFv+EUVrHxdUvoq/PpjfoNhNRuTnQRqLzGoeYXfx8rCuNM/jW+JfFtuUkHnCC0r2FjilIpav+aix98Bwe4XHHINo2VwjDVgyG3Qgflr87P3zpImU2znmlgwcHGMkNLbD/kCAARrOxYzBGAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 129164,
+  "completion_tokens": 1167,
+  "total_tokens": 130331,
+  "cost": 0.01535775,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 118760,
+   "cache_write_tokens": 10402,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.01535775,
+   "upstream_inference_prompt_cost": 0.01244025,
+   "upstream_inference_completions_cost": 0.0029175
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 47,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

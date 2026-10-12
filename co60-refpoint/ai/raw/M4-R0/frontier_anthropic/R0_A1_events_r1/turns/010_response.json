@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791826830-Icq459xCpcvZec131VL1",
+ "object": "chat.completion",
+ "created": 1791826830,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "The output is too large to print in one go, so I'll round values to 4 decimals and print the 200 events in smaller chunks of 50 to avoid truncation.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01RHp4vG7ELSmRVsMqz4G2Gm",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\ndef fmt(v): return 'null' if v is None else (f'{v:.4g}' if isinstance(v,float) else str(v))\\nlines=[]\\nfor x in events:\\n    lines.append('[%s,%s,%s,%s,%s,%s,%s]'%(\\n        '\\\"'+x['process']+'\\\"', fmt(x['e_in_MeV']), fmt(x['e_out_MeV']), fmt(x['cos_scatter']), fmt(x['t_e_MeV']), fmt(x['cos_electron']), fmt(x['t_positron_MeV'])))\\nprint('\\\\n'.join(lines[:100]))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The output is too large to print in one go, so I'll round values to 4 decimals and print the 200 events in smaller chunks of 50 to avoid truncation.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSvQoKEAgSGAI4AUIIdGhpbmtpbmcSDDRQJ5fASqMqcdRTbRoMn4sDXUVBoq1hSLY3IjBG7H9ILrSnd+hOp5yKCo15DrFoWsZAxx4WYBqtIL2EI4Ceq9gtxfAD+kQgTmqx1Z4q2gmXCVwNDZ4YeOvcPec4FOmWVKvDrXvle0SOsCtEe9HCptqHBmwANIhyEqIi4g5ng3MJtJfBf/WH54E6rfa+Yq/5y76j5U9TzUziDC+VP6Iz1mB7IEq9gx0lU39HUDWdPFGiljro1ugvxfWov7ZFUVSIoK9LvFeHd/2S0Hue8RfQg+uh5HVoOv3S/iCG6qQm0bfLL7sNPWC/u5UZBUzCfMqh0mMhDsxEuVH/GvdCcRD8s81MRRd3KYSjZS80hwoO8U4vsiczQzrSVHIWeGMS/i5nZ5NoZdVZsQI6NjJg7HJV9OYrfQgWNoYGi2NdfjWyKboObsPX82dZB2Z9PGQqc8tF9ZMjncsH0RxNK975dJ1Xdr5AQ6aC2AjMfmSdRfgMsdyTHKBHSz3qlcOS/N6pwGjpsOtqL+bigF8EZKa0IwZ3IMBT1CiXeZGXXVsMllR54sxDwPiYwMP9ACUrMwmwnodW/gax8288jV4+vXCcytGo9D7Jisj7BrP3BerZf68W+lJXBfXJU3s3ugA4g3UnLmkJQOckIW+6R/RrPMLvq/xhBS7R6oMgo1jYlnjAjVraW0jxaw2iBazkL0br0n3GKBq+gDtkCHCV801uiJzr6wPRL73onHfsCQ3KlngMwCbrgj/wyRZ7YWallfbtcuKXloc4taqNeK0OR4EDYNf+vBE3Pqsq92O2nQfxqBjB3olYudDTace7Z6UTFqB7QaWU7iENDArZcT6EvIXkwKAXJawdbx/E1sPgxFbXcnB0VPlnvCeizL9SSjxKLY7fy8wHs+W8AENxbGTDNTfG96Rhoj7hd4HAwgofQknWAJUDViyTU+UXkkNo00gHjqN88/utaUe6rjcYtNe25y5tzfuWIcD5TWPKjKxdoUy7iog/iU5lzFaKl/c3DyPp+udglRatmN7MADbZEriBismB8nrYWTd0dtaTnpS+apWWqlCJVFsEPGY3ic1VDYfssXANt8FjDTLWbO3Rmn6ubhsnYUgTZRKc7L8j73GmCb9kYJ4JNEWqQemPI3AOHvaozUXJYekxXP+Nz5ZpyYhRxDpw2+6lU5ca0e1plG4YHqhpk0HaKSk0QKZcqz/eNsnm6Qij4rYRqoiLFkOJAOdknGHTr7vNZ3xNBH3dyfZP32A81JYbjVVmRYYJOp18tMZxk+Ikj6IW4mRpYk9BHlFFrTJedhLau/rDCpf14sr0ztNx6djfAYD3ju2AENU4JQqqgP77rO94O5EZr2Olgw5xC5pzcwV14qtC2vX7jEDAokLSquBbp6GHaG7LsMCKD0RTbz1u+fUu3lpKpZMxE6Puk06eh0q38Yf3prNPzsBdXiT19LET0P0IjeR3Uf2MFl1rwOvjSLnCJcw8wJEfPhc3tiT6ACXnPREWSn9QazTXZjo7T2Jx8ek3n/KCUHEkbwxGMiX0Wl8NGLdlz46P0xbsype78rkRJB4WXqxzjN7/QRFlMaNzqCgCNjJPGIzGZP+7mrWLxai+8IHo/X5BMNURn4yBkW4vwPpII5Nzh6rAfw/czKgXsl+lyWjDuRkgVWR/ymbfLeiK+ChOS+48Rp57UTBH7saeEa0kM6kMDACW5Vf+rE8xnrwptUJchrmnJ6pDTTdNLepWPnVjX6FcFOFt+9FP+pDXIsqJ955opPCgggbLQX8YAQ==.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 45698,
+  "completion_tokens": 456,
+  "total_tokens": 46154,
+  "cost": 0.00229217,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 31722,
+   "cache_write_tokens": 13974,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00229217,
+   "upstream_inference_prompt_cost": 0.00206417,
+   "upstream_inference_completions_cost": 0.000228
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 203,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

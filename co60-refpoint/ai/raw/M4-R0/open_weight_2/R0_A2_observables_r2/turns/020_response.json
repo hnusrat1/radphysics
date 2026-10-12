@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791826864-62Wt5ncHE8Dp05uf03NQ",
+ "object": "chat.completion",
+ "created": 1791826864,
+ "model": "qwen/qwen3.7-flash",
+ "provider": "Alibaba",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Good, that works. Now let me write the complete calculation in a single script:",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_cce23fcc403f4def875fd4c4",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nimport json\\n\\n# Load data\\nxcom = np.loadtxt('/tmp/data/xcom_water.txt', comments='#')\\nestar = np.loadtxt('/tmp/data/estar_water.txt', comments='#')\\n\\ndef interp_xcom(ci, E):\\n    return np.interp(np.log10(E), np.log10(xcom[:, 0]), xcom[:, ci])\\n\\ndef interp_estar(ci, E):\\n    return np.interp(E, estar[:, 0], estar[:, ci])\\n\\n# Co-60 parameters\\nE_co = np.array([1.1732, 1.3325])\\nw_co = np.array([0.5, 0.5])\\ndepth = 5.0\\nrho = 1.0\\n\\n# Bins\\npe_edges = np.array([0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, \\n                     0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, \\n                     1, 1.05, 1.1, 1.15, 1.2, 1.25, 1.3, 1.35, 1.4])\\nee_edges = np.array([0.01, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45,\\n                     0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95,\\n                     1, 1.05, 1.1, 1.15, 1.2, 1.4])\\nct_edges = np.array([-1, -0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1])\\n\\nn_photon_bins = len(pe_edges) - 1\\nn_electron_bins = len(ee_edges) - 1\\nn_angular_bins = len(ct_edges) - 1\\n\\n# ===== LAYER 1 =====\\nmu_t_w = sum(w * interp_xcom(6, E) for w, E in zip(w_co, E_co))\\nmu_l = mu_t_w * rho\\nprimary_frac = np.exp(-mu_l * depth)\\n\\n# Buildup estimate: scatter-to-primary ~0.18 on-axis at 5 cm for Co-60 with small field\\nb_sp = 0.18\\ntotal_frac = primary_frac * (1 + b_sp)\\nscatter_frac_fluence = 1 - primary_frac / total_frac\\n\\nmean_E_primary = np.average(E_co, weights=w_co)\\nmean_E_scattered = mean_E_primary * 0.75  # scattered photons are softer\\n\\nefluo_p = primary_frac * mean_E_primary\\nefluo_s = (total_frac - primary_frac) * mean_E_scattered\\nscatter_frac_efluo = efluoa_s / (eflua_p + efluoa_s) if False else eflua_s / (eflua_p + efluoa_s)\\n\\nmean_E_all = (eflua_p + efuala_s) / total_frac if False else primary_frac * mean_E_primary / total_frac * mean_E_primary + (total_frac - primary_frac) * mean_E_scattered / total_frac\\nmean_E_all = primary_frac * mean_E_primary + (total_frac - primary_frac) * mean_E_scattered\\n\\nprint(f\\\"Primary: {primary_frac:.6f}, Total: {total_frac:.6f}\\\")\\nprint(f\\\"Scatter frac fluence: {scatter_frac_fluence:.6f}\\\")\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Good, that works. Now let me write the complete calculation in a single script:",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 27496,
+  "completion_tokens": 966,
+  "total_tokens": 28462,
+  "cost": 0.0003207,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 26240,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0003207,
+   "upstream_inference_prompt_cost": 0.00019512,
+   "upstream_inference_completions_cost": 0.00012558
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 17,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

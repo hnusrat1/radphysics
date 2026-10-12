@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791826601-NDZh4ZobJEofuI4lGBFO",
+ "object": "chat.completion",
+ "created": 1791826601,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "OK, the issue before was likely some invisible character problems. Let me write the full calculation step by step in smaller chunks.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_513c185b2944495c9033cbf9",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nfrom scipy.interpolate import interp1d\\n\\n# Load data\\nxcom_data = np.loadtxt('/tmp/data/xcom_water.txt')\\nxcom_en = xcom_data[:, 0]\\nxcom_coh = xcom_data[:, 1]\\nxcom_inc = xcom_data[:, 2]\\nxcom_photo = xcom_data[:, 3]\\nxcom_pair_n = xcom_data[:, 4]\\nxcom_pair_e = xcom_data[:, 5]\\nxcom_tot = xcom_data[:, 6]\\n\\nestar_data = np.loadtxt('/tmp/data/estar_water.txt')\\nestar_en = estar_data[:, 0]\\nestar_coll = estar_data[:, 1]\\nestar_rad = estar_data[:, 2]\\nestar_tot = estar_data[:, 3]\\nestar_csda = estar_data[:, 4]\\nestar_rad_yield = estar_data[:, 5]\\nestar_delta = estar_data[:, 6]\\n\\n# Interpolation functions\\nf_coh = interp1d(xcom_en, xcom_coh, kind='linear', bounds_error=False, fill_value=0.0)\\nf_inc = interp1d(xcom_en, xcom_inc, kind='linear', bounds_error=False, fill_value=0.0)\\nf_photo = interp1d(xcom_en, xcom_photo, kind='linear', bounds_error=False, fill_value=0.0)\\nf_pair_n = interp1d(xcom_en, xcom_pair_n, kind='linear', bounds_error=False, fill_value=0.0)\\nf_pair_e = interp1d(xcom_en, xcom_pair_e, kind='linear', bounds_error=False, fill_value=0.0)\\nf_tot = interp1d(xcom_en, xcom_tot, kind='linear', bounds_error=False, fill_value=0.0)\\n\\nf_coll = interp1d(estar_en, estar_coll, kind='linear', bounds_error=False, fill_value=0.0)\\nf_rad = interp1d(estar_en, estar_rad, kind='linear', bounds_error=False, fill_value=0.0)\\nf_csda = interp1d(estar_en, estar_csda, kind='linear', bounds_error=False, fill_value=0.0)\\nf_rad_yield = interp1d(estar_en, estar_rad_yield, kind='linear', bounds_error=False, fill_value=0.0)\\n\\n# Constants\\nmec2 = 0.511\\nrho = 1.0\\nE0 = 2.0\\n\\nmu_tot_0 = float(f_tot(E0))\\nmu_inc_0 = float(f_inc(E0))\\nmu_coh_0 = float(f_coh(E0))\\nmu_photo_0 = float(f_photo(E0))\\nmu_pair_0 = float(f_pair_n(E0)) + float(f_pair_e(E0))\\n\\nprint(f\\\"Cross sections at {E0} MeV:\\\")\\nprint(f\\\"  Total: {mu_tot_0:.6f}\\\")\\nprint(f\\\"  Incoherent: {mu_inc_0:.6f}\\\")\\n\\n# L1 primary fluence per phi0\\nL1_primary_fluence_per_phi0 = np.exp(-mu_tot_0 * rho * 10.0)\\nprint(f\\\"L1_primary_fluence_per_phi0 = {L1_primary_fluence_per_phi0:.6f}\\\")\\n\\n# Angular primary - all in last bin (cos theta near 1)\\nL1_angular_primary = [0.0]*9 + [1.0]\\n\\nprint(\\\"Basic setup done\\\")\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "OK, the issue before was likely some invisible character problems. Let me write the full calculation step by step in smaller chunks.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 21435,
+  "completion_tokens": 856,
+  "total_tokens": 22291,
+  "cost": 0.000912216228,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 16384,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000912216228,
+   "upstream_inference_prompt_cost": 0.000756663908,
+   "upstream_inference_completions_cost": 0.00015555232
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 25,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

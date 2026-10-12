@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791826739-4Tk9eIHV1coZ5wK0Zggr",
+ "object": "chat.completion",
+ "created": 1791826739,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "OK, short code works. The issue is that my previous attempts had some malformed JSON or too-long strings that broke the parsing. Let me write the code step by step in small chunks.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_aff941760f704d60b9249d83",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nfrom scipy.interpolate import interp1d\\n\\nxcom = np.loadtxt('/tmp/data/xcom_water.txt')\\nxcom_e = xcom[:,0]\\nxcom_tot = xcom[:,6]\\nf_tot = interp1d(xcom_e, xcom_tot, kind='linear', bounds_error=False, fill_value=0.0)\\nmu_tot_0 = float(f_tot(2.0))\\nprint(f\\\"mu_tot at 2 MeV = {mu_tot_0:.6f}\\\")\\nprint(f\\\"Primary atten = {np.exp(-mu_tot_0*10):.6f}\\\")\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "OK, short code works. The issue is that my previous attempts had some malformed JSON or too-long strings that broke the parsing. Let me write the code step by step in small chunks.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 37421,
+  "completion_tokens": 225,
+  "total_tokens": 37646,
+  "cost": 0.001059118676,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 32768,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001059118676,
+   "upstream_inference_prompt_cost": 0.001018231676,
+   "upstream_inference_completions_cost": 4.0887e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 39,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

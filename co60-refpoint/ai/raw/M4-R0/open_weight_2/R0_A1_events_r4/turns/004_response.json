@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791827087-oXzKggiiM92PBT8DDv3b",
+ "object": "chat.completion",
+ "created": 1791827087,
+ "model": "qwen/qwen3.7-flash",
+ "provider": "Alibaba",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Forgot to import json in the second script. Let's fix that and print.\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_7ea1567622f844b09f7fb2e1",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import json\\nwith open(\\\"events.json\\\", \\\"r\\\") as f:\\n    data = json.load(f)\\nprint(json.dumps(data, indent=2))\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Forgot to import json in the second script. Let's fix that and print.\n",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 20181,
+  "completion_tokens": 76,
+  "total_tokens": 20257,
+  "cost": 0.000148366,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 19456,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000148366,
+   "upstream_inference_prompt_cost": 0.000138486,
+   "upstream_inference_completions_cost": 9.88e-06
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 16,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

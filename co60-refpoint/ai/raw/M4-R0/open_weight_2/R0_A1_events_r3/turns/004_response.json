@@ -1,0 +1,54 @@
+{
+ "id": "gen-1791826856-zcAMUJf0cOzLBgM6osu0",
+ "object": "chat.completion",
+ "created": 1791826856,
+ "model": "qwen/qwen3.7-flash",
+ "provider": "Alibaba",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "stop",
+   "native_finish_reason": "stop",
+   "message": {
+    "role": "assistant",
+    "content": "```json\n{\n \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n \"type\": \"object\",\n \"required\": [\n  \"method\",\n  \"events\"\n ],\n \"additionalProperties\": false,\n \"properties\": {\n  \"method\": {\n   \"type\": \"string\"\n  },\n  \"events\": {\n   \"type\": \"array\",\n   \"items\": {\n    \"type\": \"object\",\n    \"additionalProperties\": false,\n    \"required\": [\n     \"process\",\n     \"e_in_MeV\",\n     \"e_out_MeV\",\n     \"cos_scatter\",\n     \"t_e_MeV\",\n     \"cos_electron\",\n     \"t_positron_MeV\"\n    ],\n    \"properties\": {\n     \"process\": {\n      \"type\": \"string\",\n      \"enum\": [\n       \"compton\",\n       \"photoelectric\",\n       \"pair\",\n       \"rayleigh\"\n      ]\n     },\n     \"e_in_MeV\": {\n      \"type\": \"number\"\n     },\n     \"e_out_MeV\": {\n      \"type\": [\n       \"number\",\n       \"null\"\n      ]\n     },\n     \"cos_scatter\": {\n      \"type\": [\n       \"number\",\n       \"null\"\n      ]\n     },\n     \"t_e_MeV\": {\n      \"type\": \"number\"\n     },\n     \"cos_electron\": {\n      \"type\": [\n       \"number\",\n       \"null\"\n      ]\n     },\n     \"t_positron_MeV\": {\n      \"type\": [\n       \"number\",\n       \"null\"\n      ]\n     }\n    }\n   },\n   \"minItems\": 200,\n   \"maxItems\": 200\n  }\n }\n}\n```",
+    "refusal": null,
+    "reasoning": "The output shows the JSON is being generated correctly with 200 events. The structure matches the schema. I notice some scattered photons have energies lower than the primary lines, which is correct (Compton scatter). Photoelectric and Rayleigh events are also present. The `cos_electron` for photoelectric is sampled forward-biased, which is physically reasonable.\n\nI will now format the final response to include the full JSON object as requested.\nOne minor check: The prompt asks for `t_positron_MeV` to be null for non-pair events. My code sets it to `None` which becomes `null` in JSON. This is correct.\nThe `method` string is concise.\nThe events list has exactly 200 items.\nI will construct the final answer.\n",
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The output shows the JSON is being generated correctly with 200 events. The structure matches the schema. I notice some scattered photons have energies lower than the primary lines, which is correct (Compton scatter). Photoelectric and Rayleigh events are also present. The `cos_electron` for photoelectric is sampled forward-biased, which is physically reasonable.\n\nI will now format the final response to include the full JSON object as requested.\nOne minor check: The prompt asks for `t_positron_MeV` to be null for non-pair events. My code sets it to `None` which becomes `null` in JSON. This is correct.\nThe `method` string is concise.\nThe events list has exactly 200 items.\nI will construct the final answer.\n",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 23453,
+  "completion_tokens": 610,
+  "total_tokens": 24063,
+  "cost": 0.000530986,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 10496,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000530986,
+   "upstream_inference_prompt_cost": 0.000451686,
+   "upstream_inference_completions_cost": 7.93e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 167,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

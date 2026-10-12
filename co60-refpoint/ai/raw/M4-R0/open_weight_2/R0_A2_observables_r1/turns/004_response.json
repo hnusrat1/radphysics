@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791826570-FLspOUvuIdOx7mZ2yd1e",
+ "object": "chat.completion",
+ "created": 1791826570,
+ "model": "qwen/qwen3.7-flash",
+ "provider": "Alibaba",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Let's redefine and print properly.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_686209da26e04649b2c9c0c0",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nxcom = np.loadtxt('/tmp/data/xcom_water.txt')\\nprint(xcom.shape)\\nprint(\\\"Rows 0-5, cols:\\\", xcom[0:6])\\n# Check energy values\\nprint(\\\"Energies:\\\", xcom[:,0])\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Let's redefine and print properly.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 7990,
+  "completion_tokens": 93,
+  "total_tokens": 8083,
+  "cost": 8.283e-05,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 7040,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 8.283e-05,
+   "upstream_inference_prompt_cost": 7.074e-05,
+   "upstream_inference_completions_cost": 1.209e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 7,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

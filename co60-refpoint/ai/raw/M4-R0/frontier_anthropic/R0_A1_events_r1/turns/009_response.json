@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791826826-mELVNOpTLBFgevilGIha",
+ "object": "chat.completion",
+ "created": 1791826826,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "The sample of 199 Compton and 1 Rayleigh event looks statistically consistent with expected rates, and the absence of a pair event is plausible given its low probability. The energy spectrum showing many low-energy scattered events also looks right, so I'm ready to write up the answer.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_015gNxgwHaQcFxWXD762MJG5",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"print(open('answer.json').read())\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The sample of 199 Compton and 1 Rayleigh event looks statistically consistent with expected rates, and the absence of a pair event is plausible given its low probability. The energy spectrum showing many low-energy scattered events also looks right, so I'm ready to write up the answer.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS2QkKEAgSGAI4AUIIdGhpbmtpbmcSDImiHhSajdWJ+bOvphoMyXUXNyw0bVyFO6NMIjDHMv6petS0bbieTaVW1w456Kyx1jQ00iWAfYWpAoC7+q4BHB4myqhViw//eASTdIcq9ghF+cFEdAMm9xVSUHgvtafyrRHB+T85MGa0aOyBhbVql1zkqoQhg34CLMwupSakz/wj3F+mNjlkuy5qebl80UswQk/2Z1gwrVByjRgeJnuHXraumxs/3kF2qKGqTb/rsW+Fpxh9ac1dQMcQENnXSIC6o4seyLOBeArL4PFk75/7QFLfS/5RGmH2XiCE8QkMMoi0lD1NBnNdjsB1F8W6qQiVnisy7GD/4j24+Yp6X5r6V94rt3WHj7a03PJS2aeSh5F7BzKLz9731svuYsj7sN/M+4Faz3jR6PTV0rV6gbIll1SHxEe1MFtvqVaHjsEmy1Xvq+xH4N8RhVlkl47Uxf2NWLzK4P4U9SFc0mNdeZxQphznUv1YzeUbStbnI1sA0QLVk+R18AjhtNF2eQpaDHgpGhHSSoBJ89cZaVKj1qxDhFQ8pXthpHu0MDc2CReiMZ51hhSRyHHcHiR0gFcuBK3QhILFU4Hy4xWgso70zuKyHO59ZpWPknAh8wUXE7ZW9IxUyr51U39cbi17wpqi+Ce+l2XgRCgELGeMVg4UFCgOqNJl4q/Agu8K8ouwlYyEJZ1JOV8QJeTICMYLx6Zvlg0jxlx6HkL9RLqWyWwx34wfnEF9gjSFUZ5SMOXHP+pTgAtdnsFgJKG8QY2iUumNwjtU43QxUMFIxar6jMQEq8aK3SOOjFTpcyxDMDyt33VaXt7LAfeqAVoAsd9TerLmFohB5oLGjEB+csNQicr3ACmzJ5shW1Rg/DUMp5UvKVjtR9yfy9thKpD3szm54NNVZKzJqrRMioV7nvdd5+O4F8WE861e62CSjPXp0bNuQ6UU8LYQH7uYQz1bzWVNgso/X6hWSrCZcnJv0RoOaScGleegwQwUUChMLpa7nxZTBqjM3PEy5iN+R9ivgi0M0s9Bf9TfE74dKkKxwiQXnpgm5evq+jAInBL6JuVGAyFxFsxhvY+DpBoAAzSoVOKSAE5Whc9g5lBlLssq3mT3xz7VAfPysK2T14DwyK9esBLD0oVbJ9HZeIPSL9UxDVpGBUsqkAe8A+FE5EM6yF/KTd5hztI8Dj67qrECizv0XqLs2JiKRfecvJcU4XyQurhQR3LGETqi0qViZ953dMzzZVjMIR4akp4XNLXbazDUXeaQcLbsFxECWYS5tZq2jZAZPWJFUPzzGjlo/NWTmLJD64bngAfPmFmiPJuP5Fi3t753eyAfhkKphr3/nsM3vuaff2WlPrA81gupZlzEKOyxrmXTN9PodWHEOTbfR5G+Bbf0MV/l5aRqAE4TjJVVs1PKhqeQhIF2e80pURk5idEy9fslYMCccRot7Nqvpr4SvlrKwlkW1CuPVj1rki1yb/T5qBl8NPzPUv6B8KEPYQzkxIX/QZVw05rLz+I4fl2DDws4d6YTJE96T3C4wkQcNWIBGO+n/banELvCska136P9WHIUMnYLXXoyLuw5gpix7wxN4m0zb1zegDDp22M3g3Ajv1qs2r4YULcZre9lLzNgeFcsIuEABoKEhSrqZRgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 31724,
+  "completion_tokens": 225,
+  "total_tokens": 31949,
+  "cost": 0.000669005,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 29643,
+   "cache_write_tokens": 2079,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000669005,
+   "upstream_inference_prompt_cost": 0.000556505,
+   "upstream_inference_completions_cost": 0.0001125
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 169,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791827097-K930QrHQOcTQhVNaR0xu",
+ "object": "chat.completion",
+ "created": 1791827097,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I keep making typos. Let me be more systematic. Instead of rewriting everything from scratch each time, let me just add a new cell with the main simulation loop, using the functions from the earlier cell that worked (call 024). Let me check which cell had all functions correct.\n\nCell 024 had working functions. Let me just add the main simulation loop using those functions.\n\nActually, the issue is that each Python call is independent - functions from previous calls don't persist. So I need to define everything in each call.\n\nLet me write a single complete and careful block. I'll go through it line by line.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_64aad616922c4ac9a4e7aa51",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nfrom numpy.random import default_rng\\nimport time\\n\\nrng = default_rng(42)\\n\\n# ============================================================\\n# All functions in one block, carefully written\\n# ============================================================\\n\\nmec2 = 0.5110034\\nre = 2.8179403262e-13\\nnel_cm3 = 6.02214076e23 * 10 / 18.01528\\n\\ndef sigma_KN(E):\\n    a = E / mec2\\n    term = ((1+a)/a**2 * (2*(1+a)/(1+2*a) - np.log(1+2*a)/a) +\\n            np.log(1+2*a)/(2*a) - (1+3*a)/(1+2*a)**2)\\n    return 2.0 * np.pi * re**2 * term\\n\\ndef mu_c(E): return nel_cm3 * sigma_KN(E)\\ndef mu_p(E): return 0.00057 * (1.0/E)**3.5\\ndef mu_pp(E):\\n    if E <= 1.022:\\n        return 0.0\\n    return 0.00035 * (E - 1.022) / (1.3325 - 1.022)\\ndef mu_r(E): return 0.00033 * (1.0/E)**2\\ndef mu_t(E): return mu_c(E) + mu_p(E) + mu_pp(E) + mu_r(E)\\n\\nsrc = np.array([0.0, 0.0, -100.0])\\nSCZMIN, SCZMAX = 4.9, 5.1\\nPHZMIN, PHZMAX = 0.0, 30.0\\nPHHALF = 15.0\\n\\ndef in_scoring(p):\\n    return SCZMIN <= p[2] <= SCZMAX and (p[0]**2 + p[1]**2) <= 1.0\\n\\ndef dist_exit(pos, dir):\\n    eps = 1e-12\\n    tmin = float('inf')\\n    for zval in [PHZMIN, PHZMAX]:\\n        dz = zval - pos[2]\\n        if abs(dir[2]) > eps and dz/dir[2] > 0:\\n            t = dz / dir[2]\\n            if t > eps:\\n                cp = pos + t * dir\\n                if abs(cp[0]) <= PHHALF+eps and abs(cp[1]) <= PHHALF+eps:\\n                    tmin = min(tmin, t)\\n    for xval in [-PHHALF, PHHALF]:\\n        dx = xval - po[0]\\n        if abs(ir[0]) > eps and dx/dir[0] > 0:            t = dx / dir[0]\\n            if t > eps:\\n                cp = pos + t * dir\\n                if -eps <= cp[2] <= PHZMAX+eps and abs(cp[1]) <= PHHALF+eps:                    tmin = min(tmin, t)    for yval in [-PHHALF, PHHALF]:\\n        dy = yval - pos[1]\\n        if abs(dir[1]) > ep and dy/dir[1] > 0:\\n            t = dy / dir[1]\\n            if t > eps:\\n                cp = pos + t * dir\\n                if -eps <= cp[2] <= PHIMAX+eps and abs(p[0]) <= PHALF+eps:                    tmin = min(tmin, t)    return tmin\\n\\nprint(\\\"Midway...\\\")\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I keep making typos. Let me be more systematic. Instead of rewriting everything from scratch each time, let me just add a new cell with the main simulation loop, using the functions from the earlier cell that worked (call 024). Let me check which cell had all functions correct.\n\nCell 024 had working functions. Let me just add the main simulation loop using those functions.\n\nActually, the issue is that each Python call is independent - functions from previous calls don't persist. So I need to define everything in each call.\n\nLet me write a single complete and careful block. I'll go through it line by line.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 61866,
+  "completion_tokens": 955,
+  "total_tokens": 62821,
+  "cost": 0.001924196736,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 53248,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001924196736,
+   "upstream_inference_prompt_cost": 0.001750654136,
+   "upstream_inference_completions_cost": 0.0001735426
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 126,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

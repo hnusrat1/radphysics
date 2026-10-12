@@ -1,0 +1,5 @@
+estar = np.loadtxt('/tmp/data/estar_water.txt')
+print("ESTAR shape:", estar.shape)
+print("Header:", open('/tmp/data/estar_water.txt').readline().strip())
+print("First few rows:")
+print(estar[0:6])

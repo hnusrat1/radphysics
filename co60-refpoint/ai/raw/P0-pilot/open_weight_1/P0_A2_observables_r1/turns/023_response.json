@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791826771-5N5eXwJMDzrjv5KQEGlF",
+ "object": "chat.completion",
+ "created": 1791826771,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "OK, simple code works. The problem is that when I write longer code with special characters, something gets corrupted. Let me try writing the code as a very clean string first, then executing it.\n\nActually, let me just try to write the full script to a file using a different approach.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_0bc77aa9b8da466ebc68a79a",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import sys\\nsys.version\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "OK, simple code works. The problem is that when I write longer code with special characters, something gets corrupted. Let me try writing the code as a very clean string first, then executing it.\n\nActually, let me just try to write the full script to a file using a different approach.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 40565,
+  "completion_tokens": 107,
+  "total_tokens": 40672,
+  "cost": 0.001918799652,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 24576,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001918799652,
+   "upstream_inference_prompt_cost": 0.001899355612,
+   "upstream_inference_completions_cost": 1.944404e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 59,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

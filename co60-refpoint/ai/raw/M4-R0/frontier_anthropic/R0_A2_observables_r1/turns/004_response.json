@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791826908-I2TR39lROcAMiCuF3gWf",
+ "object": "chat.completion",
+ "created": 1791826908,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "State does not persist between calls, so I'll put the code in a module file and import it.",
+    "refusal": null,
+    "reasoning": "It seems state doesn't persist between calls since each runs as a separate script, but files in the working directory do persist. So I should write my code into a module file like lib.py and import it instead of relying on in-memory variables.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01FJGuzTvnr8Q62UYgh8zTPV",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\ncode = r'''\\nimport numpy as np\\nfrom scipy import integrate\\ndef load(fn):\\n    rows=[l.split() for l in open(fn) if l.strip() and not l.startswith('#')]\\n    return np.array([[float(x) for x in r] for r in rows])\\nX=load('/tmp/data/xcom_water.txt')\\nS=load('/tmp/data/estar_water.txt')\\nEx=X[:,0]\\ndef lli(x,y,xn):\\n    return np.exp(np.interp(np.log(xn),np.log(x),np.log(np.maximum(y,1e-300))))\\ndef mu_inc(E): return lli(Ex,X[:,2],E)\\ndef mu_coh(E): return lli(Ex,X[:,1],E)\\ndef mu_pe(E): return lli(Ex,X[:,3],E)\\ndef mu_pair(E): return lli(Ex,X[:,4]+X[:,5],E)\\ndef mutot(E): return lli(Ex,X[:,6],E)\\nre=2.8179403e-13; ne=3.3428e23; mec2=0.51099895\\nOm_p=integrate.dblquad(lambda v,u:(1+u*u+v*v)**-1.5, -0.05,0.05, -0.05,0.05)[0]\\ndef kn_f(E,mu):\\n    k=E/mec2; eps=1/(1+k*(1-mu))\\n    return eps*eps*(eps+1/eps-(1-mu*mu))\\ndef kn_fmax(E):\\n    mug=np.linspace(-1,1,401)\\n    return kn_f(np.asarray(E)[...,None],mug[None,:]).max(axis=-1)*1.001\\ndef kn_sample_mu(E,rng):\\n    n=len(E); fmax=kn_fmax(E)\\n    out=np.empty(n); todo=np.arange(n)\\n    while len(todo):\\n        mu=rng.uniform(-1,1,len(todo))\\n        f=kn_f(E[todo],mu)\\n        acc=rng.uniform(0,1,len(todo))*fmax[todo]<f\\n        out[todo[acc]]=mu[acc]; todo=todo[~acc]\\n    return out\\ndef rot(d,mu,phi):\\n    # d: (n,3) unit; returns unit vectors at angle acos(mu), azimuth phi\\n    n=len(d)\\n    a=np.where((np.abs(d[:,2])<0.9)[:,None], np.cross(d,[0,0,1.0]), np.cross(d,[1.0,0,0]))\\n    a/=np.linalg.norm(a,axis=1)[:,None]\\n    b=np.cross(d,a)\\n    s=np.sqrt(np.clip(1-mu*mu,0,1))\\n    return mu[:,None]*d+s[:,None]*(np.cos(phi)[:,None]*a+np.sin(phi)[:,None]*b)\\ndef iso(n,rng):\\n    z=rng.uniform(-1,1,n); p=rng.uniform(0,2*np.pi,n); s=np.sqrt(1-z*z)\\n    return np.stack([s*np.cos(p),s*np.sin(p),z],1)\\ndef ray_exit(pos,d):\\n    # distance to exit box x,y in +-15, z in [0,30]\\n    t=np.full(len(pos),np.inf)\\n    for ax,lo,hi in [(0,-15,15),(1,-15,15),(2,0,30)]:\\n        dd=d[:,ax]\\n        with np.errstate(divide='ignore',invalid='ignore'):\\n            tp=np.where(dd>1e-14,(hi-pos[:,ax])/dd,np.inf)\\n            tm=np.where(dd<-1e-14,(lo-pos[:,ax])/dd,np.inf)\\n        t=np.minimum(t,np.minimum(tp,tm))\\n    return t\\n'''\\nopen('/tmp/work/lib.py','w').write(code) if __import__('os').path.isdir('/tmp/work') else None\\nimport os\\nos.makedirs('/tmp/work',exist_ok=True)\\nopen('/tmp/work/lib.py','w').write(code)\\nprint(subprocess.run(['bash','-lc','cd /tmp/work && python -c \\\"import lib; print(lib.Om_p, lib.mutot(1.1732))\\\"'],capture_output=True,text=True))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "It seems state doesn't persist between calls since each runs as a separate script, but files in the working directory do persist. So I should write my code into a module file like lib.py and import it instead of relying on in-memory variables.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSgggKEAgSGAI4AUIIdGhpbmtpbmcSDLasUzdStHngHXEXGRoMClff4Ud/DuE3Zw10IjCZn27hj1LkmAWJnkSlhMLiZq1aSRyUaudYPXDi/pWeg3bUJaW/Fy8ykUrCJizCVFcqnwejzA0KKSmyZcjsvOddcnlgOpQKcj+2aNDSyvz9+nXlL16r67qyyqdH4y8aEMVylZdaZHWvIAIRYeyz6rEatdLfQaQTy+xkKN7aYCR8b5s0Kjj/cA4bchjDviM5L0WepsjvykFIyrQia/chQY2JmjRWZqlmEA6xR3BHVKZFzA+hR3LO5IRj0OeK+YnN9T3ca+VcSvli7cevYUFbzwuYQUM+qZ5boggPK3Lsciq8HhW/vLOF+a06SItl3I0/SLaAzSTSlCaJ71kul8WlTwPQOJgGHKKrjs+R7gfFBhzXAbntkPnn2M7AOQj5oKzBMamB8EaCYLmtz9W7Ssxn45NNcgg/fsZIyYH3iOUUBgQtPtKyaG5cMK04jCXPwNO1SEPDb7oB77GhEy9qdT0+f/ndHmNbYPaKU5WSkL9ykwcgYUmXYUtWtmxgbVu3r6wxuc6LsjGIlaMZ9+rLPLTxQRm3Fub6kR2moy3pU1oNwH3dAEy0fLxcBa/AkQXydhqOOym3Ie/HWYSdQCPqY25G2CL5bJncbChQFhhYIiXImPrZWUyib1S0GhYElGsYobXVWjun6AtPk8HdiyGoq4VNlPVcIYJL10PqJZIqYNlxnsFtiFdaCqDu5UU8weThM9RGqKdobuXUSGydrdr1Fv+XWCi7C+r7pXV6dmEjVLSAnyCiXq4iBn67tvgVqvYUvageDOnFqzKUsTc8TaooA+hwuqYbxvhF3qK2YVYLFUCOrZcvodjyVbVGqIHZxajBbReUCLjtHIvxha+wyQr5M2h9djrOuakr6C0lxJ9IlaV3gDU3mRxhWJaep+i5eoyd1hzHO2yW86nKPSiwUqjbklQQxB1wl4mOryWTnko+r3QZaIFlcMgdqYl5H5rUc6aGyt1MkaExMGkoqj/IxaHT+7u5HPvYudSEvZz++xmg9a/B71/+pYsIC+dnBhlooAju2uv903pb4ctYnSv8kKw9HDrClccG3nLQaYf0PXU60dfD2c8fg1sR2TyV8tVasv3nTCLf14bHL+TID8zbNW+4YfrqSo5yNyvTx84UoBOb87qktB4VW9r9zwdq+BcxsKVLVbhutP0Yu5rX1v9JlITrlX/yTDs42mQMbGAN7IFxuo1bTQarL5HVEjP0PR1vO9PpnDzgnG4H2AiLqsnPK4NuMyMz075ZQgbRs5iE90fjc4y3sQ3SlG3THHG8n5uoxIU1LKL/S59vGuaeYxY3UV3aNrPfIkBe6ZEYAQ==.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 91259,
+  "completion_tokens": 1606,
+  "total_tokens": 92865,
+  "cost": 0.005118045,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 61672,
+   "cache_write_tokens": 29585,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.005118045,
+   "upstream_inference_prompt_cost": 0.004315045,
+   "upstream_inference_completions_cost": 0.000803
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 80,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

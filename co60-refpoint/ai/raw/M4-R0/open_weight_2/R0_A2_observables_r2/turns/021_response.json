@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791826872-Ni6Bj8Hdsg6uHCtubcKC",
+ "object": "chat.completion",
+ "created": 1791826872,
+ "model": "qwen/qwen3.7-flash",
+ "provider": "Alibaba",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I keep making typos. Let me write a very clean version carefully:",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_517d19ce36494cc29bdacc78",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nimport json\\n\\n# Load data\\nxcom = np.loadtxt('/tmp/data/xcom_water.txt', comments='#')\\nestar = np.loadtxt('/tmp/data/estar_water.txt', comments='#')\\n\\ndef interp_xcom(ci, E):\\n    return np.interp(np.log10(E), np.log10(xcom[:, 0]), xcom[:, ci])\\n\\ndef interp_estar(ci, E):\\n    return np.interp(E, estar[:, 0], estar[:, ci])\\n\\nE_co = np.array([1.1732, 1.3325])\\nw_co = np.array([0.5, 0.5])\\ndepth = 5.0\\nrho = 1.0\\n\\npe_edges = np.array([0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, \\n                     0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, \\n                     1, 1.05, 1.1, 1.15, 1.2, 1.25, 1.3, 1.35, 1.4])\\nee_edges = np.array([0.01, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45,\\n                     0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95,\\n                     1, 1.05, 1.1, 1.15, 1.2, 1.4])\\nct_edges = np.array([-1, -0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1])\\n\\n# Layer 1 calculation\\nmu_t_w = sum(w * interp_xcom(6, E) for w, E in zip(w_co, E_co))\\nmu_l = mu_t_w * rho\\nprimary_frac = np.exp(-mu_l * depth)\\nb_sp = 0.18\\ntotal_frac = primary_frac * (1 + b_sp)\\nscatter_frac_fluence = 1 - primary_frac / total_frac\\n\\nmean_E_primary = np.average(E_co, weights=w_co)\\nmean_E_scattered = mean_E_primary * 0.75\\nefluo_primary = primary_frac * mean_E_primary\\nefluo_scattered = (total_frac - primary_frac) * mean_E_scattered\\nscatter_frac_efluo = eflua_secondary if 'eflua_secondary' not in globals() else eflua_secondary\\nmean_E_all = (eflua_primary + efluoa_secondary) / total_frac\\n\\nprint(f\\\"L1_primary={primary_frac:.6f}, L1_total={total_frac:.6f}\\\")\\nprint(f\\\"Mean E primary={mean_E_primary:.3f}, Mean E scattered={mean_E_scattered:.3f}\\\")\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I keep making typos. Let me write a very clean version carefully:",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 28630,
+  "completion_tokens": 817,
+  "total_tokens": 29447,
+  "cost": 0.00033535,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 26240,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00033535,
+   "upstream_inference_prompt_cost": 0.00022914,
+   "upstream_inference_completions_cost": 0.00010621
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 15,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

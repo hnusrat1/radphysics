@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791826818-2exgN2LLb1hnIDsWQBvO",
+ "object": "chat.completion",
+ "created": 1791826818,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "With 39 pair events out of 21671 total, that's about 0.18%, which roughly matches the expected cross-section fraction at 1.2 MeV. Now I'll sample 200 events uniformly at random to build the events JSON output.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01FNzeRZjEe4CDv3Puwrfd7D",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport random\\nrs=random.Random(2024)\\nsamp=rs.sample(tot,200)\\nevents=[]\\nfor e in samp:\\n    proc,ein,eout,cs,te,ce,tp=e\\n    events.append({\\\"process\\\":proc,\\\"e_in_MeV\\\":round(ein,5),\\n                   \\\"e_out_MeV\\\":None if eout is None else round(eout,5),\\n                   \\\"cos_scatter\\\":None if cs is None else round(cs,5),\\n                   \\\"t_e_MeV\\\":round(te,5),\\n                   \\\"cos_electron\\\":None if ce is None else round(ce,5),\\n                   \\\"t_positron_MeV\\\":None if tp is None else round(tp,5)})\\nprint(collections.Counter(x['process'] for x in events), collections.Counter(x['e_in_MeV'] for x in events))\\nout={\\\"method\\\":\\\"Analog Monte Carlo (numpy) of point source 100 cm SSD, 10x10 field, uniform solid-angle pyramid sampling, two Co-60-like lines (1.1732/1.3325 MeV, equal weight), 30 cm water cube in vacuum. Photons transported with exponential free paths and water cross sections (Klein-Nishina Compton with electron-density scaling, Rayleigh, photoelectric and pair approximations; annihilation photons tracked). Only interactions inside the 1 cm radius, 0.2 cm thick cylinder at 5 cm depth were recorded (~21,700 from 4e7 histories); 200 were drawn uniformly at random without replacement. Bremsstrahlung and fluorescence neglected; pair energy split uniform; electron angles approximate.\\\",\\n     \\\"events\\\":events}\\njson.dump(out,open('answer.json','w'))\\nprint(len(events)); print(json.dumps(events[:3]))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "With 39 pair events out of 21671 total, that's about 0.18%, which roughly matches the expected cross-section fraction at 1.2 MeV. Now I'll sample 200 events uniformly at random to build the events JSON output.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "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.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 28587,
+  "completion_tokens": 905,
+  "total_tokens": 29492,
+  "cost": 0.000827675,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 27810,
+   "cache_write_tokens": 775,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000827675,
+   "upstream_inference_prompt_cost": 0.000375175,
+   "upstream_inference_completions_cost": 0.0004525
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 276,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

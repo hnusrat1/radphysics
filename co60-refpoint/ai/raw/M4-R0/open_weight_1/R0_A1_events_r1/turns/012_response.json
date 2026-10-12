@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791826892-Xi9yX6Pfjwqccm4wXTDN",
+ "object": "chat.completion",
+ "created": 1791826892,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I keep making stupid syntax errors. Let me write the code very carefully this time, testing each function individually.\n\nLet me write a clean, complete version in one go.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_583ff3176bdc4f63a2062b90",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nfrom numpy.random import default_rng\\n\\nrng = default_rng(42)\\n\\n# Constants\\nmec2 = 0.5110034\\nre = 2.8179403262e-13\\nnel_cm3 = 6.02214076e23 * 10 / 18.01528\\n\\ndef sigma_KN(E):\\n    a = E / mec2\\n    term = ((1+a)/a**2 * (2*(1+a)/(1+2*a) - np.log(1+2*a)/a) +\\n            np.log(1+2*a)/(2*a) - (1+3*a)/(1+2*a)**2)\\n    return 2 * np.pi * re**2 * term\\n\\ndef mu_c(E): return nel_cm3 * sigma_KN(E)\\ndef mu_p(E): return 0.00057 * (1.0/E)**3.5\\ndef mu_pp(E):\\n    if E <= 1.022:\\n        return 0.0\\n    return 0.00035 * (E-1.022)/(1.3325-1.022)\\ndef mu_r(E): return 0.00033 * (1.0/E)**2\\ndef mu_t(E): return mu_c(E)+mu_p(E)+mu_pp(E)+mu_r(E)\\n\\nprint(\\\"Cross sections at 1.1732:\\\", [mu_c(1.1732), mu_p(1.1732), mu_pp(1.1732), mu_r(1.1732), mu_t(1.1732)])\\nprint(\\\"Cross sections at 1.3325:\\\", [mu_c(1.3325), mu_p(1.3325), mu_pp(1.3325), mu_r(1.3325), mu_t(1.3325)])\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I keep making stupid syntax errors. Let me write the code very carefully this time, testing each function individually.\n\nLet me write a clean, complete version in one go.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 39401,
+  "completion_tokens": 471,
+  "total_tokens": 39872,
+  "cost": 0.001879184692,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 24576,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001879184692,
+   "upstream_inference_prompt_cost": 0.001793594572,
+   "upstream_inference_completions_cost": 8.559012e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 34,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

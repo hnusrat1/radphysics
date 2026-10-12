@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791826926-n8GhlgOWYrHrarD4tCLU",
+ "object": "chat.completion",
+ "created": 1791826926,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "This approach of writing everything at once is causing too many syntax errors. Let me be more careful and write a clean, correct version. I'll write it step by step, testing each function as I go.\n\nLet me write a proper, clean simulation now.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_9da8a2483e284bd7bf27aa57",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nfrom numpy.random import default_rng\\nimport time\\n\\nrng = default_rng(42)\\n\\n# ============================================================\\n# Physics constants\\n# ============================================================\\nmec2 = 0.5110034\\nre = 2.8179403262e-13\\nnel_cm3 = 6.02214076e23 * 10 / 18.01528\\n\\ndef sigma_KN(E):\\n    a = E / mec2\\n    term = ((1+a)/a**2 * (2*(1+a)/(1+2*a) - np.log(1+2*a)/a) +\\n            np.log(1+2*a)/(2*a) - (1+3*a)/(1+2*a)**2)\\n    return 2 * np.pi * re**2 * term\\n\\ndef mu_c(E): return nel_cm3 * sigma_KN(E)\\ndef mu_p(E): return 0.00057 * (1.0/E)**3.5\\ndef mu_pp(E):\\n    if E <= 1.022: return 0.0\\n    return 0.00035 * (E-1.022)/(1.3325-1.022)\\ndef mu_r(E): return 0.00033 * (1.0/E)**2\\ndef mu_t(E): return mu_c(E)+mu_p(E)+mu_pp(E)+mu_r(E)\\n\\n# ============================================================\\n# Geometry: phantom 30x30x30 at z=0..30, x,y in [-15,15]\\n# Source at (0,0,-100)\\n# Scoring: cylinder radius 1.0, z=4.9..5.1\\n# ============================================================\\nsrc = np.array([0.0, 0.0, -100.0])\\nSCZMIN, SCZMAX = 4.9, 5.1\\nSCRAD = 1.0\\nPHZMIN, PHZMAX = 0.0, 30.0\\nPHHALF = 15.0\\n\\ndef in_scoring(p):\\n    return SCZMIN <= p[2] <= SCZMAX and (p[0]**2 + p[1]**2) <= SCRAD**2\\n\\ndef dist_exit(pos, dir):\\n    \\\"\\\"\\\"Distance along dir from pos to exit phantom, or inf if no exit.\\\"\\\"\\\"\\n    eps = 1e-12\\n    tmin = float('inf')\\n    # Check z boundaries\\n    for zval, znorm in [(PHZMIN, -1.0), (PHZMAX, 1.0)]:\\n        # Direction should point towards the boundary\\n        dz = zval - pos[2]\\n        if abs(dir[2]) > eps and dz/dir[2] > 0:\\n            t = dz / dir[2]\\n            if t > eps:\\n                cp = pos + t * dir\\n                if abs(cp[0]) <= PHHALF+eps and abs(cp[1]) <= PHHALF+eps:\\n                    tmin = min(tmin, t)\\n    # Check x boundaries\\n    for xval in [-PHHALF, PHHALF]:\\n        dx = xval - pos[0]\\n        if abs(dir[0]) > eps and dx/dir[0] > 0:\\n            t = dx / dir[0]\\n            if t > eps:\\n                cp = pos + t * dir\\n                if cp[2] >= -eps and cp[2] <= PHZMAX+eps and abs(cp[1]) <= PHHALF+eps:\\n                    tmin = min(tmin, t)\\n    # Check y boundaries\\n    for yval in [-PHHALF, PHHALF]:\\n        dy = yval - pos[1]\\n        if abs(dir[1]) > eps and dy/dir[1] > 0:\\n            t = dy / dir[1]\\n            if t > eps:\\n                cp = pos + t * dir\\n                if cp[2] >= -eps and cp[2] <= PHZMAX+eps and abs(cp[0]) <= PHHALF+eps:\\n                    tmin = min(tmin, t)\\n    return tmin\\n\\n# Test geometry\\npos_test = np.array([0.0, 0.0, 0.0])\\ndir_test = np.array([0.0, 0.0, 1.0])\\nprint(\\\"Exit dist from surface:\\\", dist_exit(pos_test, dir_test))\\npos_test2 = np.array([0.0, 0.0, 5.0])\\nprint(\\\"Exit dist from 5cm depth:\\\", dist_exit(pos_test2, dir_test))\\nprint(\\\"In scoring at (0,0,5):\\\", in_scoring(np.array([0.0, 0.0, 5.0])))\\nprint(\\\"In scoring at (0.5,0.5,5):\\\", in_scoring(np.array([0.5, 0.5, 5.0])))\\nprint(\\\"In scoring at (1.1,0,5):\\\", in_scoring(np.array([1.1, 0.0, 5.0])))\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "This approach of writing everything at once is causing too many syntax errors. Let me be more careful and write a clean, correct version. I'll write it step by step, testing each function as I go.\n\nLet me write a proper, clean simulation now.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 43362,
+  "completion_tokens": 1213,
+  "total_tokens": 44575,
+  "cost": 0.001480727248,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 36864,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001480727248,
+   "upstream_inference_prompt_cost": 0.001260300888,
+   "upstream_inference_completions_cost": 0.00022042636
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 52,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}
