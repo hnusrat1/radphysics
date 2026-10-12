@@ -1,0 +1,412 @@
+run_id: M2-B0-option4
+purpose: 'Geometry B0 (STUDY_PLAN Section 4.2): cylindrical water phantom r 15 cm, depth 30 cm, circular
+  field r 5.64 cm at SSD 100 cm, vacuum outside; scoring cylinder r 1 cm, t 0.2 cm at 5 cm as in R0. Photon
+  and electron fluence spectra and s_w,air for comparison with FLURZnrc and SPRRZnrc; the dose is compared
+  through M2-B0-option4-bf.'
+created_utc: '2026-10-12T01:08:55Z'
+git:
+  commit: 9936611f501b440f8650e3e595767173a170e112
+  dirty: true
+machine:
+  hostname: vm
+  platform: Linux-6.18.44-fc-v114-x86_64-with-glibc2.39
+  cpu: Intel(R) Xeon(R) Processor @ 2.80GHz
+  logical_cpus: 4
+  compiler: c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+geant4:
+  version: 11.4.3
+  prefix: /opt/geant4/11.4.3
+  features: "Known Features:\n staticlibs[no]\n multithreading[yes]\n smartstack[no]\n php_as_hp[no]\n\
+    \ clhep[yes]\n expat[no]\n zlib[yes]\n gdml[no]\n ptl[yes]\n usolids[no]\n freetype[no]\n hdf5[no]\n\
+    \ g3tog4[no]\n qt[no]\n motif[no]\n raytracer-x11[no]\n opengl-x11[no]\n openinventor[no]\n vtk[no]"
+  datasets:
+    G4NDL:
+      envvar: G4NEUTRONHPDATA
+      path: /opt/geant4/data/G4NDL4.7.1
+      env_value: null
+    G4EMLOW:
+      envvar: G4LEDATA
+      path: /opt/geant4/data/G4EMLOW8.8
+      env_value: null
+    PhotonEvaporation:
+      envvar: G4LEVELGAMMADATA
+      path: /opt/geant4/data/PhotonEvaporation6.1.2
+      env_value: null
+    RadioactiveDecay:
+      envvar: G4RADIOACTIVEDATA
+      path: /opt/geant4/data/RadioactiveDecay6.1.2
+      env_value: null
+    G4PARTICLEXS:
+      envvar: G4PARTICLEXSDATA
+      path: /opt/geant4/data/G4PARTICLEXS4.2
+      env_value: null
+    G4PII:
+      envvar: G4PIIDATA
+      path: /opt/geant4/data/G4PII1.3
+      env_value: null
+    RealSurface:
+      envvar: G4REALSURFACEDATA
+      path: /opt/geant4/data/RealSurface2.2
+      env_value: null
+    G4SAIDDATA:
+      envvar: G4SAIDXSDATA
+      path: /opt/geant4/data/G4SAIDDATA2.0
+      env_value: null
+    G4ABLA:
+      envvar: G4ABLADATA
+      path: /opt/geant4/data/G4ABLA3.3
+      env_value: null
+    G4INCL:
+      envvar: G4INCLDATA
+      path: /opt/geant4/data/G4INCL1.3
+      env_value: null
+    G4ENSDFSTATE:
+      envvar: G4ENSDFSTATEDATA
+      path: /opt/geant4/data/G4ENSDFSTATE3.0
+      env_value: null
+    G4CHANNELING:
+      envvar: G4CHANNELINGDATA
+      path: /opt/geant4/data/G4CHANNELING2.0
+      env_value: null
+spec_file: mc/geant4/runspecs/M2-B0-option4.yaml
+spec:
+  run_id: M2-B0-option4
+  purpose: 'Geometry B0 (STUDY_PLAN Section 4.2): cylindrical water phantom r 15 cm, depth 30 cm, circular
+    field r 5.64 cm at SSD 100 cm, vacuum outside; scoring cylinder r 1 cm, t 0.2 cm at 5 cm as in R0.
+    Photon and electron fluence spectra and s_w,air for comparison with FLURZnrc and SPRRZnrc; the dose
+    is compared through M2-B0-option4-bf.'
+  physics: option4
+  threads: 4
+  batches: 20
+  histories_per_batch: 3000000
+  seed_base: 7401
+  geometry:
+    scoring_radius_cm: 1.0
+    scoring_thickness_cm: 0.2
+    scoring_depth_cm: 5.0
+    phantom_cylinder_cm:
+    - 15.0
+    - 30.0
+  source:
+    ssd_cm: 100.0
+    field_cm:
+    - 10.0
+    - 10.0
+    field_radius_cm: 5.64
+  cuts:
+    electron_threshold_keV: 10
+    gamma_threshold_keV: 10
+  russian_roulette:
+    enabled: true
+    survival: 0.05
+    roi_cm:
+    - 1.8
+    - 4.1
+    - 5.9
+  importance_cells_cm:
+  - - 8.0
+    - -1.0
+    - 14.0
+    - 2
+  - - 4.0
+    - 2.0
+    - 8.0
+    - 8
+  - - 2.5
+    - 3.4
+    - 6.6
+    - 32
+  pre_init_commands:
+  - /process/em/UseGeneralProcess false
+  - /process/msc/RangeFactor 0.04
+  depth_scan: false
+  event_sample_per_batch: 0
+bins_file: config/bins.yaml
+executable: /opt/build/co60app/co60app.m2
+executable_source_commit: 8ba73d08802efe0ad5af44c720ef583b794e8c84
+batches:
+- batch: 0
+  seeds:
+  - 7401001
+  - 7401002
+  exit_code: 0
+  wall_s: 156.9
+  command: /opt/build/co60app/co60app.m2 run.mac option4 4 --importance
+  histories: 3000000
+  D_over_phi0_Gy_cm2: 5.383516219722048e-12
+  D_rel_sem_history_by_history: 0.005836517879746687
+  energy_balance_max_abs_MeV: 0.00042809980895586186
+  untagged_tracks: 0
+- batch: 1
+  seeds:
+  - 7401003
+  - 7401004
+  exit_code: 0
+  wall_s: 152.5
+  command: /opt/build/co60app/co60app.m2 run.mac option4 4 --importance
+  histories: 3000000
+  D_over_phi0_Gy_cm2: 5.380402076066633e-12
+  D_rel_sem_history_by_history: 0.005875076808792822
+  energy_balance_max_abs_MeV: 8.809096645401304e-05
+  untagged_tracks: 0
+- batch: 2
+  seeds:
+  - 7401005
+  - 7401006
+  exit_code: 0
+  wall_s: 147.9
+  command: /opt/build/co60app/co60app.m2 run.mac option4 4 --importance
+  histories: 3000000
+  D_over_phi0_Gy_cm2: 5.376884673070233e-12
+  D_rel_sem_history_by_history: 0.005852014009274898
+  energy_balance_max_abs_MeV: 8.796775557673442e-05
+  untagged_tracks: 0
+- batch: 3
+  seeds:
+  - 7401007
+  - 7401008
+  exit_code: 0
+  wall_s: 152.0
+  command: /opt/build/co60app/co60app.m2 run.mac option4 4 --importance
+  histories: 3000000
+  D_over_phi0_Gy_cm2: 5.332826070958823e-12
+  D_rel_sem_history_by_history: 0.005876788952015761
+  energy_balance_max_abs_MeV: 5.89951081659823e-05
+  untagged_tracks: 0
+- batch: 4
+  seeds:
+  - 7401009
+  - 7401010
+  exit_code: 0
+  wall_s: 150.8
+  command: /opt/build/co60app/co60app.m2 run.mac option4 4 --importance
+  histories: 3000000
+  D_over_phi0_Gy_cm2: 5.364229977052039e-12
+  D_rel_sem_history_by_history: 0.00586788146132296
+  energy_balance_max_abs_MeV: 8.77472440599103e-05
+  untagged_tracks: 0
+- batch: 5
+  seeds:
+  - 7401011
+  - 7401012
+  exit_code: 0
+  wall_s: 153.1
+  command: /opt/build/co60app/co60app.m2 run.mac option4 4 --importance
+  histories: 3000000
+  D_over_phi0_Gy_cm2: 5.357145617968209e-12
+  D_rel_sem_history_by_history: 0.0058434796701934974
+  energy_balance_max_abs_MeV: 0.0006830491661669047
+  untagged_tracks: 0
+- batch: 6
+  seeds:
+  - 7401013
+  - 7401014
+  exit_code: 0
+  wall_s: 148.9
+  command: /opt/build/co60app/co60app.m2 run.mac option4 4 --importance
+  histories: 3000000
+  D_over_phi0_Gy_cm2: 5.324180017698773e-12
+  D_rel_sem_history_by_history: 0.005852377371265162
+  energy_balance_max_abs_MeV: 0.00013228544290710964
+  untagged_tracks: 0
+- batch: 7
+  seeds:
+  - 7401015
+  - 7401016
+  exit_code: 0
+  wall_s: 150.4
+  command: /opt/build/co60app/co60app.m2 run.mac option4 4 --importance
+  histories: 3000000
+  D_over_phi0_Gy_cm2: 5.391599625406215e-12
+  D_rel_sem_history_by_history: 0.00584830432908558
+  energy_balance_max_abs_MeV: 4.673218420525593e-05
+  untagged_tracks: 0
+- batch: 8
+  seeds:
+  - 7401017
+  - 7401018
+  exit_code: 0
+  wall_s: 153.3
+  command: /opt/build/co60app/co60app.m2 run.mac option4 4 --importance
+  histories: 3000000
+  D_over_phi0_Gy_cm2: 5.391079158843575e-12
+  D_rel_sem_history_by_history: 0.005827272644706959
+  energy_balance_max_abs_MeV: 9.716737602727399e-05
+  untagged_tracks: 0
+- batch: 9
+  seeds:
+  - 7401019
+  - 7401020
+  exit_code: 0
+  wall_s: 149.7
+  command: /opt/build/co60app/co60app.m2 run.mac option4 4 --importance
+  histories: 3000000
+  D_over_phi0_Gy_cm2: 5.347194103996417e-12
+  D_rel_sem_history_by_history: 0.005844787805123579
+  energy_balance_max_abs_MeV: 8.403214126206926e-05
+  untagged_tracks: 0
+- batch: 10
+  seeds:
+  - 7401021
+  - 7401022
+  exit_code: 0
+  wall_s: 150.6
+  command: /opt/build/co60app/co60app.m2 run.mac option4 4 --importance
+  histories: 3000000
+  D_over_phi0_Gy_cm2: 5.401445111022112e-12
+  D_rel_sem_history_by_history: 0.0058471041260154755
+  energy_balance_max_abs_MeV: 0.00010489470902008691
+  untagged_tracks: 0
+- batch: 11
+  seeds:
+  - 7401023
+  - 7401024
+  exit_code: 0
+  wall_s: 148.3
+  command: /opt/build/co60app/co60app.m2 run.mac option4 4 --importance
+  histories: 3000000
+  D_over_phi0_Gy_cm2: 5.331007321616284e-12
+  D_rel_sem_history_by_history: 0.005874032751614447
+  energy_balance_max_abs_MeV: 0.00039009416503343886
+  untagged_tracks: 0
+- batch: 12
+  seeds:
+  - 7401025
+  - 7401026
+  exit_code: 0
+  wall_s: 147.3
+  command: /opt/build/co60app/co60app.m2 run.mac option4 4 --importance
+  histories: 3000000
+  D_over_phi0_Gy_cm2: 5.333858289617291e-12
+  D_rel_sem_history_by_history: 0.005863318560141075
+  energy_balance_max_abs_MeV: 0.00044249852598943207
+  untagged_tracks: 0
+- batch: 13
+  seeds:
+  - 7401027
+  - 7401028
+  exit_code: 0
+  wall_s: 154.0
+  command: /opt/build/co60app/co60app.m2 run.mac option4 4 --importance
+  histories: 3000000
+  D_over_phi0_Gy_cm2: 5.4263782245895116e-12
+  D_rel_sem_history_by_history: 0.005845201396832609
+  energy_balance_max_abs_MeV: 8.232649967720995e-05
+  untagged_tracks: 0
+- batch: 14
+  seeds:
+  - 7401029
+  - 7401030
+  exit_code: 0
+  wall_s: 160.6
+  command: /opt/build/co60app/co60app.m2 run.mac option4 4 --importance
+  histories: 3000000
+  D_over_phi0_Gy_cm2: 5.296804189234684e-12
+  D_rel_sem_history_by_history: 0.005886444645268319
+  energy_balance_max_abs_MeV: 0.0004659379866440716
+  untagged_tracks: 0
+- batch: 15
+  seeds:
+  - 7401031
+  - 7401032
+  exit_code: 0
+  wall_s: 150.2
+  command: /opt/build/co60app/co60app.m2 run.mac option4 4 --importance
+  histories: 3000000
+  D_over_phi0_Gy_cm2: 5.362102019272128e-12
+  D_rel_sem_history_by_history: 0.005848549206403623
+  energy_balance_max_abs_MeV: 5.6388142953389675e-05
+  untagged_tracks: 0
+- batch: 16
+  seeds:
+  - 7401033
+  - 7401034
+  exit_code: 0
+  wall_s: 150.9
+  command: /opt/build/co60app/co60app.m2 run.mac option4 4 --importance
+  histories: 3000000
+  D_over_phi0_Gy_cm2: 5.3027410880544775e-12
+  D_rel_sem_history_by_history: 0.005874142455068218
+  energy_balance_max_abs_MeV: 0.00010096835575823526
+  untagged_tracks: 0
+- batch: 17
+  seeds:
+  - 7401035
+  - 7401036
+  exit_code: 0
+  wall_s: 153.5
+  command: /opt/build/co60app/co60app.m2 run.mac option4 4 --importance
+  histories: 3000000
+  D_over_phi0_Gy_cm2: 5.420078362854884e-12
+  D_rel_sem_history_by_history: 0.005833263433808645
+  energy_balance_max_abs_MeV: 6.155906530724842e-05
+  untagged_tracks: 0
+- batch: 18
+  seeds:
+  - 7401037
+  - 7401038
+  exit_code: 0
+  wall_s: 161.1
+  command: /opt/build/co60app/co60app.m2 run.mac option4 4 --importance
+  histories: 3000000
+  D_over_phi0_Gy_cm2: 5.440027414245187e-12
+  D_rel_sem_history_by_history: 0.005837083493584173
+  energy_balance_max_abs_MeV: 0.0007239062083492787
+  untagged_tracks: 0
+- batch: 19
+  seeds:
+  - 7401039
+  - 7401040
+  exit_code: 0
+  wall_s: 157.9
+  command: /opt/build/co60app/co60app.m2 run.mac option4 4 --importance
+  histories: 3000000
+  D_over_phi0_Gy_cm2: 5.315615164260842e-12
+  D_rel_sem_history_by_history: 0.00588309125862829
+  energy_balance_max_abs_MeV: 6.154815168213368e-05
+  untagged_tracks: 0
+started_utc: '2026-10-12T01:08:55Z'
+geant4_physics_printout:
+  em_models:
+    gamma phot:
+    - LivermorePhElectric (0 eV - 100 TeV)
+    gamma compt:
+    - LowEPComptonModel (0 eV - 20 MeV)
+    - KleinNishina (20 MeV - 100 TeV)
+    gamma conv:
+    - BetheHeitler5D (0 eV - 100 TeV)
+    gamma Rayl:
+    - LivermoreRayleigh (0 eV - 100 TeV)
+    e- msc:
+    - GoudsmitSaunderson (0 eV - 100 MeV)
+    - WentzelVIUni (100 MeV - 100 TeV)
+    e- eIoni:
+    - PenIoni (0 eV - 100 keV)
+    - MollerBhabha (100 keV - 100 TeV)
+    e- eBrem:
+    - eBremSB (0 eV - 1 GeV)
+    - eBremLPM (1 GeV - 100 TeV)
+    e- ePairProd:
+    - ePairProd (0 eV - 100 TeV)
+    e- CoulombScat:
+    - eCoulombScattering (100 MeV - 100 TeV)
+    e+ msc:
+    - GoudsmitSaunderson (0 eV - 100 MeV)
+    - WentzelVIUni (100 MeV - 100 TeV)
+    e+ eIoni:
+    - PenIoni (0 eV - 100 keV)
+    - MollerBhabha (100 keV - 100 TeV)
+    e+ eBrem:
+    - eBremSB (0 eV - 1 GeV)
+    - eBremLPM (1 GeV - 100 TeV)
+    e+ ePairProd:
+    - ePairProd (0 eV - 100 TeV)
+    e+ annihil:
+    - eplusTo2or3gamma (0 eV - 100 TeV)
+    e+ CoulombScat:
+    - eCoulombScattering (100 MeV - 100 TeV)
+  g4_water_range_cuts: gamma 1 mm e- 8.24701 um e+ 8.33478 um proton 8.24701 um
+  g4_water_energy_thresholds: gamma 2.93547 keV e- 10 keV e+ 10 keV proton 824.701 eV
+  roi_check: buffer needed 7.41703 mm (1.2 x CSDA range 6.18086 mm of 1.3325 MeV e- in G4_WATER)
+finished_utc: '2026-10-12T02:00:15Z'
+wall_time_s: 3049.9
