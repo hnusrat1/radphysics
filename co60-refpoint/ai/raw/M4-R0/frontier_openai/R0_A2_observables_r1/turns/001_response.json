@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791823535-ZCarrFva7Aq0zbL2DDWQ",
+ "object": "chat.completion",
+ "created": 1791823535,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Estimating values accurately**\n\nI need to answer values accurately, but it's impossible to get exact numbers without a Monte Carlo (MC) simulation. Instead, I should estimate plausible values using available data and analytical approximations. It's essential to ensure that my methodology is honest and reliable. I could calculate transport approximations by using simplified slab photon scattering techniques and electron dose estimates. I should also inspect any relevant files to gather necessary information.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_IX9pAyve7DU9qiFbOm9gJocl",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"print(open('/tmp/data/xcom_water.txt').read()[:3000]); print('\\\\nESTAR\\\\n',open('/tmp/data/estar_water.txt').read()[:2000])\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Estimating values accurately**\n\nI need to answer values accurately, but it's impossible to get exact numbers without a Monte Carlo (MC) simulation. Instead, I should estimate plausible values using available data and analytical approximations. It's essential to ensure that my methodology is honest and reliable. I could calculate transport approximations by using simplified slab photon scattering techniques and electron dose estimates. I should also inspect any relevant files to gather necessary information.",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzQ6xmLlpKu4x_a9FgzTL_M-LTtyy9Z906QXPM2uWbmhoi9KVIx56BsM0ekhMppd59nPErKFusPANOC4xXKduuVt1xBQqHx2FkA9DBA_MikX2rrpmeXmBY_fgPNG0HoMNpH3La4QsrwEnsnc7oSJS_43tAOh7NZMslTIKlQ_vqDp5PVp-_nGKLEPoZhfcLBgOP2v8eKzS4Rb2nkANldjygkjzZ-8lFHgbj9gSYOa2PCPUJ7rfdXthDOYiIqi_Mm-XqphTLiwBRcIhwTvMxjMJ83vU-e-yshm8UIZpDZ-C278W3mBB4NhC_fEHt2x9-WXV2HQ_FJRiRC-hKGPCmhXpaFNQKHiFJjOKY-QFJ29wtupqYzFdZYA0TULFMwOqv7-v41rzLz4RHvhncU8h0UAmdJQApP3MzyO22rwKHH2d5i-eoc3Wf45-Qhf6f-u1rnhQRA-0-Ih9yb1ysYSrJb31Ou1fptjEltVEVyGEit5Hr1lcl1x-gxFzxpvIwpA3BiZ6rdhnZ-EGyMnzJIQzFzRGN0bLPtwT9aJZycT9y6MKASPtepe3DI3W-xScjOedVXTTahdD0mvmMJ2BycpnRbmJJ5l5xhf0y_GHYySyq9OkSReR7kpR2HO5yRyYf3M4SnM-MGcK5wep0zfcr6NulX3WT83yEOERfrLxxg0Ut0e2PWdpAI7Ad2-Ae9fsBuE0Y8S80C0JVvNm7acl3UqjOz4IfccSQELTvozxS0mKRBWfzap7-y1ElOPOBS6i7NRlqiG4AkG3S45krSdLaqOA5xJRvXimI8lm21gCVAbKpwwnY2fJaBul4v3z5cK0nl38Jz8wnDZalKFrt_EQcWkgkm59H1cNMQ3mL6P0QOC0nMxMq5Wv7K-i08UlM_bnAstuWbcZ82VEbgaJsCnmQ-VLCwxkvOVdxYA-enIZ-DUwnGueAMO8Sg1Qk_5jAE4ZBtIV7xoS66DK_SijxqhjcHDmEE8aYLUKDn_gP8g7mY-ZZ7bfVULeS4a84dDejtN8fufgQXcCl6Fkpa3l15cLY1vi_-qHyIibAGxE9VhO8LAgKBDVcKLmm9j3K7zgBHvTbxthzbev3QMiG4emrORfvSigx1m_kzs2ng0NgbEX5fpnT_N1cZznKdxCPylFdMjOBfnVX5jMAVQEz743-UVbPNaAchSVvrYn8viIIHV_ehCZxtaWM9F1R1X0361SH1naGrArIIKHxxmrYiIbszj-00NHJlfp3s137YlGvvUQV6m04bT7ei7Qti66UzCanv2RK-fBm_I_M2EpyPUl1iQ3lcGxxUA9C1F4oxdwlNcDYsSCj3l00EKWPsRi_qQakMUzZoxvVeNkf_kxwIXZoW5FjUWCuUmNlQ92LnB-fatMyIhCwsx3COzz0cy3uOL8E7HOx3yjo4u69MrXDsYUajl8tBsWIzl8hS1aaZVL90AZjgQ4iM1gByFACIWjtQSl6lRNyfUVIzk-T5a-j3eRZKfN1GManbXg7PqSOrVytBwpQ3kYMAAkD-E0S9wOcX2UJXdhWhxh1IGUGoea8N47FjBDNGR8GgIvB2CHBCDOpklzjHUvG3ZMsTJRIHFGwCImaK9AuNJHnH_hYNy0gKGnvQBU3eECQIgA4O-WgG6j6IzmKRKHI8_MprooxW00HpcphZ7_dum1iRCfZ_3k8ujkRX5LkdbBOhoJNk9QOs4S1FiO0vylN82EgJ5BlRX7Owp7lL1DtrW5ciARIndNZzz6Y6ovy4XokiSFSco1ZOWNI3V1eSa4-1m30wV6xgkhk9uJ3JDixLT1azU9OYLw0nFpOLV_Pzj78dHb8T-wKoY4QjseeZXZ9sndtCq19frVWXc9vgtIS8s1PKra1Ij9j6g2WiPeKvPZeAIQfqc6x0fg2FezcSEfx6eohEVuRR8UfFB9oIvxT2hZFYuIqHrrDUCr23-xbdeY97YAuYDfZBFf41wijjffR8Ge_4_RhtMSmB5rXkI7wiIbPI030Jn0d8dBQJFiiH3GBIdd411w-QRzWFavK4h257RujIzQmmHozNyYSDqxvlOiIYwjOQfaYLGwCP9McnwAecxS3kObgECHaXFCkZYcXAhGfuOwHvQkA7scHivb8VESO9oKNMnrU-UFJ9mI3gULL6dr8lGdCUiAQUNI5di_C0Og2rZiNPchAQZF2SWZ66bljQliixaTK_3uHUoaUVLeZkzcPSILi9f2wRPV_eBxbsmFiHUTKfPMbqD6GCowO2ymP9-PRWhMfVI3jf0ZngfTNhc41-Sv8GlJJRRs9_9sb-0mC-jgcSnAf6jJapOJvcvxkPxwp5hP8VGEo4WAN1kbF4-SbNzNHj_xR5uM7raDygjOsqfeuSVffRHdkDRHQnDohJNxS66k.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_08b25cd38fe34654016acd0eb075e487d1b07dc234ca7313b1",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 4319,
+  "completion_tokens": 110,
+  "total_tokens": 4429,
+  "cost": 0.0005948,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 4316,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0005948,
+   "upstream_inference_prompt_cost": 0.0005398,
+   "upstream_inference_completions_cost": 5.5e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 53,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

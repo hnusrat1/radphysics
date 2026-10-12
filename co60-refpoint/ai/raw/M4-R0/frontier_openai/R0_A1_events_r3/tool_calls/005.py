@@ -1,0 +1,2 @@
+import subprocess,time
+st=time.time(); r=subprocess.run(['/tmp/sim','20000000'],capture_output=True,text=True,timeout=600); print('elapsed',time.time()-st,'stderr',r.stderr,'lines',len(r.stdout.splitlines())); open('/tmp/sample.txt','w').write(r.stdout)

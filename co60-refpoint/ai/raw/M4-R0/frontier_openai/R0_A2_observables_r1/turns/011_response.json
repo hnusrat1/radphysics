@@ -1,0 +1,57 @@
+{
+ "id": "gen-1791823638-9kcTbrvrjrSY1mhExJ2F",
+ "object": "chat.completion",
+ "created": 1791823638,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_NZPfWIbGrE2IQBUTJVJkQdB9",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import numpy as np\\nv=np.array([.0018,.0017,.0015,.00135,.0012,.00105,.0009,.0008,.0007,.00062,.00054,.00047,.0004,.00034,.00028,.00023,.00018,.00014,.00010,.00007,.00005,.00003,.00002,.00001,.000005]);ee=np.array([.01,.05,.1,.15,.2,.25,.3,.35,.4,.45,.5,.55,.6,.65,.7,.75,.8,.85,.9,.95,1,1.05,1.1,1.15,1.2,1.4]);print(v.sum(),np.dot(v,(ee[:-1]+ee[1:])/2)/v.sum())\"}"
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 18624,
+  "completion_tokens": 190,
+  "total_tokens": 18814,
+  "cost": 0.000386735,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 17706,
+   "cache_write_tokens": 915,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000386735,
+   "upstream_inference_prompt_cost": 0.000291735,
+   "upstream_inference_completions_cost": 9.5e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 0,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

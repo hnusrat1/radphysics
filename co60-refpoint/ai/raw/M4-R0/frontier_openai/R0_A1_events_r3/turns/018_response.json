@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791823128-se0Rgi8CsFwmJ7uZ3slr",
+ "object": "chat.completion",
+ "created": 1791823128,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Understanding chunk differences**\n\nIt seems there\u2019s a strange difference in the earlier print where the first item sequence includes \"cos electron\" for event 28, which might be correct. I need to retrieve chunk2 indices from 50 to 99 to get a clearer picture of what\u2019s going on. It\u2019s a bit messy, and I want to ensure I\u2019m on the right track, so I\u2019ll check the details carefully to clarify things. Let\u2019s sort this out!",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_LnlZUhlgAPwR6boDPzNJnKaj",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import json\\nE=json.load(open('/tmp/events.json'))\\nprint(',\\\\n'.join(json.dumps(x,separators=(',',':')) for x in E[50:100]))\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Understanding chunk differences**\n\nIt seems there\u2019s a strange difference in the earlier print where the first item sequence includes \"cos electron\" for event 28, which might be correct. I need to retrieve chunk2 indices from 50 to 99 to get a clearer picture of what\u2019s going on. It\u2019s a bit messy, and I want to ensure I\u2019m on the right track, so I\u2019ll check the details carefully to clarify things. Let\u2019s sort this out!",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzQ0bNpbUCwStzC66f16C3KeLIbEtACfBqAMX7SDw66BmkUJPf2No8LhTMwhqijdi6Gu6zy-GQ5Jnp8rUCqB1SJFqle1xnRmIyuzsT_rdHTdVmMWGWnQ9q7Xn_GCcYcxgVo-rh1QYcNoHwQkVQa2iCrBC3oJSsoi4v-rxR_ET41CHXhUm6B36GDYqVImAFSY5u-qxglJ3LHpg27nQhgDUACPcvU53ZCIkG7qQtrAn_ERsHbMUwT8K9V128uCh3yf8AS_Gug7Czv7dmAnl8tTmrZe0IrgxXjdrWvZRtLtHl9NLzJF_gpTp62Mx10wtN5Xza9vWlpSX_3Gar5dRJx7-SVaswuo7IYunghP91e2nc-Z-F35U1aSiHi9bdMc6086RbRr9rfzFL444Ekxrphr8n855_fVX2kalctfFuxWn5eQE8x0MIJxFrfJM5TCbGCKetWCd9YEmC7XDAbGy0S3jL4GH7PzRKtS-fWRUMGxv0VjyZClD_g6xMSXoruEipGWeWbJAWhTsJAs1-UIpunBFOw7ZQv6u9LjjzmEk-228AwqY_kgqL59xTZyaEiab77D9-NoQhBHuTJeFNYutJtV77JVz2FZTE8m5wLrmV-EyzAmRFRv7gLHFqgXnuTCpanuk78RcRmknmO8vrOfiXhORonM2GooKzdLYkhFtO-W44Mb4sJXVE7HMC0DF1kQEDmtt9TQ22RcLbXilFYNCiZmynpUtuKuqfZYNY43Luivo_8JIlBkKbUBlKjoD_DIAwRQaJYxVwJk6zZI_SBcQR9V-W0CWRnYT4dpVnEGfXI7i0x4sVduicwbFZ2LrX-4qIabByla8EK2jf48QqcauisAKhIDpCt3PvrJ2WnpvBHvlP4Y3y6yWRVgZxVUkv25sBZSWNXuxlWqBcEg7kuRe8c_S5mdZ-Bwt8D5218h_FzUuBS6RhEnLgDD9hLB7P6PVTsZjFxQ60mZEax517sfIPB47By0VT77srvNVvpPI6IzIBbxYgzHW7P6TFK9tdjjCtA-QA6C2PXhFsT5AT6s39NbH9VF9dhmCHCNXwsd8u9LreafbawBN1x5qZfl-XsTlckpt8LMUTlrMtFL-uFJsRqAVNlHO4XPXOdxWFJqt2kDWpIvBu7p_soUDolTrwdZFL8eeVeHzrOtLKQQMzuwkGdAl7C4Icusa5sRwocETQZme4aDl2ICesgMgDfcURourGL8p5q90VNIYgK-kpP8Y5NGjs0H3XsxD6XXU0RfjSZvVGdwWMatr9T4inwouVJOlV6gvUSyBeiK52XfJTGnjkaZTPi3T3ocJ7k-ArOvxc7IvwE8NvKlQHyipQIRyLrsDWO_FICasajIWW4qJBOhEOPhdK1ne4wYKDBTQhLnz9Ll83sRonKoTcWFFxriI68YJfheBJQstEvEzkenFpLQx47FDF2UOqCP5aGf6OqxJtWmomw4SzHTgmgp7buQCa4-4_qfatjzvN3hCdYSD8L_Wcl7f4HEc7gFxaytcL--3pL75we1haxwOdLmp8llXktzvV9-HJqirZHYfW4VJsky9ht0g-pHPLn0pj-4OwDtg_aXT7bVSS1-S2Cxfb8-x3fmyVWgBlB9Y2V7Q49cA0ylEnRmyltF_wwca2YryUWWdCUVfuW_yOoTAqs6rLg3_YocqOaIMbGkkcVu2TfFCVxrmWQFKB7UT6iKY5CVvOgcZSQyY3xYhgfAFX30Uusrkb7BRCfC7byUP98D-g5nedAhLPYkb-J5ER26Qwf5GMf14uiVp9YxlEurtNHZj8apKtOYlt6ReYRIVXx3Zxih0BPMpFLEMCyzjaA0LTsj5TJ-Sx6VWlFDbKCnFpcDvORDnvkPvFtjAkrKr7dXhUcjwR0NkqCiwV8dHZgbcotwvXoc-psBwJwsU60rpPsq9UmsiWdOzPm3GL1MUSPxT5hEAtyuyVrrMnHiqAvLXV5_dFO9k_DRoY16CqCtPQZ6XOT8xJRNWJlSn9gAsTKaJZx-8942gK0jCLLsv52yAEyCzdBT6xomgYSXN7UZd2WGyXZFIoOdQwIuRgHEJqNvv00vLOos_NSBmVCpvJhzASno9hAZfK4l9Vsl_hBKRo7-S8QXTge1wIXvWTUu8W-E0TUb75nJovyljOfqInw==.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_098c931a4059667c016acd0d19b07087d18dbcce1de2fe206e",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 42421,
+  "completion_tokens": 99,
+  "total_tokens": 42520,
+  "cost": 0.000944215,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 38329,
+   "cache_write_tokens": 4089,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000944215,
+   "upstream_inference_prompt_cost": 0.000894715,
+   "upstream_inference_completions_cost": 4.95e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 42,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

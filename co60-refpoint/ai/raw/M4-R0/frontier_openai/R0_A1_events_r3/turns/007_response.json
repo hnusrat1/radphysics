@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791823064-3PVd5q9e0NhiNavPbgRi",
+ "object": "chat.completion",
+ "created": 1791823064,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_H42D6YnC5Dao3I8VJZrrtMUR",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import numpy as np\\na=np.array([[int(x[0])]+[float(y) for y in x[1:]] for x in map(str.split,open('/tmp/sample.txt'))]); print(np.bincount(a[:,0].astype(int))); print('E ranges',a[:,1].min(),a[:,1].max(),np.percentile(a[:,1],[0,10,50,90,100])); print('proc E quantiles');\\nfor p in range(4):\\n q=a[a[:,0]==p,1]; print(p,len(q), np.percentile(q,[0,25,50,75,100]) if len(q) else '-')\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzQzZGl_xR13ExUSHK32rPFORkra-dorE1jkrPMbr-LaGH9ik-Au9PeMZ65CXvb2WVd9t8Tdvvi4AzCRTz16XMjNTJfg1uKTGJZ-NejiubpUgQK7jiQGtEkVmpRhB7x0z1dlYxEbEbrIXFZUoH0-hmInWyRhkMxjr2pfMZ0F1zZoKd0KWbxXFv2KyVnATrVei3E6PCfgkeScukxyqsFnK_tQbM4DC6yOmOlOe-vAk89I0wAHLIlBsElm42Mcso9qJWx2nEiaATfN-VjORyjX0RP45b-Z5BaAOXoHnThRmD00Hkl0whgMyqvwfkSC0QPcXvYckADg7E2T_eEmPAPgNbsuaytqgyrS6kk4l7x47c-50Y9U_urXb7REaVmYumu095SWrLuvMhKmDPrjKhoqHHPHu3x7MTrRGyuRQQUIa4SBraovlKboPGIq8O_wCRUNkGiiDQc_4c-Rzqjj0CJHAQzoAfM0pGJLPxTP5aCj1OKSwyVE3GhelQetj03dwLw5qKO7ZVkJu9aBKobP6tg_MOLskHjbrvw0Wv-Z2JXIxoFReK69goYqcOXyrx5iJivVvUozyIHpBQFh284gPLins_KSUKsbUryMVc5LbEqXPPhJUrXdW0Mg0Zad9eNhDWTnykcHRupuhqcS_7Jug-s5s2i8CxBAYz3rtKk5N48OJZJpmxgYMrm_jRVooP-lGX8wcEZeq9HZYBP0QQAw0m7026c3HLJj6E_2qFa_x5bzpX8TRLxLnR7or84ys5gpFkYnBZxGcwcs03cWllWHoANhMpYwV0FLsrGGyQrsypogZt85Mr8x4mvUOfQXBOKHw-EVLXaWwki6BdraQBJJFhT7aGsVBFKbiZbny9TigFYoSJ6xXz2BH6qab8hz0sgHRl21yX2NOCT8byKp9QZJzOsy7QfPci1wO1EGTlI94FLq4X_zPHe2F7FhWp5VfCca9Qs5l5fxX1lyVnXms06UAJ0lg-tkXl6wfEtj-x5rm31gtmxDkojnvSAxixmOXpPe_VR53ow_xUrmF-gdCvgBRAl-M9Nx07T0PuxP4jBX9L-HS22rLUizwn27IVcU6jGusvrh-XxFLNduGUTtG9Df-kNmIrenp078dz0rcwcYnUOWHNPmtxHtV9tZ3f2pgi02EPLu3WI6na8ve4fR6fiD-yDVi6qQPBCuBCBdXJDPaeFDLl9jxCtw2624c6wwR-qp6JEAiG3g-vlAixPzzeSDiA69kTtxfp2hdO5iTSuJsFqxP6plC0HOx23b1wlhiRDNpudGFaG56Ch1kCTsgbZeGoqQToOdO55OIJBBNnexLmjDugL5UKz23lspik9Ar7KdaC5U2uAI4Y7y2NMscgVMYaSCqRLGuANxV9iQTV4msiuj61L8ebZIDmiD58zlL9JgnGo834jdf3W3njSPCitPS5BCA4Lnluhey4utPguLjXi0pIftYWENTlU-452h7KttdXMudNxiDgYQLd7W9tciMgEFUCsTrU8126pyegJQDAbn18GHdbzbJwxFZQ40zYw9kVBU_Qi5DJ960MAi0t4Wc5MEPM2uf98_lXHOvIPc0m5VU0TGqRTa5w8BVVEqTXPL0QDv6ebS81u6zlEM_My2sdcqP0NfPH7Od5aLGziRN1fId-OqjR_RzQv1tcApqJ58vKN7XvwAr.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_098c931a4059667c016acd0cd960ac87d1bb4e5779c37a5bd6",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 9370,
+  "completion_tokens": 169,
+  "total_tokens": 9539,
+  "cost": 0.000213545,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 9062,
+   "cache_write_tokens": 305,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000213545,
+   "upstream_inference_prompt_cost": 0.000129045,
+   "upstream_inference_completions_cost": 8.45e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 7,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

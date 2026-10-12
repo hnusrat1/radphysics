@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791823018-OdSqnhpiKTv8v2PLyKP5",
+ "object": "chat.completion",
+ "created": 1791823018,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "StreamLake",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "This approach works and is fast. We got 200 events in less than a second.\n\nBut we need to check the proportions. We got 198 Compton, 1 Rayleigh, 1 pair, 0 photoelectric. This seems plausible but maybe we need more Rayleigh and photoelectric events. The proportions from the cross sections at the sampled energies should give some photoelectric for low-energy photons.\n\nHowever, the low-energy photon fluence might be underestimated because our scatter spectrum only includes single scatter and may not have many low-energy photons. Also, we multiplied scatter fluence by 1.5 but the shape remains the same.\n\nWe should ensure that the spectrum of scattered photons includes enough low-energy photons to produce some photoelectric and Rayleigh interactions.\n\nLet's examine the energy distribution of scattered photons in our data.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_964b29d726a14228b1e128b6",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nimport math\\n\\n# Analyze the scatter spectrum\\nenergies = [e for e, w in scat_data]\\nweights = [w for e, w in scat_data]\\n\\nprint(f\\\"Min energy: {min(energies):.4f} MeV\\\")\\nprint(f\\\"Max energy: {max(energies):.4f} MeV\\\")\\n# Histogram\\nbins = np.linspace(0, 2, 21)\\nhist, edges = np.histogram(energies, bins=bins, weights=weights)\\nprint(\\\"Energy bins (MeV) and fluence:\\\")\\nfor i in range(len(hist)):\\n    if hist[i] > 0:\\n        print(f\\\"  {edges[i]:.2f}-{edges[i+1]:.2f}: {hist[i]:.4f}\\\")\\n\\n# Also check the interaction weights per energy\\nscat_weights2 = [w * mu_Total(e) * (math.pi * 1.0**2 * 0.2) for e, w in scat_data]\\nhist_int, _ = np.histogram(energies, bins=bins, weights=scat_weights2)\\nprint(\\\"Interaction weight per bin:\\\")\\nfor i in range(len(hist_int)):\\n    if hist_int[i] > 0:\\n        print(f\\\"  {edges[i]:.2f}-{edges[i+1]:.2f}: {hist_int[i]:.6f}\\\")\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "This approach works and is fast. We got 200 events in less than a second.\n\nBut we need to check the proportions. We got 198 Compton, 1 Rayleigh, 1 pair, 0 photoelectric. This seems plausible but maybe we need more Rayleigh and photoelectric events. The proportions from the cross sections at the sampled energies should give some photoelectric for low-energy photons.\n\nHowever, the low-energy photon fluence might be underestimated because our scatter spectrum only includes single scatter and may not have many low-energy photons. Also, we multiplied scatter fluence by 1.5 but the shape remains the same.\n\nWe should ensure that the spectrum of scattered photons includes enough low-energy photons to produce some photoelectric and Rayleigh interactions.\n\nLet's examine the energy distribution of scattered photons in our data.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 48983,
+  "completion_tokens": 516,
+  "total_tokens": 49499,
+  "cost": 0.00120468796,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 44288,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00120468796,
+   "upstream_inference_prompt_cost": 0.00111944476,
+   "upstream_inference_completions_cost": 8.52432e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 162,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

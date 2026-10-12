@@ -1,0 +1,1 @@
+[e for e in events if e['process']!='compton']

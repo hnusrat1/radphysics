@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791823099-89LHdF8YYGjXYrRjP3Zg",
+ "object": "chat.completion",
+ "created": 1791823099,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Finding efficient output methods**\n\nI need to find a way to produce the output. Instead of manually creating a large JSON file, maybe I can directly use the contents from a file. That seems like a more efficient approach, especially since I just need the final result. I can retrieve all the necessary JSON data and streamline this process, which should save me time and reduce the hassle of manual formatting. Let's see how that works!",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_6ksKN5kp3GPHNOzJqIEzTncu",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"print(open('/tmp/events.json').read())\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Finding efficient output methods**\n\nI need to find a way to produce the output. Instead of manually creating a large JSON file, maybe I can directly use the contents from a file. That seems like a more efficient approach, especially since I just need the final result. I can retrieve all the necessary JSON data and streamline this process, which should save me time and reduce the hassle of manual formatting. Let's see how that works!",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzQz_wkg_0HJcCfefo2IO-SPViEKhFclIl1I0k6SVBIeYUXAsHMNBLx2hx7B_wHWlMayVgjG1VP_7CHRwnw1Rh2wUIpLTpBDdRB-9JKVtjU-or5Hg7qcUOXK-zxEb4ySIRIEY5hFinZNlOV26E4mYlpIQN82lm_3RLlyt5b7xJMACdK429XmI7XQNbsF5dDFtIqnqBESPpxsVNE-p9BoJPPMgK_RMEviEgHdBX-fD9ODUDjYf9IECV_7anQNmCYmGmN8eCR2qD0O_BlrHeDIYb7PPCgO3wRIoRGlzP5Ok_PmxKyB3I99w4l7Dec44RXXSzgpgovMUiq7unDuFAtaYka3oxk0BmFHBBPiCMgkjwuT5R3yu1ofHZLVQce-La3vPrzro8uwMSLEk56xEA0rR5TQ8v_rLGf2xfAnBfz9kqYKfQ-hn0-6ldMy1s6OMfsfRf2O_dixhna3Tf86qGn-iM1facp_hnyqxBVsHLr3hsnFLWP4C6xxNIY8CS7G9gdC3RHk7BzY8xe36N6TbNPcFQO4fk1Vl__kB7jHxNx4CWCf8iQttq-zo6azsr-tYneLCIXbZJqmPsvtvLwAO73D5zBSMa7aZxomZRJ9-DzAVU7WwHEEtJqBZA8Nv4X0xOxqmkBtzVvIVH5N--JpMdRhTZlABzocQncp39QYeFrTODd1zEjnjmqsSvlmvL3toiz_jKJikjGTTAvY2S9eI6Yb4u2zJ1LUafMlkmfUPyXKAgDJ0NKN1g_XmVeHYV0aTTVjunDuKH3wUomUKyMUT90cjGV4RRSfwCcwmTAQDOiXoA1WwyYmX1grbKgup4MgkwL3-diKtRQg58i-SXyz4nITzkvH7cG4j5v0Z_qTpa2stnmQK7oCX2b4UGwoiXuLv5jEQTYGQTj5vUp6x8rkF_eN9_iEp0HKJsl-spAGZvkIYcAYYBeRmltz-NlEdA5AU4-PDZFTNQGM4DemndYJeAhkyr62KssVPj6sXucsfYvHxsTCsiNzjY6miwMe7VQIOQqD1if4_sZkkmdoloEL5309ENa6IQ6l_9P0UE2CVSPdC4jClRX22-4qOnhL82Y_1phcjBhwc56Ien3GWpPytQHLfIKeEK8bn7GKqlv1nyWss9mXcLPqHerOKZ03jOJtLVT3v40RfWFrsjTPuUqCJjboBRZ8DlKhJ3DjtGX--8sTfmpNGzxQRlbORvkQ6JDL0DGj8dfH8Gx3Gow7BM61J2fjtluKva2KNbI4fppIBuIqRG-x3HOcaIK6O5bHhCDsjLQuPoF7naWf_YLb5l1wLT2Qj_OuasP8jRg2YH0sK_6yCk3foEhBT73g2WjmJYz9jYO8OfmTjpGcm2kBllewQ8_xKFCzreItYhcdigcGySyTXtCGFisWA8yCFo7OGilJNTKYdXpQxN3v_f2DSL4QDf8XDpbsq_Mo2xaMqHvVm-GdpOCz7FtmwnXUbU3NHVg7wbDf158mnQdhmg93lnU5BodsRvh-_bu-um5Vsi-deqqiS1QLfKCQkv8fYfXRv4CDParqupwd7fEDcJRgv3mVh5RFApPso2PxnswDYQK5UbsavNP4HLP8t5ZUGE5_7fckT7gTo_rmOSX_0KILuBtcZTApWm8HMPzUYRc5DGC1fr5CWOHqT1q82-LioGBFzLs1hN_wwpAkT1Di3Xbzd1ei8WXJ_wtWJOZTHCO3EPxPI4YlfPynzuE35k39UVa2fT0xswNs0L8Hk9e-MSQ6PmJ0vZvYJx43vUKgmo32ztszmJ0EgAHf65JwFuHbQYZwCj8ljUErGi5vsSaOAISnXkCtRbgEO20g7CTZmcCtEBkz73Gy25FMZ3Wf4AIgIiU66HhDTMPJg95WcbohoEkfzWaqTgMUrE2Zb_AHp-fdTOFjriduoXvHmmUgs49ngBeSIUUhKC-30QFB-dw7WivJTzDRFB6lCCkXGvzgVxebFDYTlOS9DKpGlRg2PoqBmd0WRWvnC0YMcXhauGQptcYYWYFU-ltlmsEUA1WzAf4VwRibrzKcQkjvyg1HXpCBL-5eJH1cUxbDxwI7C.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_098c931a4059667c016acd0cfdd5d887d1b7bc155f4afac898",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 17080,
+  "completion_tokens": 64,
+  "total_tokens": 17144,
+  "cost": 0.000242745,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 16732,
+   "cache_write_tokens": 345,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000242745,
+   "upstream_inference_prompt_cost": 0.000210745,
+   "upstream_inference_completions_cost": 3.2e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 37,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

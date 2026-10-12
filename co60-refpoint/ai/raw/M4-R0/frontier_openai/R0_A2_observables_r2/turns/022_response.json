@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791824118-iizi71fZ9DeCCASrk7kr",
+ "object": "chat.completion",
+ "created": 1791824118,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_oE02aVyQiCo5kSpBGrKWnvgR",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import numpy as np\\nestar=np.loadtxt('/tmp/data/estar_water.txt',comments='#')\\n# make flu array from prior? recreate base/full values\\nflu=np.array([0.001254305532225,0.0009070962554083333,0.000727587734,0.000801882005,0.000834810967,0.000842680572,0.000834392414,0.000809766338,0.000774126844,0.000735726138,0.000692417878,0.00065140986,0.000605090221,0.000547918393,0.000496573813,0.000434431692,0.000367020566,0.000294398844,0.000192989341,0.000129550863,8.24316951e-05,2.46931706e-05,0,0,0])\\nedges=np.array([.01,.05,.1,.15,.2,.25,.3,.35,.4,.45,.5,.55,.6,.65,.7,.75,.8,.85,.9,.95,1,1.05,1.1,1.15,1.2,1.4]);mid=(edges[:-1]+edges[1:])/2\\nsc=np.exp(np.interp(np.log(mid),np.log(estar[:,0]),np.log(estar[:,1])))\\nsr=np.exp(np.interp(np.log(mid),np.log(estar[:,0]),np.log(estar[:,2])))\\nprint(sum(flu*sr)/sum(flu*sc),sum(flu*sr),sum(flu*sc))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzRD5DzvMa9i4YSJ3tWFeZ9dh4zxBpR4lUeLDACpqCChEu3A6pMoZUJjgV2y_gpohPSi7f4IqKB6cA2RJGVdxr57q9VWU5MImmNIn7wu4jv6pkj1vZHDSHooYv00t7hDJlJrDTETN7FIIyhUsSXtHxI9Lbajq_Tuhndw1AR2-1IIKJz0tKtqRQNWDwpBc5DXReRZqlYMLQN7BxGbdZ4u-BJ-abKrSuBx733cg_aVDoujM1cSS1YiiwGpbO4DeMGCdDqGnFct1sbmTCTfxwApKwJBPtmv85DboWCbjqGr8IvUetDWmmwIytVzHjuUIuSKprxyM8UggGFysdPUhKQ7T4MZCVHE2kIxA5P1AVfb4A6-RgbBFlRThweHLkG-GQPw90VcMeCUWqBjr3Yyrw1wP5MihS_PUOOtf35eB-fX_WQfPZXWg8L2uXx3JPMFibqbEow7qjPK9NFOc_jSI9IoIjEqDkTjnkW1QtDtxwBF8KOSl5YAoeRKEngGB5D09S5IP2KqwuH2vCiL08zHinPk35MLeo6Cz09BjI9uxq8XqmOhpEglBu9pDXldija9p2BqAGE1qyMm3O5RhEnN9OE5bbGF09WI4btoCL6pz76l5ha8q_3AlNdWnCJt3KEmaueVVHFol07h6lmuxmXoOLB5587iVd8U770MnbST20oJHkn0iyaTV2ttNYSfc_WsE-mcsgp3MKyaS9pRtVNymmSCsQBkBlKBvzTJnHTX4IYBOkPbI9ti-xueutmilMLrxLwp-YPkgsFQzwmfy6iZllN-wo0B68d0l7ktp11KCuClOQS69YZO-CAW76Kc1aNs5wxqaF4PTG02mUbu8Azpm9UD2ESKXx_HNYRQD00yqP7a0om13w6sXfftS4B9bay2zG2tB3wBcmHEvzBclx5CF5Xeo4X5-5sMP9pD7tM7UwhxGrbNWXh3UKxr6fA_IgUChLs7V0n2StfPvp5X4Ff6ZbLqapDs9yhtsuChRZmAqIlqlh3vempmJWJPSAaVL0Xp9R0iX9iNsEa767GOsn1-BZR6ikp9LWUJe5f_bsYqSpr1u9h7XI3CjHxH-gSeAmJz7F2bT-T5OiGP7OnYb-IVajswZSUtWbN_wex7tcYVaQvk5DALcmXC1snT_RDJq77gXOxtHme34xe90X483lZZIajl_E4E1mxY89X6AwG5jiHUYtcjg4Qzob2fQS_ifse9iRReVMAM608EM7it2cEQOfT-4jcKXdILtPVMAb1rgYuzzQmlwSzj3Vvg0_YzIT4xA99hppMyJP5i7EDwN3QLJWTSritIIy71J0_ulrwzwh8vf_4oz9RPoQs5b1pO34OUnk9gwG1eeLr2FBl3q2q18kErIoVCMlyvAhCCt8k3i_UVlNqxLLFeRWt5Rqf_1qhJGKVrQPQXNPuXWw9iYEkZ64BVUCSuG4xDuHoopDvwFlxDpwksSU2h3wLWl-aID5VRD0584VEA09sGEo8f_TayKfh8C5TXhdAGw104gZ499ymDsQIY3fRcloRi7cjUqB7aVvfz7LCFwSzcak4M2yQDlVS9rdPJ0kULMJZ8_FhKIATj4JSrU6bl99kOOiZLc3lh839rUtwml_B8YzlAGuCeRfCCSvZia6p9eJtSiHjCdbGEyiZoVIbHtVZ4oNoYMHlYH5Tj9GfrBwzqWR4DA-SuJ3Cdwj82BRDb5tuetCtTo33uGgISEIgTVFaLuTRzjOaN55n-uWnze7quhDWVVvtmujE2H4k5BFKEubHVweCSlQCbVVnVJ9gLrtfrv0rYnoBsRtqXYoVj9b09xtn48Bz6rRuksNxHSH0CyIfHqLRxzg0ZTr2PxCxpjENq7PbPTBg-9DclX1ZHFdQncIIp46qg0bK5FsMoKPeLrAUBPqwXQLxR4WBkBFiDCXfh-S7K21nCcm3Uo4O3E5sBjbka9FJ8xLq8GrzhBwJrwONg9_duEcO9rnSh8cGlDdoMo7hsn-lVnaDgJpQEnBYrOe2sMaA0lRrZoR5SRzMeJV9MJ4c4GvBQ5GlTzvoPJSVKC7wN9Ys4uJj9b1JFO-RDbmGawXJN9EFg3lod80VuOOdrMgXSGIYBtQEME91KRR-yXe72r04T9yty8MG7iUc9EFUwjGClQL6Y0quLQ2xpZ085pSQI2xSfh4hlKYSb46ltJF3yN-RewEbyRScQLm5QFcD-qULLVooQI2a7CUjBA0nPJ_xOY9gjDVLHyU8-GtNqD1bQ4LLrdWiGGYIUG2YIzeNNDExzKd1RaDvWwCMBkv1tBuCSNiq740Fz6JBUh9IYjp73HZl7tZVlS5vPIiXUkfMSRBNh3zF0yCGefmcRN5KytZYK7-HWJq3hh6WoHH47z6cF4lstCPNlHXDePl35mMXQxcKWiiKRZMv9nSvmS_yf2JoguX2jZP-lGk0pG5lYsulAOvoO6iDXjxJAGjYW83inARvMcYhxVZhmXeXLfaJv2BrBX8ukCkoiTu6LRO_KRMeczYcG0Z09WE0wSjAj_jrLMXTq26aB9ANQ2MFUysfsADFCwCVS-6nVGylQd0GZ4_LWeKuCu4Ov1FOywH9Sc9lSvYBvUYGtxcjVJA1sTeGxkQO60_KiX0KekbK50uK8c3bKo7itw8A8CE5NYOEl-6hfHDvABJhZUNNlE7kSAjdNkBLLlXy6lJGcXxofGbsUbeuoFVQbN5FXTymxCszNbjQAPLBLIpLSmiXkswHHtWx6P-eW9vBs1NtcYk-9ZqUiax_-5OizaRf3aheMDkSXd0Fs5Rr7O5tcjZ77QCxsg3JvYvdBjAZn8OPqqmjjboDFTHLruaIHDnOzUDOProEoKnS6IlW_hSWU9OqYT83t2PuHayAHggTXBHrdtkm1TuLhA7vXHMvn7M_dmAqgQbc7X5q8IT07IKyWHmWi7pjotCzLBGccssu0had9LqMHYJOaF6FddejhJ_YfIZsUtgtDZ_oKbMG62NU5KxaCzRqG9WQgUTwlaxcJWYYw21r32jPXC6r8CWYEe89-iNTimMtRZlH_hk9DSJue3-oGZDsFINHJUIbw5cAO5TvT6eYbMs825g5SVfpgT1Q0IukuzDNHgW8OMo3r0rEr8TCWVZKG5BtzIcZDj9jVENh524QF-8msxVNLpllUqer7jiETUX6B-GT5vvrviUto2R1XUFKAQXgb_XVe3n_kN38JJSjptnvF_ej0gy-H0M04BhHzmHmA8V1ouwjjk4mn2IylyHMlKBLXvd_1LAH9MTjmZKMkuy0GAHxQqV17pZ_AelE4AsR5HmsABnWc7YK7tXVXXMgwSvIdcyVRqYxtQil5lYjPK42fm37-DfnqCmubUzJdYl4zpSBYyx7JHf0DhuY8O4yjfqkuhQUJr2U6dwVx8wkQbzPu5NUwcTF4X4RTjd4uc4neJCSDXwnmASL4J5nddpDbm44hjQf-mwA8hkL96hlPytZVBZo_ws1lVz_D0nqgq.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_042c9b3ec933c71f016acd10f7f46487d191ff52e0130c35ea",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 38271,
+  "completion_tokens": 546,
+  "total_tokens": 38817,
+  "cost": 0.000852745,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 36557,
+   "cache_write_tokens": 1711,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000852745,
+   "upstream_inference_prompt_cost": 0.000579745,
+   "upstream_inference_completions_cost": 0.000273
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 161,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

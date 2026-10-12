@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791823093-E2W9OurwH5aifdiCbi1S",
+ "object": "chat.completion",
+ "created": 1791823093,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Examining output file size**\n\nI need the output file to be around 30KB. I'll check the cos_electron for Compton to see if there are any valid negative values that might be an issue. Everything seems fine, but the Compton relation might have a numeric clipping issue if it exceeds 1. I'll also double-check energy conservation. To start, I\u2019ll examine the first 30 samples to look for any weirdly large numbers. Let's see what I can find!",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_yneTapMCD3qMgLJfiqdyKxaW",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"print(open('/tmp/events.json').read()[:6000])\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Examining output file size**\n\nI need the output file to be around 30KB. I'll check the cos_electron for Compton to see if there are any valid negative values that might be an issue. Everything seems fine, but the Compton relation might have a numeric clipping issue if it exceeds 1. I'll also double-check energy conservation. To start, I\u2019ll examine the first 30 samples to look for any weirdly large numbers. Let's see what I can find!",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzQz49hrS01QdrrZAcPSR15jlz9IzV6DWvAw1Wmi2UN7viNSpnBWHCK_PBw87no5YXnji0Akej2pKiKbftV554N7u1A6d7_i8zV789rl2x_fanWDs9v6x0hM9q2yF3AJKoLLFpi5DX4Bqln9IG8cVt3bwqS-T5cAVZbahNqdivZdBsny2eMFS6ma3X31n1p8ndn3sppbI9BL8HSL_iJSGKkCTYEBW-TJG9CiKnbVQlxX6UnjW5wNHGp22O6NN2BF2k6_kxo_oMUDVFI2AfPsUCR5euR93ArmbEIKdUm9uQ2FJSRbetgYzN85w6I8oWSgrYCi0nue2eGp79Udh3ArlGmOuWSgGPq0-9QuCWwMQZfMc0zyu4DZJJ_B9azKJK3vjE7r_1sPbCVGFZGycdzYWdE4LPQfU3CkYpUMk_aQ9NE3PqVCtYj-6iSCQOpMvpDpNvV9DL1o_0PIIz6SNkdcHEzmLgNnTqdtVZxPyLhaaQaaRDZ37wWgTp6mWpV_8_jYLhdA3Kqg_43kl9JqkvIb8I3V66DT7Mwyr4MmnX_lokw2UdTJvmfqdItDRuO8x7WhZOiuxGWd2n1yJWUQ_d-MhOpwNclha01DyxvYcspsl7QrWdhP36wTK9C_IbjSb1c0ra92xjpFhZ9WBLDryik6FVjKD5ytp_szbMuLLgukgMV6CDP1Nz5ndHfKJGCawj8tKDkmwsBe85G3FSiuzhPx3732b19FB04adjh9ekGzIaw2GkOVJ-jvGi8TCiDIjTKTDb9vdnayAocl36xOCNnGOX56xvanGMD6oJ0UCflJWS3zYQYRc8iIIJn67h3Y_Jq6DtWyw0yEJxkhc6bDv7ATJEOpipnkDrnJDyILVAL-cznBRSsWY3c2zJ4KQIEjrI4WeFdPyIndWeiU5dQA3jrZGL56eBAanLTCjEKMp4LALroK7azmv79CE30lV2_WeQGuHgqPysgtRHe46diR3xAAGSfWUpHpHRnuMF9mJF2I28K32fAGwPB1EsGU49LxamCsXhT7tNAe9lxpw2PNQgC6dx5QUNvW1lNay8Y9aZspAMqX5AOAWFJFFJYkdS1MoEHh1Lv4H2ipHXUIV0H9hsJPb4WAnCvidqSVTrc2gF_ih4QVDS2MOgZELS_8gEbqyOfIVhO4R8zEiVB7wgFrws8Px18pK40Dmwi7C9QvQdAsd5w0gN0oN2HTDHJFcNyWcZ0JiDrba2bCOywdE0OtVCMroBQaTvUTU-SLmSMyARuzvCdRckuuNA5qsrWYPhSvvNrTwhctS3cqLyviPEI5QkEGK4MLnh0gKi1HnNKnwnEa87OPcnCfWFvpn6V9icS_BBtlkKmWgvWjpF6H6UwgSJLmBeE1HrO4zYzldhtvJssc1Ao_ffLmY9EgW3c8m9sFE4T1BK6ihltlpNHvxMdVuU3MDqVDTci1fPk3bjfHJKuQBDMOIJ1mjjTJk4jMb9c2OKPmov-Midj0SBVxwXvFiVKOvJBywRYXyPRbtkbHTebhXRo1UWz78EONgAhEVEKP2JIvy9CUBWJqQSsiUt2ls9A5EX2_wsdwDGftARbdGpHFUX5jMwhh-OFXt881FSp6TWKTRo3Q9a2mQ_6gqgQVBl4MFS-tR8a1aK06TcBrT-F7r9lvufyqieWL-WjuPcY86PTZUIln6fDilh4Jsf-3SumB8JgTQ_3vLoM3gFuWJTBIfgBQYI4ihmpEY9xzL5Eiy6Op3KPmT-qb-fihiGATbcrpyuMA5-CtyK-PjE8f8op07C4P9WU4HVcgJ7lH7hy3qG7hffBhZug6f0AGROompYCQsOYXyRJWdV7UwoxFMn1aHZ0zBsIXHQfF-scmSXdyKhZblnkFOT6O9vh1dnTFvfDR1Ku-VaFd1IGqKSyxaNmxVEOQqftHs6jgByHHj7loVtfxeTMfJQbsQiXpm-yeW2ytUHVBmdEE9WQy8JcSKKewBu4x2nOgEkUU1ZIdA199xvbdDoSZyenDuwQvxE9cyy7ovp-SCQbWfU-Fl5z2t9bGsXSib_tc0x2A32_EjislFTsNjGIDtrSiqw3frXow3e7XXt0LQQU5CN4vV_r5QXoFb52zKdT-enzOggfGFQ6OVloIY3jS6qqQnhPaOSjKFIO_jezh4p7tz-NB-icc-zAyxkDlXRKP6gOOlo2uXwbIjIwUmcZCJjYIbqp0oPj-_aQ4VhngHVk0knG-peqR1Ny2Vp-F8qpx347Xijc2xL9qtaPAlWkCwAvPW7vGbB1lDAizL_BV1d9r2rZ9NipVVMC9RnaH4scYvNCi7VbTpt0UhCxpEa2UjZAFb8BzB59sGRhxlZRG2pedGpLVIq2XhdAxQpPXWtSQOU4SeLSA0R5RpzP5VBTiA.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_098c931a4059667c016acd0cf651d487d1b34a64e7992fd489",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 13608,
+  "completion_tokens": 90,
+  "total_tokens": 13698,
+  "cost": 0.00023839,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 13109,
+   "cache_write_tokens": 496,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00023839,
+   "upstream_inference_prompt_cost": 0.00019339,
+   "upstream_inference_completions_cost": 4.5e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 59,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

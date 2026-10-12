@@ -1,0 +1,1 @@
+print(open('/tmp/events.json').read()[:6000])

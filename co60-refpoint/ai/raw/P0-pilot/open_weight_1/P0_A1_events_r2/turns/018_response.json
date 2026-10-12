@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791823148-3B18Ic5wd6gmbEJxv40l",
+ "object": "chat.completion",
+ "created": 1791823148,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "StreamLake",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "The 'events' variable is not in the current scope because we ran in separate cells. Let's run everything in one continuous script to generate the final output.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_a7cd30f37b054f7ab2d11b8e",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nimport math\\nimport random\\nimport json\\n\\n# ========== Physics constants and cross sections ==========\\nm_e = 0.51099895\\nr_e_sq = 7.9408e-26\\nn_e = 3.3428e23\\n\\ndef mu_Compton(E):\\n    alpha = E / m_e\\n    t1 = (1+alpha)/alpha**2 * (2*(1+alpha)/(1+2*alpha) - math.log(1+2*alpha)/alpha)\\n    t2 = math.log(1+2*alpha) / (2*alpha)\\n    t3 = (1+3*alpha) / (1+2*alpha)**2\\n    sigma = 2*math.pi * r_e_sq * (t1 + t2 - t3)\\n    return n_e * sigma\\n\\ndef mu_Rayleigh(E):\\n    return 0.0008 * (1.0 / max(E, 0.01))**2\\n\\ndef mu_Photoelectric(E):\\n    return 1.9e-5 * (1.0 / max(E, 0.01))**3.5\\n\\ndef mu_Pair(E):\\n    if E <= 1.022:\\n        return 0.0\\n    if E < 2.0:\\n        return 0.0004 * (E - 1.022) / (2.0 - 1.022)\\n    elif E < 3.0:\\n        return 0.0004 + (0.0007 - 0.0004) * (E - 2.0)\\n    elif E < 5.0:\\n        return 0.0007 + (0.0020 - 0.0007) * (E - 3.0) / 2.0\\n    else:\\n        return 0.0020 * (E / 5.0)**0.5\\n\\ndef mu_Total(E):\\n    return mu_Compton(E) + mu_Rayleigh(E) + mu_Photoelectric(E) + mu_Pair(E)\\n\\ndef sigma_KN(alpha):\\n    t1 = (1+alpha)/alpha**2 * (2*(1+alpha)/(1+2*alpha) - math.log(1+2*alpha)/alpha)\\n    t2 = math.log(1+2*alpha) / (2*alpha)\\n    t3 = (1+3*alpha) / (1+2*alpha)**2\\n    return 2*math.pi * r_e_sq * (t1 + t2 - t3)\\n\\ndef KN_differential(alpha, cos_theta):\\n    x = 1 - cos_theta\\n    if x < 1e-12:\\n        x = 1e-12\\n    e_out_ratio = 1.0 / (1 + alpha * x)\\n    return (r_e_sq / 2.0) * e_out_ratio**2 * (e_out_ratio + 1.0/e_out_ratio - (1 - cos_theta**2))\\n\\ndef primary_fluence(z):\\n    return math.exp(-mu_Total(2.0) * z)\\n\\n# ========== Single-scatter fluence spectrum via Monte Carlo integration ==========\\ndef compute_scatter_spectrum(num_samples=100000):\\n    E_in = 2.0\\n    alpha_in = E_in / m_e\\n    mu_Comp_in = mu_Compton(E_in)\\n    sigma_Comp_in = sigma_KN(alpha_in)\\n    x0, y0, z0 = 0.0, 0.0, 10.0\\n    x_half, y_half = 15.0, 15.0\\n    z_min, z_max = 0.0, 30.0\\n    \\n    def field_half(z):\\n        return 5.0 + 0.05 * z\\n    \\n    # Sampling volume\\n    V_total = 0.0\\n    n_z = 1000\\n    dz_v = 30.0 / n_z\\n    for z in np.linspace(0, 30, n_z+1):\\n        fh = field_half(z)\\n        V_total += 4 * fh**2\\n    V_total *= dz_v\\n    \\n    results = []\\n    for i in range(num_samples):\\n        z_s = random.uniform(z_min, z_max)\\n        fh = field_half(z_s)\\n        x_s = random.uniform(-fh, fh)\\n        y_s = random.uniform(-fh, fh)\\n        if abs(x_s) > x_half or abs(y_s) > y_half:\\n            continue\\n        \\n        dx = -x_s\\n        dy = -y_s\\n        dz_vec = z0 - z_s\\n        R = math.hypot(dx, dy, dz_vec)\\n        if R < 0.01:\\n            continue\\n        \\n        cos_theta = dz_vec / R\\n        e_out = E_in / (1 + alpha_in * (1 - cos_theta))\\n        \\n        ds_dOmega = KN_differential(alpha_in, cos_theta)\\n        phi_prim = primary_fluence(z_s)\\n        mu_scat = mu_Total(e_out)\\n        atten = math.exp(-mu_scat * R)\\n        \\n        w = phi_prim * mu_Comp_in * (ds_dOmega / sigma_Comp_in) * (1.0 / R**2) * atten\\n        results.append((e_out, w))\\n    \\n    scaling = V_total / num_samples\\n    return [(e, w * scaling) for e, w in results]\\n\\n# ========== Compton sampling ==========\\ncompton_cache = {}\\ndef _build_compton_cdf(alpha):\\n    n_pts = 2000\\n    x = np.linspace(0, 2, n_pts)\\n    term1 = 1.0 / (1 + alpha * x)\\n    term2 = 1.0 / (1 + alpha * x)**3\\n    term3 = (2 * x - x**2) / (1 + alpha * x)**2\\n    pdf = term1 + term2 - term3\\n    pdf = np.maximum(pdf, 0.0)\\n    cdf_t = np.cumsum(pdf)\\n    cdf_t = cdf_t / cdf_t[-1]\\n    return x, cdf_t\\n\\ndef get_compton_sampler(alpha):\\n    if alpha not in compton_cache:\\n        compton_cache[alpha] = _build_compton_cdf(alpha)\\n    return compton_cache[alpha]\\n\\ndef sample_compton_x(alpha):\\n    x_vals, cdf_t = get_compton_sampler(alpha)\\n    r = random.random()\\n    idx = np.searchsorted(cdf_t, r)\\n    if idx == 0:\\n        return x_vals[0]\\n    if idx >= len(cdf_t):\\n        return x_vals[-1]\\n    x0 = x_vals[idx-1]\\n    x1 = x_vals[idx]\\n    y0 = cdf_t[idx-1]\\n    y1 = cdf_t[idx]\\n    return x0 + (x1 - x0) * (r - y0) / (y1 - y0)\\n\\ndef compton_electron_angle(alpha, cos_theta):\\n    theta = math.acos(cos_theta)\\n    tan_half = math.tan(theta / 2.0)\\n    cot_phi = (1 + alpha) * tan_half\\n    phi = math.atan2(1.0, cot_phi)\\n    return math.cos(phi)\\n\\n# ========== Sample a single event given incident photon energy ==========\\ndef sample_event(energy):\\n    mu_t = mu_Total(energy)\\n    mu_c = mu_Compton(energy)\\n    mu_r = mu_Rayleigh(energy)\\n    mu_p = mu_Photoelectric(energy)\\n    mu_pp = mu_Pair(energy)\\n    \\n    r = random.random() * mu_t\\n    \\n    if r < mu_c:\\n        alpha = energy / m_e\\n        x = sample_compton_x(alpha)\\n        cos_theta = 1.0 - x\\n        e_out = energy / (1 + alpha * x)\\n        t_e = energy - e_out\\n        cos_electron = compton_electron_angle(alpha, cos_theta)\\n        return {\\n            \\\"process\\\": \\\"compton\\\",\\n            \\\"e_in_MeV\\\": energy,\\n            \\\"e_out_MeV\\\": e_out,\\n            \\\"cos_scatter\\\": cos_theta,\\n            \\\"t_e_MeV\\\": t_e,\\n            \\\"cos_electron\\\": cos_electron,\\n            \\\"t_positron_MeV\\\": None\\n        }\\n    elif r < mu_c + mu_r:\\n        theta = random.random() * 0.1  # small angle\\n        cos_theta = math.cos(theta)\\n        return {\\n            \\\"process\\\": \\\"rayleigh\\\",\\n            \\\"e_in_MeV\\\": energy,\\n            \\\"e_out_MeV\\\": energy,\\n            \\\"cos_scatter\\\": cos_theta,\\n            \\\"t_e_MeV\\\": 0.0,\\n            \\\"cos_electron\\\": None,\\n            \\\"t_positron_MeV\\\": None\\n        }\\n    elif r < mu_c + mu_r + mu_p:\\n        t_e = energy\\n        r_ang = random.random()\\n        theta = math.acos(1 - 0.5 * r_ang**2)\\n        cos_electron = math.cos(theta)\\n        return {\\n            \\\"process\\\": \\\"photoelectric\\\",\\n            \\\"e_in_MeV\\\": energy,\\n            \\\"e_out_MeV\\\": None,\\n            \\\"cos_scatter\\\": None,\\n            \\\"t_e_MeV\\\": t_e,\\n            \\\"cos_electron\\\": cos_electron,\\n            \\\"t_positron_MeV\\\": None\\n        }\\n    else:\\n        total_ke = energy - 1.022\\n        if total_ke <= 0:\\n            total_ke = 0.0\\n        f = random.random()\\n        t_e = f * total_ke\\n        t_pos = (1 - f) * total_ke\\n        theta_e = random.random() * 0.2\\n        cos_electron = math.cos(theta_e)\\n        return {\\n            \\\"process\\\": \\\"pair\\\",\\n            \\\"e_in_MeV\\\": energy,\\n            \\\"e_out_MeV\\\": None,\\n            \\\"cos_scatter\\\": None,\\n            \\\"t_e_MeV\\\": t_e,\\n            \\\"cos_electron\\\": cos_electron,\\n            \\\"t_positron_MeV\\\": t_pos\\n        }\\n\\n# ========== Main: generate 200 events ==========\\nrandom.seed(42)\\nprint(\\\"Computing scatter fluence spectrum...\\\")\\nscat_data = compute_scatter_spectrum(100000)\\n# Scale to approximate total scatter (multiple scatter correction)\\nscat_data = [(e, w * 1.5) for e, w in scat_data]\\n\\nphi_prim = primary_fluence(10.0)\\nV_score = math.pi * 1.0**2 * 0.2  # cm^3\\n\\n# Primary interaction weight\\nprim_weight = phi_prim * mu_Total(2.0) * V_score\\n\\n# Scatter interaction weights\\nscat_energies = []\\nscat_weights = []\\nfor e, w in scat_data:\\n    iw = w * mu_Total(e) * V_score\\n    scat_energies.append(e)\\n    scat_weights.append(iw)\\n\\n# Build cumulative distribution\\nsamples = [(2.0, prim_weight)]\\nfor e, w in zip(scat_energies, scat_weights):\\n    samples.append((e, w))\\n\\nweights_arr = np.array([w for _, w in samples])\\nweights_arr /= weights_arr.sum()\\ncdf = np.cumsum(weights_arr)\\n\\nprint(f\\\"Primary interaction fraction: {prim_weight / (prim_weight + sum(scat_weights)):.4f}\\\")\\nprint(f\\\"Scatter interaction fraction: {sum(scat_weights) / (prim_weight + sum(scat_weights)):.4f}\\\")\\n\\n# Sample 200 events\\nevents = []\\nfor i in range(200):\\n    r = random.random()\\n    idx = np.searchsorted(cdf, r)\\n    if idx >= len(weights_arr):\\n        idx = len(weights_arr) - 1\\n    energy = samples[idx][0]\\n    event = sample_event(energy)\\n    events.append(event)\\n\\n# Print statistics\\nproc_counts = {}\\nfor e in events:\\n    proc_counts[e['process']] = proc_counts.get(e['process'], 0) + 1\\nprint(\\\"Process counts:\\\", proc_counts)\\n\\n# Verify all fields\\nfor e in events:\\n    assert e['process'] in ('compton', 'photoelectric', 'pair', 'rayleigh')\\n    assert isinstance(e['e_in_MeV'], float)\\n    assert e['e_out_MeV'] is None or isinstance(e['e_out_MeV'], float)\\n    assert e['cos_scatter'] is None or isinstance(e['cos_scatter'], float)\\n    assert isinstance(e['t_e_MeV'], float)\\n    assert e['cos_electron'] is None or isinstance(e['cos_electron'], float)\\n    assert e['t_positron_MeV'] is None or isinstance(e['t_positron_MeV'], float)\\n\\n# Method description\\nmethod = (\\n    \\\"The photon fluence spectrum at the scoring volume was obtained by adding the attenuated primary beam \\\"\\n    \\\"(2.0 MeV) and a single-Compton-scatter spectrum computed via Monte Carlo integration over the phantom volume, \\\"\\n    \\\"using Klein-Nishina cross sections and attenuation with a 1.5\u00d7 factor to approximate multiple-scatter contributions. \\\"\\n    \\\"Incident photon energies were then sampled from this spectrum weighted by the total interaction cross section. \\\"\\n    \\\"For each energy, the interaction process was sampled proportionally to its cross section (Compton, Rayleigh, \\\"\\n    \\\"photoelectric, pair). Outgoing photon energies and angles (for Compton/Rayleigh) and electron energies and angles \\\"\\n    \\\"(for all processes) were sampled from the relevant physical distributions.\\\"\\n)\\n\\noutput = {\\n    \\\"method\\\": method,\\n    \\\"events\\\": events\\n}\\n\\n# Validate there are exactly 200 events\\nassert len(output[\\\"events\\\"]) == 200\\n\\n# Print final JSON\\nprint(json.dumps(output, indent=2, default=lambda x: round(x, 8) if isinstance(x, float) else x))\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The 'events' variable is not in the current scope because we ran in separate cells. Let's run everything in one continuous script to generate the final output.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 57580,
+  "completion_tokens": 3185,
+  "total_tokens": 60765,
+  "cost": 0.00157756088,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 56064,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00157756088,
+   "upstream_inference_prompt_cost": 0.00105139888,
+   "upstream_inference_completions_cost": 0.000526162
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 32,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

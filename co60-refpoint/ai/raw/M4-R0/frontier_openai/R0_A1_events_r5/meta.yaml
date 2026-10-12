@@ -1,0 +1,91 @@
+slot: frontier_openai
+provider: OpenAI via OpenRouter
+api: openai_compatible
+model_requested: openai/gpt-6-luna
+settings:
+  reasoning:
+    effort: high
+  usage:
+    include: true
+condition: A1
+task: events
+config: R0
+prompt_version: v1
+prompt_sha256:
+  system_A1.txt: e06e9a5ea06c2f5ca29739818f324713f2dbbf775f019c11018d1aa7ef5416b8
+  task_events_R0.txt: 871cffaf3fb764b91cfda15169f125951e9eb985bfe79f27e1ac8bc6b710cf73
+started_utc: '2026-10-12T16:40:49Z'
+turns:
+- n: 1
+  usage:
+    input_tokens: 1220
+    output_tokens: 5037
+    reasoning_tokens: 4660
+  stop: tool_calls
+  wall_s: 47.29
+  http_attempts: 1
+  model_reported: openai/gpt-6-luna
+  tool_calls: 1
+- n: 2
+  usage:
+    input_tokens: 6525
+    output_tokens: 2158
+    reasoning_tokens: 534
+  stop: tool_calls
+  wall_s: 17.06
+  http_attempts: 1
+  model_reported: openai/gpt-6-luna
+  tool_calls: 1
+- n: 3
+  usage:
+    input_tokens: 8806
+    output_tokens: 1647
+    reasoning_tokens: 20
+  stop: tool_calls
+  wall_s: 9.68
+  http_attempts: 1
+  model_reported: openai/gpt-6-luna
+  tool_calls: 1
+- n: 4
+  usage:
+    input_tokens: 10583
+    output_tokens: 312
+    reasoning_tokens: 128
+  stop: tool_calls
+  wall_s: 4.67
+  http_attempts: 1
+  model_reported: openai/gpt-6-luna
+  tool_calls: 1
+- n: 5
+  usage:
+    input_tokens: 11014
+    output_tokens: 1409
+    reasoning_tokens: 1316
+  stop: stop
+  wall_s: 14.6
+  http_attempts: 1
+  model_reported: openai/gpt-6-luna
+  tool_calls: 0
+- n: 6
+  usage:
+    input_tokens: 12487
+    output_tokens: 762
+    reasoning_tokens: 695
+  stop: stop
+  wall_s: 8.33
+  http_attempts: 1
+  model_reported: openai/gpt-6-luna
+  tool_calls: 0
+tool_calls: 4
+retries: 1
+outcome: parse_failure
+model_reported: openai/gpt-6-luna
+first_parse_errors:
+- no JSON object found in the reply
+parse_errors:
+- '$.events: 0 items, expected 150-250'
+finished_utc: '2026-10-12T16:45:35Z'
+usage_total:
+  input_tokens: 50635
+  output_tokens: 11325
+  reasoning_tokens: 7353

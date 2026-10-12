@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791823118-EdXKcbAFNLk2fUhv7VdO",
+ "object": "chat.completion",
+ "created": 1791823118,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Evaluating model bias**\n\nI'm considering how the event data generated in the model could be biased due to excluded factors. If I disclose that it isn't a valid representation, would it be better? The goal here is to provide a complete answer in a JSON format while indicating the limitations. We can supply generated samples, but for clarity, I need to note that our model only includes certain channels and omits others. This means the generated event sample isn't unbiased, but I could create a schema that reflects these limitations.**Preparing sample output**\n\nI see that there's a request for a specific format, and they probably want 200 valid entries. I think it would be good to produce a sample using a custom Monte Carlo method with a clear caveat. I\u2019ll need to extract 200 compact events in manageable chunks. I could list each event on one line, ensuring I meet their expectations. Generating JSON compact event objects in chunks of 50 seems like a solid approach to keep everything organized and clear.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_gDq6Xoetqy7bi08yo4jCLxEL",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import json\\nE=json.load(open('/tmp/events.json'))\\nfor chunk in range(4):\\n print('CHUNK',chunk+1)\\n print(',\\\\n'.join(json.dumps(x,separators=(',',':')) for x in E[chunk*50:(chunk+1)*50]))\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Evaluating model bias**\n\nI'm considering how the event data generated in the model could be biased due to excluded factors. If I disclose that it isn't a valid representation, would it be better? The goal here is to provide a complete answer in a JSON format while indicating the limitations. We can supply generated samples, but for clarity, I need to note that our model only includes certain channels and omits others. This means the generated event sample isn't unbiased, but I could create a schema that reflects these limitations.**Preparing sample output**\n\nI see that there's a request for a specific format, and they probably want 200 valid entries. I think it would be good to produce a sample using a custom Monte Carlo method with a clear caveat. I\u2019ll need to extract 200 compact events in manageable chunks. I could list each event on one line, ensuring I meet their expectations. Generating JSON compact event objects in chunks of 50 seems like a solid approach to keep everything organized and clear.",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzQ0VEQcxcG-O-159cUgjVMDcCCC6IvYisawD_drRRwDpoWfO222NRiAFWv_idEIDuwXXOHT132HkjVTa6HWOgxYZvjcnQALcCpKMrJezySZdikKeh8Zh2mvM9vGH_XWxVsUpny6DV02soEvoaLW9TTdD-2fHT43JIfYmPbIZVp_RhL36SXK3ABhntzo9h4fBUNAhIaSSjE_o41-mYE_tmU8wSdIaMvOPRHYeR-E7BzGYlLG5o8N5RtVVfp4HEadeQRnh26Ju5Az-ZWWDmyAD_M5ESAMbaQgHWjnlHwHJAaCdycsP7NGPL2gt5blMds8JXpbkEwjZW2fm8E-ZdvGZ2NMu2FyI725oB3StN3Yymliz_HD57zz4E8-C6NVGs5gEwOFnJMR0rBar27VM1PYHSDoUpA7o4HmNH-4hL6DCoRW6jh8stZKT7hwI2Gpm5dMUDVxL8RhkrWv-jSq-qdhLVpEkIliqNYfQK3cofJbRTS8g4B6ujKSRgJe-n-_rNDposJ9zKgB1SDin0tNulK5GEM0SRUlYhxYXwwrkBIJ8A85QFViE6prRlpVgGq3Kkz3e-P4a6ix4PxJ_ASlDpOnKJWuhMkDl_GqcPLsJ9TFgnkvS8IKeSjiIPrJrO3XdOay-TOSpTVBfUDlHVp4KPxnn3l6x4GwzTguGyXbwY4qsKZK1cIdg8HvrCnSW8sq0KN7McW8dmqYUhA531-LB19UELPcPo5hIFcGJzYbjfHg3ol0B__DkP4N85qAK_6M-W1H_CBwV-0q5uNmNIQwDR9_xigBh09xfydroZokJlDWSdLz8A7wA2m8V1SoCStoyYOPGZPHPG1CHgvz6qa26aiCEVCyIe8jryrGLGEWacRbJZ4jV7ocJz3HNs9UC8CqhEqVYXPktaEc5sAcQpSIs_3yr0VZLwJ_piKdu10s9VWH1wp_V-9Ax4_vRyTRa_CNQL1on0mh_dcK3kw3DW7wD1JKUsuaEs3ydPbZsMznq84qQyLb5NOTJhBf93AUbuImPFW61vUkjc2HoXXjQYhHu_ZKIIAz690ePrnoFp9dUUnJnx9AJsEwZDrkoea6f0kyi6gstlMgMfvhrLh9oygNMx3ycaV4mLYt22hAaUb8yH3C8PTIQLKsEFW5Xsg_Ki84JF2Gz1yTVsIUBneH5BooyA7F06gDKqaLOpjdRaHDnfbTgpfnefeesUhm5avSvlctV6fsKZwhmIzABzRshp7e8D3PlC0NcKCJmVq-WS9VCdT7OZEM6a7PvanwBSuh5oeIC9eZ6UFnW-ZBAoE1FtT0-Pij8Y7trU7NPeSku0fEptyyXyMJmG9uad2zn7F8fQ9imIhO8K0ZeWtBRvwyBuVnsbEl9Ldmixn9YBUVuS4YptRRYc_-bny0RaAIWHHc6DEXAOz84OzRjN8TR-rcUI0ca8ikocrBvbg2GUh7Tv3x7_rrZDs4SHx97vbkIAEQoNkFjRZYLINUQlK2ezb4BN0H1axi-ZfbVU0taSkMaq6pnnST8lzXHB-VWZRhlDhNCYflqKW9ExTJ03emflZqI7T24jXSEnfdIdjry614FXO_MoPNot5sWhLLNV8s5VRYYxRSpbkZRfHV5zxDzdTnnSOsQHm6VdgpKM_cTbptGMr6Oh2ziILkYQfA1VTfc1NPSCiXXLcDOGyrJWdtZBb3jTJX7ejo0jM05-Zc-op9HDz-l4bdz7uqHUUDR3T7DpjD9EsCyrsjLbSo-LdYeApW1wUggb_FIx5sCfM2BxQirckNLGyI5qxK3KezzKX1Y8ynUbP6dN6Z_Iu_cm2MixDj8z9U8cXjYFls-FOGjCMdNYCm-ZB7ECT0GlmXmGIFhVvf8XOA2jPgZ6OerEliH-T304jwW9tHZO2E9aBVuYtsI3YIigpsy9LPcxiSULzjq_9pP8Qzp3apIKt3xliOFk-T39zDy6CLV3CgfyueduC87KQmLgh5qn03027K02v4g2JiPJoEro59aPg1UFQY097Eg8R7ma_WINKI2vRczN4us_JAXzCDbf0ExU4U8hsNUUDKATbR-vCLrHvNjnj-OB09BZIZw6QVokRup1RoZkWQCs5qmLS1Sa5DpCr0ug6NHACO3ECzPAW-o6AHGrlZJQ-_rD3VUmf6aekBWNP7TVF3dSbcTuO_Dncq0yUw7QOytNPcMkwZ0nnbreQg20Xm2R3ai7dMVjphvOr42PdfQ6gmSD0G-XzRaqCIwbmMai5XzCWek9k-YvO2sKEhgoNIAp8gDldE8-RoWKPF6teKYDb_Yce2zEpm8KyHmvXd7SwPxEfMLuy4avswC11Bi-DYlcN_LXIfdRXdCvYK6QnJsWD_E_mSk0rvsSlrXf9rWXhm4suI-FEZroFGT6gzdAGNDnHS29eUNldsEPONLGIScSGWDmN33yc_vevokDaH6yS1oWM_i4Z2b95EPQpZeF42NBGKT7TQNz760UKLEGZyoa1WXaiwxWR76Ajrsc0t7VJqj0GI96ae0RE9kZ-fnl_Oyp4jScqFXi0iI9j7XH5dBYnPhacCIW_IDYGuNndn-Uj_B8aS7bfaCNkeketZSAu2cmte2QGJJ3k4TZk7cw1Na4ecQmzdo-G_E7Ym9_rbalOMvCkSZdyUSp5sIp5-p_848HqKVp-_RvU5McpNl0VjH_Q5C5BhV-L5lXBLuFv4ZGbKJwbDnOJxqo8ABGB0b_nqcKyw2Ib07H1QM0ncTdV23Ecw9BPOv0dDBIQ0UqKtB9sHRqGlSpg_U0FBVXUab_t3ob_SEVy7j3BQVZ_UTDCTYpJaAmAfS3FA2vB1OnknDHWt5taTEVNsmx57aFhsg630axzDLZU20JJVNiUk3uRpoYK4Sn80NimazsFQ6Zrp32TQ_GOgLWTtZkZxYKXlaNmHPDV-8SKXymyBNLqwrKmWh-kdq6Px3jqarw4aXrZ-lxysqurwLMx4Pyqggme8uzWb9VCYmoUBuDeGwakoiq6w_vi4dSxFUMAj7yZRCWl4m3dhB9HOfneOUCJITYvYBik_xVQ8QvsHdJEmtcj0CerFNj2cpaw4tGP-G_wUAQc5eWi_gnLoEJrrIY0Cor7HUmN5EZTQ6X34LupWWpkz4AlqDsbS5teDjR66oGWqWNrlHJWMV_FhuoNYT_7R8knXWoaf6LzlNiOhlez2-er0swYq4ebK6sbInq3U6hvmBWzlkkWaLnTfdw4Yzw9qkKCQhsx4Uao8eEKeveRa_pDmGM3Z9nPpqOZX6MSRu8DlbpoAWoK7OV-kfqjRnEJ921EhEklPQJ_4UilRDvmwWvds0WBghcMY6mwhBeScjTMvR8WP6FM6OF-MmdNiDytp8taLVYyb9m0xCwEWKerryMcAp01WBCW-o77TVcG9aQhTvE34NnoOAeShWkG7GIxU9BEbgY9Tjm6Ua9nGEEtpaMHfgPHAtRtb_FwjnxkkO2jsEtd0bSUABTc2Eo8C5yhy33BsxWeEMUjjbm9li3_jeRoiE8GS7FJNIIJjIfjXQE92ZygXHF4j-t4AmB16Xs0m_LDzIRBK0Nv2DwEe5fqwnW4Bfjvx7AS91so_ap-_ScEQz-l4I7vxjotlEq1i7EPT6z7DyQRludF9Cm5dkgqgluP1xgN7-XetpHLaNE8EZ3RNKULaacDgt8JZ9R_9fbjgnZ7S0oi-3PlSlceM7Gac-M4bfu1xtRULpivotx4OER3A58UTiVYiGpRVwKl-dxGQAMMIY03OYQHR49QJXAmjZK961PuGKYRySKaboc865d_zHYoEt4aQY6pQNpucsHVCUtl7zv0IuOL1rbIyv5CetvLs9C3sGpDZmigqrzKzYMlz-dewsJi8VdCYBEqz508a0y4-7265e5cP65FNMbSvpyQvIosdlj7EfkgbYXEWpjM1fVN9Ym6MHfWelRiUfcjSFISCagTAnmkmPMRhur9AfkGmifbxex6_ynvjx3IfzOnxjJyG42bhjgMSgdMeVExB9cOAQn-KEaP3TGQ8YuYljTRFfZRrT_W8dC8vrvultqZjnVqtRLFjnfGc7EPumKEhlWucjeWfO_50PJHXseFEjQ6SbUO2JzP9jmQPU7uqGQljHQQOLOwA9AADyW_y66_nCSXUqhYC1PoD_y-kps9OGHwka8gqpApfuNMTR5mgQlqAxGWwcN5BF8noTU0eZJ-ZOXuKppSyBInB8P1RZRAb0mj-081K1SCkIEuAPKyuCNRTvcC9C9GmBxf5wIXcLCp3gMwz2TzJNchtF9Zae3W8Mga3SlAbuJKF1PrS6vyWDKM6IbZ7YyBJeoTfs9UT7tygavc7Uz4r3Vsm6xjx36Si_eyrdkv38-_0YyckWG6zU4TXxxsDPdwi93bUq7_6eITzvqhyjya6I8mzKxiezrDkAdn6PLX6ttFaXxkVVrmFwieASYg5qKMOjEtL4RH5HADWm7zgg-c_JX8E6AvTN0RgFt7Swx0vDD_SVQB06_ciepw0u0_Oks3CHh3PF_D4sns7msAZ-8pquMAoIlWD-ka-ranIDlUdi4N36nmZg-jvUKpg0i8Inm8_j9W6NAcHXm6QtfRcpMY8oQ0Toi_QUW4W7kbPlVMGVMUhd1mmWi8j0uow1-CvEz1T1gV9rGOFArrFxtz_I_sVTeAO9dPcPUSKX1rAWeRfz09EzbPWBoAv_3iMUCmwNe_jcM0MRAvNm-YFEnqny6fMONqXC3olMzmCjbfPvWO6pNpnktu3uZt7hjdrIOtDc9kdbTvlMZJdwcZc3o13-PJGPbouq4-YoJ-p9XJ7ibDmrEq3k4h1cEq1G9RFxK1a79eUoPB9-7EiVf2od7uRuw_BCvox-GIcqL7H-IEEU77Vq7M52o3C_-SQfS4bhizkQFC17e2hwlBzfhn2rMfoFwNx-QOGOYGRaFNXontk5IAXvXT532D_G7siUeFKawem5yFWF9eACRWCxVB5-vKLktwPhEppf3Ub8-VABu_IUBUFrrCdDmB99po0IiVo-0HUKw0ApIs_mmVadN3s8ccNz1BqQ1n_E_LBfKD1VHFmSP7uISUVqNeta9q5D8wv2gb7l6iyoqqKR7PfaEJnCNJY2qlrc1pJU2MDb5t9ZbE7-3se4ITqZbQpXefeYH02WGVy5Zs_2ZEJSekbVSRzWgTv1SYP5PGOM7fb2aE9xWIeGJGMoZqcHXu4SThw-AnAgkGlAgTBeeid8n_tlWAiItKAxRP47urIUXri8o4I4GF-JMSWlUNhxoKytLG5YIE1Urk6QbPKiJ0HgcyMkVRjE5PdqYriJdU4rsX_405bJgRciDKjVXQrB3vZFexHB0v0rpjAZ-PfFAm2mBv951OOsn7MuIFZrqRMQj79UqLiYVWdOSIhekKVXxdu7sW9AzZbqsBABwIGcT4LruD_vkMVXdrISQ2eAlDalki5VfDOiKPYfDXqC-gMC9INlagGy9CKXOIQJEMokCrywy1cwVTOWubzBMxqtFgEYBpqEP2CwTBH5hndqSamOf3kbxTmsUAIj_3-N3bbEvwCxcYB85lwVn5-SNCEC5j8XlcRzcsA8TIbb7g2OTPu7Mb7a-vg9G53npijEesho132vswEuqr3ba5U85rrqchfclaES-Hx9CS8x04-I7HzWB1FpL9GJ3uYb8eDbM0D-Hm69yQV3KfTHTsRG2jA5uMvIsCf8Rhzp6hGNQF0mRm49uo1AGmnd2N2OlpJya37vjkXQCaz4DozrVQL53vHrMfrO-ln8uL8fg_wHQInhh1I3lePm46NptfMytUmJi8ZoJQlExOHXv2rc9fn484mQn-dQsNXOA8TwznZBZh7LXAEkM0t15y_4lEQHXPd2UzVSRUqQhA7zQeqwFXxJACf2uIv1U-XgGkFThglxLvE5Uy6fwQ6o7LimB-em-r-QXVRBpKKdiLR0S0TUPkO93zz724n1PYOxFGuR5l2aSh3eBMv4Smw1wf2cUv3yeKEX4H77WXTWPZRgGVNdK8_YaApQ5zj1Zl7toXQfRnBbscNy6C1jcrgkpDfSp0IDcq3Wi7e5RSy6XNRS7Nx5hmvJKYYQzEc-Iog8wcD0uSaAQ-bim6FIHqIfkG2_4jRkL81_dK3RIwhoFmo6tb9tujcUVEiBbVAypu4ZO4Zrzl7C8sd2TH0qNUx42lBMxFh5pvvSH4j6Xa_LhslkA3n40SfL7UrsD6mPlzkDydcZaCCTv7t29xERwdStxb6QqgOu6k5jJy-gk0ST2P99Gm1WE0uR_FQg0UEclHBfA3Sawq2d4mE5hiOfjMz4Wvmg_feR7_tKO1ZbnjVI6ecAlQRm7p1Vt_kZagCVuQJsFPW3f-kVl8h5DFJ6OzB9ZXRV4Krq0-L0ENZrBoXDsWiYr2-RCAivPfvOF4ezruDIjyarAoxRQXNC3lWUmKNz9aIcuyLtvrT87BMG4_eUSFtdnKY13A2LF6dz6zJqecYbbFw_Z1Rgg9Z7hVRtTNUklEV9Mgxiy3mfGmcX8lhAd2vNYln6QavZJhvqCDfcNJzITsFX9ThG_1lrTjLhRpNHmm9S8L6OQ1E1Zj2AcVDx9IqanzMBaatyZXuUTVk5MusisJOeHAXWes9mdAFw-tYEb02MaTUp13h3ibGsW5soNXDZNyR8nmEfwBwE-qgM7uNFH5eA0icbnlybqOrKQHFD1DnsQ6eVqTDXjrVswD2Iwz1DVs6ep5sXRLqD7rHf61olkqGEE8xcLJsgakMaRSBTfn1miz5XTEAhDKzA1bsZ6f1M4RiHRqw3eckNx0QVh9FoX9Gnb_sXgSBxIrWCp6u6XlTLuP0WAYQVARhRETcUe2VuiqYPOmulPWrVBBBtQmSS3j2KCgVNhro3GNCIeKn15vp5Bvd81q05uEfnMTsyiEscg79-SbJGa8G14o1t7LSZ2OgM2KrP_Gn-EHUeQXKNCnTYW6fgBrxc0BI-y8mNCpecjnzfiJrBO9i92r9K2-8KbhLlYPqr4YOb6ZRQ1kNuRgBThKhFbGJsojJVGfZ3ymwCzAuoUocRX-L0mZG7cHmUcSvhHUJKpkXcuRkQKIg0ArI_QhG0HmZ6Uo3svta5wqIzKJTiw0JB60iKwF-honQSw8QA2hScsL34aloFso4aNWWWGRQvmnteHkHw14eJKmvhp95PflCIhqT760V-1Og-Bwu9p_GdQcaqjJ_ThMWQCmxjDPGRvvQqToXowbkaBPuTZafz-FG2vkCbcF6AIPUBzdvACQQtFJKH4_DqL1yNvrPMJan1gevksXmL_Zfvd_hK5rOPebKaNTpe7ZrWc6X-yqyToqf_fmAQFwGy09Q6_TiWeQqGxP8quxefeDyKYoBIJ9WymBt8LkjkvoCJRKbWvjmQWgAVrWGkEjjLODcEHqrCHztRyi9cweRMZrounxISMSRlF4pdnCc3w5ZDpZlrRhGtRY36X4yTnqh2n0dLwGw4xDhKcdZGyrAxCFK7rXTdHutVig74dujtDWumYuOg-Vgv88nfi5A8EX8ILlKUSdurudvd8T6TkikDMgcfOXaqj6b3mYOGX4tVsKXlIuTwmQi3HcH4gy2jwl5XYA77Virp26oXPTfSgStErm1IWXASYtFkTcRt.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_098c931a4059667c016acd0d0fc7c887d194990cecc34cf75f",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 28563,
+  "completion_tokens": 523,
+  "total_tokens": 29086,
+  "cost": 0.000710585,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 27141,
+   "cache_write_tokens": 1419,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000710585,
+   "upstream_inference_prompt_cost": 0.000449085,
+   "upstream_inference_completions_cost": 0.0002615
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 441,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

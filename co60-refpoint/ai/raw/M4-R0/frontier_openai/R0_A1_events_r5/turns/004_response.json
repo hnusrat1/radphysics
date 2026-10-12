@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791823508-UJuA9PYrIUps6XoOf4ge",
+ "object": "chat.completion",
+ "created": 1791823508,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Considering simulation flaws**\n\nI see that I have a 3-minute time limit. There are flaws in the simulation related to x,y boundaries. For x,y distances, I need to ensure the upper limit is 15 when u>0 and -15 when u<0. The directions in the source plane should be fine. Next, I should check the reservoir process fractions; 7 photoelectrons among 471 means roughly 1.5%. I\u2019m also thinking that the reservoir may contribute 2 or 3 photoelectrons, noting simplistically cross-sectional energies. I'll explore the counts and energy distribution from the reservoir too.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_xdvbDIsep0RKkCoKqNqXBPua",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"from collections import Counter\\nprint(Counter(e['process'] for e in reservoir))\\ncomps=[e for e in reservoir if e['process']=='compton']\\nprint('Ein quantiles',np.quantile([e['e_in_MeV'] for e in comps],[0,.1,.25,.5,.75,.9,1]))\\nprint('Eout quantiles',np.quantile([e['e_out_MeV'] for e in comps],[0,.1,.25,.5,.75,.9,1]))\\nprint('primary line counts',Counter(round(e['e_in_MeV'],4) for e in comps if e['e_in_MeV']>1.1))\\nprint('sample first 10',reservoir[:10])\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Considering simulation flaws**\n\nI see that I have a 3-minute time limit. There are flaws in the simulation related to x,y boundaries. For x,y distances, I need to ensure the upper limit is 15 when u>0 and -15 when u<0. The directions in the source plane should be fine. Next, I should check the reservoir process fractions; 7 photoelectrons among 471 means roughly 1.5%. I\u2019m also thinking that the reservoir may contribute 2 or 3 photoelectrons, noting simplistically cross-sectional energies. I'll explore the counts and energy distribution from the reservoir too.",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzQ6XTQ6IKuNIMm1t3hvPzCBRVwV4KtELkwizBbxTHnEclnMMRyLpPU2I7bAD7JKwb6latKUWEnFyvo1SzjKOMQbI9n7nvbgXGSja479dqqFMwUtsKkj4N-CJxjRxe2dYfjJsgM1EQ7B23RG2KBDiB1tuo2UODgPc6bnuz9BfIf-cM1amRIPZ5xeqIBgreal3ufloGH7_qrc_hMYiL9h1NRkK6hUQyD0ScMVajubApVtFM3WHx41N4xIvHplE9r8M3OrNqe5ZUaHtLWQOvce5TrpZvDogi8-9CPTNDL3ix6MPW3kJAa-0DD3u0FGQniZZpfTZFDtiC-YYUBc8CHX-O723pmT6o_PrDuvGCq7FwNuKJQCwDG825FjwdIaqv3eNMADrral3xPOU3J5gs6ARB1WjQRVWjntJL1mDVN-QU7rnvdDCqUaKedN_1umY8AGsBQMrb_ZhxZeIDzRq_ebRUZr0l2q-IyrsxXzf9gGG4ScQaHT_W_bZ7xZAnR9K20lpO_bM93XiMQP8jW_4x6myri2rmvNlpuwmOJCxl4NwyMluYakUd_N2iU5-8stkaIO8B-zXdWkcuCSEDjVb1xz7w99YjFK0iD5hwhsyPvQfwH6WVbqIvYbYlpyXa_4m0Y1eqZzY54APuvDZ8baIPXfNKFBKN4jO5BkFP-VhIWEFGVoiPiZc1iSEY0oFCLpIa29zEk_i2MX04Xi4-4r1qBMTEPwiIHBlz7zo2SjkLW4Oh4J35_p4kwm4-1IX1xWMVI_AuyZDBr2PAxE7ltdDwmJTaJeGFQIQnMAU09DJ_pQce2gxdKNIPXZ2u3dV2xBfl2Hff7kdEwIhlKp4eWGfUHFj8A_uJXBMSB3S64OYaZA5B3qV1q0glDw0vxvm0KZgxSyOaVYulREqtvLttvE6NUBo3vSBkLFSXGpXVYWp2t36_AtwYUuhkSVfO8R6BGMxK75zkBEF4a88d4AATKQnIqVObvCYo9D3GRyLVYWfYLWgcqfMB67BaOBx9xzRnegWNOAYRSpU67-9h0AmHWYlY2ACeX_779NGupMWdy8pBaXZ68DY46nyEI85Xisgx6ds2uPobgfOIiBegiL4mvJH6pzEhnmc2wbn6mwpFLIgYfXVOZlIIfltwp5k3E1QySOrqNriYrd94nzk3GVcU0vrpPJ1Nodt14AYP9KQdOExMoDCA4YhkvLi8eQGUWGYtxXrRIsiOEDY11Mp1qBZYpWjwhlZCL0sm5dp7fgeU2zjf6YcLzhHoEc5TMasQPJjfGThWv_LQnjPbZZiQNmwdOWJB8eeZ7uwI5EOBuuXdWr04sH1kzFCByLyeAA7TrNoCXIlDIHI9cm9nYXR9By-17OLTpW_RTiGZHkbIUtw3Vi6Fn2ETKkbvsolwxWCTZQA43_FtiRXqyHJRZhKcKPNTgof5B4nCILVVewYAMEXf50iWGTfycgwqK2Ex058dgVR0kLZRwkh8z-gLib8lC1v6wE6hQ0Q0Tg8mykdb0_qiD9Ua4fulKEgLpcGLXnRx2ivL7wZorLjIzMPoOYAulQQp0qIh5XThfbzAO88j3SXOhGWunvy1UUmB2QjOU1_cUYchf6MxhNzR3wEKuafGvN2Thgc8TQVaNGrALnkwnIK6pTwgCKOvZtfyGojGUCoKV795lOkDBjVmS5R1p12p6aBC1-W2iCsfdoey5UlQvuyRhs2DAyTCRgQwOC9IhM3MBvk7taKuVg0NcGwwrfEVSv33EqCMyH_c8FSgiD9fMhnF0wra3oXByUWZcMW0VvqCF-5HChHURXABxHDzzpkKWqFl1k0YA-PPARTbbkKUfV5cVMLqH7k_ovSfcJa7ga9_pc7BIT_hMZC6b7DnCRL0jaX75039DWty4zcZe9HQjvnEyf1axYcQeDQzfMkUvjLmxqETHndY6dIONPKLyEQhipJeSa5wjLrJLPDPPjfao1cE24QG9t8aSCfQPE96wMX-umgPNummFCUCnkJ_zAAx9OkPH54uJgM85OxEubGVHCtGQd1vchgZ1QXGpG1NZOA6blsbihyabewX0rg5M52Rv8H8G25ylUywk5EppXZQcvjfO9nH9tiZ__LUPnxUcg5TwCyHqFcxnbpYD-YE-KrCI0jgFTTd5U6P_ap_57huOoIUYqfuP9FnH9xV6jTFLlBTgXnuB_rDQCGSPfpBRrTB0u8zFVMUk9pQtkM1ZGP4y2gTmH2hQSfDQ585O9I4z-QkaZvZxw2A1EF5PH1eF4baz7CnV26BXNiEIu1KwKB4709SuiQHmGETGLbZMySx656RpLuEAJhbAXzJ8ukZ0Pj_V3xo3qOQe4P2lww58WTrYYCrijC5D5DjZbLcHzarCTCOjZJgBSrMEkr2uQvbBvUUvVGbW_1qgXRQBwH8WK5YdC9clLyG6gxsudGaSP1LTK6D6zVxxYAJ2yWWxp6rBsDfUYuNS8GbZ1wOUN3JRm1LmBCvRHmso2dTXR7CQ2un3UPiIr-7BmBB4TMZZIOylyQw4kIhMbmZSh78QHRe-PniiTyleDuyA9OChG-uPv4JF4ld5E7qxOaB6CZJZjIS1vfIsypzz2ORWLCtJ2f4n4xksn0yuD6PVV6fB01xP6w5c_6yNYKWfpDuG_rrGQ-m9L398G_O_GW_qvuWO2gbsdxJZ3EHkT8fyI2hQ37N3cj5RadxCnI8MyKVu-5A_8FERHZfRW3XvsUKvAqVZt6knW8BKgDR8SDNsuAqO0hjsdm1KsJqLVuA6G3DaKFxFVSOQpI6Zyv740iV7oVBt16lxRIcgkotKLmAc9hrzmOcB_TW5denzDxpxTcjHXMZVIPfFGlkYNP0SntZJOUqDHAR_Vu2gLaNr-O5MbaDbRMa5eQu12aa25gkGztRZjU9Jx-R9Mejao9akSeDUhywMEPz3t6i0cY3qaRY4anAgoOCJxbeZHLipA70pjgn7Z0ovNqbKspqgOcPJH4gDdQUF2H2PgfkK8EuSCSBjX1HBd5Q7FmYzJsRJ2KfYF-I_1KrPuVKnVxvYLNWxn7xHEkoBtuIA==.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_044c57131e683e63016acd0e952e9887d191390476cd972f36",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 10583,
+  "completion_tokens": 312,
+  "total_tokens": 10895,
+  "cost": 0.000466455,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 8803,
+   "cache_write_tokens": 1777,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000466455,
+   "upstream_inference_prompt_cost": 0.000310455,
+   "upstream_inference_completions_cost": 0.000156
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 128,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

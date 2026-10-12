@@ -1,0 +1,9 @@
+{
+ "stdout": "E=0.05: fmax=2.0000 at mu=1.0000\nE=0.2: fmax=2.0000 at mu=1.0000\nE=0.5: fmax=2.0000 at mu=1.0000\nE=1.0: fmax=2.0000 at mu=1.0000\nE=2.0: fmax=2.0000 at mu=1.0000\n",
+ "stderr": "Traceback (most recent call last):\n  File \"/tmp/work/_call_002.py\", line 35, in <module>\n    sig_grid = np.array([kn_sigma(E) for E in Egrid])\n                         ~~~~~~~~^^^\n  File \"/tmp/work/_call_002.py\", line 33, in kn_sigma\n    return np.pi*re**2*np.trapz(f,mus)\n                       ^^^^^^^^\n  File \"/opt/venv/lib/python3.13/site-packages/numpy/__init__.py\", line 769, in __getattr__\n    raise AttributeError(f\"module {__name__!r} has no attribute {attr!r}\")\nAttributeError: module 'numpy' has no attribute 'trapz'. Did you mean: 'trace'?\n",
+ "exit_code": 1,
+ "timed_out": false,
+ "wall_s": 0.21,
+ "stdout_truncated": false,
+ "stderr_truncated": false
+}

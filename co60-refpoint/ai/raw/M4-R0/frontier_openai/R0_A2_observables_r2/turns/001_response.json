@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791823694-uyqFbSGSnpXINf6ifjBX",
+ "object": "chat.completion",
+ "created": 1791823694,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Estimating transport calculations**\n\nI need to provide an estimate for transport, relying on computational approximations with available data. It\u2019s essential to inspect the data thoroughly and produce all necessary keys. One approach could involve using Monte Carlo methods for photon transport to model interactions with electrons. Although simulating these interactions in detail, such as scattering in water, presents challenges. I might explore using Python or C++ for efficient computation, keeping in mind the complexity of electron transport and photon histories.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_oQwFYxfXULiBHDgPf6uhZt4A",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"print(open('/tmp/data/xcom_water.txt').read()[:3000]); print(open('/tmp/data/estar_water.txt').read()[:2000])\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Estimating transport calculations**\n\nI need to provide an estimate for transport, relying on computational approximations with available data. It\u2019s essential to inspect the data thoroughly and produce all necessary keys. One approach could involve using Monte Carlo methods for photon transport to model interactions with electrons. Although simulating these interactions in detail, such as scattering in water, presents challenges. I might explore using Python or C++ for efficient computation, keeping in mind the complexity of electron transport and photon histories.",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzQ9RHBOsV5ErHEbwJ2MEURjKiMoQOF7GJBuzeP0Kl_ylPkzRwsVjTFlh5n7G5eApcxAwcHtDkOu1-qC1psc6mfcIl3tddERAeUbha0rMY5q-vbUp1yNTklMAABO5mP27GWIIRrKxTBjVhv-KIdDYmcwqYfqFlGMHPJnSUFn9TqMDEdSnmhwL0P-0oZ17F4peAeYyL6X1Kv8cXPIEcV6g0_uPVqUDkuYmxSQfdBxu_T6cAZQ9tPz3gTViE87AP-EXUeDdYW2iXwMp7pkWrWr1A1-ITd5M8CWcGGhmUEZQMpVRK_d3VDKAmCkI_BB5Nop5HQ_iYVq-eh639hxBDmAfDoraX5ruM7FL4TxD-xJr7MrOXe6xuyRdawOroQTPs0TfzVpnFsFFUqe43HwwfcJib_2NOlIoQKi0GHETM06F1t82qIhl-PkyZHSTFwMeN12CECBycs4IHjpapoc2a-Yyp3goRkl32bZiIp6AD_6vCKgBW11UqGpGKYV8xCoHqmmuUy9uOY-nb1DrlsbbXpUUQJ8D5jikuR-7XS9sy0EVt5CBwe_SnY2VGIjIbhvm9hS2gHyYk5u6t2SnZx6UZ59t0h27i8YunFglnJC4ypmQZFpI71TT2er4hKPiy9RYVKM6nAl08SyQZCh-uyl6djtiJp10UfLtFPORpfm-SGs_5L6jzPHlVFf57LynsTsuQzcdMgMSvaKrZ22dPDR2uH0WvqQxsqowYUVnAAMI7Ad0CEUCu3t790m6YSIPTxb-nXHEm1oGxv_AKMA0z7sVnWwSWw237iRgBBM9JzadTZ-rfQkY9iwZtkxPljgmSEgfwYG5e5cRc_TwXDnmqYcyC5jofZeBv7Iqz7v07EN91qKRDQ1zuAgKJo4T30Opcs3WmabWkZZmuWjmjSOFUNbw_9UE0zWYgNnPJH0ZQvA_hIa1ABBSj8rT2eDveRhMt1P_YZWPWwiJkkX_0Ldlt3VNsL1BQxKcOBaqelNTzV1ykpkYtpkc7UicYTK19vso6-tvEoqZaXd0_Mrruahva2IA3grDfim3oJF2wzNHYPIjsi3TwyQ-ylhp3drkavbq_x01EfWa-eZ8GRfEyPnHWjztOs0SYsUHSvsaUulVvhgUn_-Mf-LPOHNYWJBwE5XBVPJkgIJ1pt1W_ndxb484_ZVyLTi-FdUxZL6Xy3inWwasHUbnwTVsjWS4LL9fkpyO9W_PomVfya2zDH602HuW0HChJkgxIW9Hrm6o-BGy-ZrNCQHPsKdCdJyLuVUI_xJFiJ_ofafg9eByczh2pVtiIs7HZqRrfLX2_fDLw-FU1teofOL7abnfNhsD4oFICIECvTh0Mt9gyxdAPDnrYoue8arU5Aigog8QR2ZkwhMoNfmcrS1alZY7VENuEX-ApgshHKK-gNrSE0n_3phaWy7prVxxONYRfjVIeziBVHM4zIKErt8wPodk4r6TZjWmemAYU2kaI9bHGci180tOrhd9fgVJuOILwRCQ9t6ty3rFZAzGAdsBq6YhdbAZmUkSpM_Q6Cvi9VvbvjCT0zPCKLlQSiY_IaaZ5FPGNizUHldHhe8-JWpAwGrQuTX61_btzqTAlgTqFQfH7gg2egQiaJUbiCctU9QzrHvAoEtNFLNVjAjM9L-JT89-dcpTHf47E2kZUnB3IjUiRSXlVrw4cxa1eKukn05eVmhQifgPLTlaRkumu6qszkqsTjVknu8QfgoahW0ZaE7KY71dajv8rusEpXDoYwV0hHd7JadkBcJawMxQ6QbqbX3E5fGXbI86OtYjz0WjtbGOrsydqzLhbjSrZ_wYw3VmPUm5zUoqT2Q6GXSrpdDQTNaenxQDiX8DYkSLrBBxoHPkOvGp0GVA-2lsY07xWyHyaHrQWkwqGzdytN96Qn7b2OAZ33uEE4cgqrdXoLchqxLv63gLTkxNN8jDGsqF6T2cW81GM40IuJyeXFwRI7rdk0XYGhUGKJfT4fdpi9Q-LeqHTCQzUxGwfzLG-Of8MFTGz6Lsh3q_K3Va8XpK1xSU4onS_n03sDRDPzqxomcQ6ptYMOAi0uPcqQkoZAuve6bWOPlEPXW5cS360giK1dmWerqaZujpI1FNfHr3zv6UkAnpyGzdj3cF8bw4kKUXoZyP8gq7ReyQ2M1Tmfy9YOyT8BnJi2WzEGMqbqAOcsFnIAQ8L_vEwlv05DoR7eXtuac2Mi1NKmrJ7wmXl8ehm9o_6ZIg6VhKh4Zs5k5N_ll2A_yoNJX_d2Yqj-vbCcdbaZxiiHRi57R-JLuB8ZKVBVZpoE6t3_1Qp1SIOO5eBe7QjLeMUQMGAiIJI8monvrMl1tUpIpqbwuw6ovU1gGZ4gyf4p76ff3D6-IhVfZTQpOQ7WM68AlSXWJmMtimmKa-4F5gyBwoJZ2IZRq4XiNwL8_eeEb61qqfErrSLP7E7g7P-cqsGzs05HQU0qBn65g8xxcbFcM8U8f7rvgtDgECr0qMmshD2NXm0xjdsJDj_-uW4hS9_dqu25DRyfiI_t89H_fVuOojfQPU3B4uDnataJErQ3DeETMuTbw937Nn1uwBk2Kc4yBh0f3YdrHR-098_eNJ_l86AF3oJxT_FTkXMSpSaFKz090UL-Cnin4hTlbkRHxOMB92pqfqYRjro9an9kf20QGgmlBbG6ATbiEuDdIkjA-1r-xovRCschMptMYiBkKZY9HUx_fjncaL0YGbxWh8UIDVm7r--nonQBH8LUXgNEGTE1pfnrm4BJ0Ry5ELrnHo3IkpW5_9y4pb3cAhvj1bqWuF-uU3KyHdoKZJ7IomDfG80DGhPLJKC_Nxozd1mL4KboP5KpW0WL8IpmDAOJpKL2TIeYTifHPTnOJbf_MJQ5TGRQrb-2jszBYNBSHvjBOS19FT43gOAm7Le1s4BEcFH5mYxeDD1_N7zUfHm5Mfungesgpz_YpkxQKMlqJOnZdxRU0JXhn5MV3dwTpSW2UQv6S4AyjTgcsaNF2GDcAvTbbcXhgoXxVPccOarwGiznciEf02gUnmDPqS2hmkELHl2fQrCtRoRl1t1qJnVoNkZPnXkLo6PNqYmCakTmEltgjZ4M6swNwpCzcBg3cXd4k-JDuDmLJPpN51O98wb3rN2uJd2gaNMbzLuc6lVZkXbdwA6W_pWgocf-ObZL9HR2u2bmFG2pMiVvRwkYcBzyd8yTF16K_8HH8SDigpfAUgRNuWdS6oFKU5IlwBR8A79dXh726ffFp0LjvjdhO6MszMqd5A4x3KOm5KwzkSK8q79RBgMc8GrNkJEk4ypvX2HJOi7Gzegd8FHAUmqIyCuJ2pceGoQlXps816IsrCGYQgJODcqVKVN0hpKrVgKRXF5nBdLLGUotLv5u-mko_3sUaQl9iArf5pFcLs0R1-ckxT58w_7xSn8jkm9jHYjVbiJsS-vepjj1AGWLHgDZa_y5UVJAFbKuBvxomJXukVRazWS-3W3uvVP41QfMOIUrE-XGn4QPglEWm86SMy2qiObNakDZHgOz64rZv_zDl1JCGZFS_2X5cPaaZc4c1NBLCIWEcd-BtdZlk6qIVTSpY7bMI5gW-ZYsFQYolfHAbOwCdPV4mllpLuOCBs1THgNUYdOb3JKiLOXhNfpy1DdkB6eyhn1ars6bsHYI63a0amXwterVHSZkyXAJoA6Sc_asOn1gulesTmNv6nwEIODrVReFVGOfOxMBqosSCuPwi4tW399pfsy7BhiEefysVlzM1m9qgF8WG9octmdBMblSi-KfsV0XStF6kKNjyFx0O7S0w4IbJS-xArL9ogz8LwHKt-PyjNOCJtgA==.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_042c9b3ec933c71f016acd0f4f42dc87d1896900b250582347",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 4319,
+  "completion_tokens": 203,
+  "total_tokens": 4522,
+  "cost": 0.00014496,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 4316,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00014496,
+   "upstream_inference_prompt_cost": 4.346e-05,
+   "upstream_inference_completions_cost": 0.0001015
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 153,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}
