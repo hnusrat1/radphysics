@@ -1,8 +1,9 @@
 """Extract the final JSON object from a model reply and validate it against the frozen schema.
 
 The answer format asks for one JSON object in a ```json fenced block at the end of the reply. The parser takes
-the last such block; failing that, the last balanced {...} object in the text. Validation covers the subset of
-JSON Schema the study's schemas use (object, array with min/max items, number, string with enum, null).
+the last such block that parses; with no fenced block, the last balanced {...} object in the text. Validation
+covers the subset of JSON Schema the study's schemas use (object, array with min/max items, number, string with
+enum, null).
 """
 import json
 import re
@@ -17,6 +18,8 @@ def extract_json(text):
             return json.loads(b), None
         except json.JSONDecodeError as e:
             last_err = f"fenced block is not valid JSON: {e}"
+    if blocks:          # a fenced answer that does not parse: report the JSON error, not a nested object (D034)
+        return None, last_err
     # Fallback: last balanced object
     s = text or ""
     end = s.rfind("}")

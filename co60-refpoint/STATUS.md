@@ -2,29 +2,38 @@
 
 Humza delegated every open choice on 2026-10-11: "pick your best recommended choices, continue and dont stop until you have the full study ready for me to review" (DECISIONS D028). Under that delegation M2 and M3 run back to back, without a gate stop between them. Two things stay with Humza under Section 10: verifying `refs.yaml`, and approving paid API spend. M4 also needs API keys and network access that this environment does not have.
 
-## M4. AI runs (2026-10-12). P0 pilot done; R0 running.
+## M4. AI runs (2026-10-12). R0 complete and scored.
 
-- **Models (D030).** Humza's five OpenRouter models, the fast, low-cost tier of each provider. Each response
-  carries OpenRouter's charge (`usage: {include: true}`); `ai/harness/cost.py` sums it.
-- **Access.** The environment's network secret for `openrouter.ai` first held the key under a custom header named
-  `OPENROUTER_API_KEY`, which OpenRouter ignores, so every call got HTTP 401. Humza changed the header to
-  `Authorization: Bearer <key>` and the calls went through in the same session.
-- **P0 pilot (`ai/raw/P0-pilot/`, excluded from analysis).** 64 conversations, measured charge $3.90. One DeepSeek
-  conversation was cut off by a 2-hour job limit and moved to `ai/raw/P0-pilot-killed/`; DeepSeek's last six pilot
-  conversations were rerun as a detached process.
-  - Fixes from the pilot are listed in D031: accept 150 to 250 events, a larger output limit for Haiku, clearer retry
-    text, Haiku pinned to Anthropic, DeepSeek pinned to fp8 hosts.
-  - GPT-6 Luna refused every events call in A0 and A1 ("cannot sample without a transport code"); counted as refusals.
-- **Budget (D032).** The pilot projected R0 at $14.33, above Humza's $10 limit. Haiku was $12.77 of it, because
-  Anthropic bills prompts of 100,000 tokens or more at 5× and the tool conditions re-send the conversation every
-  turn. Prompt caching for Haiku cut its most expensive pilot conversation from $1.87 to $0.38, and R0 now projects
-  to $4.72. R0 runs with a hard stop at $9.50 of measured charge.
-- **R0 (`ai/raw/M4-R0/`).** Launched 2026-10-12 ~16:15 UTC: 125 conversations, five models in parallel, models and
-  prompts frozen.
-- **Environment.** The container had no study venv; `/opt/venv` is rebuilt from `env/requirements.txt`. Geant4 and
-  EGSnrc are absent, so `test_a2_sandbox_sees_data_and_not_the_repository` fails on `os.listdir('/opt/geant4')`. The
-  path does not exist here, which hides it more completely than the empty mount the test expects. The other 19
-  harness, prompt and scoring tests pass.
+- **Results.** `analysis/results/M5_M4-R0.json` (scorer `analysis/m5.py`) and the page
+  `analysis/results/co60_m4_results.html` (`analysis/m4_page.py`). All 125 R0 conversations have an outcome; no
+  API error remains.
+  - D/Φ₀ within 2% with Python (A1 and A2): Claude Haiku 5.5 (−0.3%, −0.6%) and DeepSeek V4 Flash (−0.3%, +1.0%).
+    Both pass every Layer 5 dose quantity in both tool conditions.
+  - Without tools (A0), no model passes D/Φ₀. Haiku −2.6%, Qwen +5%, GPT-6 Luna −9%, DeepSeek −18%, and Gemini
+    about ×3,000 (wrong unit).
+  - GPT-6 Luna stays 7–11% low with tools; Qwen moves further off (+17%, +30%). Gemini made no Python call on the
+    observables task, answered with zeros twice in A1, and was off by a unit factor in A2.
+  - Every model and condition breaks at Layer 1: spectral and angular shapes fail the 3 × half-sample criterion,
+    even where the scalars pass.
+  - Events, bound-electron rule: Haiku A0 0.2% and A1 0% invalid, DeepSeek A0 0% and A1 13%, Qwen A1 51%, Gemini
+    28–66%. Haiku A1 and GPT-6 Luna's single answered A1 call match the Monte Carlo distribution. GPT-6 Luna
+    refused 9 of 10 event calls.
+- **Cost (measured OpenRouter charge).** R0 $7.78. P0 pilot $4.19, plus $0.38 for the cached-Haiku test and $0.13
+  for a cut DeepSeek conversation. Void attempts $0.005. Under Humza's $10 limit for R0 (D032).
+- **Models (D030).** The fast, low-cost tier of each provider. Haiku runs with prompt caching (D032).
+- **Access.** The environment's network secret for `openrouter.ai` first sent the key under a header named
+  `OPENROUTER_API_KEY`, which OpenRouter ignores (HTTP 401). With `Authorization: Bearer <key>` it worked.
+- **Pilot fixes (D031) and harness issues found during R0 (D033 to D035):**
+  - in-band OpenRouter errors are now retried, and Gemini's four API-error conversations were rerun;
+  - R0 ran as parallel processes per block;
+  - the parser fallback on malformed fenced JSON was fixed after R0. Re-scoring with the fix gives identical
+    results.
+- **Environment.** `/opt/venv` is rebuilt from `env/requirements.txt`. `test_a2_sandbox_sees_data_and_not_the_repository`
+  fails here only because `/opt/geant4` does not exist in this container. The other 19 AI and scoring tests pass.
+
+### Next
+- Humza's review of the results page and D030 to D035.
+- Optional: a frontier-tier run (D028 item 5) for comparison; the same harness and budget machinery apply.
 
 ## M2. Monte Carlo validation (2026-10-11). Running.
 

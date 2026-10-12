@@ -409,9 +409,10 @@ def build():
     <li><b>Every model breaks at Layer {", ".join(str(b) for b in sorted(x for x in breaks if x)) or "–"}.</b> The
       breakpoint is the first layer with a resolved failure. Spectral and angular shapes must match the Monte Carlo
       within three times its own half-sample distance, and no answer does, even where the scalar quantities pass.</li>
-    <li><b>Sampled events.</b> Haiku and DeepSeek events are almost all physically valid under the bound-electron
-      rule; Gemini and Qwen produce 28–66% invalid events. GPT-6 Luna declined 9 of its 10 event calls, saying it
-      cannot sample without a transport code.</li>
+    <li><b>Sampled events.</b> Under the bound-electron rule, Haiku's events (A0 and A1) and DeepSeek's A0 events are
+      almost all physically valid; DeepSeek's A1 events are 13% invalid, Qwen's 51% and Gemini's 28–66%. Two
+      samples match the Monte Carlo distribution: Haiku's A1 events and the one A1 call GPT-6 Luna answered. It
+      declined the other 9 event calls, saying it cannot sample without a transport code.</li>
   </ul>
 </section>
 

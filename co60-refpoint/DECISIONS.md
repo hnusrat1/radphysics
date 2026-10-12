@@ -417,7 +417,8 @@ number written `.0008`; r4: U+FFFC characters between keys) before either reache
 
 - **R0 keeps the parser it launched with.** The running processes have it loaded. Changing it would give some
   repeats a different retry message from others. The outcome of such an answer is a parse failure either way.
-- **Fix after R0.** Skip the fallback when a fenced block exists, and report the decode error.
+- **Fixed after R0.** With a fenced block present the parser reports the decode error and does not fall
+  back. Re-scoring R0 with the fix gives identical results.
 - **Scorer.** `analysis/m5.py` counts a refusal only for a top-level answer (one that has `method`), so a nested
   fallback object is no longer read as an empty answer.
 
