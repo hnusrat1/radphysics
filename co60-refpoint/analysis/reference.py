@@ -125,6 +125,15 @@ def build():
     if b0s:
         e = ref["observables"]["L5_s_w_air"]
         e["floor_abs"] = max(e.get("floor_abs", 0.0), (abs(b0s["ratio"] - 1) + 2 * b0s["sem"]) * e["mc"])
+    # beta: spread of the boundary-free beta over the lists; PDD(5): one scan only, so its own 2 sigma
+    bdiffs = []
+    for L in ("livermore", "penelope"):
+        b = m2.get("dose_bf", {}).get(L)
+        if b and dbf:
+            bdiffs.append(abs(b["beta"]["ratio"] - beta_ref["mean"]) + 2 * math.hypot(b["beta"]["sem"], beta_ref["sem"]))
+    if bdiffs:
+        floors["L5_beta"] = max(bdiffs)
+    floors["L5_PDD5_percent"] = 2 * pdd["sem"]
     for k, v in floors.items():
         ref["observables"][k]["floor_abs"] = v
     # Event-sample reference (DECISIONS D014): delta_c frozen here, before any AI event is scored

@@ -2,7 +2,37 @@
 
 Humza delegated every open choice on 2026-10-11: "pick your best recommended choices, continue and dont stop until you have the full study ready for me to review" (DECISIONS D028). Under that delegation M2 and M3 run back to back, without a gate stop between them. Two things stay with Humza under Section 10: verifying `refs.yaml`, and approving paid API spend. M4 also needs API keys and network access that this environment does not have.
 
-## M2. Monte Carlo validation (2026-10-11). Running.
+## M2. Monte Carlo validation (2026-10-11 to 12). Complete.
+
+### Summary
+
+The Monte Carlo reference for the AI comparison is final. It is option4 at msc range factor 0.04, with the dose scored by position away from any boundary. Two other Geant4 lists and EGSnrc agree with it well inside the AI tolerances.
+
+- **R0 reference:**
+  - D/Φ₀ = 5.3672 × 10⁻¹² Gy cm² ± 0.090% (boundary-free, 45 batches).
+  - β = 1.0053 ± 0.0014.
+  - s_w,air = 1.12678 (ICRU 90 basis); 1.13311 on ICRU 37.
+  - PDD(5) = 81.79 ± 0.22%.
+  - All layers come from `M2-R0-option4`.
+- **Step size.** Range factor 0.04 against 0.08:
+  - The dose changes by −0.08% ± 0.13%, and no other physical quantity moves beyond 1.6σ.
+  - Both step-size Fano diagnostics pass.
+  - The scoring-cylinder boundary artifact is −0.14% ± 0.13% for option4 and +0.02% ± 0.20% for both other lists. At range factor 0.08 it was −0.24% ± 0.11%, so the same step limit caused both the boundary artifact and the Fano deviation.
+- **Physics lists.**
+  - Boundary-free dose: Livermore +0.09% ± 0.18%, Penelope −0.01% ± 0.17%.
+  - β: 1.0053 (option4), 1.0054 (Livermore), 1.0032 (Penelope).
+  - Every scalar observable agrees within 0.8%. The resolved differences come from Penelope's stopping power (electron fluence −0.8%) and Livermore's Compton model (interaction shares +0.5%).
+- **EGSnrc in B0.** Dose −0.20% ± 0.17%, s_w,air +0.008%, photon fluence +0.14%, electron fluence +0.46%. All are inside the 0.5% investigation threshold (Section 4.2).
+- **Published values.**
+  - s_w,air on the ICRU 37 basis is 1.1331, against TRS-398's 1.133.
+  - Geant4's tracking μ agrees with the XCOM data within 0.03%.
+  - Both external values are unverified (Section 10.1).
+  - Still missing from refs.yaml: NIST μ/ρ and μ_en/ρ tables, a published PDD(5), and a numeric β.
+- **Resolution floors** for the AI scoring now exist for every scalar: the largest list or EGSnrc difference plus 2σ. Examples: D/Φ₀ 0.54%, β 0.71%, electron fluence 1.1%, s_w,air 0.011%, PDD(5) 0.54% (its own 2σ, one scan only). All are below the 2% and 5% tolerances.
+
+### Gate (M2, STUDY_PLAN Section 9)
+
+The plan's M2 gate is: Humza verifies every reference value in `refs.yaml` and accepts the Monte Carlo as the reference. The verification is his (Section 10.1), so it stays open. Under D028 I treat the Monte Carlo as accepted for building and testing M3/M5. No AI result depends on it until M4 runs.
 
 ### Progress
 - **Fano step-size diagnostics: done.** Range factor 0.04 gives 1.00001 ± 0.00088 and step function 0.05 / 1 µm gives 0.99921 ± 0.00073, against 1.00157 ± 0.00058 at production stepping. M2 runs at range factor 0.04 (D026, D028). The batch-0 physics printout of every M2 run is checked for `Rfact=0.04`.
