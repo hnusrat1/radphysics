@@ -1,0 +1,95 @@
+**Estimating Radiation Fluence and Interactions**
+
+I am focused on calculating the primary photon fluence (Phi0) at the scoring volume's location before any phantom interaction. This establishes the baseline for subsequent calculations. Concurrently, I am estimating the total photon fluence, the fraction of scattered fluence, and the mean photon energy by considering photon interactions within the phantom.
+
+**Estimating Initial Electron Spectra and Transport**
+
+I am now estimating the initial electron energy spectra and directional distributions resulting from photon interactions. This involves defining distinct spectra for primary and scattered photons and modeling their transport through the phantom to determine electron fluence characteristics.
+
+**Calculating Absorbed Dose and Kerma**
+
+I am focused on calculating the absorbed dose and kerma within the scoring volume. This involves integrating energy deposition from charged particles, considering initial electron spectra, their energy loss mechanisms, and interaction probabilities. Parameters like beta, g, and dose contributions from scattered photons are being determined.
+
+**Method:**
+Values are estimated based on fundamental principles of radiation physics for photon and electron transport in water at MeV energies. Primary fluence (Phi0) is defined as unity for itself. Scattered photon fluence and energy fluence are estimated relative to primary values. Photon interaction cross-sections (Compton, photoelectric, pair) are approximated based on water's effective atomic number and photon energies. Initial electron spectra and directions are estimated from photon interaction energy imparted. Electron transport and energy deposition are approximated using average stopping powers and estimated dose-to-fluence ratios. Radiative yield (g) and dose-to-kerma ratios (beta) are estimated from electron energy ranges. PDD is estimated from typical curves for similar beam energies.
+
+**Data Sources:**
+Conceptual data based on NIST XCOM/ASTAR for cross-sections, ICRU reports for stopping powers, and general knowledge of PDD curves for MeV photons.
+
+```json
+{
+  "method": "Values are estimated based on fundamental principles of radiation physics for photon and electron transport in water at MeV energies. Primary fluence (Phi0) is defined as unity for itself. Scattered photon fluence and energy fluence are estimated relative to primary values. Photon interaction cross-sections are approximated based on water's effective atomic number and photon energies. Initial electron spectra and directions are estimated from photon interaction energy imparted. Electron transport and energy deposition are approximated using average stopping powers and estimated dose-to-fluence ratios. Radiative yield (g) and dose-to-kerma ratios (beta) are estimated from electron energy ranges. PDD is estimated from typical curves for similar beam energies.",
+  "data_sources": "Conceptual data based on NIST XCOM/ASTAR for cross-sections, ICRU reports for stopping powers, and general knowledge of PDD curves for MeV photons.",
+  "L1_primary_fluence_per_phi0": 1.0,
+  "L1_total_fluence_per_phi0": 1.2,
+  "L1_scattered_fraction_fluence": 0.167,
+  "L1_scattered_fraction_energy_fluence": 0.3,
+  "L1_mean_photon_energy_MeV": 1.1,
+  "L1_photon_fluence_spectrum_primary": [
+    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0
+  ],
+  "L1_photon_fluence_spectrum_scattered": [
+    0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.07, 0.07, 0.06, 0.05, 0.04, 0.03, 0.03, 0.02, 0.02, 0.01, 0.01, 0.01, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+  ],
+  "L1_angular_primary": [
+    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0
+  ],
+  "L1_angular_scattered": [
+    0.05, 0.05, 0.1, 0.1, 0.15, 0.2, 0.15, 0.1, 0.05, 0.05
+  ],
+  "L2_interaction_fractions": {
+    "compton": 0.75,
+    "photoelectric": 0.0,
+    "pair": 0.25,
+    "rayleigh": 0.0
+  },
+  "L2_energy_transfer_fractions": {
+    "compton": 0.85,
+    "photoelectric": 0.0,
+    "pair": 0.15,
+    "rayleigh": 0.0
+  },
+  "L2_interaction_fractions_primary": {
+    "compton": 0.75,
+    "photoelectric": 0.0,
+    "pair": 0.25,
+    "rayleigh": 0.0
+  },
+  "L2_interaction_fractions_scattered": {
+    "compton": 0.85,
+    "photoelectric": 0.15,
+    "pair": 0.0,
+    "rayleigh": 0.0
+  },
+  "L2_scattered_share_of_interactions": 0.25,
+  "L3_initial_spectrum": [
+    0.04, 0.06, 0.08, 0.07, 0.06, 0.05, 0.04, 0.03, 0.03, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.0, 0.0
+  ],
+  "L3_initial_spectrum_parent_primary": [
+    0.02, 0.03, 0.05, 0.06, 0.07, 0.08, 0.07, 0.06, 0.05, 0.04, 0.04, 0.04, 0.04, 0.04, 0.04, 0.03, 0.03, 0.03, 0.03, 0.03, 0.03, 0.02, 0.02, 0.0, 0.0
+  ],
+  "L3_mean_initial_energy_MeV": 0.25,
+  "L3_mean_initial_energy_parent_primary_MeV": 0.35,
+  "L3_initial_direction": [
+    0.05, 0.05, 0.1, 0.1, 0.15, 0.2, 0.15, 0.1, 0.05, 0.05
+  ],
+  "L4_electron_fluence_per_phi0": 0.001,
+  "L4_electron_fluence_spectrum": [
+    0.0003, 0.0002, 0.0002, 0.00015, 0.0001, 0.00007, 0.00005, 0.00004, 0.00003, 0.00002, 0.00002, 0.00001, 0.00001, 0.00001, 0.00001, 0.00001, 0.00001, 0.00001, 0.00001, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+  ],
+  "L4_delta_fraction": 0.15,
+  "L4_mean_electron_energy_MeV": 0.15,
+  "L4_angular": [
+    0.1, 0.1, 0.15, 0.15, 0.15, 0.15, 0.1, 0.05, 0.05, 0.05
+  ],
+  "L4_radiative_to_collision": 0.03,
+  "L5_D_over_phi0_Gy_cm2": 0.0015,
+  "L5_K_over_phi0_Gy_cm2": 0.0016,
+  "L5_Kcol_over_phi0_Gy_cm2": 0.00155,
+  "L5_beta": 0.95,
+  "L5_g": 0.03,
+  "L5_dose_fraction_parent_scattered": 0.2,
+  "L5_s_w_air": 1.25,
+  "L5_PDD5_percent": 40.0
+}
+```

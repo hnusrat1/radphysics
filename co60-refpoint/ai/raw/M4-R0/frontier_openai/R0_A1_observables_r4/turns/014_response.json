@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791822691-crCsuvbST0SYHHHbDdmY",
+ "object": "chat.completion",
+ "created": 1791822691,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Adjusting electron indices**\n\nI'm looking at the last two bins with non-zero values, specifically between 1.15-1.2. I might need to zero out indices 23 and 24, as they don't seem significant. My assigned weights for both are 0.0005. Electron photon interactions can yield secondary pairs, but they can\u2019t exceed about 1.15. I'll revise the weights to reflect that. Ultimately, I need to adjust index22 to perhaps 0.001 and recalculate the total to ensure everything aligns properly.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_ZsWEam50GxkqzCkhmI2Oqcts",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import numpy as np\\nedges=np.array([.01,.05,.1,.15,.2,.25,.3,.35,.4,.45,.5,.55,.6,.65,.7,.75,.8,.85,.9,.95,1,1.05,1.1,1.15,1.2,1.4]);c=(edges[:-1]+edges[1:])/2\\nw=np.array([.02,.035,.045,.05,.055,.06,.065,.07,.07,.07,.07,.065,.06,.055,.05,.045,.04,.03,.02,.012,.006,.003,.001,0,0]);p=w/w.sum();print(sum(w),np.dot(p,c));print([round(x*.0142,8) for x in p])\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Adjusting electron indices**\n\nI'm looking at the last two bins with non-zero values, specifically between 1.15-1.2. I might need to zero out indices 23 and 24, as they don't seem significant. My assigned weights for both are 0.0005. Electron photon interactions can yield secondary pairs, but they can\u2019t exceed about 1.15. I'll revise the weights to reflect that. Ultimately, I need to adjust index22 to perhaps 0.001 and recalculate the total to ensure everything aligns properly.",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzQtnFYTWyoTl7TJdOaR7G_PEFRh8eqkDSgxYQmXEGPOMyG7N_jEgs0Idgx0chFsMAFMWZUFHKK_ZWqtXrkiUkGRN_19gEQM0dayDl9wo4Uf7EWP2nFILNJIJSeGY6mHsrlvgqCwHf4RSgoGQ-sifcf4xCYpgZCcudB5AZrqiDG_kpTUd-e3nrk9L0DtG4ErdI2Cx8VJ45MDSlvRNOX3RcDmBnNEbpjaXZFJbjjykSrHe2mpJyf6QdT-LowniCbXeOplvTwLTEzEBmSIWfdSsNuATd3I483BWvluTwhUFZHBYusSBuplCAb5PMRpzh20iKmYQ68DLQK-IDQkFlNFU58W6P_sMRvn1CLbnuUh9M1uAcWX73I6db6q1-ePkNUPYkHFATCTmv7KHwIAzCMbBp1lP-d46GnYhHHxZJ6H3nVpDgMb4Mq9yJBkGgBGwaYQCiDsW2OnLdn_bFWDk3y2dEc9N13n6skBfvXyi8nWqzpaxqdudFsspsHxNOWhhDN9RS7kc-RRa0mz4uSXX0Wo2KYf2s9kk4eDsjfWF0uumMzn88FLMt6rfdJ-loSmXy_WpYYuYXBmnAjY5pszvdqFyY3CMz2H8qxQJYAc3dlmJcZ58Ic-E8gL6zVg8aqZnHsIkwdaiOiuyY-SiAo-95CJXw4izWScIIX0lCaOc6NN0ooSPD-ZhETv_3iKo99QPePKSvzZW-Rf739yU2xyYH68PE2CEIU-sRrTvX_wnsK0YXjxKWHFIlGFW6OGWDdcgGkdzCnk6egTfZGTxZ5-XlZdaOeuCGc0tS0BAQYFfX6ofdgkspm8HR-AhALFwuSnVI50RFsoR1ujNsOBCSM3XVc0we7NHz7vKS8DyOOU2gU9Lvi006GGyNBe8NHU8NUk_x3nwyd5PxZAR4lUMAqmBsro13lXfx7RjQvkTh1zylnH8xKT04671VsJGm0kEem8ryS-TneaBYFxt9JvUkiY0nceF3ZaqRhcd6sZAdY5ryWtkCDPqT5YUwkk98z-VWJH4Z7xxG5FjAMCsJM0STAplBMqbc3nsuypXg8EbeoM-OWMCKliVWrNesx0D9H1Cg9nvhRvUKuPs6LKp9tB91tVAdtashdlkvK27tLjxSTF754OuBjF0_XnIDmN_PTt8yxjwPO1XXyCNEOHNcP_mY1HaARf5pXPBErZjxdw9JjlRt2rRW0qij1sXASNEvhA2aelw65UbIfunJ29JuciXmxlpBQjZt0VRNX7Kq0Z9jT_OjVWIfwoixYIE9MIqZGDt3DoIrtDDaR7-qnEpgVqsJUdxUopiUKDoUH-i6Ft-4da5MQz5ZEzPkhiZTVR2Kt-Ar0nBNw4VgSpz_cx-ZerCv_FkJx2crmS0BfX3vMSw6EZKxYrK6m5Z6tGp8Zwd_CF9QoCuoB65l8kYVBDDgr7lhPT9NL8peY8YxPJnruOU8Piuo8I-ERsjByU3OFRSnWSBY0ad50W-ZLhlNvGucKCWVmf4prTPwi8ays7zFO62_GzBcjEKD9k4bYWQbyg19hT9nbm6Zy2rcIHk3Z9d2cbfuOqC5j95E5DqAoxBJ4ec1cp-5Na-HnkeQlPc2z80TJnEJj9Qxtr9tdJ7AIVcGPnAw05lihvPpS0WvIpkkC6D-RYQZr0yiTpRHbygbRXkyHFZfBEAqxjXt42shMEUGR-PELKp8HVgbwy4UVHJrJChFYjkXeQJ4thzAPqUG2rcb7qLFhtMC3oz2QL2_1LFW4IaxQWDQF6fA4-mPM3afkmhIW2vYczSc_kXiGf9UwGsO5gpvYw7mYdRtaF0giFsCBYwBjAeBCg5Ihvf67_jJbkVostLaLCrN9WNziAisKOJ6vMLM4UKv4gD8Hq2Et5kjWXq0_VCuw7QiuLqyuSzVfesyC1KqBVQ9jbEp9x8n108eMgrz2h3VqRVCXF2VqA0Q0v3LYwI917K-D9F0DHKM1Ys2w2ca0pt7LGcIzarv6XOuwLZ7kKGWEVW3MqiouFbss1Wfn59OAxpxSo3_p836iVdd95WWBzA2Bpo6m8PoFVgKghpVkMn-MUuV2Vz82QGBzAgheT94k2O1mad_6BuPOrmwj_6TEjtAbq5ab6PEUUzS8N2-xHxSufUtK8U6qOt8cxKCfVOBka6JjVePY6t8g_fA7gDlvyvMdqG2g2_KeJE_4x5HGKO5a1EItZcIVa_Bse4ujtOYe5J7LBV9wD0CjB1e7h_t2s77_yzdUkz-R1i_KaM0JxDcvmkqHUDNGtjj2G5G4tteORVPhK2j_UAufV3eFpB40SN4L4NYAqPnpVWW5_erYyeIrWf8N3cJ2CsgXX17fry_NUSMuBEkLxf5iJc3GQ3SpCEJYgKZgYJmghKM9dwc-DYlO2VFcUYJ1FxjX8MTiGQKEWy4E0y6jEMl8M6AyNunbNY2m-2H5p8SpHksEKYT3fxlwfMJ4z9xoHCSGWJkDUFmSrEV__RlTXt3-Il7039WugjoMUQINGhoFbbru5-7VVgsI5vDMeMMJgrbfih01JxFe6sXI76VXZsPUttZSPRhg1jK_lm0nYCJNOPJtYDjskf86-XzbYX4aUZ6KK0Vp05AwmVC_3InApVK0rLpkQpY6zBa5SLKvUD_Ui03ZlkM4gqvjGzorMOjqY-xgxX8nywJ0a1veYKM_Ty9L3NnmtTSRuV_qZPumMlNQXA3WZm3Gas1LGP59k6dAkgzLi7ozDHxsze8YCZfLJQ_F5SDKNVPCKKaEWRJzByAfLb2wjo0IRchKLu3njOcHi9hACAAotORrc3Yqxt-4P5p7uBLifEV4t7cuHEaeX69646yWU1XqlRvCQX9nEzwoM7zde5suVAEbPLdJBOTveC7l6KidM6wiQdnvFONtv-F2KjKD0XPZzKiBjw76QIry0wCbz3veP9RwH2gKsiupfopDI2dw8iacWB9XjoU0tifC7PcAyvienEeXv3IrVarX6pexxIPT8KVI8Gj3ABuHuuJrYgP-1n1pvzwv4tZwE8uEGsYUOur3e5g0_n0q-WvqNqy2CaPtRl3hh2ZqUR8nKcixgI4KUL3ujILoxK1qKmuwcMkQg2mQcVzURRs7J4I6OpOgAUwL4cDAN2V3CkgmIBSU1FcCBnmnskO58GG5CMLbTlRupZ2ijxLtc5jkTusqWVpj_-wPn-d8GJL-Ya8lbHQp1VxBlF64V6FIeky8EO55GrsD1cPl3qiZcV6YYaDDK1BelgFmHuE0oeqn6m73wNnVXTwItUXHcULx_NFKfekwyo-PG6ff7giUVz_mR1S5ceQcrxrfolamRNH-07r8KGDfBmZeKLXvzHOhIudoDBzpkMcvs0rxn3EQoSM6aVjefxxIxXytUl4R1bD-R16lAt35fTfnWCNmQKG0R7tSStEcyagAek1zUAi48es0Poc3Xl1GkTF6-RhLrpWQCkTf6IgUSIP9RFCA0Gss8vNwgdsSqbNbxEjzJmKw4HohZtoThbIuKcSi0aqx_iO__uviquIXz6WNXuN91wBu807wbSh60UXY_1JRDlcslBtDGzLPIpZbFOJwkh8JZPelN45WjiaplCvseHUdcDvVcy7MvuMXC7DtXJKQzBll5AHuG6z_l1L_gB0v7obMddVtwhw1-KIo7pWTD2_7uvspfMYenf3DP8JjAWBpZ6p-LEJg655M4JZnfjVpduHbuxZ6JPg1wj665IX9LAMz6UrxwglEjI5d4v4d6L0jMmwAd0Z8T2cpInyT2XWXdh8sG4-i15dofwgfU8shWxRDb1C1FbzzR1aeILEuh8WKsPQrPIs6J-xPB79ik6Y5cfFVexN_yfTe1_1shX7oTSRcn3GMm75Q6ElhmjQtZD7BG-1wkQgZIQPUDLuLazXfMgCxntlRvhEGwfDwKcgiwopegoRopERueqms4i5U_jrsHGFiUmdLTe9B5tGN9QFWL4ZYdJ1QOD7lVAVKPtSPqxKWoypHhw88Cs_HcLgTwzhOWJNcHY3wc7sC2a5t6jfYSXNLmyD4jQCar_CIcIMBq_2SDmhIg6yQHMAfhK9tN-5BTZKMIOIEEV_MjWczoWpvq5ocB6c-uFfMhrBLqU_TS0ML8taZdIwBsWo4owh-c8CfyRjtV9aCkZFHEOv5TgEtZNmt6OCvQPKAUtTCLJbIZOsqYZPHkOaWWJYxJX_vuFcamHsrELUIteM1iJYFYsDnwZKEpx6OI2hh2kO4Wg-87GbcolnKI0d7ej8clunjXsJW1u4wJX9FqpnZYJVu1nDH8MgdWrORgJmi2Xcar1YE8L6HI9oHVtd54=.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_0489e75b4db6a3f8016acd0b63ec4887d19a7a263ebdbe7f52",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 22470,
+  "completion_tokens": 453,
+  "total_tokens": 22923,
+  "cost": 0.000868345,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 18842,
+   "cache_write_tokens": 3625,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000868345,
+   "upstream_inference_prompt_cost": 0.000641845,
+   "upstream_inference_completions_cost": 0.0002265
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 266,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

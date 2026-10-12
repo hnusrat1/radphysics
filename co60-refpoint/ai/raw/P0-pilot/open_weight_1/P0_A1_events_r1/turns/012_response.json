@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791821613-UsPGgtxM0IJ816pkcR8E",
+ "object": "chat.completion",
+ "created": 1791821613,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "StreamLake",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "The output looks good. Let me present the final answer. I'll include the JSON in a fenced code block.\n\nLet me also verify that the JSON is properly formatted by printing it directly.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_4d1dddfb60e645eba7fdb82b",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import json\\nwith open('output.json', 'r') as f:\\n    data = json.load(f)\\nprint(json.dumps(data, indent=2))\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The output looks good. Let me present the final answer. I'll include the JSON in a fenced code block.\n\nLet me also verify that the JSON is properly formatted by printing it directly.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 50527,
+  "completion_tokens": 114,
+  "total_tokens": 50641,
+  "cost": 0.00092748236,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 49408,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00092748236,
+   "upstream_inference_prompt_cost": 0.00090864956,
+   "upstream_inference_completions_cost": 1.88328e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 39,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

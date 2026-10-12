@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791822772-k4VTxduuQShNBFFxGIGv",
+ "object": "chat.completion",
+ "created": 1791822772,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Reevaluating means and distributions**\n\nI need to reassess the expected mean of .4 because it was incorrect. The average recoil should be around 0.6 for primaries. Due to the sampled T distribution, this increases high T, with primary interactions dominating electron behaviors. The mean initially appears to be between 0.56 and 0.60, while the parent primary distribution averages 0.59. I\u2019ll need to focus on integrating the fractions and calculating the means accurately for two conditions, considering scattering effects too.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_t44FhgKVq9MmZ5cmEf179jAh",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"from scipy.integrate import quad\\nfor E in [1.1732,1.3325]:\\n Tm=2*E*E/(m+2*E)\\n tot=quad(lambda t:kn_pdf(t,E),0,Tm)[0]\\n en=quad(lambda t:t*kn_pdf(t,E),0,Tm)[0]/tot\\n print(Tm,en)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Reevaluating means and distributions**\n\nI need to reassess the expected mean of .4 because it was incorrect. The average recoil should be around 0.6 for primaries. Due to the sampled T distribution, this increases high T, with primary interactions dominating electron behaviors. The mean initially appears to be between 0.56 and 0.60, while the parent primary distribution averages 0.59. I\u2019ll need to focus on integrating the fractions and calculating the means accurately for two conditions, considering scattering effects too.",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzQu4mVVESTP-1dAic7_wxGbpYRKSfTpL2SezMEwxukY1e7JJXscvQUFD_fssu29wz6imnn7j8FaK-xbE-OsJdd872tEx00byt6-cGJj4VkU7wFmhSl36qvKqW410h62TQTzgt5qoNu9BhoX5f_yc0txnYdy3sp3afKrJikAIYBYiZH9IYHX9RTBxRX6Y3ZBx3C6axLw8_fW2p765CydjGuyNovqf1dggC6lBGiema0WBsFIQagHuwfUieqfnXhbv3qaYlL3S9WPSSqAe5n3wt-G0aVks2me-hkBksQSSR2fRS8aepWT5_3AxsiVIzGDNQyKos3trbTfmt1EsxFBVGa-ETWAuA_q1F5Iwp-FfWEVlOGLsCxTzCvluYP_lAguXhjSNo0TMv4v9JE7zylrCypjvt9zLxR0ei3dIydlLTSMiIKLcVipnrN5tdEzzmm6xKH-QsIEjbraRxbDzo8jDYP5jqYsHPjhmSUNNnUDph65NT14I8Cg0t7lVbu9R01bAHxRVw6b40JkmNiLmMYSYkK_Sv_xMHRTiCqsaJz8MNYQVeEmhDzmD4mkf3a4lUbSjzsa-W9rr-CAfv-R_DSI9gHpcF_rYmM1v8KwcTRFmd7VyAsEh5a_PlruIY2k9vw46L-c27nXD0GeGhuM0_hRuEEK7yYPmK5IjsvDEqvYimAe2Awyz23i_yETHCjkY7_y27bKqiR6GberTiFmg5bK_2cK0d0Or3_FtHOpKbh40V8WVKynRtsziUW6dOEpTu_P3zhXk07j46lqncrkkNnk8B9BjElXw2RNW__GF9tGXT7mJBvFteyxK8iPMSe__yDbTW21wM0p1pmnz5IIBasEn-kJI6p7-ihhRqPyX33Y5IC9m1DXEKoBB3huHmt_OlpSSCY4DUEFqao3GpeRAyrIEtgGkpr0SkqXCWFLmsIzkL9bgtk0OIf-gJ6b7C-QG0sKuW5ntiDo44BGgWTPgQWxpGuJo--6R_U43M4u8pcF14QWbia3JtrUbJAp3VJpfOhGSy0mJmOgnLWELbaEi4nXh4Fb1mP9XREH8kGXDGhIxXGy7Z42lY2x7NucdKk7YW5gVRls48YOhQwL91eH3tm15-3kUOTO9VOqJ2i3h-RiH8FiuiUDnmqDuam9hLpbbckxebrdwt50A4Gx-IxBB-t9AeeKTGJCIR7Kvi9YnfAvB8h7S7Lh-cW8TAXq82k-Av3Gm2Oz2VQ1pDEw8P6D444kJ9RGe3_AlpaWf0DCKj-vQ8e2fIMrhl7MYa8zhY_G1JhsxfF_yrQCtq7gmo86c9452IV9YlVGrkibW3odtJTd3t6GWNku4nyudicZSbEcpC7DY5JrRYonms7naGMFPIeUULZJx_KqZD7Fg5_EtAmkJ5gupHWxpgsTOqPTBcyPWgMGilNVSGXe0Kxc286hBrKyALPNVQbKTTmw_sgn3US4VYY8VNODCSyCYCEZgkWnhJjo5SMDjq86_Rsz4B_9MWQfAW98Z-p9DfduziqySmmKeAk5sEg2zhekiRqbsuuG_BVGgjQk_aYdbIP2htsR--m8quFs1BaEZINv1lSGwKizItuART3t6QKFL6zpOwdwVcM44PGDpxnp2jql0moRZczTx9brCqoSek2CDy41Jf1XrC5JyTQ8KIT5q7hGJP3PhonxDJ3pf8fbNVs95wgJcS5_9xlM0tXQUq_PYi_ouSQ4C8hvvXJ0QeUX6VKMMy858-WPvQtnqMCX6TP32vKZa-x8gasCqHqCyBwkseaZHZ-V8zC4jmzOnvTpoNybxw9NK7vWWKz2YHzZ0Iyy6IdFIQlQb1AacEgVw6oRV10dDoKEZawK5Hd_ybZLE0DCvHHqm7NRNd8hTC34AfA7Sy__0YBQlLMd_r8Eh_rBnJ9u5J66FwLCVPGM7o3oq501gs_BOqF9m_O7V0Vqc-2iDJD9AjhD7Lcbd_SQmT0y9SowIXayqVjnSvkBtB51oBuZML_4JYA99OcR0OIVqwwRvRVYE5ZQpr6psNnN4fhIX-mGoTBTeIDMSZdP9A7OinNRhVw83GxQJath7eNtJeJsh8MiXUW_HIOXnC1iiFzGKr3wy4958vIOeF8_un--qIWEqJbv2lLV9j0gnk2KNpX8zX9jCyCODvcBa5dTJW3DMb0QLpBE3JpwxnT1XIGk7-Qj6Fy7PFxb2fc_axEWt8K4ieMkliuj--oG96-YtNB3cSqXfr3ndUXFS87oQTi1sRnvlvokreY61gN2ye9ppGUvH0Srx-USGsdrLkY6M7QNDBgLMMFVgiJ3UmxLTtC_cvpDN1fRTpACQbD2QT4768OtOM-S4k238v_pXplTKiQSti0XYqyt31TBbugNPzBC5nppbwD4olKcrwqOHz63BuhT1U4kR5-A-VW0-2dZQrSKPkw_IQiCozYw9huGwAeUJkVP4fiKNIrMzedmeUjRLBXgkn1FC8aOQvAT1VfTFmq74lgJbz9KdEVxCQCFLxdqtTp22BPzR-u9Pc5wxWv5GZQvGKA-wxoIvdYbSTFPvpKgvq6Y28RiImclYi4M0w783wAZLEQr7mDgJWQDw5-VOeWjvxoe3ryZy8xTHZeMDTv6l6NUuyZuQxcP9UI5W7aNzUp_GVF391h9qshkrLBmrSACWIj3B7iypKqnoDpgTXhMQTvXEF5t-Bavsgf7956o07dGB2Yn7hKQlox8rK0c37NwDayh7Mc6zrTF92fNefAB-rHFAKUDGxLY6TM1KbM6XOd3znpKcKvLINzTmBIORfWl2jz2YKMQASzdX17bA3eJn6ww89E7EhVJIUGQ4ixbhFeZ2IxGo6YjbvZMOAmlkVW9kyRu4nDrzyP0jXN0Nk4-ovknm--2fylAMMMvmHQQsJz9wlupbkWTJxmMovA7vYLx92CIKs23hTh89RQ6FKRCc9Kg8rf9d9IZ_92FM-NuHgaJR87McjYRWvZQ7kg-lrosqgh2oaO7ZA25HN88XfoHcHEithS-uy_3fgbb6SCAy6Bsx71kXYt98dH7Kghhni1OKwypm4J6M6ouWm6ZZ1e7O_zxfRK9KV10BPId2S_-fVEI0aOksUw834beUWcuqNolu0s002Ntx_G1iEe0loLypNmpOKhnJZyB7eR2kfGpFUbo6uIccCpOf2uk7nLeXPEXNe9CYKsSU8D8oWU4rFVlbrCV6w-liv3H52Ute-98eMXTr908K5TmgMAy1DY-Y_GMz6e3hKZG1IFInGy7BdBifwcil_wXzVd--4LzX9ofqgfbH3_mprK55L0dfj1LF4pZTsv_dtwE9wMPEMtEcdtW8Sqzfl-DJLjoyCpvq3F3nSRL1qjR_DmEMiKth6bZNtYt7QUXardf78a9mKCYLYXZx0x-6hNePLHmP9K9X8jaBArF6_aexlNN6ZLXf_XAs4BX727N8db9xMB8iCI3N_HA2bNg0wYXaGwCefARI2eWvei6ENS0F_SypwSFdLBbo9Pr6dt7PpRntcb6VEpgqxQpjf8CD5XVmBhbX_QJEOXMOhaIk_QmbWQDIZ26bYbNSmZJEbhzv5JRrrihgxZ7ceUpuYcE9GyBxTCXDieguKX9iigxRwz2xmUINFO0_8-1sxEEWZwJgPltRGaM2sIPMM-4s8e3pNL8jeER0LOMnWY7u9GZhvGPqXl6XrutOmAtlo8z9cgLdmYa09ZhmxSydsQwNGbXMWDf-Y6JUE3QSH9pRRbrEG6AjJ_JTOkBVbdhuziDY3jrdJvShzJrMIdR4g9CUYf6teD_4MTwlG2fwQmNK8pl-lWpGZF6exJWjK971OEX9P-faceCQDcC62xcwtx7aAdl0E0etoI-sj_YRq-zLr1QKLAS96LCS2N83cg8b0HXg5L-YGnUVEn8pps4fxX9N7AJUpmukF1DVY6YTshV8smwvkfbhrDW4beoPw0pYSGr_3638rM5q4zHO5g==.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_03f5766b96718137016acd0bb5370087d192793f266e3ef2dc",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 8406,
+  "completion_tokens": 279,
+  "total_tokens": 8685,
+  "cost": 0.00070775,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 4195,
+   "cache_write_tokens": 4208,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00070775,
+   "upstream_inference_prompt_cost": 0.00056825,
+   "upstream_inference_completions_cost": 0.0001395
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 178,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

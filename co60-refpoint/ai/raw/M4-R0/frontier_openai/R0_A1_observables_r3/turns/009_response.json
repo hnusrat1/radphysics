@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791822343-Ee84j41t9Ds4k30NMohD",
+ "object": "chat.completion",
+ "created": 1791822343,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Analyzing L3 spectrum normalization**\n\nI\u2019m working through the primary L3 spectrum which doesn\u2019t include the 0-.01 range but uses sum normalization. The primary output is 0.589. I notice that for the high energy bins, there are specific indices for various ranges, and the photoelectric effect is small. Even though the user wants everything included, the photoelectric fraction is tiny; I\u2019ll have to add that and adjust the others. This will slightly raise the mean, but it seems necessary for a better representation.**Calculating L3 and L4 spectrum details**\n\nI\u2019m looking at the L3 total, which includes about 0.2% of interaction events from photoelectric effects. These low-energy electrons might skew the data slightly. Even if I add a tiny weighted amount of photoelectric events, that only accounts for about 0.15%. The \"L3_initial_spectrum\" represents the kinetic energy of electrons and positrons from photon interactions, and I might need to adjust histogram bins slightly. For the L4 spectrum, I\u2019ll include all electrons, ensuring to calculate using the normalized values and compute the mean accurately for clarity.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_NsB7n0e7nmM07dvDgNS8NQB9",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import numpy as np\\np=np.array([.06,.07,.075,.075,.075,.07,.065,.06,.055,.05,.045,.04,.035,.03,.025,.02,.015,.012,.01,.008,.006,.004,.003,.002,.001]);p=p/p.sum()\\nprint([round(float(x*.016),8) for x in p]); print(np.dot(p,np.array([.03,.075,.125,.175,.225,.275,.325,.375,.425,.475,.525,.575,.625,.675,.725,.775,.825,.875,.925,.975,1.025,1.075,1.125,1.175,1.3])))\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Analyzing L3 spectrum normalization**\n\nI\u2019m working through the primary L3 spectrum which doesn\u2019t include the 0-.01 range but uses sum normalization. The primary output is 0.589. I notice that for the high energy bins, there are specific indices for various ranges, and the photoelectric effect is small. Even though the user wants everything included, the photoelectric fraction is tiny; I\u2019ll have to add that and adjust the others. This will slightly raise the mean, but it seems necessary for a better representation.**Calculating L3 and L4 spectrum details**\n\nI\u2019m looking at the L3 total, which includes about 0.2% of interaction events from photoelectric effects. These low-energy electrons might skew the data slightly. Even if I add a tiny weighted amount of photoelectric events, that only accounts for about 0.15%. The \"L3_initial_spectrum\" represents the kinetic energy of electrons and positrons from photon interactions, and I might need to adjust histogram bins slightly. For the L4 spectrum, I\u2019ll include all electrons, ensuring to calculate using the normalized values and compute the mean accurately for clarity.",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzQoNzgL86gTJgOysWzY84dbUZL-_fc_-Hi6aFzj5lp8QAxnSREzyy8836i03i7S-ScZslwqGlHDkbyOXWZdVIDxI8TkhUN97Tn1-ROYhF7AZBfNb1WXIMnkkdG-lYnRcQuWdKMu6b1ZVX7c8xlLQb1OrxZjZoDJQSZRj_9tZppxdsdyKy4uleq0oMsCDGdm6bkhSxq9V0lkTqInjrcaOM6VwA8ou869CKi68Bs1o-PkRSLrAqTmQWnOUeUQ8402cmOiVdCRP47QL-ny1PQBrf83LVGtZCCtEVzmHDhCEfnFgXZnx8HnNVmIhtnTw-_3MoWDBAyTgV_VfL1JC3V8kkNrwlsGs6OAvwNPE2nfv3Hcl7NKLT9bDIHfu7iAPkFxNwG7Z4vQJ9Sd1YcDmcxMFngZxu3aTG6XjMX6eFQz-TSRwhEjxnLt-KMhPhhcq_JMwZcC_OiF_84QNvc0UOUddSGTH-kqp8csdEMYpHHT97PpYhrgPHIxtDqwZ8vZL_rqR-aV8Q5ZQ5-UVye3Br0pY0PLH1050Ag1_0Ui-pJVgIZnRAxJySmk7j-Mm9AIZ4hT-jyIcrADlH4YqHof2yz6zog02ywklPaf8366an_byX9MlHqlNFm79Tj_VmkftvA8dbt7o0gpkDhp1SJFhGC0BFsAyrEgEAQX69jD6HaKyrx55GPfRzaIRLdZAW9npykmv4arK00uUooQOaZ3PdcvpVCqY_OTHlQVVtJpOrBykJDsozogKcm6hI878uFx_wuaOMrpLi7zF5Ou2JB7RRRvzIigDKyWm2vMq83YcTShdKCgjsOzqVfYs5X3H_lHnefa8iZkcKkRvZ87uE9I7ptDTvzzlTEPzEFsLu3nEIboL-XTAyQQ0fLdDAb46KwITU1fKKKT6Aa3GHJ0-21Fz79SHa25XeEy3RVUuucOV6QjOYyOQdwCQdFXkpKLA926rvTeOgqZoytfkFRa3D1fuBrNAZyfv5-LPyUlo_XMTKB_03JOnczrmNEag7s-GF-h8qIM-CJemdgytod3Slp1RPMeO_j9SnBDQ0vsD3_aJy5WwHRuuJSpRzITB5Vc23h3DKbUADzIi9aZmAyLHCCbS3-usqTd9t0IeBB318DitGJoKbbegbIFyWvwv2UYNf5ixLe8JVKB1YhXklMBdd4Tgg428iKLqg9p2Uy7E25Mx-sZa-ftOm-M-bXlUO89yA8UY0LHXhSiTgZAuChhv8xU-ilMOnkgpsv8oUBFXBhlmeeZua5WiQVgZcbjxjXASJScySvkT6nVo-FRo_J1b4X6FphXK2wIWnpyP_cM8FAQCzahvlQOmwSa6-iKxglxU0VKjCNmv0dBMPdoyUKUpm3t1v3jELKuyNzCbD8bzDlN637z9d1KNZjhcEAwXGitC1U6HutBkjEAi_wc_yXFxZjYJx6_vljxIpcwoiHAWUixEbdBltgljeb2yHTon3GznKaBktZRz88pGum75Ipi50Li1z-Otz3Bw0HI9C2_S5RZpga1Bes5YIHMptnfZkRDeoSylzjLQV1pR3Fq-aMrrYVQTBkFydUzwb24OZiqSJtyL45yDjGP9JW-Dep1zHJq-IusmGsDpLnI4lkNWH10HwDD25iNdBQ4FQctmo4_cYbe1ynwabvAe6ruOeJXZz3_wX0AqvV-dyFNGQk-S_GDw2aUx3r1Xxac8ule1OdjPOUalRFCef508xGF5R-izVfFpkmce_pv4p-hcNanYbhQiJ7qXljDS3voIKrqbN8tF9Rvtxw7Fc4UWhY0MlXqEVsZODFzWHcmFoPQcvK5NSRVvltJe40VL6qsl6raG7tTH7uMzo-Fn8QYFJv8loc62Ly-qeEiyl2CKyFRN_UMn37AKJFa7NWI0nJGC9NE_N44vyRt29cxXkTTsETXetpCtoTwJz_vg_bPVKaIx34y_MzRm9p5qkRpkdDye62Go6CEVgBTGxOtVfMsZMMntayW7akYg1Ck8NWxTDfTpK_7pChLvfHuLGIAOTCw64x0CdZ9ClbgG-YRMwCLIX0h7u-L0eko4P-X0aZq8PrceIRcG4I7ywu3EOpM4BRA2YKRESvsWPJqfxEqr-AM5LmPFk9w4l1Isk64b7PcA0hkX7nc6zMKaX25uo1SW02hwOuP-afYMV-h3aODQ_YF4qfZFxXwxPBpnPNkpGwYYMvDV9ZsoNgKcjdBPagUCb1OsCuYfEIr9smQjWKgOGeLtHfM_BbRNIFpftxcUM_8VFCVIKJVFhIaRPN4L_5ldcNgVMyMYLArKEWgu5jNZQPNz9sgb2lZZkTGkitYDHbENuuvIFwr2vm6I7j-pPdVKFSnwjEdjGr7r7C35s1pf022HJAuPVV1z4OSI3blMpGkjFfsLYc-PSLANftUlJq-m1jLzomz8BQHm_-fkyOjcxRNNuP0omZ3vPb6bgNtbllP9C6uPViZIIzRaA9-y21JshAK__g_xcYD8JAjFU5aq-1FTFCyS9ffxH8yUuUxKoFfjoAfowZk9U5HutrndowrVVdg-C-mXthi7YcjGvNLlcaGosV3_SuVgmfyJFFQW030X4i9HKF5MJ2DlHFjfA3v06VP9mYmp6qB17BVHzkhiZtMadw9c6m-ov_uRTU2JcT56EFQ5ZGmSTzZoQwuWonmsd1WlBrqj3_lLc3dhQdmntwc0V9ZhNkdrgWKK4yfgs9V6Hfb-l4xj4B_sbi0pSDTKHGFN4oBIVMBbzeG1cl7dXINRdw1kMouPq_VRx5ICyAY46qO9Dio75T2hk9Mog3b6giHmemuQt5VKsINGbomoJVKSUtKjTwQB0PHTHwKgycY600jRNnZb0FgZ3Tdd4H9xS_QSPQWP3nlHTgbN_zMZbszjgDvQVp3OFflQc2Opf1ASrI4icLYI03_htvG2CtJ9wOylJGev9rFSSmAsFlPCTf0GuD-IyGTyPr0pm8AWR8UBOAuQtn5GtBgqg1bF-nMVUDl3rhbQwRl259i3Byp7x-xD4IWWJ79hIH9Mdt9hAc9zFIJQlh9A5puBI03Eu7uVDZbRk1WBW1qv_ppfyjS62ni6wtOzUgyxRzj-ufJ4jPrGBdzbQbsVX37V-9xQ4tOP9dORm4DWaqOmZQrkUKEfPKwgTBO48XaAZYoN__KvLYFZ60PF-7vYEdMIGINcNB2ugizNsZJmrsCp-h7qu3VWemnVBqhXr0sjzBEmWuAD75TpeTsH8uCNSweR6p12Fs6frRZO7QmQWVg3trgzFl71YzJ5428wx29xXoVFYRwG0zUKbqhBvTuznWI9yY24BixpAKkgizi2m9-A0R6YIbA8v6woyXTgsYLV6pEpQQQKjYMJrBN8VWdY1krcaca7d6NPQ8YkmFDWWWBIxHHeRzDCRlUe7h4wu1IRrn69AzgkHgOcVVW_byOAznAcpf_t-m2nqRa7PN5nRfVlXfi-hVTkxx6zZUlRRghHJcq3XXFriXoF1jZHaZU3brhu5K7V1RR3DrjHmmAwwbxNvsSIHYfKaUIPdh62woIB6dwGrd2wi3UiiboNm56vQkZ_URB7XZJU_4BE7OvGBTUxx2beQNH8ETCjeiK_WCETbpbfuxWwT47LPGYxNcrrjHznHB9fAEUbOzBzdTiTa3T9RlfmpnH1_36R0LBS_pJGlNPH3gQ7KQka6nYMNjjZDitzFYO8Kl-F9WOL6_OutbzxJ2qxALVhtFfeStc_dZonNr-IsLyrY4lEuZKPk6VOLVLvsDda79Ae-I2T6T_9SExIBJI0hHRc-xo29We0H8dqBrhL712a5Bl71DOz7TegtJ7ML-HfPLKUfO6gk-f6tCUwzXk_-R_wepLiwpyA0qlpK8i2HEURtqHUnjaQvwrSebtUMPGTdK0XkRKMwwb2etfP3j2qWV0WE13ztOebvxritRrF3s5IDlovBZSyR3PpM7uJ_vazTJrENDX0RdnPiTgYvhSmHddL-N1fOkHtVAlT_BsSO7NMmloIozsZFcWOhh5nAhAtoTioxz0PS3_TPl8LvQ28gxOUBKswsIAPklV4vFP5PSxGtmJZkhn5HXIOmnQIie97hk_bZ-3OOu__e4IUNuVq9UnEUXEUNqlgYpFWfeZ7MmfNWcdNZwKN8-reF-6JIBWM2vB1zxWI3S8M8fvmBITIh_5G4sBVxZ0VoljQOd6KW1vIzXVwrMKO8LgqYWjrZv59x8bbdUtucBcQlJKPYeWk3ianNgNZlHHdh7pVfLdgBhoAb8GNhl3DKnW4SPlc3InthbpHZmMlewhjbn30X-PU2G5Vq9O0msJBOQQ4qUw--1jsRfED76z40gX4RnyjXszzXgvaFInLz8x5OtT_nLXVaOEunAu9bZDNq2L0HcLqfe9JzvlVFkwwyPSwLC0NZqbCq5eGu9ABlrtNu0w-yjyfjO59nSJvhnH42afNDhXS_yKs54QVx6XUB7pS0cvJQlCo7GklNsg5RGd4LbIESWvhX6ZfiJBeFGo0Dn1wEF3lKNVQ2El8aeMDd-EUb7gaxPbn_L9saD8VbWJnJqrRT2Mr0tR2RYeQ3xXFZjXbu7X0fXsn70-ZM0bGNIFO41XJnRJXTmFpidU-_6GMXdSCqiEpShnuy3ODod0O4TZOYgBz8OM0bLwmMDd5PdXRiaHtvcSAQwbBT6uQNMpYBMaQr2sCXdH_-lP7DC1Dn9nDNk5qZLpvu6Ptk0xSKk9N9dvqQM8o9JQm_NhTLWzvjfQ7moi20YE24vgOY_ccmVsEm0EmCDBah7mFn38ArS6jvX-oOCCq2tEZeFybbYOfjOl9FdsPJ6gJIkC4p3eKBLSlPIDjpuSuK3sBX-Ejn5wQJcWTow7OTisU9Ir_rRD_shmqlhVxG_JKASezAkOYVTTn7tKQhb55CvPQjrqkyUe8cfWGt_SKgFX510uOnq31hK5dxwJO0H23KCmA0V49VOWJPzJbKC7Tm7TKhNqH0YCC74oTgjw9Rdw8OUnse30zWQFA86wN0WNr0LkeBda4mvwjtrXLIU2cUoROOZDQ0xX4OgJwfSdhJBosmdPUU-5hTdAJFy1WfLyt3AeoOdaZktDUOKeD5K0umhVH9tucG4h734TE1UE_0oI_l4l2tdpd6gJoCXecEKgmxzDNJelNQynrnq95sGdq0vnF2UDhxPDP46fP5GX_XQvLpSYt-C13lbGZVi8lfgdEVDYs57mWQnADxAtYTo_7hhU2K1mO3Fo70kiyQfC2QEHvy2G2DbrdE1sXo_9VnMOMKJVi0kCO9FkpslaDNj98xYgZYoxFu-uU_lL0lLlu2Y5S-9nt_F8M_5VKgKoTUETVQMhSFS08gnA2E95FFF1CLfdFqidury6kd7g-DU-uncKFg6KMgnF7Si_OUVJ8zLeggC8B5R-ETMXPgpW8WXL5K7h9GmUwQdx2Vlm7XVwWI2Yrt6pnpJMcqPhqUOwK9zD3EofjEZFmfW17-1pE7rA_GT95VZppdUrsko70Hjr_4PxNZDuy1sHM12FhhiyEi4CNeGT8v9Pn3h7913ewU0vqmGUAbyz0OC6sR87iop9aTmBj1_xisWh9FsY9f21lk1fElkd7it0ou0XOVXrUgEqDY-VCgvghq1d1onDD_J5rYzxHPCsmDT5FOZx0kbBwftMzchCDCf0C6p5zZirNTfScR28lx3zaYa_tzEejVKMoVMlT6MS4MfKB_VFJfFF9rsuHTqz8Ys3BB1OXH-M8CBTjhxZgLeTKC5_uzOz0NyixMEosnSqw2FRhj6WHiItjA9sNeA2Z0TzydFu_SIkQIyskmCi5Pxm7hJrTEF8V1jAC11Bwp3SfbjkRMAh0pfeA8iFLaGHDF4Kn7RI7nOqDStMvui9I4xOBm_m5bmGR35gTxmSqp-pAklJICK3Htgl9bxw6f-WQURzAH8jOJQ9WpfWhvHuBo3hIFUDTq3wDha9U-AqhMy1FnpECd1ZjccfesAwhycAbdzjsppTj9vP2zJzJSo9cVjQF8Yo_pCTL1EShlnvHCpg_DrEFK8oDmeX5mb6xEUH7txCAAzB6Lm6rUNzUiVHBkSyw-z0AUM1ipSJurYtJ7EW3LzfCBrxpUygaETD83s18NvZbsVgMmaiBpE5dF4O6Zwfg77_e_rcaU71ieaSVZAwwwpyu523cJs0qKJTHlDZBvCChve_HJkYfoeb4PS4HSvTp52cTNSiLZU-EEMJdDSzmlF1bOf5DuIp6OwhpPkxRIW-6v5k7o9oo6t5UbT9K7ggS5Ub88SBivia8A1dvyqUMnzc9FoOU2_RXKxPkDIkxRgliJ3qPlYbQ4A16DF9ZEXLB61NQDhVviJGca4sxfqxUXnZxsJU9TF6Yu8JHm4H6HhV-wCb85gVDoRDG2kv7g4uAx4RRrBoFJqJtRm2KMPQwhcgGT2LYgTYcHzAUdTn3xJLlf_cbOrrHHpwrYuBB9p6cXNYP42RrTfFj7SArbxSEPEt90hi0jLC3aupninXoJrIc5oqNEY4c-6lu3Jtn6-e9pGpV6LO9e4pZ3oNzPRZa4JKXMa4Ia0zF-L8xcGBk_QpwPiABqm8Mb_SXzErhHfb4qDP5pTYDsT0mcRp1_pBjokOC8tT1WF2NDPPY_m2EQJtzqaOAa0QR0Za-lbMe_uMTvEsdLYGSP1W4MaN2PChRbRu59j3X6DDhd_62LQ5zQ2CuceXEr41dIQT7ZKClEHUp.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_0ae288c99326865c016acd0a083b8087d1a8843a141c1fdbd8",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 17899,
+  "completion_tokens": 611,
+  "total_tokens": 18510,
+  "cost": 0.000845285,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 14761,
+   "cache_write_tokens": 3135,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000845285,
+   "upstream_inference_prompt_cost": 0.000539785,
+   "upstream_inference_completions_cost": 0.0003055
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 444,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

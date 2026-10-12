@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791822024-JcDTkPdd4eEzcSjSBc8A",
+ "object": "chat.completion",
+ "created": 1791822024,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "StreamLake",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "So \u03bc_Compton at 2 MeV = 0.0489 cm^-1, which matches the NIST value of ~0.0487 cm^2/g (since \u03c1=1, \u03bc/\u03c1 \u03bc in cm^-1). Good.\n\nNow we need other cross sections. Let's create a dataset for water from NIST.\n\nI'll create arrays of energies and corresponding mass attenuation coefficients for each process. Then we'll interpolate.\n\nWe'll use log-log interpolation for best accuracy.\n\nLet's create a dataset for water.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_93c25a7308fc41468dfc76b1",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nimport math\\n\\n# NIST data for water (H2O), mass attenuation coefficients (cm^2/g)\\n# Energy (MeV), total, coherent, incoherent, photoelectric, pair (nuclear+electron)\\n# Data compiled from NIST XCOM\\n# These are approximate values\\nnist_data = [\\n    [0.01,  4.99,  0.0003,  0.0054,  4.98,    0.0],\\n    [0.015, 1.67,  0.0002,  0.0060,  1.67,    0.0],\\n    [0.02,  0.784, 0.00015, 0.0064,  0.777,   0.0],\\n    [0.03,  0.372, 0.0001,  0.0070,  0.365,   0.0],\\n    [0.04,  0.267, 3.7e-5,  0.0073,  0.260,   0.0],\\n    [0.05,  0.214, 2.2e-5,  0.0075,  0.207,   0.0],\\n    [0.06,  0.186, 1.5e-5,  0.0076,  0.178,   0.0],\\n    [0.08,  0.156, 8.0e-6,  0.0077,  0.148,   0.0],\\n    [0.1,   0.139, 5.0e-6,  0.0078,  0.131,   0.0],\\n    [0.2,   0.112, 1.5e-6,  0.0083,  0.103,   0.0],\\n    [0.3,   0.103, 8.0e-7,  0.0087,  0.0942,  0.0],\\n    [0.4,   0.0985, 5.0e-7, 0.0090,  0.0895,  0.0],\\n    [0.5,   0.0962, 4.0e-7, 0.0093,  0.0869,  0.0],\\n    [0.6,   0.0938, 3.0e-7, 0.0095,  0.0843,  0.0],\\n    [0.8,   0.0877, 2.0e-7, 0.0098,  0.0779,  0.0],\\n    [1.0,   0.0810, 1.5e-7, 0.0100,  0.0710,  0.0],\\n    [1.25,  0.0738, 1.2e-7, 0.0102,  0.0636,  0.0],\\n    [1.5,   0.0677, 1.0e-7, 0.0104,  0.0572,  0.000024],\\n    [1.75,  0.0627, 8.0e-8, 0.0105,  0.0524,  0.00012],\\n    [2.0,   0.0584, 7.0e-8, 0.0106,  0.0488,  0.00038],  # adjusted: total ~0.0494, coherent ~0.0002? Wait\\n    [2.0,   0.0584, 1.0e-7, 0.0108,  0.0487,  0.0005],  # I'll recalc\\n]\\n\\n# Let me use more precise data from NIST website (I recall values)\\n# Actually, let's use a reliable source. I'll approximate using known values.\\n\\n# For water at 2 MeV:\\n# total = 0.0494 cm^2/g\\n# coherent = 0.0002\\n# incoherent = 0.0487\\n# photoelectric = 1.3e-5\\n# pair = 0.0004\\n\\n# Let's create a function that returns interpolated mu/rho for each process.\\n# We'll use log-log interpolation.\\n\\n# Build arrays\\nE_nist = np.array([0.01, 0.015, 0.02, 0.03, 0.04, 0.05, 0.06, 0.08, 0.1,\\n                   0.2, 0.3, 0.4, 0.5, 0.6, 0.8, 1.0, 1.25, 1.5, 1.75, 2.0,\\n                   2.5, 3.0, 4.0, 5.0, 6.0, 8.0, 10.0])\\n\\n# mass atten coeffs (cm^2/g)\\ntotal_arr = np.array([4.99, 1.67, 0.784, 0.372, 0.267, 0.214, 0.186, 0.156, 0.139,\\n                      0.112, 0.103, 0.0985, 0.0962, 0.0938, 0.0877, 0.0810, 0.0738,\\n                      0.0677, 0.0627, 0.0584, 0.0500, 0.0440, 0.0358, 0.0302,\\n                      0.0278, 0.0246, 0.0227])\\n# Actually these don't match well. Let me get better values.\\n\\n# I'll create a simple model using known formulas and fit.\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "So \u03bc_Compton at 2 MeV = 0.0489 cm^-1, which matches the NIST value of ~0.0487 cm^2/g (since \u03c1=1, \u03bc/\u03c1 \u03bc in cm^-1). Good.\n\nNow we need other cross sections. Let's create a dataset for water from NIST.\n\nI'll create arrays of energies and corresponding mass attenuation coefficients for each process. Then we'll interpolate.\n\nWe'll use log-log interpolation for best accuracy.\n\nLet's create a dataset for water.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 7967,
+  "completion_tokens": 1463,
+  "total_tokens": 9430,
+  "cost": 0.0008997618,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0008997618,
+   "upstream_inference_prompt_cost": 0.0006580742,
+   "upstream_inference_completions_cost": 0.0002416876
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 109,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

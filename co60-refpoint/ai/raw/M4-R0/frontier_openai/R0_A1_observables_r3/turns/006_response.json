@@ -1,0 +1,57 @@
+{
+ "id": "gen-1791822305-MgJAE8xZfzUuMcWULHtD",
+ "object": "chat.completion",
+ "created": 1791822305,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_cF9EwW3HB52DiFiFwGXL0fik",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import numpy as np\\nw=np.array([.001,.002,.003,.004,.006,.009,.012,.016,.02,.025,.03,.035,.04,.043,.045,.045,.044,.042,.04,.038,.035,.03,.024,.017,.009,.003,.0005,.0001]); E=np.array([.025+i*.05 for i in range(28)]); print(w.sum(),w@E/w.sum())\"}"
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 12732,
+  "completion_tokens": 111,
+  "total_tokens": 12843,
+  "cost": 0.00024404,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 12199,
+   "cache_write_tokens": 530,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00024404,
+   "upstream_inference_prompt_cost": 0.00018854,
+   "upstream_inference_completions_cost": 5.55e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 0,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

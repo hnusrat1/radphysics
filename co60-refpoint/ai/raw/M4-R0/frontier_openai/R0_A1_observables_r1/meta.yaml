@@ -1,0 +1,117 @@
+slot: frontier_openai
+provider: OpenAI via OpenRouter
+api: openai_compatible
+model_requested: openai/gpt-6-luna
+settings:
+  reasoning:
+    effort: high
+  usage:
+    include: true
+condition: A1
+task: observables
+config: R0
+prompt_version: v1
+prompt_sha256:
+  system_A1.txt: e06e9a5ea06c2f5ca29739818f324713f2dbbf775f019c11018d1aa7ef5416b8
+  task_observables_R0.txt: 57d3c391f7d6e1e76358e1b31939b48e00fb008344fd731011f63a2acf79e07e
+started_utc: '2026-10-12T16:18:11Z'
+turns:
+- n: 1
+  usage:
+    input_tokens: 4198
+    output_tokens: 3412
+    reasoning_tokens: 3158
+  stop: tool_calls
+  wall_s: 36.73
+  http_attempts: 1
+  model_reported: openai/gpt-6-luna
+  tool_calls: 1
+- n: 2
+  usage:
+    input_tokens: 7993
+    output_tokens: 441
+    reasoning_tokens: 262
+  stop: tool_calls
+  wall_s: 7.18
+  http_attempts: 1
+  model_reported: openai/gpt-6-luna
+  tool_calls: 1
+- n: 3
+  usage:
+    input_tokens: 8654
+    output_tokens: 2490
+    reasoning_tokens: 1604
+  stop: tool_calls
+  wall_s: 24.39
+  http_attempts: 1
+  model_reported: openai/gpt-6-luna
+  tool_calls: 1
+- n: 4
+  usage:
+    input_tokens: 12627
+    output_tokens: 769
+    reasoning_tokens: 597
+  stop: tool_calls
+  wall_s: 8.3
+  http_attempts: 1
+  model_reported: openai/gpt-6-luna
+  tool_calls: 1
+- n: 5
+  usage:
+    input_tokens: 13499
+    output_tokens: 1406
+    reasoning_tokens: 1330
+  stop: tool_calls
+  wall_s: 16.07
+  http_attempts: 1
+  model_reported: openai/gpt-6-luna
+  tool_calls: 1
+- n: 6
+  usage:
+    input_tokens: 15045
+    output_tokens: 68
+    reasoning_tokens: 0
+  stop: tool_calls
+  wall_s: 1.54
+  http_attempts: 1
+  model_reported: openai/gpt-6-luna
+  tool_calls: 1
+- n: 7
+  usage:
+    input_tokens: 15202
+    output_tokens: 2004
+    reasoning_tokens: 1436
+  stop: tool_calls
+  wall_s: 18.57
+  http_attempts: 1
+  model_reported: openai/gpt-6-luna
+  tool_calls: 1
+- n: 8
+  usage:
+    input_tokens: 17527
+    output_tokens: 573
+    reasoning_tokens: 0
+  stop: tool_calls
+  wall_s: 4.65
+  http_attempts: 1
+  model_reported: openai/gpt-6-luna
+  tool_calls: 1
+- n: 9
+  usage:
+    input_tokens: 18339
+    output_tokens: 2371
+    reasoning_tokens: 583
+  stop: stop
+  wall_s: 17.8
+  http_attempts: 1
+  model_reported: openai/gpt-6-luna
+  tool_calls: 0
+tool_calls: 8
+retries: 0
+outcome: ok
+model_reported: openai/gpt-6-luna
+finished_utc: '2026-10-12T16:20:29Z'
+usage_total:
+  input_tokens: 113084
+  output_tokens: 13534
+  reasoning_tokens: 8970

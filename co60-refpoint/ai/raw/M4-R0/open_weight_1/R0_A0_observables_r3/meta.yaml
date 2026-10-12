@@ -1,0 +1,52 @@
+slot: open_weight_1
+provider: open-weight via OpenRouter (pinned weights)
+api: openai_compatible
+model_requested: deepseek/deepseek-v4-flash
+settings:
+  reasoning:
+    effort: high
+  usage:
+    include: true
+  provider:
+    quantizations:
+    - fp8
+condition: A0
+task: observables
+config: R0
+prompt_version: v1
+prompt_sha256:
+  system_A0.txt: 5d02a4bcfaa7d02c9202ab1c5e6dc263196bda4fd973c7421a5a87ac29d0777b
+  task_observables_R0.txt: 57d3c391f7d6e1e76358e1b31939b48e00fb008344fd731011f63a2acf79e07e
+started_utc: '2026-10-12T16:10:44Z'
+turns:
+- n: 1
+  usage:
+    input_tokens: 4220
+    output_tokens: 22531
+    reasoning_tokens: 20938
+  stop: stop
+  wall_s: 188.01
+  http_attempts: 1
+  model_reported: deepseek/deepseek-v4-flash
+  tool_calls: 0
+- n: 2
+  usage:
+    input_tokens: 5888
+    output_tokens: 1821
+    reasoning_tokens: 132
+  stop: stop
+  wall_s: 17.26
+  http_attempts: 1
+  model_reported: deepseek/deepseek-v4-flash
+  tool_calls: 0
+tool_calls: 0
+retries: 1
+outcome: ok
+model_reported: deepseek/deepseek-v4-flash
+first_parse_errors:
+- '$.L3_initial_spectrum_parent_primary: 24 items, expected 25-25'
+finished_utc: '2026-10-12T16:14:09Z'
+usage_total:
+  input_tokens: 10108
+  output_tokens: 24352
+  reasoning_tokens: 21070

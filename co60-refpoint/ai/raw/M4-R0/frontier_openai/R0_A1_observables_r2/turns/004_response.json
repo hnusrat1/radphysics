@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791822102-LELtz8rifFLHCBUcYeci",
+ "object": "chat.completion",
+ "created": 1791822102,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Calculating manual sum**\n\nI'm thinking I need to calculate a manual sum, and it seems to be around 1.05. I'll probably want to use Python for this calculation since it's reliable and can handle it easily. It\u2019s interesting how simple calculations can make a big difference, especially in programming. I\u2019ll make sure to double-check my work just in case, as I want to be as accurate as possible! Let's get going on that calculation!",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_IDtqmuS1kr2ZFp6Yh60VDoq7",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import numpy as np\\ne=np.array([.01,.05,.1,.15,.2,.25,.3,.35,.4,.45,.5,.55,.6,.65,.7,.75,.8,.85,.9,.95,1,1.05,1.1,1.15,1.2,1.4]); a=np.array([.12,.13,.11,.09,.08,.07,.06,.055,.05,.045,.04,.035,.03,.025,.02,.018,.015,.012,.01,.008,.007,.006,.005,.004,.025]); print(a.sum(), np.dot(a,(e[:-1]+e[1:])/2)/a.sum())\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Calculating manual sum**\n\nI'm thinking I need to calculate a manual sum, and it seems to be around 1.05. I'll probably want to use Python for this calculation since it's reliable and can handle it easily. It\u2019s interesting how simple calculations can make a big difference, especially in programming. I\u2019ll make sure to double-check my work just in case, as I want to be as accurate as possible! Let's get going on that calculation!",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzQkY304Z-WRcew5Nu2EZJyCh-SMcNy5E2BFOwEGUuvCWwZbqVIml79LSh9fP2aMys6oglLAvmzoTKDZka7LIBx9W3lIYTDRj1odm9O54p4Izjz8xFeJscREboGWHUF4r64V6k1hadyyVN5lFCcW5J2u-mFSB47eKZ3l30KtaVoob_vqYX7dqyxu4Jk3Iabys-cXvTrnTp7x69gP1cbrHM2svOgJw5ej812ZEO9xciFDlJjNMbM8XrQ11FJw497Bo_7qYHKvh0cqlzqX5qRxw_qCu200SK5nVQchU_SIaJyyCaYhh0voc88YGJZ9RFIPn1v2Xsquda0Ah8Zq-SyRIOBq74XGh0t9mVEqKHyicEdlKxIqV__o9dVt3yd8PSdCNbLsK4uF7lj_646My76NuARQtJs7bUIrvpRd8y-eovoGjB0v7zU4uSvfd6R9WLKGXSfUpyaO-gcjQUA2XzBr4yMV-E6jgR29aD6QWbqVXDcoAN6CuM8DOa2S31UhCrIFe7m-vAaO8iK3PQsAALpI_KyNrsGEFrxBmJcoSysRt_KO_CXnQI-HhOIQrwCdFbojvEcDK-mCSEg3b7bbPd2qz62o3Ke8b-oQXYNIrmoH7Ff80kCZFbZ7c0lilArnZLTiSfZG9hjoSA9FxVAptAnduxfc1gsz0jJP39fOEpSV2ho2Lz0kRPzzrfp91eB8VzB2Oi43QPVoTZuKFuCmBtER15gcJaNIhnd5741ZkroLzCl2awPSqkvXu2qqlL_L159x1kIKWvH3IQpm1ZeQrIcve1kTQTTzgk8yY0BKulsWscMg7eJWuPd-COuIkIfX5WAz8Pl6lpko6-aZqM7qXcn6r26L1W_uA19KjzcU3cxTDLVb7eOKpHpMPJvm6taQN-ewvqM2DzhNXWDHHJJzPRr_lJqnsP01WUGB03gatubRZLOc9GaqKIP-QYIcVctiNWmuC1Uim-TEszlOb3rwLEVZnCmbXDMzLAr2Y2Rqa2JbscxbAgjDCx1OxIRH5pYN7yILXsQhRH9NkTXnOGMbl1Nv04vY3qhOmbyJj3VWRAFk-3v33kNEYtF8cQEOlHys8QFzJIB3_Gdp8DlrvVlHpDLYtZCeTtAtsVT6QR7GGi8eCZye3zTUHuXDIseVR20CMv24iP_gaPX5K7HOiV0g-YmZHnop5UVWaugya_wFo7b2r0LBYI9AOSJmbRCy5K8geKv6GGNhL5bWHNgx8QIQ5nvr8sP5iE-gs2tq3Ezw9vFzzlyv1GiMMt3Zg2pRsneHyUD8cpM_QADTEPixxph0TXuR9I2eRJYFJAVNMMpz8QlD_VWepZN2BRVz29MEfrABaVKaKuvHLwJluThE8cVB-7oxgkLyVBLXTkrfEOjUhoEaO_wrZPRgZp-iwJQLGwkYnKV5S1puP0105JmdWDIPrOhmB79mGjrTexqMAYbBWLGdJGqOkjvXjlj33lo4cYiJwZ-n17SaTfulf6PA5UimCx5O0IhvNbUtnMIr8dpDici2KJZvFpw_D1bGnSATmyDwUZ3LeQ-XaRNYCjotsQIQl2Fc_ZeJbIZBpgSVw7mR9_lr_NxuCnxYMmC2Umj8Xxj0HRHSOftNwon-R4d5OBsJSB4QIZHR1br_MoswfHGXLuh6MqtY2pROBiAUZ25mwZmy2WbmC7z0a-cTx1FeQg1-pw-b-Nb52v4unCwoLyMxMuvX_nn5Yezq88NtSoIgT9Y8oqP0RsxJO.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_093b05492dcaab5c016acd091738ac87d1abad2fa34c70f5f3",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 11858,
+  "completion_tokens": 181,
+  "total_tokens": 12039,
+  "cost": 0.000285135,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 11196,
+   "cache_write_tokens": 659,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000285135,
+   "upstream_inference_prompt_cost": 0.000194635,
+   "upstream_inference_completions_cost": 9.05e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 14,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

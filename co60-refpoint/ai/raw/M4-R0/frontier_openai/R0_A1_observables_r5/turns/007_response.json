@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791822826-V621HJvwSJYFPRHbaIAd",
+ "object": "chat.completion",
+ "created": 1791822826,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Calculating distributions**\n\nI\u2019m checking the required count, and it looks like I need 25 values, which adds up correctly with 13 + 12. Now, I'm analyzing some numerical values that I want to sum up. The initial mean calculation is around .59, and the aggregate mean is approximately .55. \n\nNext, I\u2019ll normalize a spectral array set, aiming to calculate means and craft fractions into 25 bins. I have a list ready, and now I\u2019ll sum those up. This feels like an interesting analytical exercise!",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_4F1ksloUQBk8LtESIuIIuR93",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"f=np.array([.055,.075,.075,.073,.071,.068,.065,.062,.059,.055,.051,.046,.041,.036,.031,.026,.021,.017,.013,.010,.007,.004,.002,.001,.001]); edges=np.array([.01,.05,.1,.15,.2,.25,.3,.35,.4,.45,.5,.55,.6,.65,.7,.75,.8,.85,.9,.95,1,1.05,1.1,1.15,1.2,1.4]); print(f.sum(),np.dot(f,(edges[:-1]+edges[1:])/2)/f.sum())\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Calculating distributions**\n\nI\u2019m checking the required count, and it looks like I need 25 values, which adds up correctly with 13 + 12. Now, I'm analyzing some numerical values that I want to sum up. The initial mean calculation is around .59, and the aggregate mean is approximately .55. \n\nNext, I\u2019ll normalize a spectral array set, aiming to calculate means and craft fractions into 25 bins. I have a list ready, and now I\u2019ll sum those up. This feels like an interesting analytical exercise!",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzQvz_KGt4mtxGCF2Ad6AHp5A3l037ZO11uqrP7e_DkojBxFLR8ER3iWtvb6GUldrGDD5XX42lBfgLRTdGUq2_ILzUSy--7w4o1nYKFde74IURLl47o__6qQSvrQGmrQ3UCbcPCvyacNqLuuCoA9IaLQCgveaH72d448Ula9RDue53-CIdB7LEljrSfkVDJbWEf74i2zUBmWlpB4L-WZ7Odc2r2dYB4hEhAOrGy_mqJhPFb2GMW3uSYEQeSRQkQ9SbIRIQuYCcGvoMCbzNZXNG3kD0cfmlF5NHjMhNh4Jxk33uFg55sCHEh1EMcNrKyN8Tavh8CqDq81mZ7Cui-ySBvaMfXoVDquX8zzWFS71LbIph8cD6Cagt97N5fjw2NEYWUzXrsHC0fqhMgbSDH-1WUk95WRKMw2gokGkLwIWzZ7t4poviXEdcX7rhVLRb4l8f8akmRMwe4Gpr3j73z4vYzCc1A3JzTEJcogpk8tnyhJ_MnxEJjiBR6jTIZt23SiepO7FiDgY0lx5w3C-9vdjL8dZXk8Ht0dJG3fPy8R4BgIqY0VuBC8EcZhWyEeKCPAKJHdgrOpKpWFfEY-Jv_lN-RcKDlXA8pSQat1IRwlzqkkFFxKuOZvX3PtaHkczDTXLaqCZ8-OkX1f7inbDF37h5WTAV2zhPVslsQA0SsufXMfwSBITuxS6rlFcsQpyoc0E_IdAVARrh_w_q-7yIf2NVPtqLw06K7DWrjDS0hCh0FIReJY1RU2ruB2ORYhReNho-lDAoanDmozRr0QJdZxTra5w8fEiWjCAKlKVvqDYkYOoG-tVXEitZ5oGi5pFgm-fzvthL4dhDh-pGwnznj7JaxCOOY5o4Eq_ENYxrztBPH8VyeYMpNcAj2HZwmeWMwUq2E7LoYa7YgcWPnh67EcvlFcrVYBUI3htSZ2eKqVTssTrML2LASaLonlCfZS-_qbCLOqp04jShPgmMINf_wqeYVQ37el1puSexAhcqqmSfW2hiMRQ8u3RU0VT3pqnlhtVx7F-jD5XTpjw9J0fv15loubqtCQHTEBD70rX5yb5h4lMqRvY6GyjCUzI0rFVU2IcIE_odVo9k3CaOiwKQPOZULNzbJIBLR7BcNw4GZ4XgsiBDLKzyAIEKINknI-CT7CRt2D_uSwKdf9UgR0qG1oVz3dRdIXXukxpqZT5NoP_SsuMke2XE3M6K1xWH_iYtoNx7144OdCfOENb4B8bWiYPWo4c3_xO0WXjLJ5aBQ12pPPBt8PyaqvToSmrZq_cjV27mjDmM7WEsBT12tE_hkfgXBRQRPRonlIPImNJUG5mYFMMOqXmrRqrPFPK9VuoUkD0sSXa1LxZ9FX0zuTRpitxjr0aLi3ajK_gsLUYfsgt3v407tNAwyyKxU9mEFU90jfZz45pCLBTaMHCYI4y1P83iX_mD0g-ED3cBsr1EZ1sWD4ypkLikg48ItZBfS_ChIngqvwGnrRTcvZbDS1iIsHaeTAX2a7l6jTRRRKXT-P_acQQJuPaeqI0S8KCg0mI_qee-k--DwjVpKP0NCTPYAmx_OAGWV9l43c5dXxgsUieA0OU4-vDPcyj_NZhHwvhvNF0Kg8vaCjcMrOHWsaCrj-b6q0BYr5jt5cXgQjCJAXENbW1vgkRIjXS2vmbnv7UVNIz3BaNz3Mi3Uob59cK0PgobvLUgIrSKJYI0mNE4Aj6CcoweAOtng8BPLo0hYZ76jM0Fw5-6w-aFuYEJRE1jiCV9XdrZvqVVJxH1WvDTyyAPjqzU2W7--DqOf-u587ypqX2GVMYRK0ltD37sJRumC-t7RCJh-biNB5rvnPpZKaE3DKaU_O-bwNk8PecubiHozNSVfRUIhjLJgMBrl6VPliBZyvqxytnpccwkBPTsqnfjfNVBMGK-54aSAraym4rxHe-s_Z2AZeuROlBBr4jnqxf0avxF6uPURvGmOsq4Ja-GqKjkNObMV0HDP-S7QoXiqdky0iF4wFLDeFFBbYz1f6HHWCf7LUoxj6ub9CAt1obzIzcE22fNBKzsqKBoO4zPOULQcNDOtPCtAmwQIls1_G9BOkYImFB4pSt09_QncMc3r2xZjps7V0rZdikht0FCdp3CBxB9g6rGiflmghvdTR-h0NQ5Jb4aRuNTF12iXUt2H5Qgk2ANUvSAULouGJf49dU8byxZwMNqfDiZTF4pFM3vaDEXsTiDJVm1zVbJZfdlqeKA25ScTCd5NX-NUnjU_aTyz1o5IVAgNBaCMDeGgWNT60lPhtG7aEP9NYeIpUPGm7PIxQBCPl6QDMB623VrOlf8JA_jy0HD2HH7E62Zj5d7-JHlQTQR4qI6nxMI3f--DgGE8kx5j2bOneQMWsnqxArI-JjG6UUgq62tLaN0E62iJdcsJQXcAylAdFUvryoA1OGw0q1R9kyIQhjFfr9-_d9FaLeraVsCaQQF3hz_2Ofp49DnL0Yr-4SvFZ3kR3buPkHqj9hlqUgQn99cvEexmVy6nO3hCsWwMhCpOiAWtSjw9x3uZaTRfAf1Mn8nViTxukih8eDmdsmzBOOpzYMTsy1TFishvCN6q9pUPT_gOxzNhiv1QnaT69FUd-hT5g3wN-O3cpHwSB-xys-DiM-FSG3m2deQpLsIhFm46LIAP-oYXL1POZxZcOD06ZCb-NDP87GPTMT6nxtd8iwm28Uc1NrB7LF0jTrlRF8u6Wd12sNMdpi3xgpYAH3UE22ac6M0PBZE2OmVO5I2eLLSCiy1pfZhaaS4x3leqYkA3p-Lg-SojXRkK6y3_3aDWzT8JwV9ipea2eapz7xxnGhRMaXWrdMLe5rnvw2G2kMFjz5CuidAUIBzU0DA5R0mhYc-FAsxnsVb6i0WhiaYHlD1JaKqxB4hNGkpOZC_3Wsw0V8QlZLvbXxMPMdQuGn2S2BifXMXK6svXYo1f1NCV-xmuIFKcHi48GKi20Oy41IcObtTbubezIFQoUc0PoMhKMXQaEG1B5kfkDPdE4nsj7FkRA5MphDNfFFEiqjx3Wbk9UcE2-RsXMDMlGUHUzHL3LWvWycCscNB5gUWJrOjMrsQ9sHu369xYSZ8SeBege_VF4pplNf-OeuOD7NJG-jPltVGk0gfwTNplyOdqjsxgUxIgnS5vS20qVnm5FauOLm2X8LMA1pGl1xUSW1RHum5CAFQquiFuWNhPrXs8BAbPwa_cXm0tQUzTH9I-X164w5-tH-ZsyZqWqn6htFxLKWP-UHf4NsNVNCqEjqWmZBpe74Uqu-upymm6xXwPuejQY8TePmdrYoLJrRptQUa3Vho0aM-_MW5qJ4p7g9mwHh-FomR9gZiJLZS2Sx_puScm8OOTjR28Gswvg7UXEsWfJwhG3g662eYkkXh46T253xI3Bp3BJblbdWpm0U7AqYca1pVw4RrYqRhd5V34yDEBz8vkbJN1gmfDoy7HSvpbvjPvKHOa9g-QEfadvusfRklnfkvDNdH0zG0ncQrKEAe3GtmXeW63ZGeZZQ1VfuwcZW4P1mPmTHkbf29h3pDT946Z3ynN09UxrcoyvG2-_TaxMxGlc6Lc-thxcZWKmDfHv6w0n5_CPVLOxI4k5j25b8MuysIT6sxCoeHt0lfo3Dhe7OuRQyqeg4_cVeP40pPFzHrLAvt-fa9-fpD4f3UUAx8X69Guq3y6ceXS7k-s8h0hAqufXnp2aNLWrf7O9yMsCWsGBV6pkX2NQLu5G8mz-QcKihOmB37a3lFhQzgO9I0rExOXcPLdJk4P21Te_ebSJqwqferBA1Jyt78C21vYsCrvMWlWetzddklOSD1pSj5yCanDJIsDVACr2IN23ede3G1jlSam3zgR430HmoY9fAhkvnbcICrf2zVEHvfJmtt7tfa5puXNAJ2zbommsWS6VlRD1K0G67bE4N1IVIawlTAiFfcp-Dd315JX3cEi1Uuc5657v1Uzu4VkjXjYztmsdaXqfxh-4dG5h8p9mRyho23GRJREySV0IsXGG1fwozxkEluke6X5AIy-NDcgp5nBjXcfBQjwlK3l4AGwgk.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_03f5766b96718137016acd0bf085a087d1aaa91e867f819912",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 13473,
+  "completion_tokens": 382,
+  "total_tokens": 13855,
+  "cost": 0.00037729,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 13024,
+   "cache_write_tokens": 446,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00037729,
+   "upstream_inference_prompt_cost": 0.00018629,
+   "upstream_inference_completions_cost": 0.000191
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 220,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

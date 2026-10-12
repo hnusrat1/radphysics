@@ -1,0 +1,70 @@
+slot: open_weight_2
+provider: open-weight via OpenRouter (pinned weights)
+api: openai_compatible
+model_requested: qwen/qwen3.7-flash
+settings:
+  reasoning:
+    effort: high
+  usage:
+    include: true
+condition: A0
+task: observables
+config: R0
+prompt_version: v1
+prompt_sha256:
+  system_A0.txt: 5d02a4bcfaa7d02c9202ab1c5e6dc263196bda4fd973c7421a5a87ac29d0777b
+  task_observables_R0.txt: 57d3c391f7d6e1e76358e1b31939b48e00fb008344fd731011f63a2acf79e07e
+started_utc: '2026-10-12T16:11:34Z'
+turns:
+- n: 1
+  usage:
+    input_tokens: 4477
+    output_tokens: 9245
+    reasoning_tokens: 7196
+  stop: stop
+  wall_s: 109.12
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 0
+- n: 2
+  usage:
+    input_tokens: 6632
+    output_tokens: 9266
+    reasoning_tokens: 7586
+  stop: stop
+  wall_s: 106.18
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 0
+tool_calls: 0
+retries: 1
+outcome: parse_failure
+model_reported: qwen/qwen3.7-flash
+first_parse_errors:
+- '$.method: missing'
+- '$.data_sources: missing'
+- '$.L1_primary_fluence_per_phi0: missing'
+- '$.L1_total_fluence_per_phi0: missing'
+- '$.L1_scattered_fraction_fluence: missing'
+- '$.L1_scattered_fraction_energy_fluence: missing'
+- '$.L1_mean_photon_energy_MeV: missing'
+- '$.L1_photon_fluence_spectrum_primary: missing'
+- '$.L1_photon_fluence_spectrum_scattered: missing'
+- '$.L1_angular_primary: missing'
+- '$.L1_angular_scattered: missing'
+- '$.L2_interaction_fractions: missing'
+- '$.L2_energy_transfer_fractions: missing'
+- '$.L2_interaction_fractions_primary: missing'
+- '$.L2_interaction_fractions_scattered: missing'
+- '$.L2_scattered_share_of_interactions: missing'
+- '$.L3_initial_spectrum: missing'
+- '$.L3_initial_spectrum_parent_primary: missing'
+- '$.L3_mean_initial_energy_MeV: missing'
+- '$.L3_mean_initial_energy_parent_primary_MeV: missing'
+parse_errors:
+- '$.L1_photon_fluence_spectrum_scattered: 25 items, expected 28-28'
+finished_utc: '2026-10-12T16:15:09Z'
+usage_total:
+  input_tokens: 11109
+  output_tokens: 18511
+  reasoning_tokens: 14782

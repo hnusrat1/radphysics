@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791822094-7RhbFqaPeDIqbTzpYtJM",
+ "object": "chat.completion",
+ "created": 1791822094,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Reviewing Compton spectra**\n\nIt looks like primary electron spectra don't have a bin greater than 1.15 MeV because the Compton maximum electron energy is around 1.0 MeV for an energy of 1.33 MeV. The correct edge is 1.12 MeV for 1.33. I'm noting that the primary mean is .594, while the scattered mean is .535. The distribution of initial electrons from photon interactions seems negligible, but I should factor in their arrangements. Also, using a single-Compton scatter energy spectrum feels necessary to derive more meaningful scattered photon energies.**Analyzing scatter dynamics**\n\nI'm examining the outgoing direction of single scatter electrons across all angles, focusing on fluence at the central point, which is highly geometrical due to multiple scatterings. I\u2019ve noted that the primary energy spectrum ratios are both around .364, totaling .728. While the layer 4 spectrum may be used, I'll ensure to normalize the arrays to compute the mean accurately. For electron fluence, my goal is to track energy loss accurately because stopping power increases at lower energies, impacting track length. I need to calculate those sum values carefully.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_B2mkkkZTNryLx9eiqfFRfeyI",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"a=np.array([.12,.13,.11,.09,.08,.07,.06,.055,.05,.045,.04,.035,.03,.025,.02,.018,.015,.012,.01,.008,.007,.006,.005,.004,.025]); print(a.sum(), np.dot(a,(Ee[:-1]+Ee[1:])/2)/a.sum())\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Reviewing Compton spectra**\n\nIt looks like primary electron spectra don't have a bin greater than 1.15 MeV because the Compton maximum electron energy is around 1.0 MeV for an energy of 1.33 MeV. The correct edge is 1.12 MeV for 1.33. I'm noting that the primary mean is .594, while the scattered mean is .535. The distribution of initial electrons from photon interactions seems negligible, but I should factor in their arrangements. Also, using a single-Compton scatter energy spectrum feels necessary to derive more meaningful scattered photon energies.**Analyzing scatter dynamics**\n\nI'm examining the outgoing direction of single scatter electrons across all angles, focusing on fluence at the central point, which is highly geometrical due to multiple scatterings. I\u2019ve noted that the primary energy spectrum ratios are both around .364, totaling .728. While the layer 4 spectrum may be used, I'll ensure to normalize the arrays to compute the mean accurately. For electron fluence, my goal is to track energy loss accurately because stopping power increases at lower energies, impacting track length. I need to calculate those sum values carefully.",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzQkVDO_zR-T8XB_jIoJ6fLQNzpY_SoqK_7HpG1WdHj8wtvUqxteQJvjogNmThAVMNEMsdrAS6-68pUkdmvV3D_ILWHz2n15bGEEjmVUdCKaGj9U6B-KIKoqEmfuhTiJyxXt3V55urU_dzQUXN8q96eBn8Uzh2R2lERgJirFPZTNaUv76HtgIxKq8QfbO977jmu_I7cglBBm9BgTgTWZ3fTpnBZBn3FiKPHC_tsEDCDhMgtN7mP6Sdh-kE7aTby-L2er12dqzfqFG8Nt6S9Yn-dpLNtmeDpnCy9QiXZEmTL202YQSZ8NdI1bawIdZNIv7TjsXKjZ03jxfTCn8K_6is_6_vH4N714Exe0K_mvDajV4c2-bmrM1XZmapnibBO2dz0fqYo3_ARpHVGS6Q52Aww7R42XOC9c1RKZ5n_7EyKCOP9zYwWdiDt00rPvcirEaJvy7AEFHovruPeDMupMuRMTvA5KXfq6X0Tf-AA2X2JdWm4l0JmaHPssz1byqVI9_LsKZwHJYYKhHtSQP_bCIR39VLoQEtyUoFoQpfQBRaVlg0nGtm7Mox4zIuB4rty8LPiLag_nYJCL8lpGWbOiN3i3jMQtHp0A6vexuM9NGwAEl9nqW63mZNYatXJufLyFe3uejvHrFbCFzWMJdDodkPSgQGkMcmX3E6exvPJTOSEXDmbictgHROMRW4_a3JQpAYkHhvCQ0pEsGSTTIMIfYWW-9-RF8uCTbx-cRjbqWAZniY7lARKJmY9VIjbl9vi5Iw6ni2X1tQmdfo1-LzRZbSudDTwtzNtdxiEZjuN4NXjuc7MVUAWpj6MLZlTYJLtFdmls6MPa5bkuT2OddLm1JA0lbmESxKADWPcRF0RaalDQlWIFXu6K3gaku9GUX6d-n6xe0F2bNXWgUdW0ylI3WXHNJUjAz4VLEbYrVL2YEc9SyYIRLJrWTY7wboyGytKKO9lRXqArrQs7O3x9cmqM4GqzAz9jk-e_-8Bjch3xnLcBT7edh5x7E42HzdrGFWYdCcNrATi1LrSMu4golz7Pq_geshHI0I_Im5x9kEPnlJ_csCAzcTdi-6qvI7GTePRiZdi4rpWy4ehVq7XODkJt_-fRzdSnvlQjUmlhn2cuOc7GdduM9HrSbgU3ItvHAdAJRfT9yLocF_mwOpX2pADH5SZ_Y-MpUP6e2GOua7JmyqHpy20NTY9xt1XfwIxwSaKoPIrAdptYGoI3BzEa5DvaOXR4khLmCMxQnxAXo3koeHgkTB10YVyejSmmVrno_t5d2kCAd1e0W_mDXo4xpMw-sdfOPkeu2ePa8pQHrQCfcpU6T2z_PX4bz3ZZxhm3gdYLTgP6-dwlPpBJigeYOWICdn1RG3Shsyeyu9xJhjSKcrfeMpM0HXlRcVg_Owl5IZEZ4U2gKhp_UxQRl8agJ0ZSx68OuwXf2E61VBppe-K6-JbQIshSoYlsPDT4lmD919824nFsUvQznIRsugXVuKFKrQGtHp9XZFgvdBVkJJnU6kLhzkME7yYyxi0VVxPmDgDpdUNDWPY8oLP998jKNCAxt7RTJvvJFp6bYgCiaDoYW5I_Dj4oYNyxCcW4Kr8nTY5yHCJK9NwtznaSL-G2hzrHzIQVUi24y8DaMJ_-TRxDXZZUZ3XDVRpu0HKGbRS-9VXXVloRIGTJnrEQlO632e8zSWsQ1Z-FpllPlwbPl53Y_-jAck3indfzg0IqkqopOVRpcny2hOjAaZCmcHqXtsuobYiAJ27tPjWtjnRauINie7r7q2e0gjbG9fvh4BwHgoZUV2op9Zh5pMkKIeT5K1nYsx4OLs3fZTTNT-CTIPpwiKOjQYuGWb78BHc3N0tK6R9_nUYaLG8Qt_RAqxlyndtkAo1U_rMInwCEriPJKiEmoRZZb-b0kufNsqPqJZ9iXu54Q2c3sHVq8DISOzFyWEvyA7W16gEpxrZzWazJBXwEgz71czH2NsL3bSY7XfCy8rw7KyKahLBnHhC4aKVqvsb5OVqrWelvmkLI_S9Cex8zQ8vO-5Z7IJUXp573_fKSipQHfIMB0kDEDD4_dJSUKXU3DgGknr3ArJ7iTypEighBmy_tGyfeCOSUk85WKqG93GUFUEPUogx2Y2Xo5pFrlU1ljmMcHwFMBA5P71qF1bUFrpmfES4U_t64hFMIuRvjjDm9noSQzCSLoAaGR0g1ftmzrQsdW4n-b0p-8Xy2JVNJAMU61W-TNSBIcXfT0zdlVvSeV3AG2RNHoTTAaqx0Du-94N8P_euPM2TlVdk7cKxDDG4ntR8nPBlrrPxiWRPbCtKqKMLmVKjnB2wPgY6WFYX_gVy0MPbcuHgTgOu3LcKYvcUW9MLYlbXcjbPdbbSBCwKwCE-CJPkTiGP6sWLZvizDXogJ6UHTqRpvKByQXAcmLDCH2U5s1-gBBhSFtNH0_fG90KDsMTmAkfZ83obCYC-lHa_bufdIzlKKrOauCIg8p94YryZDihbu5OMvpusj2z2YpGhc5aJ2fZar-fHgTVFGlkIoBxo2pC-0bqvdJ-CLTvlTXSQmUEFL1-FBxbVnw1CkeGn24HpS9au8j79cyEOkPCqdn_JlVTYIpa-1j622zKD2PA8zZQFwi0aOmFixy2EwaNvMzjQSbMyMOxDo4EC3rfOvmvYY7swtCOiPSClc2N2AzH5gOBTQKJMOpfU8ssM0PaOwYFHge27uO0Jc9JuRgjQiMu1-bb77qdgi5l-vSCuQB5DzuiI7C_GnlU-laNjiHeMLqALvmDvKU6kH3vr96_YPW6wCLgIEI-oyXuz8uXLWgAgsA1Jpriy5O0bFq8WdLSreTGvM2cxHFsboqRkzFGx5KTpzwKO7399yg_qFl4vLpO_NL00fGFeWzP5vzV08t9gxGyzBeQ6XSJoO899ZsCSpZYABwN-WqlZ8aSZz4oQkMotCWIvc8_v_ThhCQTsEc7aJGIhYts0r6uMgFWUqx67KO3dANCa4szLWhjObE8BW24_7Iisxe-P73yTW6M22S-gPZR_gDbs0m3MaQKla7p-3zO3dXtQgrnerB55w8e1qEgQnsTdLSKaDJL8XScWR6RHZjTQe9a5HHP4xwj-EQ8U1LqkwJs89hlq4xJAZfhS2esoQpLxBobZy1jb4JnDNueDeCedW35FIjNQ9S7kCCQpkZ2Ps7BiJqCuZL6RaUpyF2KXDmanySpBbXzYSxUMg1uQ4LHjx2eprFtqfR9CwTLh-uSK3Ltjkwxei0qs0Gh_nSlqLM1XD11PvZbEDawv6s1G98gjhuVHllz238wpR6WrYZERkEe7sLjLVKAXQMN9xxbMl3qAx2tiYNVDAVeSAK0q_Pby3GGMPcC90j-GW3E-Y5t108nv5gvt_kn3heMn67xhJUrokFN-G4ZkXfJ6TdkIkAu4GzBP7I7M9OI7sgEkp3ULfRBbKpNKP7OcECVJAsTkO7-xLUISMdQKfv2FkOdHhEErO_Q9xqLb_7stWWD7hPFKNQHbktfvXfzwT6dPPPqLfsxHiZ4zxgiAOSNmBwEhQJhX6UxM1O-b_9DO2NgNBqGVpmeUHjON3W-19DNXRy7MbbL4-sttDj1nrQDGSpTKxWP_xdv_m716K_7u7-LlWG_AxcVrKs9xkkPILF8PSqiVqSMogvLbn7YFTePbUqyjOx9uBYIw8QL1KwIaxleQ6P_pBTgmZjmMaIYPjWNSJnb4p7cVs-fX8vUhnepk34pEpO-5tls79UjmkCva4cyuDifQYOHDGA2kmSXa7_3ZJmD_HNPcci7MtB9HmBaSa11nmVe7udZJI0yf1Vm8lQpyWKdE8mcSTbgKZuiiOvBpWGICjTqwSZ1raGvyZjhUkI6mMDX716ywAlYttvrfE1Elm54_qo1HP_BBuoTxJzxnJg9lV8dtQE35JwP6FWYf_uS9ZvilLO5ZyL7H-4aS-z0d5bXcPdG22QiEraBRxB572w7lPyGft87iNicMVetA243DPoepEmQ8MJlsFzEx-MDPW9wL1sqnb59HtQeOfJ_l7xk4M5D6N3ELKDCwMO9PM7blz-8iWhlA-ymHVeW0Zi5jTRvCBxSGE7qvCuM4i2cyC0Cs2mtUQYU9Y3wwTR32u5JvRa3RQjPbtDb4exHJ1R1fuoPosyBGARQBZ1UU397v2ogvpx3sTG-SqbzvdFiWJ0NPmN37LJzl0KL6-7ofXXb273g2BEOFtyEEAFPEPUm4jFNav1EVBAkD22-KEQhH5vKcoayESoEtPl-8BThRHXEA2W41HY1SMNmqOpQ9ObBY3fNJpA2LIPidGwj7Qo3w4KE2QLk5aR60WQT-0IIQ_UQekraIAiCFO6AT5vYEMqCj7dn0GoIirWexl46gmrl63HUY8_KokerbQA8-ig2zTJx04_hzY9kvhYVvLlvdTpxFYPn--_n8f9tniKUDxFKsFIQj86p3mlIDN_0IQjAPEOVkn6x1Jugmlqi6PpoJRvi98NaxQrbXs-hZqOCyGa3jwh761BNYloaMpOHblBKTXyuBAKQOhANFcyQHxxcnbrQU1oHdB5yJKjt37hTv3s_jfurqAjLkMHh8ZAFTFsy3v9SjTIproOcUtPCMmAhRduXbvbiEeR3t-pEEtWPX9WSzk-GXUZlHCtW7XAIMqSG8CaYm8xSCNV7fs1lHQjNhaJNM2lVaPcu5cZ8ZWHv-BdrVmDIPlHl4FcsUzbadcgs4noFX92L0JdqtC6B8Jd2kfnGV6HOIsP2Zlk7X6bkJRyZKHmZAbySeS-JyA_0teiDlFgKZ9Vq8yrMXNEUAzp8OOkE6r9suyzMTeQ8pspcuA3VUEyK8tGRkHSybYGVt2h7ZKHUlNKypqH6VFOmSs2mDlPUDLpueGGFQ8kznPL10S_90FWvvu3iw4BH4sdQvFI1qsRpUY4eMyfR-MlNnHQop79VzTM7_YoMe3xywDPokxdy325LRKv9z_Qp88mWA83ElQEfZh6H4305JIsTenZLm0jamnxIhpPa0Sx6xbLiTNxNfMYhTwNszRXtTUvkFonEOcADvpEMrTOFovYsB6PPyEm80enrJUCoObmqe0r2s9ZnjXkZN1jZZWiZkWcpSrMjspmjkOVLm426Xls_6oyW4vpN0uctEmpn2z8OdpXlW7ZNf9FHOh1njNse30AAPpI99gXYTiVukIXMVa8R0hsOqf5JBV4kTTvsn7park3oyd-6abE6wHmGnIFvVYTm_hvN8aBBJYlbc2aIDiifCuiG5hsHLxSHke9lDjMNA5oDCykIb4qxJWiHADhiCQmXAkcCcqTO7E4saU4GhPTJo1usO8kSrA8gGkfyeiaKSkIQWabuAzPkUDNVFkWnLpMQd0_BLWwt1b79Qr57gP4ZfFj1OSPJ0drR2RzKjH27COEpiAlxvhoh62gA5ApCjS2P9D8gKX3_s0tiBCcs6NaS1AsLA5_yFbMv8JZHqNudJcz7aMCBnXJOJLutWpXXP6PTH-iQMyOdzuWrKZL5f9I2bboBRa2AzXR_DoxTEJuXvldLx_Qx0XfhoKz-8ukXUpHGPVjdbdct7e54TT_nQ_a2EabjkCToAIJdJccaP6BGBfC8-nSFAVDnKicKtBq9F67owPK8pQGONoHsZWpJESPpGXliiZV82zqXchcWERBV3epQtVY4DMdsVMQFM5XFaRLVlwp6vbchQ3HEXpXr4enI3V9EKL2yNsI8vzGtmTZHyTetb4o4DOYqR0kq7_FwvrPOv4Dujx1rbjexoeno3LAmgoila-JHwOKZClKroNl_xpXjVtlCYew7tRIOso4GJSrlkSEVV3YH2dUxZWIQG_qLHuvuFdMgktYlVgZOV0RFNcxs7HNex6hPhWXoa15MaF6Ko4d3KMe114KmneJMknp7ptYB8AqYOWTER2l8KeU1nCCGbjMb6r_w_M-G7HzVfFE5SRbNC3kYaUAHrekMMa6SjIwzSAgmGqsJuXSWMML9nxQQx1mrdydqnyqIHr-IpLCLsmXZd-dt1eH4AEGuRzBCDFOA2l8LxSJswsQGT0hXBw5Yglqaf7qA0wMEi4s3ifEVv8c1kL3ccMTlmxL6-dFmX_d-vFCHkh_NgNd0JdCRSKg_ndPu-u2fW0O4CpvkgAfGeCJJtfMVSCKyWCXJ21AqANbml4B6kLmmt8NoR_8f-QT4ioy_A36epfw_NMQHt6GWArpncEAD30lOm2fhFnj9DaW8z3dvaj36NxAWpdWX2lT49etqYASVAaaC1giCIuYjGA1jS11RcR8CPd7nTc5xp-hyo5I0v1sK0GqFgZB4Mps9Fvl4lQZAa3Vnxp9Ffqe696M4D8Pla9viHrSMU8LsgPUspW1UjM-Gyp7GR8SzeIYd0d9brSjuwHKTLeG1VtRS4Yd560eXKZdDQybz3HVQ26DXR5jFxzdIepZD5-fk8NKT--dE2RmxQrNsT9dBM_qz_vDHQNo_ThcF4ZatfC6pI5p_DKHGCbFcnTSr02iP_m98THF09VLTUMs4ZrM1CJyPVpYVtabTUohjQ==.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_093b05492dcaab5c016acd090f711487d1bf62ad4a182ac0fc",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 11199,
+  "completion_tokens": 477,
+  "total_tokens": 11676,
+  "cost": 0.000629405,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 8773,
+   "cache_write_tokens": 2423,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000629405,
+   "upstream_inference_prompt_cost": 0.000390905,
+   "upstream_inference_completions_cost": 0.0002385
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 382,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}
