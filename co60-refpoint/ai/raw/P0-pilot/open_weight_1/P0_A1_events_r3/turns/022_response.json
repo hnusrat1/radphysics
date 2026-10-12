@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791824685-BFeEDqndPLZ3rqg45Q2B",
+ "object": "chat.completion",
+ "created": 1791824685,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Need to keep events in the same cell or save/load. Since tool calls are separate, the `events` list from the previous call is not available. Let me re-run the whole simulation with 1e6 primaries again and then analyze within the same cell.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_16b778ede06b44e5bab606dc",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np, math, time\\nfrom collections import Counter\\n\\nrng = np.random.default_rng(12345)\\nme=0.51099895; re=2.8179403262e-13; Ne=3.343e23\\n\\ndef kn_f(mu,E):\\n    a=E/me; r=1.0/(1.0+a*(1.0-mu))\\n    return r*r*(1.0/r+r-(1.0-mu*mu))\\n\\nEgrid=np.logspace(np.log10(0.001),np.log10(10.0),300)\\nsig_grid=np.empty(300)\\nfor j,E in enumerate(Egrid):\\n    mus=np.linspace(-1,1,3001)\\n    sig_grid[j]=np.pi*re**2*np.trapezoid(kn_f(mus,E),mus)\\n\\nE_ph=np.array([0.01,0.02,0.03,0.04,0.05,0.06,0.08,0.10,0.15,0.20,0.30,0.50,0.80,1.0,1.5,2.0])\\nmu_ph=np.array([4.90,0.506,0.162,0.0712,0.0375,0.0223,0.00988,0.00547,0.00240,0.00128,0.000526,0.000151,5e-5,3e-5,1e-5,4.7e-6])\\nE_pa=np.array([1.022,1.25,1.5,2.0,2.5,3.0,4.0,5.0,6.0,8.0,10.0])\\nmu_pa=np.array([0.0,3.1e-5,1.32e-4,4.1e-4,8.1e-4,1.39e-3,2.69e-3,4.32e-3,6.19e-3,1.05e-2,1.55e-2])\\nE_co=np.array([0.01,0.02,0.03,0.05,0.08,0.10,0.15,0.20,0.30,0.50,0.80,1.0,1.5,2.0])\\nmu_co=np.array([0.30,0.060,0.022,0.0098,0.0046,0.0034,0.0017,0.0011,0.0006,0.0003,0.00015,0.00012,8e-5,4.5e-5])\\n\\ndef mu_comp(E):\\n    logE=np.log(np.clip(E,1e-3,10)); return Ne*np.interp(logE,np.log(Egrid),sig_grid)\\ndef mu_photo(E):\\n    logE=np.log(np.clip(E,E_ph[0],E_ph[-1])); return np.exp(np.interp(logE,np.log(E_ph),np.log(mu_ph)))\\ndef mu_pair(E):\\n    res=np.zeros_like(E); mask=E>1.022\\n    if mask.any():\\n        logE=np.log(np.clip(E[mask],E_pa[1],E_pa[-1]))\\n        res[mask]=np.exp(np.interp(logE,np.log(E_pa[1:]),np.log(mu_pa[1:])))\\n    return res\\ndef mu_coh(E):\\n    logE=np.log(np.clip(E,E_co[0],E_co[-1])); return np.exp(np.interp(logE,np.log(E_co),np.log(mu_co)))\\n\\ndef sample_compton(E,rng):\\n    n=len(E); mu=np.empty(n); alive=np.ones(n,bool); a=E/me\\n    while alive.any():\\n        idx=np.where(alive)[0]; mu_try=rng.uniform(-1,1,len(idx)); f=kn_f(mu_try,E[idx])\\n        acc=rng.uniform(0,2,len(idx))<f; mu[idx[acc]]=mu_try[acc]; alive[idx[acc]]=False\\n    Ep=E/(1.0+a*(1.0-mu)); te=E-Ep; num=E-Ep*mu; den=np.sqrt(E*E+Ep*Ep-2.0*E*Ep*mu)\\n    cos_el=np.where(den>1e-15,num/den,1.0)\\n    return mu,Ep,te,cos_el\\n\\ndef rotate_dir(ux,uy,uz,mu_s,phi):\\n    d=np.column_stack([ux,uy,uz]); d=d/np.linalg.norm(d,axis=1,keepdims=True)\\n    ref=np.tile(np.array([0.,0.,1.]),(len(d),1)); nz=np.abs(d[:,2])>0.9; ref[nz]=[1.,0.,0.]\\n    e1=np.cross(d,ref); e1=e1/(np.linalg.norm(e1,axis=1,keepdims=True)+1e-30)\\n    e2=np.cross(d,e1); st=np.sqrt(np.clip(1.0-mu_s*mu_s,0,1))\\n    nd=(st*np.cos(phi))[:,np.newaxis]*e1+(st*np.sin(phi))[:,np.newaxis]*e2+mu_s[:,np.newaxis]*d\\n    nd=nd/np.linalg.norm(nd,axis=1,keepdims=True); return nd[:,0],nd[:,1],nd[:,2]\\n\\ndef inside_cube(x,y,z): return (np.abs(x)<15)&(np.abs(y)<15)&(z>100)&(z<130)\\ndef in_scoring(x,y,z): return (x*x+y*y<1.0)&(z>109.9)&(z<110.1)\\n\\ndef run_batch(n_prim,ev):\\n    x=rng.uniform(-5,5,n_prim); y=rng.uniform(-5,5,n_prim); z=np.full(n_prim,100.0)\\n    d=np.sqrt(x*x+y*y+z*z); ux=x/d; uy=y/d; uz=z/d; E=np.full(n_prim,2.0); alive=np.ones(n_prim,bool)\\n    ex=[];ey=[];ez=[];eux=[];euy=[];euz=[];eE=[]\\n    for _ in range(80):\\n        n=np.sum(alive)\\n        if n==0: break\\n        idx=np.where(alive)[0]; Ea=E[idx]; uxa=ux[idx]; uya=uy[idx]; uza=uz[idx]; xa=x[idx]; ya=y[idx]; za=z[idx]\\n        mc=mu_comp(Ea); mp=mu_photo(Ea); mpp=mu_pair(Ea); mco=mu_coh(Ea); mall=mc+mp+mpp+mco\\n        s=-np.log(rng.uniform(1e-10,1,n))/mall; xa+=s*uxa; ya+=s*uya; za+=s*uza\\n        inside=inside_cube(xa,ya,za); in_idx=idx[inside]; n_in=len(in_idx)\\n        if n_in>0:\\n            Ei=E[in_idx]; uxi=uxa[inside]; uyi=uya[inside]; uzi=uza[inside]\\n            xi=xa[inside]; yi=ya[inside]; zi=za[inside]\\n            mci=mc[inside]; mpi=mp[inside]; mppi=mpp[inside]; mcoi=mco[inside]; malli=mall[inside]\\n            sc=in_scoring(xi,yi,zi)\\n            u=rng.uniform(0,malli,n_in); cum_c=mci; cum_ph=mci+mpi; cum_pa=mci+mpi+mppi\\n            proc=np.full(n_in,3); proc[u<=cum_c]=0; proc[(u>cum_c)&(u<=cum_ph)]=1; proc[(u>cum_ph)&(u<=cum_pa)]=2\\n            \\n            mask=proc==0\\n            if mask.any():\\n                idx_c=in_idx[mask]; Ec=Ei[mask]; mus,Ep,te,cel=sample_compton(Ec,rng)\\n                scm=sc[mask]\\n                if scm.any():\\n                    for i in np.where(scm)[0]:\\n                        ev.append({'process':'compton','e_in_MeV':float(Ec[i]),'e_out_MeV':float(Ep[i]),'cos_scatter':float(mus[i]),'t_e_MeV':float(te[i]),'cos_electron':float(cel[i]),'t_positron_MeV':None})\\n                phi=rng.uniform(0,2*np.pi,len(Ec)); unx,uny,unz=rotate_dir(uxi[mask],uyi[mask],uzi[mask],mus,phi)\\n                E[idx_c]=Ep; ux[idx_c]=unx; uy[idx_c]=uny; uz[idx_c]=unz; x[idx_c]=xi[mask]; y[idx_c]=yi[mask]; z[idx_c]=zi[mask]\\n            \\n            mask=proc==1\\n            if mask.any():\\n                idx_pe=in_idx[mask]; Epe=Ei[mask]; scm=sc[mask]\\n                if scm.any():\\n                    for i in np.where(scm)[0]:\\n                        ev.append({'process':'photoelectric','e_in_MeV':float(Epe[i]),'e_out_MeV':None,'cos_scatter':None,'t_e_MeV':float(Epe[i]),'cos_electron':float(rng.uniform(-1,1)),'t_positron_MeV':None})\\n                alive[idx_pe]=False\\n            \\n            mask=proc==2\\n            if mask.any():\\n                idx_pa=in_idx[mask]; Epa=Ei[mask]; scm=sc[mask]\\n                tavail=np.maximum(Epa-1.022,0.0); share=rng.uniform(0,1,len(Epa)); t_pos=share*tavail; t_e=tavail-t_pos\\n                Etot=t_e+me; th0=me/np.clip(Etot,1e-10,None); th_e=th0*(-np.log(rng.uniform(1e-10,1,len(Epa)))); c_el=np.cos(th_e)\\n                if scm.any():\\n                    for i in np.where(scm)[0]:\\n                        ev.append({'process':'pair','e_in_MeV':float(Epa[i]),'e_out_MeV':None,'cos_scatter':None,'t_e_MeV':float(t_e[i]),'cos_electron':float(c_el[i]),'t_positron_MeV':float(t_pos[i])})\\n                for k in range(len(Epa)):\\n                    for _ in range(2):\\n                        u1=rng.uniform(-1,1); u2=rng.uniform(0,2*np.pi)\\n                        nx=math.sqrt(1-u1*u1)*math.cos(u2); ny=math.sqrt(1-u1*u1)*math.sin(u2)\\n                        ex.append(xi[mask][k]); ey.append(yi[mask][k]); ez.append(zi[mask][k]); eux.append(nx); euy.append(ny); euz.append(u1); eE.append(0.511)\\n                alive[idx_pa]=False\\n            \\n            mask=proc==3\\n            if mask.any():\\n                idx_r=in_idx[mask]; Er=Ei[mask]; scm=sc[mask]\\n                th0=np.clip(0.0007/Er,1e-6,0.5); th_r=th0*(-np.log(rng.uniform(1e-10,1,len(Er)))); mu_s_r=np.cos(th_r)\\n                if scm.any():\\n                    for i in np.where(scm)[0]:\\n                        ev.append({'process':'rayleigh','e_in_MeV':float(Er[i]),'e_out_MeV':float(Er[i]),'cos_scatter':float(mu_s_r[i]),'t_e_MeV':0.0,'cos_electron':None,'t_positron_MeV':None})\\n                phi=rng.uniform(0,2*np.pi,len(Er)); unx,uny,unz=rotate_dir(uxi[mask],uyi[mask],uzi[mask],mu_s_r,phi)\\n                E[idx_r]=Er; ux[idx_r]=unx; uy[idx_r]=uny; uz[idx_r]=unz; x[idx_r]=xi[mask]; y[idx_r]=yi[mask]; z[idx_r]=zi[mask]\\n        \\n        alive[in_idx]=True; out_idx=idx[~inside]; alive[out_idx]=False\\n        if len(ex)>0:\\n            x=np.concatenate([x,np.array(ex)]); y=np.concatenate([y,np.array(ey)]); z=np.concatenate([z,np.array(ez)])\\n            ux=np.concatenate([ux,np.array(eux)]); uy=np.concatenate([uy,np.array(euy)]); uz=np.concatenate([uz,np.array(euz)])\\n            E=np.concatenate([E,np.array(eE)]); alive=np.concatenate([alive,np.ones(len(ex),bool)])\\n            ex=[];ey=[];ez=[];eux=[];euy=[];euz=[];eE=[]\\n        if np.sum(~alive)>len(alive)//2:\\n            k=np.where(alive)[0]; x=x[k]; y=y[k]; z=z[k]; ux=ux[k]; uy=uy[k]; uz=uz[k]; E=E[k]; alive=alive[k]\\n    return\\n\\nevents=[]\\nt0=time.time()\\nrun_batch(1000000, events)\\nt1=time.time()\\nprint(f\\\"Simulation: {len(events)} events in {t1-t0:.1f}s\\\")\\ncnt=Counter(e['process'] for e in events)\\nprint(\\\"Processes:\\\", cnt)\\n\\n# Analyze\\ne_in=np.array([e['e_in_MeV'] for e in events])\\nprint(\\\"\\\\nEnergy quantiles (MeV):\\\")\\nfor q in [0,5,10,25,50,75,90,95,100]:\\n    print(f\\\"  {q}%: {np.percentile(e_in,q):.5f}\\\")\\nfor proc in ['compton','photoelectric','pair','rayleigh']:\\n    sub=[e for e in events if e['process']==proc]\\n    if sub:\\n        es=[e['e_in_MeV'] for e in sub]\\n        print(f\\\"{proc}: n={len(sub)}, E_in [{min(es):.4f},{max(es):.4f}]\\\")\\n\\n# Now subsample 200 events uniformly\\nrng2 = np.random.default_rng(999)\\nidx_sample = rng2.choice(len(events), 200, replace=False)\\nsample = [events[i] for i in idx_sample]\\nprint(f\\\"\\\\nSubsample: {len(sample)} events\\\")\\ncnt2 = Counter(e['process'] for e in sample)\\nprint(\\\"Subsample procs:\\\", cnt2)\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Need to keep events in the same cell or save/load. Since tool calls are separate, the `events` list from the previous call is not available. Let me re-run the whole simulation with 1e6 primaries again and then analyze within the same cell.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 76234,
+  "completion_tokens": 3512,
+  "total_tokens": 79746,
+  "cost": 0.002801141112,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 65536,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.002801141112,
+   "upstream_inference_prompt_cost": 0.002162940472,
+   "upstream_inference_completions_cost": 0.00063820064
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 55,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}
