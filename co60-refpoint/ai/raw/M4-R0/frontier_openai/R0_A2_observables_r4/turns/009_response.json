@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791824533-hHKAlfwF2HXpz0PqCLOn",
+ "object": "chat.completion",
+ "created": 1791824533,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Calculating interaction fractions**\n\nI'm addressing issues around coherence in mu category arrays related to scatter spectrum. I've got some values like Rayleigh fractions at 0.7% and photo fractions at 2%, with a pair fraction of 0.02%. The energy transfer scatter seems low. My total Kcol is 4.73e-12, and I've calculated D beta at 4.58e-12. For primary interaction fractions, I'm using coefficients along the same line, with Compton interactions dominating at 99.8%. I need to calculate the scattered interaction fractions.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_8gdpNuNhtuJTpMkD8i1kOL3I",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"# derive category separately and mean initial source, electron dirs with weighted vectors\\n# helpers from prior\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Calculating interaction fractions**\n\nI'm addressing issues around coherence in mu category arrays related to scatter spectrum. I've got some values like Rayleigh fractions at 0.7% and photo fractions at 2%, with a pair fraction of 0.02%. The energy transfer scatter seems low. My total Kcol is 4.73e-12, and I've calculated D beta at 4.58e-12. For primary interaction fractions, I'm using coefficients along the same line, with Compton interactions dominating at 99.8%. I need to calculate the scattered interaction fractions.",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzRKYcctSb7qb9Tu-B3AfpRs8Ij2S7jUxhg6qm4RSlpQnB2BK4iw3GxkwyI1cZjNn_3zPf3p_l9XTklMSNjqFG3KEi7dcCi6W3hDhJvPlrvulgN8_lquCfQxGQeWtDVv4hSwmsLilsYcpZCiCVtVR-YjSLh7D_FRgkwLSNQDPj7YlBH4kglMhkMs3Mo0Im6HCulJIyZYtjn_jo_zsIJW2mT9ed2G4PTQ4Wmz5zlJb8VNiCZZEiRn_lCNktF1ZZd3kl-0QGEuI3agwOV7WNc0Nj-e8eUWfQ5SP4bAbQO3KTskFtlZfPB9IDeZFWr7x3LCaCOBIEHQwbn_K3jC7KUyVvh80EzVuss-rSPAics8cC-Xcy4KBjFkr_TPNDGjzLd1v5R1D5WIKObxhCBc7oP54Vwe6iC9dqG9eTS3uVuX0aSzV2vAw5Q24Pi8ueJVlnRPXviEX8_5SdIJPpNQDnzXf-3mS5j-7ILHCrK8WuSmyBqAAZdAENJpB6qdjiCLhVXkUQPeYeQzRxaKda90VN4Bh4oMf_naCGyDXJmWXS8g5Jojv5KwDH6Fb26XX4xbT-aqyUGG-L6nVzzhZvHkl68Xly4Zy_1vmcuZxDwA4yoayrlWDSJpoq9B1gFD_-dlo4T8rQFbuqmDMAzNzo9gtIfJM07UwExVtnunVp2-KBKNuEDXS18yWoOPD-W_O4jeZHqEsx4r7rAupB1ONfRprfWH5U9W2oZqQtKIW16rxvce0c7O-IN_45AfpAwgcGT-tUMwRdzphLt3WUzamvU9zZJpGHus3tHiLTi5GFs6KzWQioa4CiT_7DXINMNrz_nP8rj8DgMfDmZuMVuUvFObBwkD1v7d2ucvSTBmGe-emYWz0rJktUD7zYh0aD4UV45ZopZnXHAM0QkzElr3LCEIsdvdrSbd6C1HUUqJvl4kq3qGf5BzErA9EKnDTMtgHpS57i-IynU80u-QIoZpnsAsW6hZAnaOt_TiLQh8NSXOC6EFuHWTCjLdV0r5aYVCEV9b7xe2NHZFsC2-fGMP52znjK1VVtt1jRdMxTuTDgQyAE0a-uUybv-Lx9LGUzA23jyMWFe8UajCNrnleXeVZTear5yA7Fm4s6reo9gmhW1YmgKlSPjVurGxXC6kjgKsqpi0My4TKlaHX7VG0uqdw6t4kAyQuNVH7d8lHckTztkaRhexOZyNnEnNanFhNF5CUIHT6qVeQC4V9a9me6vXfgn4GsoV3XCtEmTztzFHqO9B7eD43WSTp_lNfydQGlOVbNAEwABHGZlgIJSs3fEgQZ5bzOKGLYCtgbQ9kvTAVxA3a45NT7DWBSzu7Lgt9084aAcLbn3Ws7pvVqUZiVmtXflaf7LxlnRI2Y1BNBiVkDBWbvaPfv3bfy6zLTBQQjCUyirJavaZsSIHqemiojvlvBnBg8UXlunBcbdmOKetB6W4oLdRAf0VWtwJussjDNQm8n8do-CBn0KVOi0rJ8wfFeJ6qxhaY9EhkKPe747BdZ5rbRx_uIz5FhQm751XPpyiOT5reqaIRDkYrIQVEyilrrEmobprZdH68GP5MSJ32kn6jRzPkfk6Ui6fEUyYB0UCxyYvoebpY5txvZJ81mqAXY4idUhQkcSH9gfS8xpmaEQMD88Z8nxgLLFsgHsZcQlY9YOott1S2HETSpGks_3kyebJx25pXgD4VSoMsidqHTB6tIIr-70oMDsV65uGv70E7MyVigH-HrPXMgxCIOOTvTD3yPs-Ums7oGms0unMlMEFCCpaDz7M52bEnOgkFqbpSLWM_7sCsyyQD30S0ngZN2h91GFXndyTkekL5t_mgxuPIq7dUXfbpo1uC7v9us8uneT2yOuTEiIkRgdYUCGKiJn-kovMmBggNeYvB8z71zBRFCNsKI3Y-hE-jQoi33QNGUOdtjyW0wglgm7f0Hw_4DFPDW1vlxrNd50nS6h6wELGcex0lil5keCzkulKjJPVz9-i9Lyt5XWJmbCzSsVAReM04QsNjLghFdAk1j4Pzlx-ttCd1W6uE3U6FcNuqxjhHpxuA-ebxfy33l0gjAcC5FTIVM3VQrdtJTNLwx-tapJL23g8YXaEGjsCH5U4Zg34Z6StHbYQuLxUBn6_aW6pBjQRcSq-7pMHzVNpMXoWDYjVSYqyxgyH001uwnHniflFKyZzci77boZ5MMLCkpUVJcrpQfc19iBQ9rdg_BkHpW4BdOt29kmF9HTd3m9E35quQDV41NmhPCgGUdhPwHIpyfif0bEVy3QozLOCmWDEjvF4xhdzZo9IBkzCU4iraJjMQB9h52xNZIKFKUaDndsnIndox3HkqDbVJcMy7mFhSPZDRMBVkdz6513KBll72SLyF6VezUQweQd7gTMZpTKshr_ZHYJXaSh45JT0aqGi20L5g2R1R8mS2TDuXE9dJanxgpOh5WKSSu1bqpc_DMr4tl-_D6vXI_8xZ8NdX7EZk7_7GDo53Ql168G2bCeRvssv53cG-j3_gEzEFqdngWSizId57RKFkKiQZC8HXCMIauQvdpooacqvvznPzEvGebv-s-Rty6oBio8l3UXB4PjA52lzfcZNWjbYjAhyqzUUSHHy61hQHG8Rh073di2bmUodll3-OxlJ1qXq3dH1Gm8eOpZLwSdn0u6QaJTMQe-aQe6OI_c0jKD0_iQUZn8EPhwWRfFbkOxsfqbxdUM2WVaMDurkJd1J1Jt-SByAp-nIorr69IzgJXkARbLqdoMe87RLG87FAAW_Zctadkn0-D2Cyv1ObRTrv6EFsUWzdxMcOxlb8HlUWnY5GmQac-92tIG-2NjTUWpkT3RRX6iLGMAmg4QSvgAenResFA3QhMc79t1yrJE7WcGhOV1Tf7fEhwADiPucYLkNyLUqH0z3kBLqDWSxRHGrY7KOeuA1ABgUSDV-e8OQJXZDMrH5TLczOMOanLjtey7P30G9K.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_0c995b1150585540016acd12962b3487d1bf33b9f2011112ef",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 18575,
+  "completion_tokens": 154,
+  "total_tokens": 18729,
+  "cost": 0.000535915,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 16199,
+   "cache_write_tokens": 2373,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000535915,
+   "upstream_inference_prompt_cost": 0.000458915,
+   "upstream_inference_completions_cost": 7.7e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 116,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

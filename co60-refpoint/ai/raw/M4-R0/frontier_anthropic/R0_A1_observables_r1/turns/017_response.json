@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791824480-h1YPO9x3Q2Fs4I9PgZIW",
+ "object": "chat.completion",
+ "created": 1791824480,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "Python state doesn't persist between calls, so I'll put the electron physics in a module file.",
+    "refusal": null,
+    "reasoning": "Since state isn't persisted between calls, I'll need to create an analysis module file called elec.py that bundles together all the necessary functions.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_019h3V86Eu7JH6qG17bYe8Dm",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nelec = r'''\\nimport numpy as np\\nfrom phys import re, mc2, ne\\nne_air=0.49919*6.02214e23\\ndef beta2(T):\\n    g=1+np.asarray(T,float)/mc2; return 1-1/g**2\\ndef f_moller(T,eps):\\n    tau=T/mc2; return 1/eps**2 + 1/(T-eps)**2 + (((tau+2)/(tau+1))**2-(2*tau+1)/(tau+1)**2)/(eps*(T-eps))\\ndef J_restr(T,I,emax):\\n    \\\"\\\"\\\"integral eps*f from I to emax (MeV units) -> dimensionless; multiply by 2pi re^2 mc2 n/beta^2\\\"\\\"\\\"\\n    T=float(T)\\n    emax=min(emax,T/2)\\n    if emax<=I: return 0.0\\n    le=np.linspace(np.log(I),np.log(emax),3000)\\n    e=np.exp(le)\\n    return np.trapezoid(e*f_moller(T,e)*e,le)\\ndef dens_delta(T, plasma_I=75.0):\\n    # Sternheimer for water (liquid)\\n    C=3.5017; x0=0.24; x1=2.8004; a=0.09116; m=3.4773\\n    g=1+T/mc2; bg=np.sqrt(g*g-1); X=np.log10(bg)\\n    if X<x0: return 0.0\\n    if X>x1: d=4.6052*X-C\\n    else: d=4.6052*X-C+a*(x1-X)**m\\n    return d\\ndef S_col_BS(T,I,n,dens=False):\\n    tau=T/mc2; b2=beta2(T)\\n    L=np.log(tau**2*(tau+2)/(2*(I/mc2)**2))\\n    F=1-b2+(tau**2/8-(2*tau+1)*np.log(2))/(tau+1)**2\\n    d=dens_delta(T) if dens else 0.0\\n    return 2*np.pi*re**2*mc2*n/b2*(L+F-d)\\ndef S_rad_w(T):\\n    T=np.asarray(T,float)\\n    return 0.0129*T*(T+mc2)/(1+mc2)\\ndef S_res(T,Delta,medium):\\n    \\\"\\\"\\\"restricted collision stopping power (MeV cm2/g), cutoff Delta (MeV).\\\"\\\"\\\"\\n    if medium=='w':\\n        I=75e-6; n=ne; dens=True\\n    else:\\n        I=85.7e-6; n=ne_air; dens=False\\n    Sun=S_col_BS(T,I,n,dens)\\n    # subtract energy transfers above Delta, using same normalisation as Bethe formula\\n    # calibrate normalisation of f_moller against Berger-Seltzer (without density)\\n    b2=beta2(T)\\n    K=2*np.pi*re**2*mc2*n/b2\\n    Jabove=J_restr(T,Delta,T/2)\\n    return Sun - K*Jabove if Delta<T/2 else Sun\\n'''\\nopen('/tmp/work/elec.py','w').write(elec)\\nimport sys; sys.path.insert(0,'/tmp/work')\\nimport elec, numpy as np\\nfor T in [0.02,0.1,0.5,1.0]:\\n    b2=elec.beta2(T); K=2*np.pi*elec.re**2*elec.mc2*elec.ne/b2\\n    print(T, K*elec.J_restr(T,75e-6,T/2), elec.S_col_BS(T,75e-6,elec.ne,False))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Since state isn't persisted between calls, I'll need to create an analysis module file called elec.py that bundles together all the necessary functions.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSvQcKEAgSGAI4AUIIdGhpbmtpbmcSDIpw4hi8FLbqIWR4vBoMUKSxLjkM6n8m/vSpIjASSZCBTA8ocOJnOdCLA35kkdg+gjkkAGWwejTY5d4SScht4bauG0wXemK07pkMa1gq2gZD6NxSl+LDMvCMJ2O00C5LPAmtTXaO+ouQn0qgcdEnwV6aEcPTToStPPD95vnNm5r2eU4NKggZkkhgHjstaBXXU2BGysT+niTuvuIchTSTbDBdaV1Un5bbEIMj7GTh8X/CH7B6TFAZ3BN5iVKq8wrb7aSKizCxP9TeJ8qce13pfgmp6U/IBD1RqkzregNqrtwSoVPrauB7U46I84OaXNLONdVdVicy9YikLw5UmNc+s4DiyTQquwZiA1SedLJcaenK0+9hMg2hB99U6YUBIr0DA49v7p1pLIr+K3JIow+aD5Ll4AywzOjpdpxJmIEK9LntG97N9wokHpbLoKwVsF2XikhSR+ibpI4i/tlgXTBvsDFsValVQmZh/gM+nBAuy0P2T8jh5tA6lUL5ma+sFFohKVwklGQuEw3TZQmu8Go1JucLaXA+L4YacJVWDEo0u0z0ohvmS87aG/w4QdwSZ/NFZbt4BT0tJEdrAS+MnxJk2MqY8hBsI11RRf7Nn0Njc34R0C/CTe5zdVIe2Mz8RGJMfUDP2jeVzL85EIT0PTaI4LQbQ40LQ5wFUfTl9yUYlFdfVY6rOXgki0GoG8kY/AK+DL+7Txedv4DOqEWwFRiqcAjaujD7XNlwdb/lvPGCVBXhlX2vj7p4Tk78UlGeWkVP28DyWu4QFXgtZ2PEdNnLcSjnTo+5SRYnv721ig80TkVK1Lr/O9DYNtmsCSqm0gVXNv35SsZKMU/bP1eZBf98mtENphFNHo4xNtWsFY/18jxYJ/K+DBZVc6vyT3EnwRDyt64b+iET6UOgX3MtiVIoVlO88t61ZL/XcryQoiKPRxbM2tlkAVJEHf11cbUJFgxnxQqZmIcUst3aEpgDoi04gbX6eBl6yfmmHB8Yg7D0tdWaOdK3C6MqK8vJSyg0Nx8shVC7ZW5s+zoA9MdnkSQA+bxMXfOIXGM+Aj9CWQbqRHdYr3Rv7piSEskTRQlZFJiC8KEd2QPnIr4x5/KMaLBCmBuT347bLMzeNnqFQtg27Gyy8zAIZofkjcyvhb32sf5VQL5Y8RYpi9tFtfyHvbCRGh8FV98UbAjuXFTGJ1Sk0ZlYspT1xMRiHa2yYfON6uP69m42w9/mg0IMAjDLtNA7f1Da4qaPnfr1LV8YAQ==.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 106568,
+  "completion_tokens": 1287,
+  "total_tokens": 107855,
+  "cost": 0.00888835,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 105972,
+   "cache_write_tokens": 594,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00888835,
+   "upstream_inference_prompt_cost": 0.00567085,
+   "upstream_inference_completions_cost": 0.0032175
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 42,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

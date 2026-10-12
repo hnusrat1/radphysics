@@ -1,0 +1,1 @@
+print(open('/tmp/data/xcom_water.txt').read()[:4000]); print('\nESTAR\n',open('/tmp/data/estar_water.txt').read()[:2500])

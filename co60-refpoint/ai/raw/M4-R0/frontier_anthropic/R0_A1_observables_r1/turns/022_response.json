@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791824587-3rmbb4QxpdTGjlVB8KE1",
+ "object": "chat.completion",
+ "created": 1791824587,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I need to fix the print statement. Checking the scattered fraction of fluence at 0.39 and energy-fraction at 0.206 both look reasonable, and the total fluence per \u03a60 comes out to 1.19. I should also verify that Ktr_records matches K_etr as a sanity check.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01MaMx6rRdQjyLypKKnSvn8q",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport sys; sys.path.insert(0,'/tmp/work')\\nimport numpy as np, final, time, json\\nt=time.time()\\nout,B=final.compute(100000,11,Nel=20000)\\nprint(time.time()-t)\\nfor k,v in out.items():\\n    if isinstance(v,list): print(k, np.round(v,4).tolist())\\n    elif isinstance(v,dict): print(k, {a:round(b,4) for a,b in v.items()})\\n    else: print(k, v)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I need to fix the print statement. Checking the scattered fraction of fluence at 0.39 and energy-fraction at 0.206 both look reasonable, and the total fluence per \u03a60 comes out to 1.19. I should also verify that Ktr_records matches K_etr as a sanity check.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS+gcKEAgSGAI4AUIIdGhpbmtpbmcSDItGoDgYckq8bfdYjxoMWvLiuMV/rODRHBKPIjC2wqry/lJs/daeORrjtd568YVSvpoidj7Q/rMFkRNbQjL6Ge/7qOFL6H+XK69Go0Mqlwd74yc3Em//bpmflSEilfONHQl18g2NoxrYf9it7IWxz6/ISGGmU5N6fTJI3ZW3xyqRYMAK6tn3Un5splR3A0s52M/DFbywoB7QhVmYwLzIsVFdeS7TkMGdgGscHrlh2QSRaT/dCF3ccXQqrxpf+ppbzwbAKNRzHOsPBHLVHI0Qkr2Ax4+25sC9s9lNskT0eDnUVG28gS/Q83EYoygpnKa/jeh4wzHlh1IVr4131qJgGqjd9vsNVHxoDujuc+OBaxTVk42RIsDkcAywGTxKgtoLonTNougfLGuyBz31aWqJ8uv9XvCOEHAPdLwJj9xxm3vEZEoM2eXf3qTCDKYDfJiVwvVIPAV5bHOpaPaFBG43HwCiCYF+kpKKX1IAfxzJfsafOtx7x/vL2cZQbiU6zzF6gtVjf1hgIv0E6vZAaCqrdWnFdAgiATJZtgJIyzdnL/SlXdVv0TCrTqyTIZcBpsP9m+jbU2KQP98LMcn7ByEYOGaUZWENVepa0YCf752m3aqWN4/KkgvIiyawU8TyRWegEg8fjkQKXcyRgvrX0oSdLamqu6knU0oYxGONc8COxLkA9gQG1mwWAfE+6SQLuBbR5IJHEZqsKuU5teenpksr/ytGPhzn6ekWhSB/Pd2j//bNzQpxpa6x2pPyFbkK4TYrCb4FUgKy/WoPQwzOlGvoKjttlc7ViV4PkxOybgD4RsRzVFZask+oqPsCSV3v8c04yRxcG02m+4Ge3E+St+OvEwXIWsqYSONZksp47Fpknf7LE3y9cbnASZzXugq3F/omcEZHxQQbFVTckjBMSsOvUA63mVpbhe3bziuxH9mMM6JFXeJE++vWYGsT7YQLx2HLxNa6oOF5WEPV3wB94oNz/33OLOXXzgFnTBn7mSS2xC3+RbpLOAxUrF7HPMEm8gSy6SjJgt8IMiblhr/j+2QngKpWhu5FjKxMu2iNmmNCLqYLyCtnAH0hUog93chxZG+bbOqyIIsfUpGW7A8hk7CALz8ygRIgZ0do6RDWRk5T4NsPj9JExKCx6xcpVoEtwQ96F7kE20MxJYZRIrHYhVxpyJoXT/fD1G2XPbO+vYrdAaRCv3KEmLjipr5SeWYzINYDRV+9fPK5A81HxzioXfqKGnxd+IxS4KaALQ5lvAf/DjJfZvUfQ1n1FF4iGZLaTZFzVsNMsWOMVh0Te2dlNVETRZUsSxifZOzeAcVV8sDFp3Zqf3B2b3/cGAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 131284,
+  "completion_tokens": 303,
+  "total_tokens": 131587,
+  "cost": 0.009597875,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 127325,
+   "cache_write_tokens": 3957,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.009597875,
+   "upstream_inference_prompt_cost": 0.008840375,
+   "upstream_inference_completions_cost": 0.0007575
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 97,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

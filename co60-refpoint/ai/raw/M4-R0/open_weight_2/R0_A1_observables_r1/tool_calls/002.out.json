@@ -1,0 +1,9 @@
+{
+ "stdout": "Total calculated: 0.05678 cm^2/g\n\nInteraction fractions (all photons):\nCompton: 0.8880\nPhotoelectric: 0.0384\nPair: 0.0159\nRayleigh: 0.0578\nSum: 1.0000\n",
+ "stderr": "Traceback (most recent call last):\n  File \"/tmp/work/_call_002.py\", line 92, in <module>\n    compton_et_frac = compute_compton_energy_transfer(E_avg_co60)\n  File \"/tmp/work/_call_002.py\", line 76, in compute_compton_energy_transfer\n    sigma_total = np.trapz(d_sigma, cos_theta) * 2  # *2 for full range\n                  ^^^^^^^^\n  File \"/opt/venv/lib/python3.13/site-packages/numpy/__init__.py\", line 769, in __getattr__\n    raise AttributeError(f\"module {__name__!r} has no attribute {attr!r}\")\nAttributeError: module 'numpy' has no attribute 'trapz'. Did you mean: 'trace'?\n",
+ "exit_code": 1,
+ "timed_out": false,
+ "wall_s": 0.23,
+ "stdout_truncated": false,
+ "stderr_truncated": false
+}

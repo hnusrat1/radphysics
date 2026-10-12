@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791824672-Udi5zK82cDbpn6n8gHca",
+ "object": "chat.completion",
+ "created": 1791824672,
+ "model": "qwen/qwen3.7-flash",
+ "provider": "Alibaba",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "numpy.trapezoid or numpy.trapz? Let me use scipy.integrate.trapezoid instead. Also, I realize I need to be more systematic. Let me continue with proper calculations using scipy.integrate.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_08dc2a1a3c5647f78c3aeab0",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nfrom scipy import integrate\\n\\ndef compute_compton_energy_transfer(E_MeV):\\n    \\\"\\\"\\\"Compute mean energy transfer fraction from Klein-Nishina cross section\\\"\\\"\\\"\\n    mec2 = 0.511\\n    alpha = E_MeV / mec2\\n    \\n    # Integrate over photon scattering angle theta (0 to pi)\\n    n_points = 5000\\n    cos_theta = np.linspace(-1, 1, n_points)\\n    \\n    # Klein-Nishina differential cross section factor (proportional to d\u03c3/d\u03a9)\\n    def KN_factor(cos_t):\\n        E_prime = E_MeV / (1 + alpha * (1 - cos_t))\\n        r = E_prime / E_MeV\\n        term1 = (1 + cos_t**2) / 2\\n        term2 = (alpha**2 * (1 - cos_t)**2 * (1 + r**2)) / (2 * (1 + alpha * (1 - cos_t))**2)\\n        return term1 - term2\\n    \\n    # Cross section integral\\n    integrand = np.array([KN_factor(ct) for ct in cos_theta])\\n    sigma_total = integrate.trapezoid(integrand, cos_theta)\\n    \\n    # Energy transfer integral\\n    def energy_transfer(cos_t):\\n        E_prime = E_MeV / (1 + alpha * (1 - cos_t))\\n        transfer = E_MeV - E_prime\\n        return transfer * KN_factor(cos_t)\\n    \\n    t_integrand = np.array([energy_transfer(ct) for ct in cos_theta])\\n    total_transfer = integrate.trapezoid(t_integrand, cos_theta)\\n    \\n    if sigma_total > 0:\\n        return total_transfer / sigma_total\\n    return 0.5\\n\\nE_avg_co60 = 1.25285\\ncompton_et_frac = compute_compton_energy_transfer(E_avg_co60)\\nprint(f\\\"Compton energy transfer fraction at {E_avg_co60:.3f} MeV: {compton_et_frac:.4f}\\\")\\n\\n# Verify with known values\\n# At 1 MeV, ~0.42; at 2 MeV, ~0.48; so ~0.45 at 1.25 MeV seems reasonable\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "numpy.trapezoid or numpy.trapz? Let me use scipy.integrate.trapezoid instead. Also, I realize I need to be more systematic. Let me continue with proper calculations using scipy.integrate.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 9151,
+  "completion_tokens": 575,
+  "total_tokens": 9726,
+  "cost": 0.000189536,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 6656,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000189536,
+   "upstream_inference_prompt_cost": 0.000114786,
+   "upstream_inference_completions_cost": 7.475e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 45,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

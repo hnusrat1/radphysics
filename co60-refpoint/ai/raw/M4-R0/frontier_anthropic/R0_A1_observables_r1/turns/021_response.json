@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791824570-5xFPZCgdmfsb1q4KBUkl",
+ "object": "chat.completion",
+ "created": 1791824570,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "The stopping power matches ESTAR at 10 keV (\u224822.6 MeV cm\u00b2/g). Now I'll assemble all the reported quantities in one function and run it.",
+    "refusal": null,
+    "reasoning": "The stopping power values at 10 keV and 1.4 MeV check out against ESTAR reference data for water. Now I'm setting up a function to compute all the final outputs for a given sample size and seed.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01XwCEEeV8bywD7KoCvayafe",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nfinal = r'''\\nimport numpy as np, sys, json\\nsys.path.insert(0,'/tmp/work')\\nfrom phys import re, mc2, ne, Lines, mu_c, mu_pe, mu_pair, mu_coh, mu_tot, ETR, OMEGA\\nfrom elec import S_col_BS, S_rad_w, S_res, ne_air, beta2\\nfrom anal import PE, EE, CE, build\\nfrom anal2 import slowdown\\nGY=1.602176634e-10\\ndef compute(N, seed, Nel=200000):\\n    B=build(N,seed,Nel=Nel)\\n    R=B['R']; E=B['E']; W=B['W']; u=B['u']; Pw=B['Pw']\\n    out={}\\n    prim=Pw.sum(); scat=W.sum()\\n    out['L1_primary_fluence_per_phi0']=prim\\n    out['L1_total_fluence_per_phi0']=prim+scat\\n    out['L1_scattered_fraction_fluence']=scat/(prim+scat)\\n    ep=np.sum(Pw*Lines); es=np.sum(W*E)\\n    out['L1_scattered_fraction_energy_fluence']=es/(ep+es)\\n    out['L1_mean_photon_energy_MeV']=(ep+es)/(prim+scat)\\n    sp=np.zeros(28); idx=np.searchsorted(PE,Lines,side='right')-1\\n    for i,p in zip(idx,Pw): sp[i]+=p\\n    out['L1_photon_fluence_spectrum_primary']=sp.tolist()\\n    ss,_=np.histogram(E,bins=PE,weights=W); out['L1_photon_fluence_spectrum_scattered']=ss.tolist()\\n    out['L1_angular_primary']=[0.0]*9+[1.0]\\n    ca,_=np.histogram(u[:,2],bins=CE,weights=W); out['L1_angular_scattered']=(ca/ca.sum()).tolist()\\n    # ---- Layer 2\\n    def counts(Ev,w):\\n        return {'c':np.sum(w*mu_c(Ev)),'p':np.sum(w*mu_pe(Ev)),'pair':np.sum(w*mu_pair(Ev)),'r':np.sum(w*mu_coh(Ev))}\\n    def etr(Ev,w):\\n        return {'c':np.sum(w*ETR(Ev)),'p':np.sum(w*mu_pe(Ev)*Ev),'pair':np.sum(w*mu_pair(Ev)*np.clip(Ev-1.022,0,None)),'r':0.0}\\n    kn={'c':'compton','p':'photoelectric','pair':'pair','r':'rayleigh'}\\n    def nrm(d):\\n        s=sum(d.values()); return {kn[k]:float(d[k]/s) for k in d}\\n    Cp=counts(Lines,Pw); Cs=counts(E,W)\\n    Ct={k:Cp[k]+Cs[k] for k in Cp}\\n    out['L2_interaction_fractions']=nrm(Ct)\\n    Ep_=etr(Lines,Pw); Es_=etr(E,W); Et={k:Ep_[k]+Es_[k] for k in Ep_}\\n    out['L2_energy_transfer_fractions']=nrm(Et)\\n    out['L2_interaction_fractions_primary']=nrm(Cp)\\n    out['L2_interaction_fractions_scattered']=nrm(Cs)\\n    out['L2_scattered_share_of_interactions']=float(sum(Cs.values())/sum(Ct.values()))\\n    # ---- Layer 3 / 4 from electron records\\n    T=R['T']; D=R['D']; w=R['w']; par=R['parent']; proc=R['proc']; ch=R['charge']\\n    ok=w>0\\n    def hist_norm(vals,wts,bins):\\n        h,_=np.histogram(vals,bins=bins,weights=wts); return h/h.sum()\\n    inb=(T>=0.01)&(T<=1.4)\\n    out['L3_initial_spectrum']=hist_norm(T[inb&ok],w[inb&ok],EE).tolist()\\n    pp=(par==1)\\n    out['L3_initial_spectrum_parent_primary']=hist_norm(T[inb&ok&pp],w[inb&ok&pp],EE).tolist()\\n    out['L3_mean_initial_energy_MeV']=float(np.sum(w*T)/np.sum(w))\\n    out['L3_mean_initial_energy_parent_primary_MeV']=float(np.sum((w*T)[pp])/np.sum(w[pp]))\\n    out['L3_initial_direction']=hist_norm(D[:,2][ok],w[ok],CE).tolist()\\n    # ---- Layer 4: electrons (charge -1) above 10 keV\\n    em=(ch<0)&(T>=0.01)\\n    Tg=np.geomspace(0.01,1.4,500)\\n    Ts=np.sort(T[em]); ws=w[em][np.argsort(T[em])]\\n    cw=np.cumsum(ws[::-1])[::-1]   # sum of weights with T>=Ts[i]\\n    # N_gamma(>T): sum of weights with T_i > T\\n    pos=np.searchsorted(Ts,Tg,side='right')\\n    Ngam=np.where(pos<len(Ts), cw[np.minimum(pos,len(Ts)-1)], 0.0)\\n    Psi,Psid,Qd,Nd,Stot=slowdown(Tg,Ngam,None)\\n    def integ(f,a,b):\\n        m=(Tg>=a)&(Tg<=b)\\n        return np.trapezoid(f[m],Tg[m]) if m.sum()>1 else 0.0\\n    # Bin spectrum from Psi\\n    spec=[]\\n    for a,b in zip(EE[:-1],EE[1:]):\\n        spec.append(integ(Psi,max(a,Tg[0]),min(b,Tg[-1])))\\n    spec=np.array(spec)\\n    out['L4_electron_fluence_spectrum']=spec.tolist()\\n    tot=integ(Psi,Tg[0],Tg[-1])\\n    out['L4_electron_fluence_per_phi0']=float(tot)\\n    out['L4_delta_fraction']=float(integ(Psid,Tg[0],Tg[-1])/tot)\\n    out['L4_mean_electron_energy_MeV']=float(np.trapezoid(Tg*Psi,Tg)/tot)\\n    # angular distribution of electrons (photon-born directions used as proxy)\\n    ang=hist_norm(D[:,2][em],w[em],CE)\\n    out['L4_angular']=ang.tolist()\\n    Scol_t=np.array([S_col_BS(x,75e-6,ne,True) for x in Tg]); Srad_t=S_rad_w(Tg)\\n    out['L4_radiative_to_collision']=float(np.trapezoid(Psi*Srad_t,Tg)/np.trapezoid(Psi*Scol_t,Tg))\\n    # ---- Layer 5\\n    Ktr=np.sum(w*T)     # all electrons/positrons initial kinetic energy (MeV/g per Phi0)\\n    Ktr=float(Ktr)\\n    # Ktr from electron records counts all electrons; check vs ETR-based K\\n    K_etr=float(np.sum(Pw*ETR(Lines))+np.sum(W*ETR(E))+np.sum(Pw*mu_pe(Lines)*Lines)+np.sum(W*mu_pe(E)*E)\\n                +np.sum(Pw*mu_pair(Lines)*np.clip(Lines-1.022,0,None))+np.sum(W*mu_pair(E)*np.clip(E-1.022,0,None)))\\n    K=K_etr\\n    Krad=float(np.trapezoid(Psi*Srad_t,Tg))\\n    Kcol=K-Krad\\n    g=Krad/K\\n    Kscat=float(np.sum(W*ETR(E))+np.sum(W*mu_pe(E)*E)+np.sum(W*mu_pair(E)*np.clip(E-1.022,0,None)))\\n    out['L5_K_over_phi0_Gy_cm2']=K*GY\\n    out['L5_Kcol_over_phi0_Gy_cm2']=Kcol*GY\\n    out['L5_D_over_phi0_Gy_cm2']=Kcol*GY\\n    out['L5_beta']=1.0\\n    out['L5_g']=g\\n    out['L5_dose_fraction_parent_scattered']=Kscat/K\\n    # Spencer-Attix water-to-air, Delta=10 keV\\n    Dl=0.01\\n    m=Tg>=Dl\\n    Sw=np.array([S_res(x,Dl,'w') for x in Tg]); Sa=np.array([S_res(x,Dl,'a') for x in Tg])\\n    psiD=np.interp(Dl,Tg,Psi)\\n    numer=np.trapezoid((Psi*Sw)[m],Tg[m])+Dl*psiD*S_res(Dl,Dl,'w')\\n    denom=np.trapezoid((Psi*Sa)[m],Tg[m])+Dl*psiD*S_res(Dl,Dl,'a')\\n    out['L5_s_w_air']=float(numer/denom)\\n    out['_diag']=dict(Ktr_records=Ktr, K_etr=K, Krad=Krad, Ngam_total=float(Ngam[0]), Psi_at_10keV=float(Psi[0]), Psid_frac=float(out['L4_delta_fraction']))\\n    return out, B\\n'''\\nopen('/tmp/work/final.py','w').write(final)\\nimport sys; sys.path.insert(0,'/tmp/work')\\nimport final, time, json\\nt=time.time()\\nout,B=final.compute(100000,11,Nel=20000)\\nprint(time.time()-t)\\nfor k,v in out.items():\\n    if isinstance(v,list): print(k, np.round(v,5))\\n    else: print(k, v)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The stopping power values at 10 keV and 1.4 MeV check out against ESTAR reference data for water. Now I'm setting up a function to compute all the final outputs for a given sample size and seed.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSgggKEAgSGAI4AUIIdGhpbmtpbmcSDKuwIZkJAhfbKm3PyhoMzVBNoq0XKutgk/lgIjAyM/0DhzjdFQOeMkdiVb2T5McPKqawP8MVkIpnssyUL2jY4Jl8sNBkV2WwC/YqdG8qnwd6lfUGx1T23cpSlMOTHCyGRuJ/+IN/sLSFFdjTfwBqzbIOH6vzBIQ/lu7QaL5qLGk4ShiLN+FTmZbJ//yF3NFiU5aXzDU8L4Ox5EfCeqzu3bin/8GWyUvWEz3hV7fVDHUFoQ4vJSXTyX0DM6VXsv1JJ1zAJbDGpNp9l6/cPphPEqIt/tNTv/yb4oEZcYU2gE/qlJMdc0HG8rsn564jlHu4qK3imFR1sXEvNJmsJqrHdsRHA5v0c/3eu773LCvInQi4G2CyKzCtO7eMhMCO4vQvXB40d/erLBVYOMu0CeiM7Yt96ZMUpywmDc/UhMpXEx+QkLCf1FHF2ghBR/ev/dNnamFCckuqr6N6kPvn/YMLA0F6S+9k3HlmY0oIimBheXZMZgTdahIX+5zdUHNa4GY5DSHkYhy/PHWJKMg/QnOnvbxW+Gk6t5HmvVe9Dh1HKsR+Mun9WZp6RQvmqWRCkmjnvIb/zM7UTTB7hXJfngxgAs0f9RAGYGvi9rCzmwIru8Eupy5Mgac0cybtdQJNRsDM3aXrAyZVwX2RPjvUdF1IFCoIiZgqdYvRNSbZ66XPW1JRld/6A0MC33e0wJXIeQbU11vXXpa7ticCheyz1d5SaULBp+DYqQXuEw4tgrDBaJEuJ8U9ZQjhImI1Q5ghAA6IN3JKsK9E+Vuly648wSf4mtOZNPGJ4wnK1GbqwjIUbvbaFpufrDuysE/FX9bPIwrJXZqSdB2V+iEHtBhAPfcTVgIUQGeVkmEFpaspTOZp6ntiVV5dmyAopWAJxq7V9ZyUFPhuhqD4YikiuEzoegTfvh8pjWiHGesqiZqGrZNg0z0ilLkkUdvg11l+sKESZLyrO0RaZqx4AzQqodAaREYtPx7Ko7LUtLYTqeDSWDoMlMfd4XMWCb7xayHaHzFR7h2MNSbaeW2dd9Lx71wJ9yfNiiuCj2p6T6BElzciCClXFNaWMlTlq+oOTZFhn3YT6t8POuz+dpsbP2xidYqks4SHwWgiO4wge6nFaordCDR3WNcS8wAs/D6mBBhDdWDskVWN2UDO+te2saTashFvZOZBNHaQGjS81gURw4XtAcHi7UFtkvt8n/uihBp1CFiMgGFSR12hmCFahf5V5pjQ5bwQDHiZFVyd7ilGj8q85Z3GFpqROBSrk9ohlexv5oDUboGdt2xV7FZ595F6UKQgQYsjjTmP1bBW/NBPV6AtnSvJ2ZqFb3/tXZUTLMHZjCpBEwEYAQ==.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 127327,
+  "completion_tokens": 3658,
+  "total_tokens": 130985,
+  "cost": 0.016730675,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 125206,
+   "cache_write_tokens": 2119,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.016730675,
+   "upstream_inference_prompt_cost": 0.007585675,
+   "upstream_inference_completions_cost": 0.009145
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 105,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

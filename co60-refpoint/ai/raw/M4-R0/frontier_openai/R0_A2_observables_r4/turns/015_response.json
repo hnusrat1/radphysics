@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791824578-4mk3l0vI0MwIoterVTji",
+ "object": "chat.completion",
+ "created": 1791824578,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_rViX8sYLAIQX993idZdHKj9h",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"# energy transfer coef per primary/scattered from above spectra\\nimport numpy as np\\nx=np.loadtxt('/tmp/data/xcom_water.txt')\\ndef sval(E,col):return np.exp(np.interp(np.log(E),np.log(x[:,0]),np.log(np.maximum(x[:,col],1e-300))))\\ndef fcomp(E):\\n from scipy.integrate import quad\\n a=E/.51099895\\n def f(m):\\n  q=1/(1+a*(1-m));return .5*q*q*(q+1/q-(1-m*m))\\n den=quad(f,-1,1)[0]\\n return quad(lambda m:f(m)*(1-1/(1+a*(1-m))),-1,1)[0]/den\\np=np.zeros(28);p[23]=.5*np.exp(-.06514178121359064*5);p[26]=.5*np.exp(-.061047572748315*5)\\ns=np.array([.005,.006,.008,.009,.009,.009,.009,.008,.008,.007,.007,.006,.006,.005,.005,.005,.004,.004,.004,.004,.003,.003,.003,.003,.003,.002,.002,.002]);s*=.14/s.sum()\\ncent=np.arange(.025,1.4,.05)\\ndef trcoef(spec):\\n out=0\\n for E,fl in spec:\\n  if not fl:continue\\n  out+=fl*(sval(E,2)*E*fcomp(E)+sval(E,3)*E+(sval(E,4)+sval(E,5))*max(E-1.022,0))\\n return out\\nprint(trcoef([(1.1732,p[23]),(1.3325,p[26])]),trcoef(list(zip(cent,s))))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzRLFKStKLNeUmSv2Xvdmb1H8afMQ5IP5MmuZspXd3oSaCsS--lCQLWXQzOZPcwO7wUrg2BsPO4o4C4GOMuJki5RtgcVfqzYxCE8WziVP2GtKYAnbrQ-ogOWWmaPFBOxl1Dklqa_n7M8kkoEG2nnJArvWx30cijok9Dm_2K43grfUSTEdVVbGyVQPhWzy_Ju5MbX3mdp1Qnl4vIbqrPp4jjITu-1jhm2T9PwOfyJFXXMubzw2OhweH2WvdldXYLySZpPtqCkE0aw0wCsjB3dnVvJmd_oUVtYAhJLNMsoPOIRTWSUZeB5p_8KDEssRPapQn1Zt_mI-7OXNl9dxRnZ_s_QV8mVEws225JcVfOtC3evXRXnlzc198f2B_kFX6ZCIJPkyb2UxkjarqdKHIKIIQwSLjXLojKSPKumAdC54X2DJV2Kq2zuai9XMbm153FOrHJEUtkOq3AehJiDN_vmJlMtmdrgry-NipvlZ1fRylqLS2gactaFf1rc-GAiWIZG9i6sKiY4E20_4DXwqZyovTC3SrcBQY6qeU6S0nZUS1FH6WqLHLRABz68b1o3Rt8it2zYn00J9K7ceQJdjnWYh_O4BLA6q5Uorsju4Jd_zhXFzE3-Sto7l6GF5-CIvOCnaTNQjPsfLrQCaf7KTGCArbJyrYtWPBinJFRP_mMsF8vrKfOg1pGiPwR5i9Ocmf8R9NAciZgjp41JHYNwT-XTlP2BO9_XeRlGhp8oorj9P7BKl4Q9LKno7ErawiC2gOK3JhrQV3IJeYUCufZ6GOZE2IdA4IzaW5lW6umM6MrrwwPLTW7epp2UT0e0i4vq7aFsLamwbdL5rVqDG2-J3qkXu3CNFZhACBaP1HB1kGYtZNClt2G-OAACF_0B8N6PFnhsY99F1Ddd5ADoitM58uXIROqY1RKhyba9mU0Cz-XWX6ieqMXyBsF5YBZuisLQxhZcXkPsHkQc2bKDRIpBgO4MCSHPxl3SPjO1DwFl1vV0CEzJRk1ugonsc3nCyjwst1Y7nSOzIV9gwr39faY2FiKqj4dJ4q9QU50-pQYhOOC5LN3fosjRrr4Cnz9UcN0tN4nccArLW7MpQVxSKhBBpkSBG_qhB5CDRK82oH0yNNbzHLmnOlhtwdjrXd0KidcXz16bnN8lfqIO8DSi4dQbldZvODFcpBt-UvhCLXpUEt7AQKB9GV5RLdFd7dmZiTDas61a3NouCA9U8My1fnrxOdjFFIg5TlhBMwFGtSEEbmY_Mfw5Z-cjGRNtW6TvH6J_kzYpc8nnb3pVZE6inUVwtR-xGjW0SuHja3cgrdqTgFamgYTz5LChKBBkyQy-qjkhJkO8tYryPSKg55T1t4_SUIXB7IJQhxvCNjv-NFo9O4tJNlXtGdE0lgKNsHt-__pjoeECFLyjDmKtIbwu4b--DEwa-MmXgqtq3x1sE7WC49dS2CGz8sGh1-pIvJPDYeomSfmSqGcCEBxl8zgs4akqprKsuKQfiyrLRTR8gTXKA5JvE3hSW5ouqvFZbOzMSbi49V1wg6jar-Xwo9Gxy2vUS2GXcR9yVPhhWmD0tm1iOi-I1YaJ7zaX83UiI1lGi-HWrjwSwW8rB9ciKIFMzJZgUxv64TMJEuk_uCVXK8fFv3zQXCsk1iOBI1eiI0LjtoQKkqMEsvSx_p4tL65UA3Ugzb6Pspg7y-tMEXrqe5agiILq7GPuSxGUO2L6OlVcAFsJR67hmz54D_qeE6_QJqMwwgybeiUzZ19TIqKFdmRxN3yizNgiCb-DihNZ7CxpVfH2RYze1MXzVcq9rRPaWC6r6vaxZ9XNKsKoMB73iHQq8q-7lIPKhaVYaPFlKSYXOEL3B3aytUv-eVQdHk5BaCrP7KskS9TInVZw6ImVqwvpYhbx2ZyQWEFbNLrmgFtFT_6FzAQ32HFQC28BoWJY8dzxE_H9w6Rn8NjkKG7crN06mg3VCKZ7P4sOQvbbxzoE2RHIjFnKbPkOsoEm1byOB8OyS7B8xB7nAEsgUHJ06wd_LWHJ3MhUDRLzffR65rikt7Lp9ID5EP4kyTPXJ8WXkdkNlFDN2jhD9KqqYit1sOqzTesDU4BOB7xeRvfpThwgedFOiO2klfyFLsDk9yEAh6ZXDfbA3J8whSHVdMPp0oCEe_5ff-NzhbWjSA4f4k2EyUVlbZSH4hpzXponjD4lcfOtg_W1Qsbw3MTfIcfoHHEBpKbWlxN79LxkI0895PenhcQnCVY97CLea75CcyX7mVUh-f4PKnwb-xRWy220qMtgFbnV4FNocLlkZWI2pPMdUHeVr1ytaWNgwoJOhA9wXavdNO7dM8pAEUupJ2nTrbKcEizXqQ3qbbp9YTwZ9A3xSO50fFezxbi8Ht74xHr3e1hKeCQrpoLde1LiqTpMY03kGrwwSTnC2jEscu8MLnIdvhcl1sseBhi3n_XAYrTxtGv0yk2U0jglhLK2e_k5qAp98Utp0txBVsD6EM4o-jOUKp3-teWtpZsgvDbtUMVW2aUIrr4VEJFhpB99M_qOtYs5CEEtTY7KTKAkxGYWmU-ZnOL9XuCaAPw0pBtllpOS-9UFJ98ul8z0P01eAOKccu_SRiuqrV_19qU590jE_0NrTsjINy2tfv_K_dDwB-0aHQWBSTLR1e7ZvkDPYn1dIkUzOyg0RAQlGxCDDX1zZ2Nn5WhoAY_CDR5OqJ_6jhHz2kJu6KpiE0NaAFq9O2zABTG6lpzH_e3x-rTp3CJHhRH7ai2gTg40MfNYiyBNQ1T47iJLJx2fnZo1ZZDKnHFCs2f0k1xcRJHKplJokdMV0fuCY5Os9WPDD_MRhdko52hxV5JojHNq1wlRhjGFVnlMwGsqbZbyALTC-Aoms-8cJVN51YzrtjyUdgCW0CxZ9Wf3KTHBpVqybe940YH_wYdICPokCsFq5sONKcLWjtm0_6psOq7HwXinpqIxC9wEtZUamF6twZmoN90FN7sdD-ToqhLOyWlTkWm-S-dMJPMWbaXEHpCsK8nrbvnctyfOBh9vKpYnvaLmCtQ1BsOSwNFTPccbKcTnWnfHwRczAGtFfQN25KgJTYjuTKGh9WuaidOfsqqDlRKiEdZBJGcMPdQnl7_paxaQTfsLWJ3bo4XlmU4rddBKQk6rN0i_pIHiLsYHVtpTWMfZJBeMXh3uDZDr748owtTc_FLIjGSIwcoFXiBfE6H3t4nxN8TEISnEjuHKWqxyETMclQSg9diirdZP8Y7JO0pht-nQ8-3MVgTnvEiv_nBttJ2uBpGtogRDAlAJfBKpzdl-wMObGuIKSSchH-zVy528OnxIbD0GLjlhn8Iw2BblylWfk19F3UPFBC7BpYzduQhWBO_L-5LtWWys2Z-Zr5nzgKhMvGhTdqNW_OHWpE6X_ccPINhQ1eCNBFvlBmRClfrXAAQrsCUNGn4NLBYO6VAYGzdt56G68onFd21vxqf0HA_-TbjsI.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_0c995b1150585540016acd12c31e4087d1a9916bd120050897",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 24747,
+  "completion_tokens": 575,
+  "total_tokens": 25322,
+  "cost": 0.000602515,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 24159,
+   "cache_write_tokens": 585,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000602515,
+   "upstream_inference_prompt_cost": 0.000315015,
+   "upstream_inference_completions_cost": 0.0002875
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 166,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

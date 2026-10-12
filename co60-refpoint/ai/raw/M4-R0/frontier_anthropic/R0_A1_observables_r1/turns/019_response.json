@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791824551-GWwblZ9ZMI4GS1xCKort",
+ "object": "chat.completion",
+ "created": 1791824551,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "That draft got tangled, so I'll rewrite the analysis cleanly with an explicit electron record: charge, parent type, process, energy, direction and weight.",
+    "refusal": null,
+    "reasoning": "I'm restructuring this into a cleaner electron list, tracking type, parent, origin, time, direction, and weight for each one, so I can compute everything downstream from that unified structure. I'm also noting the primary Compton sampling uses nS samples per event weighted by w0*mu_c/nS, and flagging a remaining issue I need to address.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01CeiasQoiSKzZ35fECfikwr",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nanal = r'''\\nimport numpy as np, sys\\nsys.path.insert(0,'/tmp/work')\\nimport phys, mc, elec\\nfrom phys import re, mc2, ne, Lines, mu_c, mu_pe, mu_pair, mu_coh, mu_tot, ETR, OMEGA\\nfrom elec import f_moller, beta2, S_col_BS, S_rad_w, S_res, ne_air\\nfrom mc import kn_sample_cos, rotate\\nPE=[0.0,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1,1.05,1.1,1.15,1.2,1.25,1.3,1.35,1.4]\\nEE=[0.01,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1,1.05,1.1,1.15,1.2,1.4]\\nCE=[-1,-0.8,-0.6,-0.4,-0.2,0,0.2,0.4,0.6,0.8,1]\\ndef sample_compton(Ev,uv,rng):\\n    c=kn_sample_cos(Ev,rng); phi=rng.uniform(0,2*np.pi,Ev.size)\\n    n=rotate(uv,c,phi)\\n    Eo=Ev/(1+Ev/mc2*(1-c))\\n    pe=Ev[:,None]*uv-Eo[:,None]*n\\n    T=Ev-Eo\\n    return T, pe/np.linalg.norm(pe,axis=1)[:,None]\\n\\ndef build(N, seed, Nel=200000, depths=(0.5,5.0)):\\n    rng=np.random.default_rng(seed)\\n    res=mc.run(N,list(depths),rng,store_for=5.0)\\n    A=res['arr']\\n    Fn=OMEGA*105.0**2/N\\n    E=A['E']; u=A['u']; W=A['W']*Fn; typ=A['typ']\\n    Pw=0.5*np.exp(-mu_tot(Lines)*5.0)   # primary fluence per line per Phi0\\n    # electron records: lists of arrays\\n    rec=dict(T=[],D=[],w=[],parent=[],proc=[],charge=[])\\n    def add(T,D,w,parent,proc,charge):\\n        rec['T'].append(np.asarray(T,float)); rec['D'].append(np.asarray(D,float)); rec['w'].append(np.asarray(w,float))\\n        rec['parent'].append(np.full(len(T),parent,int)); rec['proc'].append(np.full(len(T),proc,int)); rec['charge'].append(np.full(len(T),charge,int))\\n    # proc: 0 compton, 1 photo, 2 pair\\n    # --- scattered arrivals\\n    T,D=sample_compton(E,u,rng); add(T,D,W*mu_c(E),0,0,-1)\\n    add(E.copy(),u.copy(),W*mu_pe(E),0,1,-1)\\n    Ek=np.clip(E-1.022,0,None); fr=rng.uniform(size=E.size)\\n    add(Ek*fr,u.copy(),W*mu_pair(E),0,2,-1); add(Ek*(1-fr),u.copy(),W*mu_pair(E),0,2,+1)\\n    # --- primary lines\\n    for El,w0 in zip(Lines,Pw):\\n        Ev=np.full(Nel,El); uv=np.tile([0.0,0.0,1.0],(Nel,1))\\n        T,D=sample_compton(Ev,uv,rng); add(T,D,np.full(Nel,w0*mu_c(El)/Nel),1,0,-1)\\n        add([El],[[0,0,1.0]],[w0*mu_pe(El)],1,1,-1)\\n        if El>1.022:\\n            Ek1=El-1.022\\n            add([Ek1*0.5],[[0,0,1.0]],[w0*mu_pair(El)],1,2,-1)\\n            add([Ek1*0.5],[[0,0,1.0]],[w0*mu_pair(El)],1,2,+1)\\n    R={k:np.concatenate(v) for k,v in rec.items()}\\n    R['D']=R['D'] if R['D'].ndim==2 else R['D']\\n    return dict(R=R, E=E, W=W, u=u, typ=typ, Pw=Pw, Fn=Fn, N=N, res=res)\\n'''\\nopen('/tmp/work/anal.py','w').write(anal)\\nimport sys; sys.path.insert(0,'/tmp/work')\\nimport time\\nt=time.time()\\nimport anal, importlib\\nB=anal.build(100000, 5, Nel=20000)\\nprint(time.time()-t, B['R']['T'].shape, B['R']['D'].shape, B['W'].sum())\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I'm restructuring this into a cleaner electron list, tracking type, parent, origin, time, direction, and weight for each one, so I can compute everything downstream from that unified structure. I'm also noting the primary Compton sampling uses nS samples per event weighted by w0*mu_c/nS, and flagging a remaining issue I need to address.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSlQoKEAgSGAI4AUIIdGhpbmtpbmcSDDrO/1hexD+hxbaAhhoMs8M+76S19OPGmd6uIjDclOr4GZ2Ex7S3UBSzVyK7Mpqh3xIg6k56vWme/sNKYzhjhG5i95mNf8q6BUskN4sqsgnyBAhnQVxHyrb7yFxzeGB7XXBjn8QL6FKXKbVSbYpbFnqdB80wAhxVcUc+XLCLxRXLHB0q+P8eAiWo8p9+U+IPlbNmfIbs3EyIGKMTeBcqHbGuiTcZTLwgNHgmGxYX1fTLocg/qIAjBmMrVNcboO/XJWyTZV9AHwRHQRuF95uqJ3PmAaz/TE5thwoS8jsWg1TdslMZpXLY/nBOnFymqqp77dx+CCpDAlo2wroaRVPJAe5y2CK6yR0j36beQdFVmSPHFxGXktC9StcYepL1cRFv9NAkGn+hVcHNh01jDadDKWGoPoubPNm3aQ2aLqaEdKFn6cEl1+HmaGUlalsIthxZPNYmM5EYWRRUZLj8lwGzrIhgUDDzFznonJpIq6rpNIA6urQmYw0aPiIYo+nC4TZWOX4MIwYEwGYtcQQLRI18ujBQSMFTYnDno1r24lWJ52939TPY0BGEgsQ0A9RPoZXmfOnzLOndUnVqSPj19RKrIvpk9D3HixhF0ieJ+mgto0RN3n6H4EtHqBGBYvTazP1Sf7NBLQj4hpjNjihbkl7IKa1eI6NlkfH+NRvG+EMhsh1HxCsiwWtdF0JOmD/pC+V1oWGUGJYmJdGB4MSkFIsOP3ODzl/NUUuOhcrdQ9vmHmJuWSiQpSOja+hvaUcZY9KARlnbblkD8gNY6B32D8d4xNkyOP1szFUdR4kX+XuE73UfuUNxB3vF+P+GuQn50i6C16O8ehY9Pre8BAf2Glz4QJHPaVDzO5cNCprcAmjq2rK1KS/KSdCQTRzuq6RqzC8NquolZHy5pEashZoHtYUbJm9FpZn356MqZ4hcS35E7h1o6tbeHMtTTEep9AvcmXEOIb2SVEcxHZKowdt24sAtT7A/nSJS9YZDKitGS2gtNBZ3GmZnvcZCeQpV+odPBMFS9qs6/mO93wf58ITeJLIc+4tQY4UBoQUu60eSOlhf3Qb0oflIS1jMSx4o6va/Ofx3yHeUvb3jX9BnFYfpLIEDU8wYt1wc4AwiLfezy6troMOCGtMtz7TPcT3d2w2jUPwEFBrb0dvoe107lci7kfiw/l0q/Xg+sTc9De1sPHNO9vz/o17PkvxcUtUmUD334oa7/o2Ky4j1j1LnMpLXYI7vjxlU3nw9ZkEE89cu+ui6Y4z9qwVyyR92DHAb0/WK9UA1ZSGXX/eQ+WnTyVVJI7XuvW4G48kQ9cIpdANFw0WQ4WCOv8R5QWTn5881ZOqdW4XgiqhkncQ6QCT0JAq/fFQG4UDpHGJysFw4uf1nmfUM+pmhH9qj52Wwv4SBmbw1ZImCxbuogh9+HdK0AjTva6HX3mNxwmwXnNm8RoRGAIlCwYytSTBjuYCZUYMVH6duYt/uP/bcKebvr6NmEUMy7fEeb53NGBSVVkFHkxl8XSlZLomWIhYgq3U5kPPBsk5NDFOkJ7AbnWfy04LrYEPPUxj/mY+jYX5P5+0/0OhhSjs7LKaEQ2KpVZRAqqF0Tagbrzl9D727L/359vslKDjLe4i9dQ+iYC2aObff6TR7uwJDPy7Qu/MaGQZ+Lyymx9E1LC6DLVDqSmTjaXsH10i2CbI/V3l7SBHY5two5269w8CDrMFAgBgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 123103,
+  "completion_tokens": 2001,
+  "total_tokens": 125104,
+  "cost": 0.0198353,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 108011,
+   "cache_write_tokens": 15090,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0198353,
+   "upstream_inference_prompt_cost": 0.0148328,
+   "upstream_inference_completions_cost": 0.0050025
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 200,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

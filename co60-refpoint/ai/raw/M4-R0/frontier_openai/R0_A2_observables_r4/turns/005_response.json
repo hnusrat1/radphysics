@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791824475-fINdzkFVMNO5AtDyVa4Q",
+ "object": "chat.completion",
+ "created": 1791824475,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_iMS1aWOu0wmK6IUC1LpyIfW4",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import numpy as np\\nx=np.loadtxt('/tmp/data/xcom_water.txt')\\nfor E in [1.1732,1.3325]:\\n vals=np.array([np.exp(np.interp(np.log(E),np.log(x[:,0]),np.log(x[:,i]))) for i in range(1,7)])\\n print(E, vals, 'total',np.exp(np.interp(np.log(E),np.log(x[:,0]),np.log(x[:,6]))), 'prim',np.exp(-np.exp(np.interp(np.log(E),np.log(x[:,0]),np.log(x[:,6])))*5))\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzRJddmEv2QpfGQGrHkiUKTWVZ6_xfjRC-z222sFubSEtXKCqfJu89quFTqLWNTRxwbxrs_5v5axodyC_z9zPWrLFYa1_SUpr0VrROy4aQ8GM8Sm6nwezh_qlfy-5uXAXOnLaVSFERRbwGUnq60AD8tskMTK5XgVanlfY6_stal-l2U9JT4mL0TOd-WgerdiR6trZRAsSHPy7zCTutyZ9RmaJkpJqSHntxmTrtb12BVHXTif-ePM5KXo4wxq_DL_1YZm-lzA1mWq11q4Cr8CRPgVdvHsgmenj7z1emQ33iWQ1qsuonN4_WqUZdyyLHwGNyXRNJcP0X6JDXiJLX3GSZU4vpOaUBwlcZ1ucBO6bETN09jL1uDfwhA3Ok_bdnzYX3LBK_Uhrwi49HSXf9DPwhpMGj3F9H5jTiJpsH_7xT30V_V8ccSrzGqzJRtPQatnGVqZzC4MfxWuMfM-mevghMNvU0ON9Ah_Uo_PKPG-nlZrPP7Wi0Fax5QewnMsNcr1kVjFpzqPrcbi-VRukrDlOfSHhaAUcD2Zes9KXdYyZ9Ysl2jcBZd8iVkH49Au3crzEr8kUIVVmJ40OCwkudu3BJPI-B2uehUyV1urS0pvlqy44nBZCn9W97JftJakPS17TVeEy--pobNExL0pHar_hHj9XNnEPTLQauV8mO6YcFcqIXRZX_VZT8MEQrjXei4X5FDxDNXH0cHObBfkGvEWsrWDa7ln9mmXT9D9g5OxQ1MQKXCACneDAbv3Pm2gawrxrjwUEjoarfqBDiLsRS76NQWMGqbz59sZSyQOky5PZO0DDkVmBn9DNw8bYXI6nAadHsBhV_xKA1BeC8-KkqXExx4b09Q8v91ui3IXzEc6iqScHZ1RPP_bLwMv4HfwFIgj7VZztYdqNmFHasnckBpJLrUTNayOgPa6xFBY0xOqby_3Fki2lDhbFNckOjLW91wnjZbVpmLFQk06PdDtJDFfwSUMPpK-uIN_c2XbvphervwtmxW8CxAy7PxxzxOCYWFGwxWOezXT6pBEd16iwpOY3pFqAk1dWPEnW78PHSguAoQh-zFUvLnm5aOjcRJjGDk4fQATHMg8Kxy1LdqmQntWzcklQDOz_wVdMW9DM7P51JL7vki-dtsxIzOlUGNSb7UfRo5DE_B95uib6GA6QfC4nwmdyUi2sMd9bD-snKVip4W6sSNR9wHipvMAHFNDOTWTzvDGCHwjPL0nW7TjrHqQw34RF8B-E3URpHKvQpqdzTaiMiENG_bp89vRSYOVxxu9cxIJstyYUT8rDsJZG23tcnHS110NOgEJn45f6gygz2yc8r6JCcbc0Oldrfy-K4xz7S6Mk3fVtYmigH_kegS1INVrm0gKV4_K2HHSgfvA_0g9cZUtvVZ6t_ZYN-ZmIVH-TrXa3L-RIXvKxTakEGSKMlqaLpu4i_Rin8XsvXlJQ1-fe0z8WqvqqA6O5YzrsxDRfJfBeoK0OxXwp3m5mZpKDxlulpsVyiO1Sf2U5hzbgt_sQU-9FmaRB2e-6guyhiagZgCQeTZKgYA4wE4dLK83XR-50GrtrBPw-BG065M06KLCm1oUM7ZsGAwKHxX838tGtntQtqGISqeH6XjXHkDVL58VjxBDZIdYcyQWzJ_MTb1RutmOcgl0ftWWsd8QDLKcB5VP0PFJwYqs4At_JxNhM7iCi8xDV0qBednzZqWrUcjeUTTJ1gaAdRNubiYRwAUFX9aEA.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_0c995b1150585540016acd125cc75887d18454a0306f114d9e",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 11551,
+  "completion_tokens": 163,
+  "total_tokens": 11714,
+  "cost": 0.00046592,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 9212,
+   "cache_write_tokens": 2336,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00046592,
+   "upstream_inference_prompt_cost": 0.00038442,
+   "upstream_inference_completions_cost": 8.15e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 14,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}
