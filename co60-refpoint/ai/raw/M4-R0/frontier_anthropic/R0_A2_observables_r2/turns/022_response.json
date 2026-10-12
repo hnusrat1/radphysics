@@ -1,0 +1,57 @@
+{
+ "id": "gen-1791829080-isTLct0iZ9zHcxXE8e8g",
+ "object": "chat.completion",
+ "created": 1791829080,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01EnGTMvQHFssMekq2yi1DM4",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport time, sys\\nsys.path.insert(0,'/tmp')\\nimport numpy as np\\nimport phys\\nfrom scipy.integrate import quad\\nt0=time.time()\\nprint(phys.tail_fast(np.array([0.1,1.0]),0.01), 'time',time.time()-t0)\\nv,_=quad(lambda e: e*phys.moller_dsde(1.0,e,1), 0.01,0.5, limit=500)\\nprint(phys.NeW*v)\\n\"}"
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 133862,
+  "completion_tokens": 199,
+  "total_tokens": 134061,
+  "cost": 0.0080517,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 132364,
+   "cache_write_tokens": 1496,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0080517,
+   "upstream_inference_prompt_cost": 0.0075542,
+   "upstream_inference_completions_cost": 0.0004975
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 0,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}
