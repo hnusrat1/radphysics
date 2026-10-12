@@ -48,6 +48,8 @@ def main():
     prices = yaml.safe_load(open(ROOT / "ai" / "prices.yaml"))["prices"]
     groups = {}
     for d in sorted(Path(a.raw_root, a.tag).glob("*/*_r*")):
+        if not (d / "meta.yaml").exists():          # conversation still running
+            continue
         _, cond, task, _ = d.name.split("_")
         slot = d.parent.name
         groups.setdefault((slot, cond, task), []).append(conversation(d, prices.get(slot)))
