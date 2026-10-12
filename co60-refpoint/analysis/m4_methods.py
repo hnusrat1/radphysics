@@ -4,8 +4,9 @@
     python analysis/m4_methods.py        # writes analysis/results/M4_methods.json
 
 Reads the code audit analysis/results/M4_method_audit.json (one entry per A1/A2 observables conversation: method
-class and physics checklist, with quoted evidence from the transcripts) and scores every parsed answer with
-analysis/m5.py. Groups the scores by method class and by model.
+class, photon field and physics checklist, with quoted evidence from the transcripts) and scores every parsed answer
+with analysis/m5.py. Groups the scores by method class, by photon field (simulated, simulated with a major bug,
+assumed, no code) and by model.
 """
 import json
 import sys
@@ -66,34 +67,37 @@ def summarize(rows, ref):
 def main():
     ref = json.load(open(RES / "reference_R0.json"))
     audit = json.load(open(RES / "M4_method_audit.json"))
-    rows, by_class, by_model_class = [], {}, {}
+    rows, by_class, by_model_class, by_field = [], {}, {}, {}
     for e in audit:
         sc = per_conversation(e, ref)
         slot = e["conversation"].split("/")[3]
         cond = e["conversation"].rsplit("/", 1)[1].split("_")[1]
         rows.append({"conversation": e["conversation"], "slot": slot, "condition": cond,
-                     "method_class": e["method_class"], "valid_answer": sc is not None,
+                     "method_class": e["method_class"], "photon_field": e["photon_field"],
+                     "answer_from_code": e.get("answer_from_code"), "valid_answer": sc is not None,
                      "scores": sc})
         if sc is not None:
             by_class.setdefault(e["method_class"], []).append(sc)
-            by_model_class.setdefault(f"{slot}|{e['method_class']}", []).append(sc)
+            by_model_class.setdefault(f"{slot}|{e['photon_field']}", []).append(sc)
+            by_field.setdefault(e["photon_field"], []).append(sc)
     counts = {}
     for r in rows:
         c = counts.setdefault(r["slot"], {})
-        c[r["method_class"]] = c.get(r["method_class"], 0) + 1
+        c[r["photon_field"]] = c.get(r["photon_field"], 0) + 1
     mc_photo = ref["observables"][PHOTO[0]]["mc"][PHOTO[1]]
     result = {
         "reference": {"photoelectric_fraction": mc_photo,
                       "half_w1": {k: ref["observables"][k].get("half_w1") for k in DISTS}},
         "method_counts_by_model": counts,
         "by_method_class": {k: summarize(v, ref) for k, v in by_class.items()},
-        "by_model_and_class": {k: summarize(v, ref) for k, v in by_model_class.items()},
+        "by_photon_field": {k: summarize(v, ref) for k, v in by_field.items()},
+        "by_model_and_photon_field": {k: summarize(v, ref) for k, v in by_model_class.items()},
         "conversations": rows,
     }
     out = RES / "M4_methods.json"
     json.dump(result, open(out, "w"), indent=1, default=float)
     print(f"wrote {out}")
-    for k, v in result["by_method_class"].items():
+    for k, v in result["by_photon_field"].items():
         m = v["median_abs_rel_diff"]
         print(f"{k:12s} n={v['n']:2d}  |scatter frac| {m['L1_scattered_fraction_fluence']:.3f}  "
               f"|D/phi0| {m['L5_D_over_phi0_Gy_cm2']:.3f}  photoelectric {v['median_photoelectric_fraction']}  "

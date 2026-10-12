@@ -439,3 +439,35 @@ number written `.0008`; r4: U+FFFC characters between keys) before either reache
   s doubling over 8 attempts. This applies to the reruns and to conversations started after 18:20 UTC; earlier
   ones used D033's 6 attempts from 10 s. Only the API retry differs; the prompts, the parser and the model's
   retry text do not.
+
+## D036. Code audit of the A1 and A2 answers (2026-10-12; exploratory, not in the analysis plan)
+
+Humza asked whether models that write their own Monte Carlo defeat the purpose of A1. To see what each answer
+rests on, all 50 A1/A2 observables conversations were classified, and the 40 with code were audited against a
+physics checklist (`analysis/m4_audit_spec.md`).
+
+- **Who did it.** Four Claude subagents read the transcripts, one per model. Every claim carries an exact quote
+  from the code or its output, and each subagent checked its quotes against the files programmatically. I
+  checked eight claims against the raw files myself; all were confirmed:
+  - GPT-6 Luna's typed scatter constant;
+  - its C++ compile;
+  - its cylinder-only interaction bug;
+  - Qwen's 1.602e-13 conversion;
+  - Qwen's Monte Carlo claim with no random sampling in the code;
+  - DeepSeek's "validated" Monte Carlo claim;
+  - DeepSeek's Compton envelope;
+  - Haiku's backscatter exit.
+- **Output.** The audit is in `analysis/results/M4_method_audit.json`; scores by group come from
+  `analysis/m4_methods.py` and are in `analysis/results/M4_methods.json`.
+- **Photon-field category.** My judgement from the audit, one per conversation:
+  - `simulated`: the scattered photons come from a photon-transport simulation the model ran;
+  - `simulated_with_major_bug`: three runs, each with its bug named in the file;
+  - `assumed`: the scatter fluence and spectrum are typed or formula values;
+  - `no_code`: Gemini, which made no tool call.
+- **Sandbox finding.** The plan defines A1 and A2 as a Python sandbox, but the sandbox exposed the container's
+  compilers (`g++`, `clang`). GPT-6 Luna compiled and ran C++ in three R0 conversations (A1 events r3, A2
+  observables r2 and r5) and in one pilot conversation. Isolation held: no network, no transport code or results,
+  and the same time and core limits. The answers are kept and the compiler use is reported. For future runs,
+  either remove the compilers from the sandbox or state that they are available.
+- **Status.** This analysis was added after seeing the data. It is reported as exploratory and does not change
+  any verdict in `M5_M4-R0.json`.
