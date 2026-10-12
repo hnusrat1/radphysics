@@ -21,14 +21,14 @@ Rules enforced in code:
 
 ## Launch checklist (Humza)
 
-1. **Keys.** Add the API keys as environment secrets (cloud environment → Edit → Network secrets): `ANTHROPIC_API_KEY`,
-   `OPENAI_API_KEY`, `GEMINI_API_KEY`, and `OPENROUTER_API_KEY` for the open-weight host. Start a new session so they are
-   picked up.
-2. **Network.** Allow `api.anthropic.com`, `api.openai.com`, `generativelanguage.googleapis.com` and `openrouter.ai`
-   (Network access → Allowed domains).
-3. **Models.** Fill `model_id` for each slot in `models.yaml`: the most capable generally available model per frontier
-   provider, and two pinned open-weight releases from different labs (D028 item 5). Add each provider's highest
-   reasoning setting under `settings`.
+1. **Key.** One OpenRouter key (D029). Either put it in the gitignored `.secrets` file, which the harness reads:
+   `umask 077; read -rsp "OPENROUTER_API_KEY: " v; echo; printf 'OPENROUTER_API_KEY=%s\n' "$v" > .secrets; unset v`
+   or add `OPENROUTER_API_KEY` as an environment secret (cloud environment → Edit → Network secrets) and start a new
+   session.
+2. **Network.** Allow `openrouter.ai` (Network access → Allowed domains).
+3. **Models.** Fill `model_id` for each slot in `models.yaml` with the OpenRouter model name: the most capable
+   generally available model per frontier provider, and two pinned open-weight releases from different labs
+   (D028 item 5).
 4. **Pilot.** Run P0 (excluded from analysis):
    `python -m ai.harness.run --tag P0-pilot --config P0 --k 1`.
    Fix formatting problems only. Then replace `tokens_per_conversation` in `prices.yaml` with the measured usage, enter

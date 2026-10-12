@@ -313,3 +313,19 @@ Humza, 2026-10-11: "just pick your best recommended choices, continue and dont s
     - an ESTAR-method water table, from ESTAR's density-effect corrections and the Seltzer–Berger bremsstrahlung data distributed with EGSnrc.
 
     Both are labelled as reproductions, not NIST downloads. They are replaced by the genuine NIST tables before M4 if Humza can download them; `ai/data/validate_tables.py` checks either version.
+
+## D029. One access route for every model: OpenRouter (2026-10-12)
+
+Humza, 2026-10-12: "im just giving you one openrouter key". Every model slot goes through OpenRouter's OpenAI-compatible
+Chat Completions API with one key, `OPENROUTER_API_KEY`, kept in the gitignored `.secrets` file or as an environment
+secret. Only `openrouter.ai` needs to be reachable.
+
+- Reasoning is requested with OpenRouter's unified `reasoning: {effort: high}` setting. Tool calls use the
+  OpenAI function-calling format, which OpenRouter translates for each upstream provider.
+- Each raw response records the model OpenRouter served and its upstream provider. A call answered by a different
+  upstream than expected is visible in `ai/raw/`.
+- Cost: OpenRouter passes through provider list prices plus its own fee. The P0 pilot measures the actual charge
+  before Humza approves the M4 budget.
+- Trade-off: one route is simpler and gives one bill. The cost is that OpenRouter, not the provider, decides some
+  request handling, such as fallbacks and caching. The pilot checks that each frontier slot is served by its own
+  provider.

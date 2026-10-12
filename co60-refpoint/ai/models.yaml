@@ -1,40 +1,22 @@
-# Model slots for M4 (STUDY_PLAN Section 5.1; DECISIONS D028 item 5).
-# model_id is filled in when M4 starts: each provider's most capable generally available model on that date
-# (frontier slots), or the pinned open-weight release (open slots). The exact identifier the API reports is
-# also recorded per call in ai/raw/. Set frozen: true once Humza has approved the list and the budget; the
-# runner refuses R0 runs before that. API keys are read from the environment variables named here (stored as
-# environment secrets, never in the repository).
+# Model slots for M4 (STUDY_PLAN Section 5.1; DECISIONS D028 item 5, D029).
+# Access route: every slot goes through OpenRouter's OpenAI-compatible API with one key (OPENROUTER_API_KEY;
+# Humza's choice, D029). model_id is the OpenRouter model name, filled in at launch: each provider's most capable
+# generally available model (frontier slots) and two pinned open-weight releases from different labs. The model
+# and upstream provider OpenRouter reports are recorded per call in ai/raw/. Set frozen: true once Humza has
+# approved the list and the budget; the runner refuses R0 runs before that.
 frozen: false
+defaults: &openrouter
+  api: openai_compatible
+  api_key_env: OPENROUTER_API_KEY
+  base_url: https://openrouter.ai/api/v1
 slots:
-  - slot: frontier_anthropic
-    provider: Anthropic
-    api: anthropic
-    api_key_env: ANTHROPIC_API_KEY
-    model_id: null
-    settings: {max_tokens: 64000}        # extended thinking settings added at freeze, per the model's docs
-  - slot: frontier_openai
-    provider: OpenAI
-    api: openai_chat
-    api_key_env: OPENAI_API_KEY
-    model_id: null
-    settings: {system_role: developer}   # reasoning_effort set to the highest level at freeze
-  - slot: frontier_google
-    provider: Google
-    api: gemini
-    api_key_env: GEMINI_API_KEY
-    model_id: null
-    settings: {}                         # thinkingConfig set at freeze
-  - slot: open_weight_1
-    provider: open-weight via an OpenAI-compatible host (pinned weights)
-    api: openai_compatible
-    api_key_env: OPENROUTER_API_KEY
-    base_url: https://openrouter.ai/api/v1
-    model_id: null
-    settings: {}
-  - slot: open_weight_2
-    provider: open-weight via an OpenAI-compatible host (pinned weights)
-    api: openai_compatible
-    api_key_env: OPENROUTER_API_KEY
-    base_url: https://openrouter.ai/api/v1
-    model_id: null
-    settings: {}
+  - {slot: frontier_anthropic, provider: Anthropic via OpenRouter, <<: *openrouter, model_id: null,
+     settings: {reasoning: {effort: high}}}
+  - {slot: frontier_openai, provider: OpenAI via OpenRouter, <<: *openrouter, model_id: null,
+     settings: {reasoning: {effort: high}}}
+  - {slot: frontier_google, provider: Google via OpenRouter, <<: *openrouter, model_id: null,
+     settings: {reasoning: {effort: high}}}
+  - {slot: open_weight_1, provider: open-weight via OpenRouter (pinned weights), <<: *openrouter, model_id: null,
+     settings: {reasoning: {effort: high}}}
+  - {slot: open_weight_2, provider: open-weight via OpenRouter (pinned weights), <<: *openrouter, model_id: null,
+     settings: {reasoning: {effort: high}}}
