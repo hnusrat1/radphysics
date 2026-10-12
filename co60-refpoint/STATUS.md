@@ -31,6 +31,14 @@ Humza delegated every open choice on 2026-10-11: "pick your best recommended cho
   - DOSRZnrc (16 jobs × 8 × 10⁷, analog, EXACT boundary crossing, matched media): D/Φ₀ = 5.3723 × 10⁻¹² Gy cm² ± 0.13%. This is the dose per surface fluence × (105/100)².
   - Geant4 option4, boundary-free in B0 (`M2-B0-option4-bf`): 5.3829 × 10⁻¹² ± 0.11%.
   - EGSnrc / Geant4 = 0.99803 ± 0.00169 (−0.20%, −1.2σ). That is inside the plan's 0.5% investigation threshold (Section 4.2), and no investigation is needed.
+- **EGSnrc fluence and s_w,air benchmark in B0: done.**
+  - Runs: FLURZnrc 8 × 6 × 10⁷, SPRRZnrc 4 × 2.5 × 10⁷, Geant4 `M2-B0-option4` 20 × 3 × 10⁶, same scoring cylinder at 5 cm.
+  - EGSnrc / Geant4:
+    - s_w,air, matched media: 1.000079 ± 0.000016 (+0.008%).
+    - Total photon fluence: 1.0014 ± 0.0007 (2.1σ).
+    - First-generation photon fluence: 1.0011 ± 0.0010. EGSnrc counts bremsstrahlung photons as first-generation, Geant4 as secondary.
+    - Electron fluence above 10 keV: 1.0046 ± 0.0030 (1.5σ). FLURZnrc spreads each step's track length linearly in energy; Geant4 uses the CSDA-weighted estimator (D020).
+  - Every B0 quantity agrees within 0.5% (Section 4.2 threshold), so the benchmark passes.
 - **Scorer positive controls.** The Livermore and Penelope results, scored as if they were model answers, show no breakpoint. Livermore passes everywhere. Penelope passes everywhere except one unresolved distribution (outside 3 × half-sample, inside the code spread).
 - **Queue** (`mc/queues/M2.yaml`, run by `mc/tools/run_queue.py` in chunks under 2 h):
   - option4 layers, then the dose extension;
