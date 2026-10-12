@@ -287,7 +287,8 @@ def main():
          "Livermore and Penelope at R0, EGSnrc B0 benchmark, M2 stepping (range factor 0.04), published values."),
         ("M3", "AI harness", chip("warn", "built; pilot blocked"),
          "Prompts, schema, sandbox, clients, runner, A2 data, cost estimate. The pilot needs API keys and network access."),
-        ("M4", "AI runs at R0", chip("bad", "blocked"), "Needs keys, network access and your budget approval (Section 10.5)."),
+        ("M4", "AI runs at R0", chip("warn", "ready to launch"),
+         "One OpenRouter key (D029); openrouter.ai is reachable. Starts in a new session with the key as an environment secret: pilot first, then the low-cost run under your $10 cap."),
         ("M5", "Analysis", chip("warn", "built; no AI data"),
          "Scorer, breakpoints, H1–H3 and event tests are built and pass their controls. Waiting for M4 answers."),
     ]
@@ -313,6 +314,8 @@ def main():
          "physics.nist.gov unreachable; validated against Geant4.", "Swap in the NIST downloads before M4."),
         ("Model B", "Deferred to V2; Mora et al. 1999 spectrum as the candidate", "Out of scope for the first build.", "None now."),
         ("Venue", "Medical Physics; TG-268 and TRIPOD-LLM reporting", "Fits the dosimetry content and the AI evaluation.", "Changes table formats only."),
+        ("Access route (D029, your call)", "Every model through OpenRouter with one key", "One key, one host, one bill; the served model and upstream provider are logged per call.",
+         "Per-provider keys and hosts; no rerun."),
     ]
     d028_rows = "\n".join(f"<tr><td>{esc(a)}</td><td>{esc(b)}</td><td>{esc(c)}</td><td>{esc(d)}</td></tr>"
                           for a, b, c, d in d028)
@@ -340,9 +343,10 @@ def main():
 <header class="hero">
   <span class="eyebrow">Co-60 reference point · AI against Monte Carlo · review</span>
   <h1>Co-60 Study Review</h1>
-  <p class="lede">The Monte Carlo side of the study is built and validated, and the AI side is built and tested
-  without any API call. The model runs need API keys, network access and your approval of the budget.
-  This page covers each part, the choices I made under your delegation, and what is left for you.</p>
+  <p class="lede">The Monte Carlo reference is final and validated against two other Geant4 physics lists and EGSnrc.
+  The AI harness is built and tested without any API call. The model runs go through one OpenRouter key (D029) and
+  start in a new session once the key is stored as an environment secret. This page covers each part, the choices
+  I made under your delegation, and what is left for you.</p>
   <div class="meta"><span>Generated {now}</span><span>commit {esc(head)}</span><span>R0: Co-60, 5 cm depth, 10 × 10 cm², SSD 100 cm</span>
   <span>reference {'final (M2)' if m2_done else 'provisional (M1 parts)'}</span></div>
 </header>
@@ -360,7 +364,7 @@ def main():
   <ul class="tight">
     <li><b>Confirm or reverse the choices below (D028).</b> Each row says what a reversal would cost. Most are rescoring only.</li>
     <li><b>Verify refs.yaml (Section 10.1).</b> Every external number is still unverified. Agreed order: line energies, TRS-398 s_w,air (and whether its 2024 revision uses ICRU 90), I-values, normalisation constants, the rest. Two values are still missing: a published PDD(5) for SSD 100 cm, and the NIST μ/ρ and μ_en/ρ at the two lines.</li>
-    <li><b>Unblock M4.</b> Add API keys as environment secrets, allow the API hosts in Network access, and start a new session. Then run the P0 pilot and approve the budget. The steps are in <span class="n">ai/README.md</span>.</li>
+    <li><b>Launch M4.</b> Store <span class="n">OPENROUTER_API_KEY</span> as a Network secret in the environment settings, then start a new session. It runs the P0 pilot (under $0.50), reports the measured cost, and runs the low-cost R0 matrix if it fits your $10 cap. Current live-price estimate for five low-cost models: about $4. The frontier run can follow later with the same frozen prompts.</li>
     <li><b>Optional.</b> If you can reach NIST, replace the A2 tables with the genuine XCOM and ESTAR downloads (<span class="n">ai/data/README.md</span>).</li>
   </ul>
 </section>

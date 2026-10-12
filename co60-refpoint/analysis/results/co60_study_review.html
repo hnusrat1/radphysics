@@ -107,10 +107,11 @@ pre.prompt { white-space: pre-wrap; font-family: var(--f-mono); font-size: 12.5p
 <header class="hero">
   <span class="eyebrow">Co-60 reference point · AI against Monte Carlo · review</span>
   <h1>Co-60 Study Review</h1>
-  <p class="lede">The Monte Carlo side of the study is built and validated, and the AI side is built and tested
-  without any API call. The model runs need API keys, network access and your approval of the budget.
-  This page covers each part, the choices I made under your delegation, and what is left for you.</p>
-  <div class="meta"><span>Generated 2026-10-12 03:47 UTC</span><span>commit 93e2327</span><span>R0: Co-60, 5 cm depth, 10 × 10 cm², SSD 100 cm</span>
+  <p class="lede">The Monte Carlo reference is final and validated against two other Geant4 physics lists and EGSnrc.
+  The AI harness is built and tested without any API call. The model runs go through one OpenRouter key (D029) and
+  start in a new session once the key is stored as an environment secret. This page covers each part, the choices
+  I made under your delegation, and what is left for you.</p>
+  <div class="meta"><span>Generated 2026-10-12 03:48 UTC</span><span>commit 8e31645</span><span>R0: Co-60, 5 cm depth, 10 × 10 cm², SSD 100 cm</span>
   <span>reference final (M2)</span></div>
 </header>
 
@@ -121,7 +122,7 @@ pre.prompt { white-space: pre-wrap; font-family: var(--f-mono); font-size: 12.5p
 <tr><td class='n'>M1</td><td>Monte Carlo at R0, option4</td><td><span class="chip ok">done</span></td><td>All five layers; S1, S2; analytic primary fluence; statistical targets met; boundary-free dose adopted (D027).</td></tr>
 <tr><td class='n'>M2</td><td>Monte Carlo validation</td><td><span class="chip ok">done</span></td><td>Livermore and Penelope at R0, EGSnrc B0 benchmark, M2 stepping (range factor 0.04), published values.</td></tr>
 <tr><td class='n'>M3</td><td>AI harness</td><td><span class="chip warn">built; pilot blocked</span></td><td>Prompts, schema, sandbox, clients, runner, A2 data, cost estimate. The pilot needs API keys and network access.</td></tr>
-<tr><td class='n'>M4</td><td>AI runs at R0</td><td><span class="chip bad">blocked</span></td><td>Needs keys, network access and your budget approval (Section 10.5).</td></tr>
+<tr><td class='n'>M4</td><td>AI runs at R0</td><td><span class="chip warn">ready to launch</span></td><td>One OpenRouter key (D029); openrouter.ai is reachable. Starts in a new session with the key as an environment secret: pilot first, then the low-cost run under your $10 cap.</td></tr>
 <tr><td class='n'>M5</td><td>Analysis</td><td><span class="chip warn">built; no AI data</span></td><td>Scorer, breakpoints, H1–H3 and event tests are built and pass their controls. Waiting for M4 answers.</td></tr></tbody></table></div>
   <details><summary>M2 run queue (each run is kept; resumable after a container restart)</summary>
   <div class="tbl"><table><thead><tr><th>Run</th><th>Code</th><th>Batches or jobs</th></tr></thead><tbody><tr><td class='n'>M2-R0-option4-bf</td><td>Geant4 option4</td><td><span class="chip ok">done</span></td></tr>
@@ -144,7 +145,7 @@ pre.prompt { white-space: pre-wrap; font-family: var(--f-mono); font-size: 12.5p
   <ul class="tight">
     <li><b>Confirm or reverse the choices below (D028).</b> Each row says what a reversal would cost. Most are rescoring only.</li>
     <li><b>Verify refs.yaml (Section 10.1).</b> Every external number is still unverified. Agreed order: line energies, TRS-398 s_w,air (and whether its 2024 revision uses ICRU 90), I-values, normalisation constants, the rest. Two values are still missing: a published PDD(5) for SSD 100 cm, and the NIST μ/ρ and μ_en/ρ at the two lines.</li>
-    <li><b>Unblock M4.</b> Add API keys as environment secrets, allow the API hosts in Network access, and start a new session. Then run the P0 pilot and approve the budget. The steps are in <span class="n">ai/README.md</span>.</li>
+    <li><b>Launch M4.</b> Store <span class="n">OPENROUTER_API_KEY</span> as a Network secret in the environment settings, then start a new session. It runs the P0 pilot (under $0.50), reports the measured cost, and runs the low-cost R0 matrix if it fits your $10 cap. Current live-price estimate for five low-cost models: about $4. The frontier run can follow later with the same frozen prompts.</li>
     <li><b>Optional.</b> If you can reach NIST, replace the A2 tables with the genuine XCOM and ESTAR downloads (<span class="n">ai/data/README.md</span>).</li>
   </ul>
 </section>
@@ -163,7 +164,8 @@ pre.prompt { white-space: pre-wrap; font-family: var(--f-mono); font-size: 12.5p
 <tr><td>M2 stepping</td><td>Range factor 0.04 for all Geant4 lists (D026 as decided)</td><td>Removes the Fano deviation; M1 (0.08) kept as the step-size sensitivity.</td><td>M2 reruns at 0.08.</td></tr>
 <tr><td>A2 data</td><td>XCOM/ESTAR reproductions from EGSnrc-distributed NIST data</td><td>physics.nist.gov unreachable; validated against Geant4.</td><td>Swap in the NIST downloads before M4.</td></tr>
 <tr><td>Model B</td><td>Deferred to V2; Mora et al. 1999 spectrum as the candidate</td><td>Out of scope for the first build.</td><td>None now.</td></tr>
-<tr><td>Venue</td><td>Medical Physics; TG-268 and TRIPOD-LLM reporting</td><td>Fits the dosimetry content and the AI evaluation.</td><td>Changes table formats only.</td></tr></tbody></table></div>
+<tr><td>Venue</td><td>Medical Physics; TG-268 and TRIPOD-LLM reporting</td><td>Fits the dosimetry content and the AI evaluation.</td><td>Changes table formats only.</td></tr>
+<tr><td>Access route (D029, your call)</td><td>Every model through OpenRouter with one key</td><td>One key, one host, one bill; the served model and upstream provider are logged per call.</td><td>Per-provider keys and hosts; no rerun.</td></tr></tbody></table></div>
 </section>
 
 <section id="reference">
