@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791827245-7xJ693FOK7Vl8DTDgzes",
+ "object": "chat.completion",
+ "created": 1791827245,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "The background processes were killed when the previous call returned, so I'll run the four photon jobs in parallel inside a single blocking call.",
+    "refusal": null,
+    "reasoning": "The background processes must have died when the call ended, since logs are empty. I should instead launch them with Popen and wait on all four within the same call, keeping the whole run under the time limit rather than relying on detached background execution.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01M264AWSdRNDERV9PhHX9h8",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport subprocess, sys, time\\nt0=time.time()\\nprocs=[subprocess.Popen([sys.executable,'/tmp/work/sim.py','1000000',str(s),f'r{s}'],stdout=subprocess.PIPE,stderr=subprocess.STDOUT,cwd='/tmp/work') for s in [11,12,13,14]]\\nouts=[p.communicate()[0].decode() for p in procs]\\nprint(outs, time.time()-t0)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The background processes must have died when the call ended, since logs are empty. I should instead launch them with Popen and wait on all four within the same call, keeping the whole run under the time limit rather than relying on detached background execution.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS1QkKEAgSGAI4AUIIdGhpbmtpbmcSDKSuwGVgO3yHV6mYHhoMaDDeXyBK+1SNDYJ1IjDLhtl3hRJ390IZwO1nD9wB8Jpfziqs0+WkEe+EYNIObzvpYrNvBi45G95iqEHcqKoq8gi0u66+QaGRwvF3PAsYMWsjOwI6Ct2bjA5O0hf8eAahm5s1UEJHImQaaCSmi0QPVEsFm996H5dRL7benRZOeNWTgAzhsrAVnOt/U1AGHn33FOpjfoYUbtcfIxGgAX/0/JH05n3v3MvfzyBEdnbUQPxiFYE0HsATEQjyUBQlOXyaA0VJb+gco6tP6AI6dBCXtVq6utBmQ3Wc2/1QQF6YiO25S3RhAZAyDxtJ/cigIJwKnzYdUkkMnXFZrKdphcSopuMRJA1gnM01p8kmLtQXRqjKb+N6AV+uOgUGXrSfTosw/b86yB4ho/BJv6yUZhWCISgm9b/BpMSK9qWj4yPJBXoYKLWpTN/5QgpxfMJH3t5F/BFnrS8Ohyipp28YAinouD/CRHpMpHEY0FEa3FNle63ZopW9Ru8nmJrOFII4VAV6QpiUIHSVIJRQyKdLqnjJW7VaQePTE99yn2TRF0Ri4PdBux03idFODRwVxSvyZFLiECPX/fKdoV5QmF49ZEpNQg4R6ubZIzI622xfNoKoMVHgfW3nx+KeqSYMmGEwL46txg4NB8GKMIzEMfsLznPEcNCoBq3EQjdWcTlJy0cB55s7bUs/rYZXbWcLuv8PaGHiNcX07vc8/ty9SV8wfmziU2suX8j3jPfveXeu//8QfV0Tc1lPp+WXTipXIY+76XaI+jrVY5TVrwUSPIfIeqOTFOlsigGiQxzG0urh4eVkIkdDyI1BeChysRPwnGmwFK73SDtsBEUB+IY6htUYH0EU0W26Zx/LUH8tQFPEMrSg+uzBIxNlbnS9FT8tKajAHlC4fiEFOGI2t2PEdyqFTOC72ewL5D1waSZXePTUkSA9k+w1CiIzPy32IyRepAUAF+t+nKfmtI/9RC2NVIndHmII7eCdNNsXkJCSA0QKlFQLKcOI8LWUAuBUknGwN5i3XPNu31O6CcZhI9CJ+aAbPEhv2yKDLsm0BwxjQARCyBU1RRMzc4dcIsxFo/JYhWnI/sFdWyvFyV5ruSC7Qb2ZUVeQzjAZR6NVCMFU+G71kUsjPd7VWJHhANVh8auumjAtBvWQUmAa6A/yt6+Auq7T6NxQTov8IuMNXUEmH6d0f8gU3BVT3huHUaANLI4jAqndP4UmI6Ukd++M1nDLtI60kXrB7t1EypESLmBK+uApa99Vz1YtOAyvJEsYPI+uPteAmDRQW4YlTXVwkhNWGzRL+UKnaS792+r6rgv7TnxwPMtR3IFDVUHYNYkLhYLIdyFvd8npqzVM8qNhbA7t5DEMmUs9NM/byqSazJEjIKWSdVBhC5j0ZX7ihmYtXs+wISAufraeksrL/W7EvpoarDyQGOuOOEdQG4id8bGj+N1djPwggcLgwNtkgokZPDcFPKPQDpvPIw7eJ2JhzFEEZQSeuzsN84VnnrtxxviDN7qiCaHUk9KTFWZSdsfbl4BmXSA1zYzRtCz7QctcLTjGTDClVR18J0K76kNEc9UcOIlKPUpc4v1Uzh2TKOGsZqSlpBpJalbEjqY1GAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 138720,
+  "completion_tokens": 397,
+  "total_tokens": 139117,
+  "cost": 0.008173775,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 138293,
+   "cache_write_tokens": 425,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.008173775,
+   "upstream_inference_prompt_cost": 0.007181275,
+   "upstream_inference_completions_cost": 0.0009925
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 153,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}
