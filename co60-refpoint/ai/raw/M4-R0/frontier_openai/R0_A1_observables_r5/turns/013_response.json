@@ -1,0 +1,61 @@
+{
+ "id": "gen-1791822887-CUYDfvpG7BzzPZq1U0A5",
+ "object": "chat.completion",
+ "created": 1791822887,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "stop",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": "```json\n{\n  \"method\": \"Semi-analytic best estimates: inverse-square normalization and exponential primary attenuation using water photon coefficients; an approximate broad-beam Compton-scatter component with Klein\u2013Nishina energy and angular trends; approximate electron slowing-down spectra using stopping powers. These are not Monte Carlo tallies. The angular, spectral, and dose estimates\u2014especially scattered-particle quantities\u2014have substantial uncertainty.\",\n  \"data_sources\": \"Approximate interpolations of NIST XCOM water photon interaction/attenuation data and NIST ESTAR electron stopping powers; Spencer\u2013Attix water-to-air ratio cross-checked against ICRU stopping-power data (ICRU Reports 37 and 90).\",\n  \"L1_primary_fluence_per_phi0\": 0.733,\n  \"L1_total_fluence_per_phi0\": 0.9032,\n  \"L1_scattered_fraction_fluence\": 0.1884,\n  \"L1_scattered_fraction_energy_fluence\": 0.1273,\n  \"L1_mean_photon_energy_MeV\": 1.165,\n  \"L1_photon_fluence_spectrum_primary\": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.365, 0, 0.368, 0, 0],\n  \"L1_photon_fluence_spectrum_scattered\": [0.0004, 0.0005, 0.0006, 0.0007, 0.0008, 0.001, 0.0013, 0.0017, 0.0022, 0.003, 0.005, 0.008, 0.012, 0.014, 0.016, 0.017, 0.018, 0.018, 0.016, 0.013, 0.009, 0.005, 0.003, 0.002, 0.001, 0.0005, 0.0003, 0.0002],\n  \"L1_angular_primary\": [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],\n  \"L1_angular_scattered\": [0.015, 0.025, 0.045, 0.075, 0.11, 0.15, 0.18, 0.19, 0.14, 0.07],\n  \"L2_interaction_fractions\": {\n    \"compton\": 0.985,\n    \"photoelectric\": 0.006,\n    \"pair\": 0.007,\n    \"rayleigh\": 0.002\n  },\n  \"L2_energy_transfer_fractions\": {\n    \"compton\": 0.991,\n    \"photoelectric\": 0.007,\n    \"pair\": 0.002,\n    \"rayleigh\": 0\n  },\n  \"L2_interaction_fractions_primary\": {\n    \"compton\": 0.992,\n    \"photoelectric\": 0.001,\n    \"pair\": 0.006,\n    \"rayleigh\": 0.001\n  },\n  \"L2_interaction_fractions_scattered\": {\n    \"compton\": 0.965,\n    \"photoelectric\": 0.022,\n    \"pair\": 0.006,\n    \"rayleigh\": 0.007\n  },\n  \"L2_scattered_share_of_interactions\": 0.21,\n  \"L3_initial_spectrum\": [0.041202, 0.050394, 0.049218, 0.048093, 0.047088, 0.046252, 0.045656, 0.045478, 0.045958, 0.047608, 0.051528, 0.060181, 0.037152, 0.033657, 0.03545, 0.038262, 0.042707, 0.049956, 0.062453, 0.03786, 0.028995, 0.03776, 0.017091, 0, 0],\n  \"L3_initial_spectrum_parent_primary\": [0.034676, 0.042715, 0.042045, 0.041414, 0.040833, 0.040313, 0.039868, 0.03952, 0.039295, 0.039232, 0.039383, 0.039823, 0.040663, 0.04207, 0.044311, 0.047825, 0.053382, 0.062443, 0.078063, 0.047323, 0.036242, 0.047198, 0.021363, 0, 0],\n  \"L3_mean_initial_energy_MeV\": 0.54,\n  \"L3_mean_initial_energy_parent_primary_MeV\": 0.595,\n  \"L3_initial_direction\": [0, 0, 0.005, 0.02, 0.07, 0.17, 0.28, 0.3, 0.13, 0.025],\n  \"L4_electron_fluence_per_phi0\": 0.013,\n  \"L4_electron_fluence_spectrum\": [0.000740933, 0.001010363, 0.001010363, 0.00098342, 0.000956477, 0.000916062, 0.000875648, 0.000835233, 0.000794819, 0.000740933, 0.000687047, 0.000619689, 0.000552332, 0.000484974, 0.000417617, 0.000350259, 0.000282902, 0.000229016, 0.00017513, 0.000134715, 0.000094301, 0.000053886, 0.000026943, 0.000013472, 0.000013472],\n  \"L4_delta_fraction\": 0.35,\n  \"L4_mean_electron_energy_MeV\": 0.389,\n  \"L4_angular\": [0.03, 0.04, 0.06, 0.09, 0.13, 0.17, 0.18, 0.16, 0.1, 0.04],\n  \"L4_radiative_to_collision\": 0.0025,\n  \"L5_D_over_phi0_Gy_cm2\": 5.151e-12,\n  \"L5_K_over_phi0_Gy_cm2\": 5.113e-12,\n  \"L5_Kcol_over_phi0_Gy_cm2\": 5.1e-12,\n  \"L5_beta\": 1.01,\n  \"L5_g\": 0.0025,\n  \"L5_dose_fraction_parent_scattered\": 0.16,\n  \"L5_s_w_air\": 1.13,\n  \"L5_PDD5_percent\": 79\n}\n```",
+    "refusal": null,
+    "reasoning": "**Evaluating data sources**\n\nI\u2019m confirming that the L3 primary sum values are 1.000 from normalized integrals, which is fine. L3's aggregate array sum is also 1, and I\u2019m good with that. For L4, the mean electron value is 0.389 based on approximate midpoints, and that looks fine too. The L3 mean of 0.595 might actually refer to energy bins midpoints, but there\u2019s a concern about data sources being external. I can use NIST XCOM and other reports for cross-checking. Let's get this composition started!",
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Evaluating data sources**\n\nI\u2019m confirming that the L3 primary sum values are 1.000 from normalized integrals, which is fine. L3's aggregate array sum is also 1, and I\u2019m good with that. For L4, the mean electron value is 0.389 based on approximate midpoints, and that looks fine too. The L3 mean of 0.595 might actually refer to energy bins midpoints, but there\u2019s a concern about data sources being external. I can use NIST XCOM and other reports for cross-checking. Let's get this composition started!",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzQwqsXGQv_cShvko02JHmlWgGHyK1XoIZ1hNXr2N9UJUv13QdFHnuvI9-2hJJQ-e9ht5N0X4WrPLYaq9DMrsaVpbd7h-JZ482w96dPn3Fl_OUuaggkc2CtpeRZaIXP1ONC08yw0T5osMlGg76f1r9W18kKRt3hb5n99lp-VxgCTjKDK2wYfb8ZHAWQ0zv_W5DKFTcydI2mZLfAteaWp69qIUj2dE4oWi0OPIWNZsWVW1QpwAx83TFlOWAEZfPhImiQ01NWXaMo7UbDWy_61hYtvARphRgEvvVEFK5nGr5HF11D_TJ0TK9Li5riWsBQBDs1VMoWn8AXlVUcLssR8UE8CMz926w1__8hJVTFO7SMk38I5ZSittM-BHWp-FY5-SOobWIUuOmqL7RxdT2o2VuY7TuW4pw0Xjo-QEf9yUI_Gq1yd1Pd5B7zHHjiKTls1MxHnUAyjJ0Y0d3pDStqn0jGjJM5uYrt35mt3R67sM2bzRyHKI8lQQP8bPPIEEdHcEjh6w4BfB-P9RyQbSt2n568wmXZYEvENNQyT8Py8BociHLl8TWK4B_hcLLEyB-VOaatXfRu3tZe3aQDPkww9d_unDocddK8iM4Bd--tARfWd_P7Ej-xQmtskZCHN_EhsUtQoNVPXnMVvdm2Hz6D0SMjslhTmpJXMT7Jxx8bwS7HX0dG7wQ8R4e6EGjKmVErBPV3tQ8NlXsq7KtEkZy7nVBE_-SV8nE38zv3aeWB-r6z75eJ_IRLH8bwi52tD6QVOYbAQ4SbKPgwhn--9mehzhJedYMhkfDRFYnNhZFX5-X-byYaZoWr6XfKBajnJfWm_hfykZ37Z6Emwuc9_l8geF9wz8VDC_ew3MVvn5iMFYLPsDsLzoI5R4HOni4aHqzamac3yBPcivbTuzoqLtw8nJQbKKcT44JDXRnfijsoNZd-f_b2yZW-AiQdes8dcSvPLCDxdM50VfrXyW4lLOAsxm19h5eHji7iprkBtkbQk8csp10Wt4nCanG-voKr-K7utMehDp6uFhpksBepKH6AjRN-45a0piRyV3JiseOSFXhdg0lY1010SWYsKQ_jjzOA2f0WJo7wUKSbJLvbMJ_vJkSF-k4IkBQQhOCMaPR-mBYr0sg58Is-KBWDAqjGLMJ-MwDSKn057qQplCrDxVZkT8QAS_704x0OVFawgaI8M3XZbw8oQg1t5rM-80tHEmBw-HDXlmcMX0Gsd0spMYnQOjOeHTk2lLq-GNFCMGNme7BnZQaR4dhRohdmlxWducT5wU3YRX5I2w3w4RCt4lQyJKboF23U92zgikeC3rRGjAdJA27hLiTa5eYq80MG13CAN60Pa8FOPRlUlPUfJmvKCNzHDXSPMqQ3YpKVZtc8FrOHUvzxi5exh-7YvUuVBweDMHFsYVmxKn-hW5eyIGVqhVTms9ds28kn3UBE4xX9i2GGiheezZxeL2DOmOg0J8NnrARAVzRDDi-nJPv5a6ePuvhFZLpKWRTxMlIolyg9ZN9u_AIllHzMkskNUUUpqtG9mKjbFQ6Ydeg5JKyFpMTC-jBTUBMYj-bYENfEuCCl9UPVO0DnvU6YVLiImIgSF4G7H6Gb1pXzjZtW9H_Cj8xM0ersy_PKxRscfCBX_uanNI2Rpc5UzuqCA7NYqBzFRAfh62Fe3I2yfClcjqymx-09czvs6OyHzJlVvcvGOdSVTkkZnqZsF0xfV-CLf6DKw-Ta_-5OITbI38y_JZ2ijxGbbvz8kQ64K8SDT_TI2rykY81rXQb6g8XC47jpSZ9niP4_WY6KiKvEY54HBwnGff-lq8biTd_NUqAW420Zu9m07_7c-ZNf5NsLF28op7jbmMwIe1HQ533rWVVUD6PDQ9bUdGpOjq3t62srhYXYRWfAcnDTZsovaI034p1PJdqo9KgTeZJCYvQzyh9C1Yu6q092N-LqcnnfbDEPaSKnGbrD8QSTgB7jjIA2dPQNNWBgnTy0xXmKJNONf15tA09o8YSyLrA3wexnAqLHD7UItpuBjuVKY9uLaUFnQf1DFy-4VbnM-nTzQUQC8Q6tJ6Cj9OhUMukDVb0G-7U3fZb6dwhQ3aDTzYOSAg6P8h3tQYK7brO0a9SwplD0iufBsDj4IayG40pbuUFEC-IMjw_WB5FII1oHbqBC6daQlP9i0ZrnvPsNS_odbzPPBVwQ3msRuP57beEVtDXbGsmbfg9B3gseZmP0Xdpxyk62E_c1r-AcuwP4lI9jYQXrsiUzYoJo7SXmkac3TqAOIt594_SjUoTHYyTa3TSim2JACD3ojHLw9n0WYJ7GXMWfryX9z8XLBh0Is_BTGopII8PZHzLSFVUW86Kjj1dNbotI8nSYLoQfHH3OqoZhDaUXEV_vJtdxTM0C1mUJZQ3JVVTcLlArfq6tTTDPqIbbiasvErH57-XG-kPcJeHf9yrBzWubXmP9-82gMbRft9-3Vqek5shxeEhryPYeFu88WQjCWynL-9Y0RuxvZDjQtGnozxR4Yhl44E9LFfIoYQvF5i3LJwdwp2j8taR-5QO6jhTyb_l0NcoXm2guU2zsujogezzvCw4MInR-OMJf066hgs0oU2Qnz5i-jwFPz1nLUCrWU_gnLDalMuPH04pXbcWqIm32BDkWfO1jBObIYGOx5RhxE66DLUhGkVZ13h4Jvsjr0Abg4KRJ163Tf6jN6Neju3jIqigNVYiRR1Rs6v8BkdvakIOqvVLoPMXi0uBwzM9Y9j2N9WhywJj1j08mvrIpKSdq6T5PAwR-BUaw6xu9iBZAu9Hz2Jh3f9yuSCkR_qJtPnRIWeuJythVwcP6cIlwSdkivkq-dK9Kf7oUkb0kdD1n70U2jgQfQYGlSbyR2iRB04_SBoFdNhqJin2xloiYh7qgBVQb3AqGLlhKN1mtmlAEzPf69PIL0s1Le3FKq5xYOleYPagxkgQ3FIAHpT0bfy2aVZ83w5YuzhGdukxRWdBZ9xyKHVM-v5C-ZXwTWIb4Azg0e65rCTUzn43geb.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_03f5766b96718137016acd0c2814d487d18c760ac1e5d27d32",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 19888,
+  "completion_tokens": 1771,
+  "total_tokens": 21659,
+  "cost": 0.001322585,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 17816,
+   "cache_write_tokens": 2069,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001322585,
+   "upstream_inference_prompt_cost": 0.000437085,
+   "upstream_inference_completions_cost": 0.0008855
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 120,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

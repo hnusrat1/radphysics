@@ -407,3 +407,16 @@ as empty replies, so they became parse failures after the one retry.
   before any reply. None was charged. R0 restarted with the fix.
 - **P0 reading.** 13 Gemini pilot replies were in-band 429 or 504 errors, so some of Gemini's pilot "parse
   failures" were rate limits, not model behaviour. The pilot is excluded from analysis and is not rerun.
+
+## D034. Parser fallback on malformed fenced JSON: kept as launched for R0 (2026-10-12)
+
+When an answer's fenced JSON block does not parse, `parse.extract_json` falls back to the last balanced `{...}` in
+the text. Inside a broken answer, that is a nested object. The validator then reports "method missing" instead of
+the JSON error, and the one retry tells the model the wrong thing. Seen in R0 for DeepSeek (A0 observables r2: a
+number written `.0008`; r4: U+FFFC characters between keys) before either reached the retry.
+
+- **R0 keeps the parser it launched with.** The running processes have it loaded. Changing it would give some
+  repeats a different retry message from others. The outcome of such an answer is a parse failure either way.
+- **Fix after R0.** Skip the fallback when a fenced block exists, and report the decode error.
+- **Scorer.** `analysis/m5.py` counts a refusal only for a top-level answer (one that has `method`), so a nested
+  fallback object is no longer read as an empty answer.

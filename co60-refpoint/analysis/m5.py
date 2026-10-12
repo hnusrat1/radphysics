@@ -178,7 +178,9 @@ def outcome(d, meta, task):
     if out == "parse_failure" and (d / "final.txt").exists():
         from ai.harness.parse import extract_json
         obj, _ = extract_json((d / "final.txt").read_text())
-        if isinstance(obj, dict):
+        # Only a top-level answer counts (it carries "method"); the parser's fallback can return a nested object
+        # from a reply whose JSON is malformed, and that is a parse failure, not a refusal.
+        if isinstance(obj, dict) and "method" in obj:
             if task == "events" and obj.get("events") == []:
                 return "refusal"
             if task == "observables" and all(obj.get(k) in (None, [], {}) for k in OBS):
