@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791832925-tWdJY8heIHmCoz29xfqB",
+ "object": "chat.completion",
+ "created": 1791832925,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "SiliconFlow",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "L1 results:\n- primary/phi0 = 0.7285 (direct)\n- scattered/phi0 = 0.4210\n- total = 1.1494\n- scatter fraction fluence = 0.3662\n- mean photon energy = 0.968 MeV (hmm that seems low; let me verify: primary energy/fluence: (0.3605\u00d71.1732+0.3680\u00d71.3325)/0.7285 = (0.4230+0.4904)/0.7285=0.9134/0.7285=1.2538. Scattered: 0.421\u00d70.479=0.2017. Total energy fluence = 0.9134+0.2017=1.1151. Total fluence=1.1494. Mean=1.1151/1.1494=0.9702. Yes 0.968 (in MC prim sum 0.7255 vs direct 0.7285 - small diff). So mean photon energy ~0.97 MeV, which is lower than the 1.11 I estimated earlier \u2014 because scattered fluence fraction is large (37%) with mean 0.48. OK. So L1_mean_photon_energy_MeV \u2248 0.97.\n\n- scattered energy-fluence fraction = 0.181 (18%). So scattered contributes 18% of energy fluence. Then scattered dose fraction ~15-17%.\n\n- angular: scat ang fractions (after normalization): [0.0783, 0.0686, 0.0658, 0.0663, 0.0669, 0.0791, 0.0857, 0.1003, 0.1510, 0.2380] summing to 1. Primary angular: all in last bin \u2192 [0,...,1].\n\nNow Layer 2. Let me compute in the next script along with L3.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "01a13190bf28aca4e1c672923304d592",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\\\nimport numpy as np\\\\n\\\\nmec2=0.5110\\\\nN_e_per_g = 6.02214076e23*10/18.01528\\\\nE_tab = np.array([0.01,0.02,0.03,0.04,0.05,0.06,0.08,0.1,0.15,0.2,0.3,0.4,0.5,0.6,0.8,1.0,1.25,1.5,2.0])\\\\nmu_tab = np.array([4.951,1.374,0.7031,0.4470,0.2269,0.2059,0.1837,0.1706,0.1505,0.1370,0.1186,0.1061,0.0969,0.0896,0.0786,0.0707,0.0636,0.0576,0.0494])\\\\ncoh_tab = np.array([0.0,0.0,0.0,0.03,0.0205,0.0148,0.0102,0.0084,0.0047,0.0030,0.0014,0.0009,0.0006,0.00045,0.00030,0.00024,0.00019,0.00016,0.00010])\\\\ndef interp(x,xe,ye): return np.interp(x,xe,ye)\\\\ndef sig_KN(E):\\\\n    al=E/mec2; a2=al*al\\\\n    f=(1+al)/a2*(2*(1+al)/(1+2*al)-np.log(1+2*al)/al)+np.log(1+2*al)/(2*al)-(1+3*al)/(1+2*al)**2\\\\n    return 0.4987*f\\\\ndef mu_C(E): return sig_KN(E)*1e-24*N_e_per_g\\\\ndef mu_coh(E): return interp(E,E_tab,coh_tab)\\\\ndef mu_pair(E): return np.where(E>1.022, 0.00052*((E-1.022)/0.978)**2.0, 0.0)\\\\ndef mu_pe(E): return np.maximum(0, mu_tot(E)-mu_C(E)-mu_coh(E)-mu_pair(E))\\\\ndef mu_tot(E): return interp(E,E_tab,mu_tab)\\\\n\\\\nph_bins = np.array([0,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1,1.05,1.1,1.15,1.2,1.25,1.3,1.35,1.4])\\\\nph_c = (ph_bins[:-1]+ph_bins[1:])/2\\\\nprim_spec = np.load('prim_spec.npy')\\\\nscat_spec = np.load('scat_spec.npy')\\\\n\\\\ntot_spec = prim_spec + scat_spec\\\\n\\\\n# ------- Layer 2 -------\\\\n# interaction rates (arbitrary common volume factor)\\\\ndef intrate(spec, proc):\\\\n    return np.sum(spec*proc(ph_c))\\\\n\\\\nwts = dict(compton=mu_C, photoelectric=mu_pe, pair=mu_pair, rayleigh=mu_coh)\\\\nnames = ['compton','photoelectric','pair','rayleigh']\\\\n# L2_interaction_fractions\\\\nI_tot = {k: intrate(tot_spec, wts[k]) for k in names}\\\\nItot_sum = sum(I_tot.values())\\\\nprint(\\\\\\\"L2 interaction fractions (all):\\\\\\\")\\\\nfor k in names: print(\\\\\\\" \\\\\\\",k, I_tot[k]/Itot_sum)\\\\n# energy transfer\\\\n# mean Compton electron energy at E:\\\\ndef meanEe_comp(E):\\\\n    # analytic: mean recoil = E - mean(E')\\\\n    al = E/mec2\\\\n    # mean E' under KN: integral; compute numerically via sampling quickly with formula\\\\n    # Use closed form: <E'> = E * [ (1+al)/(2al^2) * ... ]? just sample few\\\\n    rng = np.random.default_rng(0)\\\\n    x = rng.uniform(-1,1,size=20000)\\\\n    # rejection\\\\n    def kn_diff(cosT, E):\\\\n        al0=E/mec2; x0=1+al0*(1-cosT)\\\\n        return (1.0/x0)**2*(0.5*(1+cosT*cosT)+(al0**2*(1-cosT)**2)/(2*x0))\\\\n    acc = rng.uniform(0,1,size=20000) < kn_diff(x,E)\\\\n    while not acc.all():\\\\n        rem=~acc; nx=rng.uniform(-1,1,size=rem.sum())\\\\n        nacc = rng.uniform(0,1,size=rem.sum())<kn_diff(nx,E)\\\\n        x[rem]=nx; acc[rem]=nacc\\\\n    Ep = E/(1+al*(1-x))\\\\n    return (E-Ep).mean()\\\\n\\\\ndef Etr(p,E):\\\\n    if p=='compton': return meanEe_comp(E)\\\\n    if p=='photoelectric': return max(E-0.0005,0)\\\\n    if p=='pair': return max(E-1.022,0)\\\\n    if p=='rayleigh': return 0.0\\\\n\\\\nET = {}\\\\nfor k in names:\\\\n    ET[k] = sum(tot_spec[i]*wts[k](ph_c[i])*Etr(k,ph_c[i]) for i in range(28))\\\\nETS = sum(ET.values())\\\\nprint(\\\\\\\"L2 energy transfer fractions (all):\\\\\\\")\\\\nfor k in names: print(\\\\\\\" \\\\\\\",k, ET[k]/ETS if ETS>0 else 0)\\\\n# primary only\\\\nI_prim = {k: intrate(prim_spec, wts[k]) for k in names}\\\\nIsum_p = sum(I_prim.values())\\\\nprint(\\\\\\\"L2 interaction fractions (primary):\\\\\\\")\\\\nfor k in names: print(\\\\\\\" \\\\\\\",k, I_prim[k]/Isum_p)\\\\n# scattered only\\\\nI_sc = {k: intrate(scat_spec, wts[k]) for k in names}\\\\nIsum_s = sum(I_sc.values())\\\\nprint(\\\\\\\"L2 interaction fractions (scattered):\\\\\\\")\\\\nfor k in names: print(\\\\\\\" \\\\\\\",k, I_sc[k]/Isum_s)\\\\n# scattered share of interactions\\\\nprint(\\\\\\\"L2 scattered share:\\\\\\\", Isum_s/Itot_sum)\\\\n\\\\nnp.save('L2_data.npy', {'I_tot':I_tot,'ET':ET,'I_prim':I_prim,'I_sc':I_sc,'Itot_sum':Itot_sum,'Isum_p':Isum_p,'Isum_s':Isum_s})\\\\n\\\"}\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "L1 results:\n- primary/phi0 = 0.7285 (direct)\n- scattered/phi0 = 0.4210\n- total = 1.1494\n- scatter fraction fluence = 0.3662\n- mean photon energy = 0.968 MeV (hmm that seems low; let me verify: primary energy/fluence: (0.3605\u00d71.1732+0.3680\u00d71.3325)/0.7285 = (0.4230+0.4904)/0.7285=0.9134/0.7285=1.2538. Scattered: 0.421\u00d70.479=0.2017. Total energy fluence = 0.9134+0.2017=1.1151. Total fluence=1.1494. Mean=1.1151/1.1494=0.9702. Yes 0.968 (in MC prim sum 0.7255 vs direct 0.7285 - small diff). So mean photon energy ~0.97 MeV, which is lower than the 1.11 I estimated earlier \u2014 because scattered fluence fraction is large (37%) with mean 0.48. OK. So L1_mean_photon_energy_MeV \u2248 0.97.\n\n- scattered energy-fluence fraction = 0.181 (18%). So scattered contributes 18% of energy fluence. Then scattered dose fraction ~15-17%.\n\n- angular: scat ang fractions (after normalization): [0.0783, 0.0686, 0.0658, 0.0663, 0.0669, 0.0791, 0.0857, 0.1003, 0.1510, 0.2380] summing to 1. Primary angular: all in last bin \u2192 [0,...,1].\n\nNow Layer 2. Let me compute in the next script along with L3.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 142777,
+  "completion_tokens": 2121,
+  "total_tokens": 144898,
+  "cost": 0.00596833,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 129280,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00596833,
+   "upstream_inference_prompt_cost": 0.00537445,
+   "upstream_inference_completions_cost": 0.00059388
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 425,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

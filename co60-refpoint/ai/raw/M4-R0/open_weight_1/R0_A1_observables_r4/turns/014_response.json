@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791835051-aU0MXyRI6A5hAPaVhBHn",
+ "object": "chat.completion",
+ "created": 1791835051,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "SiliconFlow",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "The debug run (with \"treat all interactions as scatter, keep direction\") gives mean primary track = 0.145 cm/photon \u2014 still huge compared to expected 0.004. And nscore_prim=218948 out of 300000 photons scored as primary! That means 73% of photons are scored AS PRIMARY \u2014 that's the fraction reaching z=5 unscattered (0.72)... but scoring requires them to be within the cylinder radius. With frac_rad=0.02585, only 2.6% should be within. But 73% scored?! So the cylinder scoring must be including photons far off-axis.\n\nSo score_cylinder has a bug for off-axis photons! Let me test: photon at (x=4, y=0, z=0) moving along z: should score 0 (radius 4 > 1). Earlier test with x=2 gave [0]. But wait, in the test I passed single arrays; in the vectorized run, maybe the issue is different: the photons are moving along their own direction (ux\u22600). A photon aimed at x0=4: direction ux=4/sqrt(16+10000)=0.04, uz\u22480.9992. Its path is a straight line with x increasing slowly: x(z)=x0\u00d7(100+z)/100. At z=5: 4.2 > 1: far outside. Should be 0.\n\nLet me directly test score_cylinder with this geometry: photon at (0,0,0), u=(0.04,0,0.9992), s=6.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "01a131b143290991a607ca26dc0748fa",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport numpy as np\\ndef score_cylinder(x,y,z,ux,uy,uz,s):\\n    zlo=4.9; zhi=5.1; rad=1.0\\n    tz1=(zlo-z)/uz; tz2=(zhi-z)/uz\\n    tza=np.minimum(tz1,tz2); tzb=np.maximum(tz1,tz2)\\n    tza=np.clip(tza,0.0,s); tzb=np.clip(tzb,0.0,s)\\n    uz0=np.abs(uz)<1e-9\\n    tza=np.where(uz0,0.0,tza); tzb=np.where(uz0,s,tzb)\\n    tza=np.where(uz0&((z<zlo)|(z>zhi)),0.0,tza); tzb=np.where(uz0&((z<zlo)|(z>zhi)),0.0,tzb)\\n    a=ux*ux+uy*uy; b=2*(x*ux+y*uy); c=x*x+y*y-rad*rad\\n    disc=b*b-4*a*c; a0=np.abs(a)<1e-9\\n    sq=np.sqrt(np.clip(disc,0,None)); den=2*a+1e-30\\n    t1=(-b-sq)/den; t2=(-b+sq)/den; neg=disc<0\\n    tlo=np.where(neg,0.0,np.minimum(t1,t2)); thi=np.where(neg,np.where(c<0,s,0.0),np.maximum(t1,t2))\\n    start_in=c<0\\n    tlo=np.where(start_in&~neg&~a0,0.0,tlo); thi=np.where(start_in&~neg&~a0,np.maximum(t1,t2),thi)\\n    tlo=np.where(a0,0.0,tlo); thi=np.where(a0,np.where(c<0,s,0.0),thi)\\n    tlo=np.maximum(tlo,tza); thi=np.minimum(thi,tzb)\\n    return np.maximum(thi-tlo,0.0)\\n\\n# off-axis photon: x0=4, y0=0, source at z=-100: direction\\nx0=4.0; y0=0.0\\nd=np.sqrt(x0*x0+y0*y0+10000)\\nux=x0/d; uy=y0/d; uz=100.0/d\\nprint(\\\"dir\\\",ux,uy,uz)\\nprint(\\\"at z=5, x=\\\", ux/uz*5)  # slope x/z = ux/uz\\nprint(score_cylinder(np.array([0.0]),np.array([0.0]),np.array([0.0]),np.array([ux]),np.array([uy]),np.array([uz]),np.array([6.0])))\\n\\n# test a photon at x=3, z=0, vertical\\nprint(score_cylinder(np.array([3.0]),np.array([0.0]),np.array([0.0]),np.array([0.0]),np.array([0.0]),np.array([1.0]),np.array([6.0])))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The debug run (with \"treat all interactions as scatter, keep direction\") gives mean primary track = 0.145 cm/photon \u2014 still huge compared to expected 0.004. And nscore_prim=218948 out of 300000 photons scored as primary! That means 73% of photons are scored AS PRIMARY \u2014 that's the fraction reaching z=5 unscattered (0.72)... but scoring requires them to be within the cylinder radius. With frac_rad=0.02585, only 2.6% should be within. But 73% scored?! So the cylinder scoring must be including photons far off-axis.\n\nSo score_cylinder has a bug for off-axis photons! Let me test: photon at (x=4, y=0, z=0) moving along z: should score 0 (radius 4 > 1). Earlier test with x=2 gave [0]. But wait, in the test I passed single arrays; in the vectorized run, maybe the issue is different: the photons are moving along their own direction (ux\u22600). A photon aimed at x0=4: direction ux=4/sqrt(16+10000)=0.04, uz\u22480.9992. Its path is a straight line with x increasing slowly: x(z)=x0\u00d7(100+z)/100. At z=5: 4.2 > 1: far outside. Should be 0.\n\nLet me directly test score_cylinder with this geometry: photon at (0,0,0), u=(0.04,0,0.9992), s=6.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 106296,
+  "completion_tokens": 1079,
+  "total_tokens": 107375,
+  "cost": 0.00994268,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 40960,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00994268,
+   "upstream_inference_prompt_cost": 0.00964056,
+   "upstream_inference_completions_cost": 0.00030212
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 340,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

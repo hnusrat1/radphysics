@@ -1,0 +1,45 @@
+All quantities are computed and cross-checked. Here is a summary of how the values were obtained, followed by the JSON answer.
+
+**Method summary:** A custom photon/electron Monte Carlo + analytical model was used. Photon transport (3×10⁶ histories) simulated the point source (Co-60 lines 1.1732/1.3325 MeV, 10×10 cm² field at 100 cm SSD) in the 30×30×30 cm³ water phantom with Klein–Nishina Compton, photoelectric, pair, and Rayleigh interactions; a track-length (next-event) estimator scored primary and scattered photon fluence, energy spectra, and cosθ distributions in the scoring cylinder at 5 cm depth and at 15 depths for depth-dose. Interaction and energy-transfer fractions at the point were computed from the scored fluence spectra × macroscopic cross sections; initial electron spectra used Compton recoil kinematics, photoelectron, and pair-sharing distributions. Electron fluence was obtained from an iterated continuous-slowing-down equilibrium cascade with Moller delta-ray production (10 keV cut-off, restricted stopping power), with angular distribution from a separate electron track Monte Carlo (multiple scattering + delta rays). K, Kcol, D (β = D/Kcol = 1 at CPE), g, and PDD followed from the spectra; s(w,air) used the Spencer–Attix formula with track-end term.
+
+**Data sources:** Klein–Nishina formula; NIST XCOM/NISTIR-5636 water attenuation, coherent, pair, μen/μtr (parameterized tables); ESTAR-type collision and radiative stopping powers for water and air; Moller cross section; Highland multiple scattering (X0 water = 36.08 cm); cross-checks with published Co-60 depth-dose (PDD(5) ≈ 80.4%) and water/air stopping-power-ratio data.
+
+```json
+{
+  "method": "Custom photon/electron MC + analytical slowing-down model. Photon transport (3e6 histories, track-length next-event estimators) scored primary/scattered photon fluence, spectra and cos(theta) distributions in the 0.628 cm^3 cylinder at 5 cm and 15 depths; primary fluence normalised by Phi0 (1/(0.01 sr x 105^2)). Interactions at the point from fluence spectra x process cross sections (Klein-Nishina, photoelectric, pair, Rayleigh fitted to NIST water). Initial electrons from Compton kinematics, photoelectron and pair sharing. Electron fluence from iterated CSDA equilibrium with Moller delta rays (10 keV cutoff, restricted stopping power); angular distribution from an electron track MC with multiple scattering. K, Kcol from spectra x mu_tr, mu_en; D=Kcol at CPE (beta=1); PDD from Kcol(5)/Kcol(0.5).",
+  "data_sources": "Klein-Nishina formula; NIST XCOM/NISTIR-5636 water mass attenuation, coherent, pair, mu_en and mu_tr (parameterized); ESTAR-type collision/radiative stopping powers for water and air; Moller cross section; Highland multiple scattering (X0(water)=36.08 cm). Cross-checked with published Co-60 PDD(5)~80.4% and water/air SA stopping-power ratio ~1.11-1.13.",
+  "L1_primary_fluence_per_phi0": 0.7285,
+  "L1_total_fluence_per_phi0": 1.1494,
+  "L1_scattered_fraction_fluence": 0.3662,
+  "L1_scattered_fraction_energy_fluence": 0.1813,
+  "L1_mean_photon_energy_MeV": 0.968,
+  "L1_photon_fluence_spectrum_primary": [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.3605,0,0,0.3680,0],
+  "L1_photon_fluence_spectrum_scattered": [0.00392,0.03596,0.03906,0.03318,0.04306,0.02822,0.02130,0.01885,0.01482,0.01402,0.01222,0.01399,0.01342,0.01325,0.01271,0.01169,0.01109,0.01050,0.00967,0.01053,0.01031,0.00932,0.01031,0.00730,0.00467,0.00473,0.00287,0.0],
+  "L1_angular_primary": [0,0,0,0,0,0,0,0,0,1.0],
+  "L1_angular_scattered": [0.07827,0.06856,0.06583,0.06633,0.06692,0.07904,0.08572,0.10032,0.15099,0.23803],
+  "L2_interaction_fractions": {"compton":0.9500,"photoelectric":0.0373,"pair":0.0002,"rayleigh":0.0124},
+  "L2_energy_transfer_fractions": {"compton":0.9865,"photoelectric":0.0133,"pair":0.0002,"rayleigh":0.0},
+  "L2_interaction_fractions_primary": {"compton":0.9906,"photoelectric":0.0059,"pair":0.0005,"rayleigh":0.0030},
+  "L2_interaction_fractions_scattered": {"compton":0.9138,"photoelectric":0.0655,"pair":0.00001,"rayleigh":0.0208},
+  "L2_scattered_share_of_interactions": 0.5279,
+  "L3_initial_spectrum": [0.2229,0.1087,0.0660,0.0486,0.0415,0.0366,0.0349,0.0319,0.0296,0.0286,0.0277,0.0263,0.0261,0.0264,0.0265,0.0282,0.0300,0.0345,0.0432,0.0269,0.0197,0.0257,0.0065,0.0017,0.0015],
+  "L3_initial_spectrum_parent_primary": [0.0362,0.0411,0.0432,0.0419,0.0407,0.0401,0.0395,0.0399,0.0395,0.0386,0.0386,0.0395,0.0403,0.0424,0.0442,0.0473,0.0544,0.0602,0.0779,0.0508,0.0365,0.0478,0.0133,0.0031,0.0029],
+  "L3_mean_initial_energy_MeV": 0.348,
+  "L3_mean_initial_energy_parent_primary_MeV": 0.591,
+  "L3_initial_direction": [0,0,0,0,0,0.0298,0.0867,0.1400,0.2085,0.5350],
+  "L4_electron_fluence_per_phi0": 0.01575,
+  "L4_electron_fluence_spectrum": [0.00057,0.00083,0.00085,0.00099,0.00109,0.00112,0.00112,0.00107,0.00102,0.00097,0.00092,0.00085,0.00079,0.00072,0.00065,0.00058,0.00050,0.00041,0.00030,0.00019,0.00013,0.00007,0.00001,0.00001,0.00001],
+  "L4_delta_fraction": 0.031,
+  "L4_mean_electron_energy_MeV": 0.438,
+  "L4_angular": [0.0124,0.0175,0.0244,0.0347,0.0497,0.0736,0.1071,0.1508,0.2139,0.3160],
+  "L4_radiative_to_collision": 0.0023,
+  "L5_D_over_phi0_Gy_cm2": 5.36e-12,
+  "L5_K_over_phi0_Gy_cm2": 5.39e-12,
+  "L5_Kcol_over_phi0_Gy_cm2": 5.36e-12,
+  "L5_beta": 1.0,
+  "L5_g": 0.0055,
+  "L5_dose_fraction_parent_scattered": 0.190,
+  "L5_s_w_air": 1.111,
+  "L5_PDD5_percent": 80.6
+}
+```

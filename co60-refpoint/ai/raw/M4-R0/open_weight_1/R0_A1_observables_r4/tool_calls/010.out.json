@@ -1,0 +1,9 @@
+{
+ "stdout": "",
+ "stderr": "Traceback (most recent call last):\n  File \"/tmp/work/_call_010.py\", line 228, in <module>\n    run_total(2_000_000, chunksize=2_000_000, seed=7)\n    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/work/_call_010.py\", line 210, in run_total\n    run_chunk(Nc, seed+i, Hp, Hcnt, stats)\n    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/work/_call_010.py\", line 122, in run_chunk\n    s = -np.log(rng.random(n))/mu\n        ~~~~~~~~~~~~~~~~~~~~~~^~~\nValueError: operands could not be broadcast together with shapes (1698473,) (2000000,) \n",
+ "exit_code": 1,
+ "timed_out": false,
+ "wall_s": 5.22,
+ "stdout_truncated": false,
+ "stderr_truncated": false
+}
