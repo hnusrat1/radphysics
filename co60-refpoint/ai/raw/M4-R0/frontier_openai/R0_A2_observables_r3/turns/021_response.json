@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791824387-Ny0l7DciIQRq9dZ1w378",
+ "object": "chat.completion",
+ "created": 1791824387,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Calculating values**\n\nI need to use a mean of 1.2535 and have a total computed of .80448. I\u2019m adjusting the scatter vector and normalizing it. After scaling the values with .075/.0694, which equals 1.08069, I realize I need to provide 28 values. It\u2019s important that I calculate a scaled list that's precise and angular. I'll get started on that to ensure I cover everything needed!",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_K5xF4aKukQEBo3YWfjaPmXME",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import numpy as np\\nv=np.array([.0001,.0002,.0003,.0005,.0007,.001,.0012,.0015,.0018,.0022,.0026,.003,.0035,.004,.0045,.005,.0055,.0055,.005,.0045,.004,.0035,.003,.0025,.0015,.001,.0008,.0005]);v*=.075/v.sum();print(v.tolist()); p=.36100763165+.36847397995; sc=.075;tot=p+sc\\nm1=(.36100763165*1.1732+.36847397995*1.3325)/p\\nms=np.dot(v,np.arange(.025,1.4,.05))/sc\\nprint(p,tot,m1,ms,(p*m1+sc*ms)/tot,sc/tot,sc*ms/(p*m1+sc*ms))\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Calculating values**\n\nI need to use a mean of 1.2535 and have a total computed of .80448. I\u2019m adjusting the scatter vector and normalizing it. After scaling the values with .075/.0694, which equals 1.08069, I realize I need to provide 28 values. It\u2019s important that I calculate a scaled list that's precise and angular. I'll get started on that to ensure I cover everything needed!",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzRIGgHS0dYzkXfg5CbJECi-21Gr8wSQaq4NMzBrf02yT2x7TWiUWQ6-zjvS589PWVr9B8z66Aabj7paaI_DSeFBT6qbCwbkC1thBGRMIf7XYvuYQRk_eZlu4Gf7ldDlwmplsVnhAIM_mkPT1bVGkKTY1f1DD3gsKCsSTw2JR03ebknikKvYnryYx1h348z-XtSLLM4_74kZBPBVrXS32BpzMqP-6QgPR6H-qJRNicegMMYSqF7NnhZ6phaKAT65lsRFmNLt1XAsR4b5EElLQbyn7S2gvAlJcgjvr8gCrQS5IGF8hAbLNo98EuJm6nR7hpLs1iuPNVxndEoI5X6np81VWv2DPKnZnekNqKcR55XH5O21ZVnDNQvzinWAEglqVLUdAupimzu1Uc6_9rd8JPz50_4heLDsFGT6FhYRN6av4VgyKswMsMSQ9oCvQaUzege_lkSv-VaGsGUNAKMpXxlTUNd031ZFcgqLNmTSMy2Yc9bc_IzA3dBBCuGHz5qHMO_AmRXp5a1tEQYx6yVedBOuwCk5KWX_NnydrDq3R3AZHxPhGgK17yPYoA5W2f_T8mVM2pqPYuNtYCK80aex6VdzbIw-vfuZtFTMNizM6JhuTUOCVkwHK8ySisTAfeirA3tseFiKIRIpgcNBHwKMLY4TpZ07Zl2Ni5DbNLjvuYGx7Kyc3UnxVbrPxTLlhlHC-VJyBciG2DKgGc1p233st_K1D2y1L6CPAf2m1mY2iHl1Zntojot3sqjahQhDwXViMKu6iIt9nrfNu3_YfiZmRgtJjuZIUhyAvD5-WxsxCBdUzt14DHguOep1fG8fHUBqN14CNyzL8-_Ej0InTmpJyuoOFG6GHhbbhJkadK8Sc6wE2Xtp3_2JytDiO1NT-WTkjVnRyQF7k071sZ97TKNJDG0E2JEVmKe8uQW7PsKvLXJ9EWTHvfD2WiPh2T900NZD6lU6itEgsR83zsBSCUebJyMO54H3pXNE2wZvAqukcDHdEuA9GAmWZ6EtUsQQnBgqb0e0p-PLz4TWxaWG7G-6m155Ov_4TDn0maCrpMwpnHUd5JhzXWBzRFg6lmZo7OSuoxFawsUZ-o2Ti75Z8NhAGreIXw3Mj_uSH_O7_ZVlTHPhpcBdegHn7_EW2yNGqtek4hfWhVGA9YqUGD5qC3Og4MQDk12R1l_4kNiDRgIj6HdumKa--AdS3Op8NVWO05y0puxyOqDJ69wmiM9PrNDku1c_saYDyZd8MeKIu2KbnupsI4OrC1sNc_rMg4RJCTzaC8eY39O-1G8Kb_7DDj7hWDUBO9nQNc69nXdwqR600QpCOAP8ilw1ca-bZBO66tfsAbqA-1kshuEznrx_zrR1dLfUwAStXh6u4J8apPWzRDVXDASBHXD8hpSGwfb3yig6qMVusw5kJO8SEgocM2uYAqTIOs3XA0T6VISh0bnPeZSyN-IH6Lqr_K6Vgi46Q5hviLccw4XCJJm2spiWGmE4Tc3GWjSzlksbOPL7-NstvcDXkD7SsulTTLKhJtN3AUc76ngp_OYdoUtmll39VijeyXdwJvUxpdWcTIbVElartBGzZn_dmdSKOBdQWI52gOg-0fRFes98QOFXbmjINUlLwytfWBWFWl2K2LG45BbCgdwmFXh2xKLWx1VoD7aW4Tro73XVKqJDiDRR3AMGrKzpZ1KdaGWVEZaGFL74jLe6euph1C84qi8_b7_iFpGYkpmqGy-evSN0frxk8Og11FkXjfjun7An7zdZIrnM0RZczLMe8BGindzwleWoiJ9ooS5c5mOFTjYCpMpRv_rK331xLp2qGXQJUhx7JSABnqlAY96py6_AmqVYiigCpiinHeVOAMB1XdJy0ADffVuKsShaWFweecehklLhldir4sbJQ3Lp1hmhVo1HQK7_NktPAhQTh1LJitRuqgknUVlSYWwcYXvhh99Z-K0UdgCD4CBvJzmCW6JzLqbuo4VNwMwbGEUHsmTO64qVYJki8cT_2HxvTYcgciTHuhUX4A4Z3l5qQ396YJ95yxpaSdGGD_rlYfcwWJwcaWf9u_KUFzJHGECaLJN_idNW-x41obxrYuqWku5sNcasZ5o3hBMlljF2MD8w0fWvvqqfh1eLlf3hkeU_VLdZq38sK8Kb3hm7WrmLM5oSWx-IMhLFaDBvoCqEPzPrnsnjot7gSH8082oSA8ZG3p44ZqZSWSI-oOv7rFMPCgWW0VjU=.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_0b98880d2ebb4a4d016acd12051bac87d1b1dcbfbee88523fb",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 30096,
+  "completion_tokens": 271,
+  "total_tokens": 30367,
+  "cost": 0.000472725,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 29780,
+   "cache_write_tokens": 313,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000472725,
+   "upstream_inference_prompt_cost": 0.000337225,
+   "upstream_inference_completions_cost": 0.0001355
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 57,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

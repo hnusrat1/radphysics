@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791824434-dNS0gzisSlY6kBTpqqZ9",
+ "object": "chat.completion",
+ "created": 1791824434,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "There are syntax errors. Let me carefully write a clean, complete version without typos. Let me be very thorough.\n\nI'll write this in one block with careful attention.\n\nLet me also fix the variable name: I had `events_out` but then `events` in the call. And `alive[x_pe]` should be `alive[idx_pe]`. Let me be careful.\n\nLet me write a clean whole file.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_c99bb1ba07b944b39fcd4b7e",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np, math, time\\nfrom collections import Counter\\n\\nrng = np.random.default_rng(12345)\\n\\nme = 0.51099895\\nre = 2.8179403262e-13\\nNe = 3.343e23\\n\\n# --- cross sections ---\\ndef kn_f(mu, E):\\n    a = E/me\\n    r = 1.0/(1.0+a*(1.0-mu))\\n    return r*r*(1.0/r + r - (1.0-mu*mu))\\n\\nEgrid = np.logspace(np.log10(0.001), np.log10(10.0), 300)\\nsig_grid = np.empty(300)\\nfor j,E in enumerate(Egrid):\\n    mus = np.linspace(-1,1,3001)\\n    sig_grid[j] = np.pi*re**2 * np.trapezoid(kn_f(mus,E), mus)\\n\\nE_ph = np.array([0.01,0.02,0.03,0.04,0.05,0.06,0.08,0.10,0.15,0.20,0.30,0.50,0.80,1.0,1.5,2.0])\\nmu_ph= np.array([4.90,0.506,0.162,0.0712,0.0375,0.0223,0.00988,0.00547,0.00240,0.00128,0.000526,0.000151,5.0e-5,3.0e-5,1.0e-5,4.7e-6])\\nE_pa = np.array([1.022,1.25,1.5,2.0,2.5,3.0,4.0,5.0,6.0,8.0,10.0])\\nmu_pa= np.array([0.0,3.1e-5,1.32e-4,4.1e-4,8.1e-4,1.39e-3,2.69e-3,4.32e-3,6.19e-3,1.05e-2,1.55e-2])\\nE_co = np.array([0.01,0.02,0.03,0.05,0.08,0.10,0.15,0.20,0.30,0.50,0.80,1.0,1.5,2.0])\\nmu_co= np.array([0.30,0.060,0.022,0.0098,0.0046,0.0034,0.0017,0.0011,0.0006,0.0003,0.00015,0.00012,8e-5,4.5e-5])\\n\\ndef mu_comp(E):\\n    logE = np.log(np.clip(E,1e-3,10))\\n    return Ne * np.interp(logE, np.log(Egrid), sig_grid)\\ndef mu_photo(E):\\n    logE = np.log(np.clip(E,E_ph[0],E_ph[-1]))\\n    return np.exp(np.interp(logE, np.log(E_ph), np.log(mu_ph)))\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "There are syntax errors. Let me carefully write a clean, complete version without typos. Let me be very thorough.\n\nI'll write this in one block with careful attention.\n\nLet me also fix the variable name: I had `events_out` but then `events` in the call. And `alive[x_pe]` should be `alive[idx_pe]`. Let me be careful.\n\nLet me write a clean whole file.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 57441,
+  "completion_tokens": 859,
+  "total_tokens": 58300,
+  "cost": 0.00537518674,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00537518674,
+   "upstream_inference_prompt_cost": 0.00521908926,
+   "upstream_inference_completions_cost": 0.00015609748
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 90,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

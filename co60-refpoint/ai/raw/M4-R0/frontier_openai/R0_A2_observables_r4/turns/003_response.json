@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791824443-SCGcC1MF675LTKiroXth",
+ "object": "chat.completion",
+ "created": 1791824443,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Calculating energy transfer**\n\nI need to find the average energy transferred using the Klein Nishina distribution. This involves integration. I\u2019m thinking about how to set up the integration properly to get the right result. I\u2019m curious about the limits I should use for this integral and any specific parameters that might affect the outcome. It\u2019s important to get the calculations right, as they\u2019ll help clarify the energy transfer involved in this context.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_FeRXVFHF3UDWkuaF40Hc42L6",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import numpy as np\\nfrom scipy.integrate import quad\\nre2scale=1\\nfor E in [1.1732,1.3325,1.25]:\\n a=E/.51099895\\n # KN differential (1/2) r_e2 [ratio^2*(ratio+1/ratio -sin2)] integrated over mu. relative normalized\\n def kn(mu):\\n  q=1/(1+a*(1-mu));return .5*q*q*(q+1/q-(1-mu*mu))\\n integral=quad(kn,-1,1)[0]\\n avgtransfer=quad(lambda m:kn(m)*(1-1/(1+a*(1-m))),-1,1)[0]/integral\\n print(E,integral,avgtransfer, .063*avgtransfer)\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Calculating energy transfer**\n\nI need to find the average energy transferred using the Klein Nishina distribution. This involves integration. I\u2019m thinking about how to set up the integration properly to get the right result. I\u2019m curious about the limits I should use for this integral and any specific parameters that might affect the outcome. It\u2019s important to get the calculations right, as they\u2019ll help clarify the energy transfer involved in this context.",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzRJAs6bXii4uOLMRY1D23RdUV36xiVWFV5_yDSTkcJKf2qwxlVo4pSZCJ1Rzj-IItlPrDMR0nlenMfJhcZ5olN7EuewmWur4bQI2qA8i0ZAFd3eK6i8MJ2Qqwk-KdNPCoc_wDoTFn9rZKw-gn8BacwHcyuHOR5i7HjqwcMCIMmK-3G-lKKIb2JMNu7UsN8TI1NM0S_LdBfFb9YFN1RDf5SiB5qyvUvcuVmyKm618s9TEoF8uMGuOTnnkaiGPs52YsYVmeTmgLSRoGbKbsidklC9Ci7bL6pfUEUtvicfk7_pXy4A6j80DnmTXbW0oK9k0mwEQ-B_ACiVQo87NgZLLcYapGK51Z0kPPAQo3cdwpAvH9JByqsao7g-RNIQBUQF0AoPgUhfbAJjmG8FOXBvADRyFEFwsDq6-TMmjRUeG25Qskl83LyjoaIr_eRzBMZp-6TXyyGQk__FTAP8CIedDDEgw3AwcO0sQ2qSZPRS5NAWXeKCT7q0mzGAXTB7uqG88ZjmQiV6brhcCKNSOh9AbL1gY7hRf1G-_Xaw27mL7gh_UQoW9a1X9DEw2VOo4AxWlbp8ePOIroRsImi7AXFMPR2Qpb6QSKoNhlh80UZSGpZEcOjNPzHVSpqs4yZUiCoVpuHlAL7cQlb4Hxp3cq2f6OHidHL0HGsHXFYBARLp7lrwn_1r3yz6_yBgnhf5MZTX9eHdwBoa9cjJ--Ud0GS9Ul1nwOOF3hvElj5yAKkCiA9msRvVzP2Gl7u1gCkhB_00azN73WivMDNJ350sT4XA9lo-di2RjsSKX_StEkLLO-Rtuhwk8CcURQWp11Bx3wEEFo5XvvnXQtWlJzbzUoiLQRXLuO-PPWEo5MtMZpfUW-rCssyWdBHYGs0mAbx3laH-JznMQj46ROKj4M8eyMf4AdziiLdok-SCeZqJk6mRojy5rlevJU5GFU2h4nqd_wJ6moUuA-wO0tL908sx1Uxqvv-tEzneBAf5I-88IC1ReG52L09zYNuXoT9uC06FNB2zmtnLsMWP5k78VMKUkJYroPvfsS94EThjMC_SxWDBgLnJoDYy1atrctSMXMMD1FBQOi1XXJVucDIUIALEXG3tYODdw-Q5l58DzJv1Mq6KoXvg2rc5gbOIe7Rnya09WhPO3evcalZZdyIkJZUXHcsNCGvLDtnPBeFys5qzP1g1jFCK6_Ab0Sc6wt6WD2CLZxx1JRHncwnIY89HrVg26cjF-U1E3xC-x0tKpXMbkpsP_0TuRVK8Jph_PUdQZQQE8nsbe-iziqknv5pUiRF1c7hGsDoRyKGERoy4bmnVF_77S2bLeD9pHq2OaYftsQel0ny2H9GGPpO9_InFUWVURhTCzPlpoUxG0bjXVHluQDUHhmMlq8gIb05ED-9NbrrNFUZEe-mQzgTWYIruLJIUF2VQfGHuUwCz30Qo_gJUstxeTI6yzVuXhe2VZv59ikOSgJePgw45XYKjxyDZZYB2LQDTDBkyqzglXCo6GjthYTgRd2oPeJBlpynVFHO-Dm388zRk5UKRZkBccPsDU_9mIqwnh3odRO1_N6J3-XoJnJvcIAVO_r6jORiqjGUC4ypK58qDI0I17j_0W-0foLzGeSL-qDH_qOwLOHoYstfbfEw15bf-VcHmxyH7SgpwzmzI78o4o21wAqEvKAJBtYhk63zm6_yk3iTeIYJA-u1exeXDLWpouXWUvUbvbq4T20PGKF7P6rYJC5XRoVYYaV4AWXV1K2MdW-eUyNpmY5IizJ8BBhAHH-QALupbZ27C72dpk0mWsBsunjwvmiLLB-ZhgGVaUT7kDFUbPn9ibNwfSPUdEB65Bz_X00olY6kJ4wISucsR8IIQXhRlhcRON0gTOL9m5_jPzXpVx8WoDdn1ZrKsBTnMmzB3aRNAuMJe-cv2x2HIXc1B6q6DRdugPeHFJxsF3rQJ2uhHrG8GE1ujILWYzgahmSiTS47fv4hgnI36zUVZgTaXuIO7LecUWb6zNjMh6rb6aW-MNZZzllGsfmpHDYXBeafQd-E_PP2PLLfW9fVyTtBN7XjJoC02VtRIrLDQ77YMjXUYgLiC-7UjoRb2eT8EFxSfdbBdM9vz3cmE4Rs6P_yyRUNYRZSkyem1cL2xWs0q8RihLu-HYsORJAGnTQ5XyTKxm3BFTUTZUl64YdnLYnkTSsaqRmQLtitmMCY-d7b9gsW5YscD35_nQMUReOALilJ3mr62GB1og9lETD5jVNwDVs7R9Y7czNUCv3cl3kqH0KO38h2TYfH2-Y4hZyzEVNoRsHigfVoK5hdEePliKAof_2m5ZZGx-wM4i64IbcD96E3ROg--pxEks6n6qo5_WFTXnU7fuglglkuamIvitLrOYdLlq5pLsAFXTSKy73S2XZt5LKZ1gBgq4Zq4rTU9Pyz9zTqc3jPhNtCZY1ZaqCqFSqbH-xKX93WePDwl8ek6DeZCTFhl6bCBwEY-9o6MenXCzLzM2QsmlbkbjNrf11bd5g-3enzVPqgOj339NRrVeNEmemLC3AZQt8Glrf7VKQu6m_ToMAkwXGRe9_3s_OkKaVmuSmBiQWy-JavG3gK5qnoAPd7kqfsV2AQj2fwhfjqg1-UQlhH4ikacZek0L-m-iiXFys5D-ps25wXy_sp69O_IzvRNu2XzLKAEDlvLDX8Uf0Vq67Hc6_cYBnOtnqPhcHllpDhc-2To6LslnsnDiHIugYA0Nt4PJvmzKLqE9Ml_ZoYUSXXbGs4FaHX8IlzmBn5hErzgGoORE0aGgeSay10_1vi2RG0kTKvE8XBKwZXcUbZD-xZkj3nKSfQ8e632toGKzddNW_fIuOKBJRFwZAOaBu3-qQBQtjhWcd_-zNgar73-zsjBycOyjKN2b1oCq-tdl2E9_AxpqvZx59qHM5zyeNGArcG5DcVDDjoP9l01y-D-FAcTlc1diB-5ZWYoebaxIV8EGb37mho_nfpcmrG_mbVO0qsimKEmJ0vGdUpDhzwAHMfpNBOldQQQsxE2sZ7rBjrWBS8w0qXr3enJ-I19e64wZGsFtjgrCtxhXY0Am_559qPxoR2PGRj4ggY50jNX1UNzs1OHHQfF6dlD2XJtlBIuVOnflli4HQME_--k4d_cWlzY9EMzEpbUgzKmxmGXn6hFAbHpvqgY6Ot3EP1rm7FSNmgVKXXtwPTCBaelvrpHvqaPCmG-6uuQjTmt-yelyG_TUnWyuIPUKN7VLAhiqrr06GBcjq1kCiiBngyRuTrd3WwIN0zz3_Dx1cjK299EsE1dpIl_kCYBPYpYMhSto3liGtZ1T6LBOVXXuJi_metn8U3ctImfj9LQZZJuOAypFMW2cB0ogCpzlm-R7lP-UKYj5qMTCI-o18R-9FNg0uHOCTt4e4_D01E3lKwIyosYrqoNKGvv8keNlVJ1gjEUfDNSDdqqBkc45BuAqNJfi5XNtrHgBEcbyuuozvqo2LNYl3zspuBiTsD_UjxKh4GxhrYdnaCgyENQFbjHlnoNYqahU1YU1cHuZayISSYqaZuYVL_XjeM3DZBkGNNa3-C5FGj8GeNGGVds_b3M5aoawPemU585ukW85ai1d9IFpntZV-tcBRoNRFVXoBp2Y-oiEpioXDxjQqzK3b5al_zQErMJbw2WCDaJdo8rAdS62Yufr5aGn4OIrVrnHPnI1pzcIIeDf2IaRcu4luqJT8RUQlchIashPYJVi1vpJbUIN-_XBVGrHQ_KPozDHqD7WTwLa_75B8BiOu04rqy-YWNMFgEAnLt1Km5p2gGbOE0ssfitk1gQBxeiXbzuefU1pyey6DEw6aJ-z9dlHJUoiQ2_fNsyoIK8QQ-K3HtqCdf_wxrSduuBwlNJ6xs8YBzq4S3KJrGO3hMkoLdgZajDzod21SzEb-ac7Bs2IZJePhTc9BmR2opDbJCj10Cmp7fvb_k7mFwvGkHmlprzfgTcHjCi2g_9sPU-__KPbeg4hrcY7hIwvH3hYjZmeHSzFDbzyAKBZZNE6IeTejcaZ5SrhOJX41xx1-Mj31_Szb_OqoQr_bOu4cR9y_eGPK29JckaMi7Q83ebcup1FEV086m_6rcwRdHGfW12c0HWsNmPfSx-ICm6OvBlw4WLScfliY8xqAWmXzX_mDotzoFQDttT3pg067SavMnEpqrKIXhZvB02Yj4keJjJg2qA6tMv0Ae06_e2PYBY7lqx1n68Ia31Gzg4mSH9r30pK_xX9cCIeS5BGp5QsT-Vg_JxGXyavnLwwlhK0CtPz6_sb2carJI5fwRvarjuCBrYQ68xsNkDousx2q22NJ_BMpiapiWciuD83s-NDmcQn54haTquTh4DKMpDXE_1fcSr-qV6wJFZHfBjx3Xx_P5T4EXDmRIYKwjonBnHq4tqW0Tv7_ZpXiyl36Ot0n6yXuQ_1Ab7_IDIniXuEvx-nIFZ5Pq5Ar2j3Kts1LrN3rfXuD8LN9Pyu2UpvV23Yyk2Tb1aM8K3ZuqQGMvXYu8sDpoqZTv6EUW93avm1cmzqwi04hpMRkAf9HK_eMPYQE-TvHXc0V6wfRco9b28NVKZWQxZaHA-6TkT3GrIIDx6zC2FhIofN7zPii7bFtdEinBxrz7j8NWe21iM-fbFxu_NwMSqgG7DdefhqjivDdyq2iLqekx7Y0-gi937Vp11PMLNtXGJ0tKH6CTzZLOxNFbcI98jAg-k_-dH5hFQnPvhYHULhSo7SSIDo4QNwv-9QkL_SKOD9qtKYy_Yf-EEMa9XPK-k0YkQQBARBugbs58Ij30w2YhF0offsLAf-DduqPux64LSS3nuInUfKOgofdtl4Ey2uLKk0SnHFDD15FBwyU0-hRVGFDSw5s8naiTFc1Jh7dpOUNbTsgnntyJl_x74ofZjui8jdnzsgDeQ_ZA==.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_0c995b1150585540016acd123c781c87d1a0cbb62a5cce854c",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 8574,
+  "completion_tokens": 491,
+  "total_tokens": 9065,
+  "cost": 0.00042075,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 7795,
+   "cache_write_tokens": 776,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00042075,
+   "upstream_inference_prompt_cost": 0.00017525,
+   "upstream_inference_completions_cost": 0.0002455
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 301,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

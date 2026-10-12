@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791824338-alWhf4hqeBK3uOFaO9FC",
+ "object": "chat.completion",
+ "created": 1791824338,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "From 10000 primaries we got 4 events. 4/10000 = 4e-4 events/primary. To get ~2000 events (to then subsample 200), need 2000/4e-4 = 5e6 primaries. At 10000/0.1s = 100k/s, 5e6/100k = 50s. That's acceptable! Let me run with ~5 million primaries.\n\nBut wait, the timing was only 0.1s for 10000 primaries, which includes initialization and some processing. The actual transport may slow down as arrays grow with extra photons. Let me run a larger test to see scaling. Let me try 200k primaries.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_fb69369c479643ad90bcc73b",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"events = []\\nt0 = time.time()\\nsimulate_batch(200000, rng, events)\\nt1 = time.time()\\nprint(f\\\"200000 primaries: {len(events)} events in {t1-t0:.1f}s\\\")\\nif events:\\n    from collections import Counter\\n    cnt = Counter(e['process'] for e in events)\\n    print(\\\"Process counts:\\\", cnt)\\n    # Print a few samples\\n    for e in events[:5]:\\n        print(e)\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "From 10000 primaries we got 4 events. 4/10000 = 4e-4 events/primary. To get ~2000 events (to then subsample 200), need 2000/4e-4 = 5e6 primaries. At 10000/0.1s = 100k/s, 5e6/100k = 50s. That's acceptable! Let me run with ~5 million primaries.\n\nBut wait, the timing was only 0.1s for 10000 primaries, which includes initialization and some processing. The actual transport may slow down as arrays grow with extra photons. Let me run a larger test to see scaling. Let me try 200k primaries.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 47869,
+  "completion_tokens": 302,
+  "total_tokens": 48171,
+  "cost": 0.00440425678,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00440425678,
+   "upstream_inference_prompt_cost": 0.00434937734,
+   "upstream_inference_completions_cost": 5.487944e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 157,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

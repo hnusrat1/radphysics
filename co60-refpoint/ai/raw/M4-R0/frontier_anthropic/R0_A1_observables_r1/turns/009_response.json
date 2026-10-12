@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791824362-qhgrAYhkoQyFQRnMdhpo",
+ "object": "chat.completion",
+ "created": 1791824362,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "Cross sections now agree with NIST for water (\u03bc_tr at 1 MeV \u2248 0.0311 cm\u00b2/g). Next, the photon Monte Carlo with next-event estimation at several depths on the central axis.",
+    "refusal": null,
+    "reasoning": "My cross-checks against NIST values confirm the mass transfer and attenuation coefficients line up well across the tested energies. Now I'll move on to writing the Monte Carlo simulation script.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01TiQyf6anmkpDuiGD8B4YLH",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nmc_code = r'''\\nimport numpy as np, sys\\nsys.path.insert(0,'/tmp/work')\\nimport phys\\nfrom phys import *\\ndef kn_sample_cos(E, rng):\\n    # rejection sampling of cos for KN; f/(re^2/2) <= 2\\n    n=E.size; out=np.empty(n); todo=np.arange(n)\\n    while todo.size:\\n        c=rng.uniform(-1,1,todo.size)\\n        f=fKN(E[todo],c)/(re**2/2)\\n        acc=rng.uniform(0,2,todo.size)<f\\n        out[todo[acc]]=c[acc]; todo=todo[~acc]\\n    return out\\ndef rayleigh_cos(n,rng):\\n    out=np.empty(n); todo=np.arange(n)\\n    while todo.size:\\n        c=rng.uniform(-1,1,todo.size)\\n        acc=rng.uniform(0,1,todo.size)<(1+c*c)/2\\n        out[todo[acc]]=c[acc]; todo=todo[~acc]\\n    return out\\ndef rotate(d, cth, phi):\\n    sth=np.sqrt(np.clip(1-cth**2,0,None)); cph=np.cos(phi); sph=np.sin(phi)\\n    dx,dy,dz=d[:,0],d[:,1],d[:,2]\\n    tmp=np.sqrt(np.clip(1-dz**2,1e-30,None))\\n    nx=sth*(dx*dz*cph-dy*sph)/tmp+dx*cth\\n    ny=sth*(dy*dz*cph+dx*sph)/tmp+dy*cth\\n    nz=-sth*cph*tmp+dz*cth\\n    # near-axis fallback\\n    ax=np.abs(dz)>0.99999\\n    nx=np.where(ax, sth*cph, nx); ny=np.where(ax, sth*sph, ny); nz=np.where(ax, cth*np.sign(dz), nz)\\n    n=np.stack([nx,ny,nz],1)\\n    return n/np.linalg.norm(n,axis=1)[:,None]\\ndef run(N, depths, rng, store_for=5.0):\\n    # photon starts\\n    line=rng.integers(0,2,N); E=Lines[line].copy()\\n    # uniform in solid angle within pyramid: (u,v) in [-0.05,0.05]^2 weight (1+u^2+v^2)^-1.5\\n    acc_all=[]\\n    u=np.empty(0); v=np.empty(0)\\n    while u.size<N:\\n        uu=rng.uniform(-0.05,0.05,2*N); vv=rng.uniform(-0.05,0.05,2*N)\\n        ok=rng.uniform(0,1,2*N)<(1+uu*uu+vv*vv)**-1.5\\n        u=np.concatenate([u,uu[ok]]); v=np.concatenate([v,vv[ok]])\\n    u=u[:N]; v=v[:N]\\n    d=np.stack([u,v,np.ones(N)],1); d/=np.linalg.norm(d,axis=1)[:,None]\\n    pos=np.stack([u*100.0, v*100.0, np.zeros(N)],1)\\n    order=np.zeros(N,int)\\n    P=np.array([[0,0,z] for z in depths],float)  # points on axis (x=y=0)\\n    nP=len(depths)\\n    dose=np.zeros(nP)     # sum W*E*mu_tr (scattered arrivals) per point, per N\\n    dose_scat_by_pt=np.zeros(nP)\\n    kerma_scat_by_pt=np.zeros(nP)\\n    jstore=int(np.argmin(np.abs(np.array(depths)-store_for)))\\n    arr=dict(E=[],u=[],W=[],typ=[])\\n    nev=0\\n    # pair annihilation spawns\\n    alive=np.ones(N,bool)\\n    while True:\\n        idx=np.nonzero(alive)[0]\\n        if idx.size==0: break\\n        Ec=E[idx]; mt=mu_tot(Ec)\\n        sint=-np.log(rng.uniform(size=idx.size))/mt\\n        # exit distance inside box [-15,15]^2 x [0,30]\\n        p=pos[idx]; dd=d[idx]\\n        with np.errstate(divide='ignore',invalid='ignore'):\\n            tx=np.where(dd[:,0]>0,(15-p[:,0])/dd[:,0],np.where(dd[:,0]<0,(-15-p[:,0])/dd[:,0],np.inf))\\n            ty=np.where(dd[:,1]>0,(15-p[:,1])/dd[:,1],np.where(dd[:,1]<0,(-15-p[:,1])/dd[:,1],np.inf))\\n            tz=np.where(dd[:,2]>0,(30-p[:,2])/dd[:,2],np.where(dd[:,2]<0,(0-p[:,2])/dd[:,2],np.inf))\\n        sex=np.minimum(np.minimum(tx,ty),tz)\\n        sex=np.maximum(sex,0)\\n        L=np.minimum(sint,sex)\\n        # NEE for each point\\n        s_r=rng.uniform(size=idx.size)*L\\n        x=p+s_r[:,None]*dd\\n        for j in range(nP):\\n            r_vec=P[j][None,:]-x\\n            r=np.linalg.norm(r_vec,axis=1)\\n            uu_=r_vec/r[:,None]\\n            cth=np.sum(dd*uu_,axis=1)\\n            # Compton\\n            Ep=Ec/(1+Ec/mc2*(1-cth))\\n            fC=fKN(Ec,cth)  # per sr per electron\\n            WC=L*ne*fC*np.exp(-phys.mu_tot(Ep)*r)/r**2\\n            WR=L*mu_coh(Ec)*3*(1+cth**2)/(16*np.pi)*np.exp(-mu_tot(Ec)*r)/r**2\\n            if j==jstore:\\n                # store arrivals (Compton and Rayleigh)\\n                arr['E'].append(np.concatenate([Ep,Ec])); arr['u'].append(np.concatenate([uu_,uu_])); \\n                arr['W'].append(np.concatenate([WC,WR])); arr['typ'].append(np.concatenate([np.zeros(idx.size,int),np.ones(idx.size,int)]))\\n            # dose from scattered arrivals (energy transfer approx mu_tr)\\n            dose[j]+=np.sum(WC*Ep*0)  # placeholder\\n            kerma_scat_by_pt[j]+=np.sum(WC*(Ec-Ep)*0)  # unused\\n            dose_scat_by_pt[j]+=np.sum(WC*(Ec-Ep))\\n        # collisions\\n        hit=sint<sex\\n        # move\\n        pos[idx]=p+L[:,None]*dd\\n        alive[idx[~hit]]=False\\n        hid=idx[hit]\\n        if hid.size==0: continue\\n        Eh=E[hid]; mt=mu_tot(Eh); pc=mu_c(Eh)/mt; pr=mu_coh(Eh)/mt; pp=mu_pair(Eh)/mt\\n        r=rng.uniform(size=hid.size)\\n        isC=r<pc; isR=(r>=pc)&(r<pc+pr); isP=(r>=pc+pr)&(r<pc+pr+pp); isE=~(isC|isR|isP)\\n        alive[hid[isE]]=False\\n        # Compton\\n        ic=hid[isC]\\n        if ic.size:\\n            Ei=E[ic]; c=kn_sample_cos(Ei,rng); phi=rng.uniform(0,2*np.pi,ic.size)\\n            Eout=Ei/(1+Ei/mc2*(1-c))\\n            d[ic]=rotate(d[ic],c,phi); E[ic]=Eout; order[ic]+=1\\n        ir=hid[isR]\\n        if ir.size:\\n            c=rayleigh_cos(ir.size,rng); phi=rng.uniform(0,2*np.pi,ir.size)\\n            d[ir]=rotate(d[ir],c,phi); order[ir]+=1\\n        ip=hid[isP]\\n        alive[ip]=False\\n        if ip.size:\\n            # annihilation photons: spawn two 0.511 MeV photons\\n            n2=ip.size\\n            cz=rng.uniform(-1,1,n2); ph=rng.uniform(0,2*np.pi,n2)\\n            s=np.sqrt(1-cz**2)\\n            dirA=np.stack([s*np.cos(ph),s*np.sin(ph),cz],1)\\n            newpos=np.concatenate([pos[ip],pos[ip]]); newd=np.concatenate([dirA,-dirA])\\n            newE=np.full(2*n2,0.511); neworder=np.ones(2*n2,int)*2\\n            pos=np.concatenate([pos,newpos]); d=np.concatenate([d,newd]); E=np.concatenate([E,newE])\\n            order=np.concatenate([order,neworder]); alive=np.concatenate([alive,np.ones(2*n2,bool)])\\n            # the spawned photons now; keep going\\n    return dict(arr={k:np.concatenate(v) for k,v in arr.items()}, dose=dose, dscat=dose_scat_by_pt, N=N, depths=depths)\\n'''\\nopen('/tmp/work/mc.py','w').write(mc_code)\\nimport importlib, mc; importlib.reload(mc)\\nimport time\\nt=time.time()\\nres=mc.run(20000, [0.5,5.0], np.random.default_rng(2), store_for=5.0)\\nprint(time.time()-t, res['arr']['E'].size, res['dscat'])\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "My cross-checks against NIST values confirm the mass transfer and attenuation coefficients line up well across the tested energies. Now I'll move on to writing the Monte Carlo simulation script.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSkQgKEAgSGAI4AUIIdGhpbmtpbmcSDBRy/SWtVbKsuIQ4OBoMBfATU1Jkr1VsuZmKIjAYlcGH8RRRfBhDibfyYETfYl4vFcw8uDEP3YIkhNXaDLoKgBYM8rKCZXHOD2TUyKsqrgfnBoCM6/x4gs21Ioz+jmDPaXkMK7U1XAwg3yvjPUTfWA2to3td8pF3yEDuPOBheZhlJicf2nODM+3IlVOJBlYdlxhaDHYE/CMMiKxMzI+Gka3e/YRhpFWykTMtp6Y6K1aPFESKwRvxLTXSbdqhASIx9lomhd1xSXaqMhwnpkK+q1SpN9gdw+TzNdG8jp2t6jR7TAFcqLdHhhRaliDNpuBt2hr4NsBS+10QwiHJ2u8QF7pAyc872NpFz3UD/p+GIb/S02GgvkfbEuQtqNv//Q4732oPnYVnSFEQYX71aX4mOSx8bAjhXxW5x6RXE7XRQzu93WZFnlBb1BSj+14JKvudJXG/1qDnZctiNFlXnBc+8qhpVsEWFHahzsAhfpyRE5ujP37W2CkKhRPRZ+wWxG/qWHOL6x7VDXtg+uQ8ejnKtmvikGDcdLJKEeHeIHJfTerzX2iDPVsRPzExhHO3znTaWlD9Y80XKxX8WoPwLsWwE58V81cs4wFcblSAYAdBqlK+Ghw1hY4vfkPFbSmBv6IFZ3IlMawRsd7ATF/YKwf3q8K0CrK4p74OgL3nsCK3/anmj45Scs8fNqvSqyzmjR8f3JtnBI+DgumwxibzPeGbknW80IrrKOCMssLVM8h1mveJYwIft+6LuDmIZvOIBCJo83LwDGqno7KF8+4Sc/AqugtNER95LvOY45Srt2i+tJdukz+KiPtepduHj/INTipaWtsQRN8fLaXLJfaiCW2s4UD/gB2PbPJnD1gwXQUnXiEjGhVAHpWlei0WX+zRFO08dEblFnhC85RrytwkMJ//Hyim4jTs1LFk1gP5gsIYhRguMBBvmI2X2niRb5OWWMo0sARiAT9p4Fr6499161+yRWEAlB/9hoWZEHy0kpcY8rV6MGIS8zV5Xl/MEGrAr0Z1tW0F/pzMcKzd3iTuSO4WpjkDR06uvKdg3KMC2p8g1lb5jq/snk8YGYMVdHTx3rAsfLi4qXoJJ1TpHWsUXrqMExBu6nL5wmkpslNWzsy3VIpsTEuWb5FZH8tH/efHEqZIxdNCJfHQ+7ltv9egz19nWx3J2/o7cpNlvrfwtbaIt7+UUoFlZ7WU+EJataNvLL+W0s7+QnEOB2hqNGp7SJV5mZlQ7x2Cvh8D/nLXYpUJAJ3T+7xdGKyMaGvuAMiK+8mYNtA7Xu7SVQ+rEnYkBI7dz8fKWTuvEH0IYTVc/rxhfEH8pAY/4U8WoCNm/cQQDZmAsa2AWklZ2+sMn5599VUYAQ==.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 86180,
+  "completion_tokens": 3614,
+  "total_tokens": 89794,
+  "cost": 0.002759715,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 85389,
+   "cache_write_tokens": 789,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.002759715,
+   "upstream_inference_prompt_cost": 0.000952715,
+   "upstream_inference_completions_cost": 0.001807
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 148,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}
