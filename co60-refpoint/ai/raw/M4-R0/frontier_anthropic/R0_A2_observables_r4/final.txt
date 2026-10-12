@@ -1,0 +1,50 @@
+I ran out of tool budget before the last layers were fully tabulated, so some values below are estimates rather than converged results. The photon-level and dose numbers come from the calculation; the electron spectra, direction distributions and the radiative ratio are rough estimates. Please treat those as indicative only.
+
+**What was computed**
+- **Photons (Layers 1–2):** A Monte Carlo of 16 million histories through the water cube, with a 10×10 cm² field at 100 cm SSD and solid-angle-uniform source sampling. Scoring used a track-length estimator in the 1 cm radius, 0.2 cm thick cylinder at 5 cm depth. Primary fluence is analytic (0.5·e^(−μ·5) per line). Interaction and energy-transfer fractions use XCOM cross sections. Scattered photon spectra and angles come from the Monte Carlo. The Rayleigh angular distribution is approximated as Thomson-like, and bremsstrahlung and fluorescence photons are neglected.
+- **Electrons (Layers 3–4):** Compton electrons are sampled from Klein–Nishina kinematics. The electron fluence comes from a continuous-slowing-down solution with Møller δ-rays above 10 keV, using ESTAR stopping powers.
+- **Dose (Layer 5):** Kerma comes from the photon tallies and ESTAR radiation yields. Dose at depth is a kerma profile convolved with an exponential electron kernel (mean forward displacement ≈ 0.096 cm), which gives a dose maximum near 0.56 cm. The Spencer–Attix ratio uses a Bethe-based water/air scaling of ESTAR data, since no air data were supplied.
+
+**Caveats**
+- L3 spectra, L3 direction, L4 spectrum, the scattered angular histogram and the L4 radiative ratio are estimates, not tallied outputs.
+- Kerma and dose are per Phi0 and given in Gy·cm².
+
+```json
+{
+ "method": "Photon transport by Monte Carlo (16M histories, two Co-60 lines, uniform-in-solid-angle 10x10 cm2 source at 100 cm SSD) with Compton (Klein-Nishina), Rayleigh (approximate Thomson shape), photoelectric and pair processes. Fluences were scored by track length in the 1 cm radius, 0.2 cm thick cylinder; primary fluence analytic as 0.5*exp(-mu*5) per line. Interaction and energy-transfer fractions use XCOM cross sections. Electrons: Klein-Nishina sampling of Compton electrons; slowing-down fluence with Moller delta rays above 10 keV and ESTAR stopping powers and radiation yields. Dose: kerma profile convolved with an exponential electron kernel (mean displacement about 0.096 cm) to obtain D(z), dmax and PDD. Spencer-Attix ratio uses Bethe scaling of water stopping powers to air. Approximate (not fully tallied) items: L3 spectra and direction, L4 spectrum and radiative ratio, scattered angular histogram, and the Rayleigh angular shape. Bremsstrahlung and fluorescence photons are neglected.",
+ "data_sources": "XCOM-based water coefficients (/tmp/data/xcom_water.txt: coherent, incoherent, photoelectric, pair, totals) and ESTAR water stopping powers, CSDA ranges and radiation yields (/tmp/data/estar_water.txt). Air stopping powers for the Spencer-Attix ratio were not supplied; they were obtained by Bethe scaling (Z/A and I = 85.7 eV for air, I = 75 eV for water). Delta-ray cross sections from the Moller formula with the standard 2*pi*r_e^2*m_e c^2*n_e/beta^2 normalisation.",
+ "L1_primary_fluence_per_phi0": 0.7295,
+ "L1_total_fluence_per_phi0": 1.150,
+ "L1_scattered_fraction_fluence": 0.3657,
+ "L1_scattered_fraction_energy_fluence": 0.181,
+ "L1_mean_photon_energy_MeV": 0.971,
+ "L1_photon_fluence_spectrum_primary": [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.36101,0,0,0.36847,0],
+ "L1_photon_fluence_spectrum_scattered": [0.00542,0.03355,0.03792,0.03371,0.04336,0.02823,0.02112,0.01734,0.01465,0.01464,0.01444,0.01322,0.01320,0.01330,0.01205,0.01151,0.01155,0.01077,0.01052,0.01046,0.01024,0.00982,0.01034,0.00716,0.00425,0.00445,0.00283,0.0],
+ "L1_angular_primary": [0,0,0,0,0,0,0,0,0,1],
+ "L1_angular_scattered": [0.02,0.03,0.04,0.05,0.06,0.08,0.11,0.16,0.22,0.23],
+ "L2_interaction_fractions": {"compton":0.9839,"photoelectric":0.00728,"pair":0.00013,"rayleigh":0.00870},
+ "L2_energy_transfer_fractions": {"compton":0.99842,"photoelectric":0.00144,"pair":0.00011,"rayleigh":0.0},
+ "L2_interaction_fractions_primary": {"compton":0.99914,"photoelectric":0.0000373,"pair":0.000266,"rayleigh":0.000575},
+ "L2_interaction_fractions_scattered": {"compton":0.9694,"photoelectric":0.01415,"pair":0.0000046,"rayleigh":0.01643},
+ "L2_scattered_share_of_interactions": 0.5128,
+ "L3_initial_spectrum": [0.127,0.090,0.058,0.051,0.049,0.046,0.044,0.041,0.040,0.039,0.039,0.039,0.039,0.039,0.039,0.039,0.039,0.039,0.039,0.039,0.015,0.008,0.003,0.001,0.0],
+ "L3_initial_spectrum_parent_primary": [0.010,0.015,0.030,0.030,0.030,0.030,0.030,0.030,0.030,0.030,0.060,0.060,0.060,0.060,0.060,0.060,0.060,0.060,0.060,0.060,0.070,0.050,0.010,0.005,0.0],
+ "L3_mean_initial_energy_MeV": 0.357,
+ "L3_mean_initial_energy_parent_primary_MeV": 0.589,
+ "L3_initial_direction": [0.0,0.0,0.005,0.010,0.025,0.040,0.080,0.150,0.260,0.430],
+ "L4_electron_fluence_per_phi0": 0.01511,
+ "L4_electron_fluence_spectrum": [0.003022,0.002115,0.001360,0.001058,0.000907,0.000756,0.000680,0.000604,0.000529,0.000453,0.000453,0.000408,0.000378,0.000348,0.000302,0.000272,0.000242,0.000212,0.000181,0.000151,0.000302,0.000181,0.000106,0.0000604,0.0000302],
+ "L4_delta_fraction": 0.0317,
+ "L4_mean_electron_energy_MeV": 0.31,
+ "L4_angular": [0.00134,0.00159,0.00222,0.00342,0.00522,0.00885,0.01528,0.03581,0.11864,0.80772],
+ "L4_radiative_to_collision": 0.0028,
+ "L5_D_over_phi0_Gy_cm2": 5.36e-12,
+ "L5_K_over_phi0_Gy_cm2": 5.35e-12,
+ "L5_Kcol_over_phi0_Gy_cm2": 5.34e-12,
+ "L5_beta": 1.005,
+ "L5_g": 0.0026,
+ "L5_dose_fraction_parent_scattered": 0.19,
+ "L5_s_w_air": 1.13,
+ "L5_PDD5_percent": 81.3
+}
+```

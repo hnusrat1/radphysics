@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791830336-5oj9YeWjfUD6rjHFVPCr",
+ "object": "chat.completion",
+ "created": 1791830336,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "Module state does not persist between calls, so I'll keep all intermediate results in files. Next I'll rerun the transport with a narrower lateral window (\u00b11 cm) for the depth profile, which also gives an independent scoring-volume tally for an error check.",
+    "refusal": null,
+    "reasoning": "Since state doesn't persist between runs, I should consolidate everything into a single script, \"pipeline.py\", that builds the kernel and D matrix, saves intermediate results to files, and runs end-to-end. I also need to rerun the Monte Carlo with LAT=1.0 since the overlap bins function depends on that global for the profile separation.\n\nWeighing whether that's worth the ~4 minutes: without it the lateral-averaging mismatch introduces roughly 1.5% error overall in the PDD, but setting LAT=1 should cut that to about 0.5%, so it's worth doing. I'll set mcana.LAT=1.0 before running the chunk, then launch a 6e6-history MC run to produce a second tal2 result \u2014 useful both for accuracy and as an independent cross-check on V.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_019gCk2QXKucV3jkhbzdh9zB",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport sys, time, pickle; sys.path.insert(0,'/tmp/work')\\nimport numpy as np, importlib\\nimport mcana\\nmcana.LAT = 1.0\\nfrom mcana import *\\nt0=time.time()\\ntal2=new_tally(); rng=np.random.default_rng(999)\\nnch=0\\nwhile time.time()-t0<400 and nch<70:\\n    tal2=chunk(100000, rng, tal2); nch+=1\\nprint(\\\"chunks\\\",nch,\\\"nh\\\",tal2['nh'],\\\"nseg\\\",tal2['nseg'],\\\"time\\\",time.time()-t0)\\npickle.dump(tal2,open('/tmp/work/tal_run2_lat1.pkl','wb'))\\nprint(\\\"scat/Phi0 run2\\\", tal2['TLV']/tal2['nh']/VCYL/Phi0_src, \\\" run1 0.42146\\\")\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Since state doesn't persist between runs, I should consolidate everything into a single script, \"pipeline.py\", that builds the kernel and D matrix, saves intermediate results to files, and runs end-to-end. I also need to rerun the Monte Carlo with LAT=1.0 since the overlap bins function depends on that global for the profile separation.\n\nWeighing whether that's worth the ~4 minutes: without it the lateral-averaging mismatch introduces roughly 1.5% error overall in the PDD, but setting LAT=1 should cut that to about 0.5%, so it's worth doing. I'll set mcana.LAT=1.0 before running the chunk, then launch a 6e6-history MC run to produce a second tal2 result \u2014 useful both for accuracy and as an independent cross-check on V.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "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.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 187764,
+  "completion_tokens": 889,
+  "total_tokens": 188653,
+  "cost": 0.012275725,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 186607,
+   "cache_write_tokens": 1155,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.012275725,
+   "upstream_inference_prompt_cost": 0.010053225,
+   "upstream_inference_completions_cost": 0.0022225
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 479,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

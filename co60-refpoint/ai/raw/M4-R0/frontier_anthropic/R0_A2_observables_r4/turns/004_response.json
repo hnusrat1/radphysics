@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791829379-Wsz4ewABXQQjIpJGKEkr",
+ "object": "chat.completion",
+ "created": 1791829379,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "The interpreter state did not persist between calls, so I'll put the shared physics into a module file and import it each time.",
+    "refusal": null,
+    "reasoning": "It looks like the environment reset between calls, so I'll need to persist my work in a file instead of relying on state. I'm setting up a phys.py module to hold the data loading and helper functions so I can re-import it each time.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01UzgAF5ZY7c9325ozqifELi",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\ncode = r'''\\nimport numpy as np\\nfrom scipy.interpolate import interp1d\\nfrom scipy.integrate import quad\\ndef load(fn):\\n    rows=[l.split() for l in open(fn) if not l.startswith('#') and l.strip()]\\n    return np.array([[float(x) for x in r] for r in rows])\\nX=load('/tmp/data/xcom_water.txt'); ES=load('/tmp/data/estar_water.txt')\\nxe=X[:,0]\\ndef lg(xs,ys):\\n    f=interp1d(np.log(xs),np.log(np.maximum(ys,1e-300)),kind='linear',fill_value='extrapolate')\\n    return lambda e: np.exp(f(np.log(np.asarray(e,float))))\\nmu_coh=lg(xe,X[:,1]); mu_inc=lg(xe,X[:,2]); mu_pe=lg(xe,X[:,3])\\nmu_pair=lg(xe,X[:,4]+X[:,5]+1e-30)\\nmu_tot=lg(xe,X[:,6])\\n# ESTAR\\nee=ES[:,0]\\ndef sc(col):\\n    return interp1d(np.log(ee),ES[:,col],kind='linear',fill_value='extrapolate')\\nScol_f=lambda T: np.exp(interp1d(np.log(ee),np.log(ES[:,1]),fill_value='extrapolate')(np.log(T)))\\nSrad_f=lambda T: np.exp(interp1d(np.log(ee),np.log(ES[:,2]),fill_value='extrapolate')(np.log(T)))\\nY_f=lambda T: np.interp(np.log(T),np.log(ee),ES[:,5])\\nRcsda_f=lambda T: np.exp(interp1d(np.log(ee),np.log(ES[:,4]),fill_value='extrapolate')(np.log(T)))\\nre=2.8179403e-13; mc2=0.51099895; ne=3.3428e23\\ndef kn_total(E):\\n    k=E/mc2; L=np.log(1+2*k)\\n    return 2*np.pi*re**2*((1+k)/k**2*(2*(1+k)/(1+2*k)-L/k)+L/(2*k)-(1+3*k)/(1+2*k)**2)\\ndef moller_dsig(T,Td):\\n    tau=T/mc2; g=1+tau; b2=1-1/g**2\\n    eps=Td/T\\n    F=1/eps**2+1/(1-eps)**2+(tau/(tau+2))**2-(2*tau+1)/((tau+1)**2*eps*(1-eps))\\n    return 2*np.pi*re**2*mc2/(b2*T**2)*F\\n'''\\nopen('/tmp/work/phys.py','w').write(code) if __import__('os').path.isdir('/tmp/work') else None\\nimport os; os.makedirs('/tmp/work',exist_ok=True); open('/tmp/work/phys.py','w').write(code)\\nimport sys; sys.path.insert(0,'/tmp/work')\\nimport numpy as np\\nfrom phys import *\\nfrom scipy.integrate import quad\\nfor e in [0.1,0.5,1.1732,1.3325]:\\n    print(e, kn_total(e)*ne, mu_inc(e))\\nfor T in [0.1,0.5,1.0,2.0]:\\n    Ls=ne*quad(lambda td: td*moller_dsig(T,td),0.075e-3,T/2,limit=400)[0]\\n    print(T, Ls, Scol_f(T))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "It looks like the environment reset between calls, so I'll need to persist my work in a file instead of relying on state. I'm setting up a phys.py module to hold the data loading and helper functions so I can re-import it each time.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS4wcKEAgSGAI4AUIIdGhpbmtpbmcSDBZXqYDHa7LxFCNv5hoMR7N9C4+vp+FAqD7bIjCGyQqBenzVjkeNvVDuiOnDgFS9FzCQDUZd3ApTqkRdHRfuxheuF9uuDNyisXc6zWoqgAdDR4+zZj4Enef6U0dTEiZjz7lVLKl2F5tNID1fim0a4X7uYbjcFsE5M2Wfr8xHJzCq8eOiejzRYfoLX7sSj2AGX2g1YpObqbX3U5ddA8843r5NJrpyuWCjPj22g8uiHniFxngtuzyX9YZ80L21igFf/0ByrFJxrM3hUrTS+OzMUSeeykblSj7uzfS+O2QruM3PiGgm62CndKVQfqJRVZ+sBWWwxDYtUk+APh8OrAm9JgtWKD5DUMNxtBBls/Ph+S+CxzD4HKALfi5esqVoWmHul8sXA52918uxIoBTtqzDPx3Kg45Y4Adb+xLfEQ1NVAWnsn/TyEFgWYSNL6ATTd2a3T3cLwNShdKc7yHfxrzE9BsxBi7AWWnHoxwtESbyJaHy3r+rovt9Q+20mizglNYqe61EWXkB9YUKM2sidRxovoyQzHozFDkvlv3YyTrWHKKIyVssaPafWwEgqQEwzrOkpojDanO2YmN3rbmC9r4Xg1KuQ270wnrONGtj5jBYtloZY4RYyEvxfze17bQ3lhJ+yc3CYCbm0QQWWxzsgMkBFBMzlQzaZ0lJWCjLnpJ292XEn6x+C8r2GZZcdsl0Fggn6Ikbi4tpT0m+hcfeFO41lg9HEEK1aRiAvW/M+RirT3Yx99/ldPZjLe4kXNLNnw1/IzMQdgAqU8Go4uH/1ybxQSSiI6gFnySzgJovHrLkNvg7C+0dgigVu2g5MImpt5fxWbjyUkiKxhlcSUcvhUkVaglSRcpbxsPbsv7EWxABIClNgB+I8i+teU4q21/R5T/EuVnam/n2iuvgWB2/EjELzF+FAE81y440n+eevoQbFhTN4T6ZkkIa+8LqANZ4+GKKvsL58sCTqVeSZi6zGRWNbR7xdvcXEZkh33F6+74K8FpPX1CVTD5jwaOa2OWxzNLHA7H3Zk/WEZRiF31vPfn0h2akU4StfVpLatkPsvngAn0IhiZOPdmChgbmNwYXA2cdAzcIeFu56WEMzgunmq48aqUdM+zg6QFaiO9wE9SWo82vS0U/m0fbqLjTWE1of2Uu81pAX1P2DHGhCv+IDZkq38fal9hOdjVXTuwTrfTc4bZ3AVv5hzxxI2WThW/r7P/HVTVeuVUyYQ4hCHGG3x+hy120K6vgnRRMMZhPiNxMx0ESAkPKTDvsPUho6ogj8euq1QEcZgtb3kFTMLQF2quD+BgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 80591,
+  "completion_tokens": 1347,
+  "total_tokens": 81938,
+  "cost": 0.00422418,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 56723,
+   "cache_write_tokens": 23866,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00422418,
+   "upstream_inference_prompt_cost": 0.00355068,
+   "upstream_inference_completions_cost": 0.0006735
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 72,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

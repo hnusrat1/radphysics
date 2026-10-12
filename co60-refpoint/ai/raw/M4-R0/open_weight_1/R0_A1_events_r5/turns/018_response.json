@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791830610-JAD0GNtFGQzRe6TkE4aa",
+ "object": "chat.completion",
+ "created": 1791830610,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "OK, let me try writing the entire script as a single Python file with no errors. I will put everything into one big call.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_15e0069a7f4c4d9e84630104",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nfrom scipy.interpolate import interp1d\\nimport json, sys\\n\\nnp.random.seed(42)\\n\\nm_e = 0.51099895\\nr_e = 2.8179403262e-13\\nNA = 6.02214076e23\\nSSD = 100.0\\nfh = 5.0\\nzs = 0.0\\nzc = 5.0\\nzh = 0.1\\nzlo = zc - zh\\nzhi = zc + zh\\nRc = 1.0\\nth = np.arctan(fh/SSD)\\nOpyr = 4*np.arcsin(np.sin(th)**2)\\nne = 10.0*NA/18.015\\n\\nprint(f\\\"Omega={Opyr:.6f} ne={ne:.4e}\\\", file=sys.stderr)\\n\\nea = np.array([1.0, 1.1, 1.1732, 1.2, 1.25, 1.3, 1.3325, 1.4, 1.5])\\nmuT = np.array([0.07070, 0.06780, 0.06590, 0.06520, 0.06400, 0.06280, 0.06220, 0.06080, 0.05780])\\nmuC = np.array([0.06950, 0.06650, 0.06430, 0.06350, 0.06200, 0.06060, 0.06000, 0.05850, 0.05550])\\nmuP = np.array([0.00040, 0.00030, 0.00025, 0.00022, 0.00020, 0.00017, 0.00015, 0.00013, 0.00010])\\nmuPP= np.array([0.0, 0.0, 0.00020, 0.00028, 0.00050, 0.00080, 0.00100, 0.00130, 0.00150])\\nmuR = np.array([0.00080, 0.00068, 0.00060, 0.00055, 0.00050, 0.00043, 0.00040, 0.00035, 0.00030])\\n\\nfT = interp1d(ea, muT, kind='cubic', bounds_error=False, fill_value='extrapolate')\\nfC = interp1d(ea, muC, kind='cubic', bounds_error=False, fill_value='extrapolate')\\nfP = interp1d(ea, muP, kind='cubic', bounds_error=False, fill_value='extrapolate')\\nfPP= interp1d(ea, muPP, kind='cubic', bounds_error=False, fill_value='extrapolate')\\nfR = interp1(ea, muR, kind='cuic', bounds_error=Flse, fill_value='xtrapolate')\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "OK, let me try writing the entire script as a single Python file with no errors. I will put everything into one big call.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 74880,
+  "completion_tokens": 749,
+  "total_tokens": 75629,
+  "cost": 0.001878294264,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 69632,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001878294264,
+   "upstream_inference_prompt_cost": 0.001742185984,
+   "upstream_inference_completions_cost": 0.00013610828
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 27,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

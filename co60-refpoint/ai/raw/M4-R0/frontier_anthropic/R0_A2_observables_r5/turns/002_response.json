@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791829564-GVZIoNvBT7gCzVTI3A3B",
+ "object": "chat.completion",
+ "created": 1791829564,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I should load the complete dataset and inspect the tail along with the rows near the 1.1\u20131.4 MeV range.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01KaUEyYBAJFpS78WZU3FEzy",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nprint(subprocess.run(\\\"tail -25 /tmp/data/xcom_water.txt; echo ----; tail -32 /tmp/data/estar_water.txt\\\",shell=True,capture_output=True,text=True).stdout)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I should load the complete dataset and inspect the tail along with the rows near the 1.1\u20131.4 MeV range.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSmgYKEAgSGAI4AUIIdGhpbmtpbmcSDGUjM3HL2E8paWfxQBoMreiFilbznjnWCxePIjCADcTEfYb5hNQuErbLgKk1sHTsMow8jqbMskRucvNbT5wTWVJ4GwII8Nsn9rQRHUYqtwUABphkM04ncwuJtSRZ9lWMh95uXn/uK2g54B6wTdP/5Ku24V6oEehRP1pNACRNanlGNwOzXg3jR2Opy11D7FmDemntxaFwA78A0gUqBIL7Mlmo+3Fg2afywslds+yZl2fLEJEqUWdACZaNxxkOeQmUeVL4/zNxbQ00+sanYEfZhG6veFMWu6slI2xcXF9OcgeYGWs3FDg2peOcBNyVjapYuXBrEiRSClwsGorubjujSR+Pzh5rb+0IT92BMU2kRyLyx5jjVvIKs/cLWo1vjLYip/uY7TitSAEwioHK0hXbSUFQq/rZ/EKyLMVbkMk4umIFgrUkMyUo2LmG8P5+jJ51LHxWkaTvm1j0K9qpqkGNThJe87veB9mVEo73ioWNJwI9ehoPuqH7SrCu/AUyZ8SOWgpYJAv8m2svR/5QYCMY8Df1ET9c8yIMi6UMZ9TnR3GyW0n66p5Xya0x+JZP7ndGmZWDXcTnP4N9c6pdyg/q/avp2xr050KjhHmPN2PHNWlnyh2G8QDuxE8Eu5ZHMZiqclk2dczHI2fyJCKtf962gj7n3JXVUYpjtiD8oQ9C3/QxUZOXB5kk4HDMuXgAnRGfdNVKA0+SL0727PxiJN4AwymHtzTKxeQJPmSoCNH4ICJ5p35KBzl6EY7mzjfbX07+cvv6X2f1wJy5FjrKBE7siNu1CVXX0mpi11V/Lyf6ytqyzcr6Nsj/uDXwAYDWw6NmvUkPbRVF8bGjEaIvD9bnA7/fUSCoreSaXGWtP9OKgqJqcXyxGGzyzWYVFJArTQBmq1POD8swTQiJUZFjVR1o/hNMhONj4PTXA43MpSnO4cFcrxYs4XwFmt9PRFu/BLPKZYE1InOQoAuDQM3OTx7VX0bAgEpm0Ys4X7u9zcm0fSHF5siKJG0/mA4xBRv8W0F50Xb8QrxCjxgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 63477,
+  "completion_tokens": 152,
+  "total_tokens": 63629,
+  "cost": 0.00723467,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 6747,
+   "cache_write_tokens": 56728,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00723467,
+   "upstream_inference_prompt_cost": 0.00715867,
+   "upstream_inference_completions_cost": 7.6e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 30,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791829705-IbpQ4rALvPqJ52uDpjkw",
+ "object": "chat.completion",
+ "created": 1791829705,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "The Python state does not persist between calls, so I'll put the physics functions in a module file and import it.",
+    "refusal": null,
+    "reasoning": "It looks like state doesn't persist across calls\u2014each one seems like a fresh process, though files in the working directory do stick around. So my plan is to write a persistent module file, like /tmp/work/phys.py, holding all the functions, and just import it each time instead of redefining everything.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01AEQBuoVhx3kmABw3pxtk4c",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nmod = r'''\\nimport numpy as np\\nx = np.loadtxt('/tmp/data/xcom_water.txt')\\ne = np.loadtxt('/tmp/data/estar_water.txt')\\nXE = x[:,0]; XCOH=x[:,1]; XINC=x[:,2]; XPE=x[:,3]; XPAIR=x[:,4]+x[:,5]\\nTE = e[:,0]; SCOL=e[:,1]; SRAD=e[:,2]; STOT=e[:,3]; RANGE=e[:,4]; YLD=e[:,5]; DELTA=e[:,6]\\nre=2.8179403e-13; mc2=0.51099895; NA=6.02214076e23; ZA_W=0.55508; ZA_AIR=0.49919\\nne=NA*ZA_W\\ndef loglog(xg, yg, E):\\n    yy = np.log(np.maximum(yg,1e-30))\\n    return np.exp(np.interp(np.log(E), np.log(xg), yy))\\ndef mu_coh(E): return loglog(XE,XCOH,E)\\ndef mu_inc(E): return loglog(XE,XINC,E)\\ndef mu_pe(E):  return loglog(XE,XPE,E)\\ndef mu_pair(E):\\n    E=np.asarray(E,float)\\n    out = loglog(XE,np.maximum(XPAIR,1e-30),E)\\n    return np.where(E>1.022, out, 0.0)\\ndef mu_tot(E): return mu_coh(E)+mu_inc(E)+mu_pe(E)+mu_pair(E)\\ndef S_col(T): return loglog(TE,SCOL,T)\\ndef S_rad(T): return loglog(TE,SRAD,T)\\ndef S_tot(T): return S_col(T)+S_rad(T)\\ndef CSDA(T): return loglog(TE,RANGE,T)\\ndef Yld(T): return np.interp(np.log(np.maximum(T,TE[0])), np.log(TE), YLD)\\ndef DEL(T): return np.interp(np.log(np.maximum(T,TE[0])), np.log(TE), DELTA)\\ndef sigKN(E):\\n    k=np.asarray(E,float)/mc2\\n    L=np.log(1+2*k)\\n    return 2*np.pi*re**2*((1+k)/k**2*(2*(1+k)/(1+2*k)-L/k)+L/(2*k)-(1+3*k)/(1+2*k)**2)\\ndef Srestr(T, Delta, I_eV, ZA, delta=None):\\n    T=np.asarray(T,float); Delta=np.minimum(np.asarray(Delta,float), T/2)\\n    tau=T/mc2; b2=1-1/(1+tau)**2; Ip=I_eV*1e-6/mc2; D=Delta/mc2\\n    if delta is None: delta=np.zeros_like(T)\\n    F = -1-b2+np.log((tau-D)*D)+tau/(tau-D)+(D**2/2+(2*tau+1)*np.log(1-D/tau))/(tau+1)**2\\n    K = 2*np.pi*re**2*mc2*NA*ZA\\n    return K/b2*(np.log(2*(tau+2)/Ip**2)+F-delta)\\ndef moller(Ep, T):\\n    \\\"\\\"\\\"dsigma/dT (cm2/MeV) per electron, parent kinetic Ep, delta kinetic T; T<=Ep/2\\\"\\\"\\\"\\n    tau=Ep/mc2; b2=1-1/(1+tau)**2; xx=T/Ep\\n    f = 1/xx**2+1/(1-xx)**2+(tau/(tau+1))**2-(2*tau+1)/((tau+1)**2*xx*(1-xx))\\n    return 2*np.pi*re**2*mc2/(b2*Ep**2)*f\\n'''\\nopen('/tmp/work/phys.py','w').write(mod)\\nimport sys; sys.path.insert(0,'/tmp/work')\\nimport importlib, phys; importlib.reload(phys)\\nfrom phys import *\\nfor T in [0.1,0.5,1.0,1.25]:\\n    print(T, Srestr(T,T/2,75.0,ZA_W,DEL(T)), S_col(T), Srestr(T,0.01,75.0,ZA_W,DEL(T)), Srestr(T,0.01,85.7,ZA_AIR,0.0))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "It looks like state doesn't persist across calls\u2014each one seems like a fresh process, though files in the working directory do stick around. So my plan is to write a persistent module file, like /tmp/work/phys.py, holding all the functions, and just import it each time instead of redefining everything.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSwQgKEAgSGAI4AUIIdGhpbmtpbmcSDBEP1aITFgrLm0T8FBoMMIzDXwViCDfUpabuIjAoQJdvAhy3Z8mE/UDP0X7xis1KzaVy06xw1Sx/TSRD/57Wl4A8r2XNWb3yQdVCwX0q3gfynjvGIBMfwGC7EJlLWp8TNrrHKHJ9MsGntRVGi5OgFJY3YFyc4mKgspakqpZIls46ma7ac9M8ZACXAtMx5ZgiEPAF6aL26Mar8+xp4QzkYGT+31m+uMjQPJrV+eT2U1Vkgw40aSCsUUFieWXSNqnu7xnJjQjRZaJoSBiG8nVBm2EPvGfwxoah/TLdUMhyzzbARJ9lv/Q4/COo7Ikq3kuhAK8fIduAvjPwxqN2sDwMNTyEzFOGRtwJIEspaRlonDRYjGi8yqt1OuRsz/UJMVkvSiWi7jJ47FwWHfDt61bXWOBZpbmroyFto2OtCDqyMf8gfBRJBSerAKY4rTqng8j+Koy/38f7+IdeiZHZQdObkuwBlR3tW+0SRSkvKpBS6njRZnUxIpXnNF6NOBeUEfNMCWWtYh1BzHih0OZey/m786sut5TUdN+2MV/0sRmr8Tz90QqGqCq0vih2TU49wYt5RmGaKnFjLaOXx2cBfe6qCuotS2wgg0WWBS/+A5aXrkfa6JqNVIO+1C7IeEAJdwwbho5OeDPZ29xkSshuGbiNFTg6U3kZedqtR3BqdM8lhO5P+nkTFiP4xZuLGB/JSvIv98iFeu/XEdDC1CZgCV8kaet2QW/w5LfqmYCC21XVXUxsUXafYXAUNct0SgRaRrkBP+UD2YQtwsYElEhXP/Hn9BL7dzbUlx7dJUIcL40olgO6/CX6VL8giCGB0K03tw5yd5FvKTB+6Bg5dVDXj1So2+KmR5qqkbShRtJVHEutlVgMIGX31wpeTtkA/o9PPIHfHp+jIfJ0eukPqo6pD8hHrOkXEu1H3ONwCVbXktGhejouZbGQkf0gmxnbP2lp3c9Tn7ZYh1AucGMoeFO38CicjeOnCe4v+tUuluJAkhgfLH55JOpKMIFORcwtt76s0Ff6mx2Y8sTiwDgHEieaCP8Qxp5wBpwJRIxmVi3qgimyi8/eTAUzCok4VjCBudJVitoY7THeC35+zNkG4eVrtTjWhEkPXIPgNuHrI/lPGhAW9F5r8RfV+BJrps/JiPZu88iRGExmXPlntf5R3d4PyTveSBuDMcbNwh4pbIXWidb0mdMt6QlSv1OuC2i8UJ0Q5iFF0XoTyPFDyfM5dZDYNsbsvPHEDiR8xRyBE8n+MubU0BmwMU73/NqqSplXKz3iYJjUj2HzYV8qsKH9MrdgUGdZle7h0czCDLG6mwhYL/mW7W69Q52i+GIo2qRfISdMPzrWhM5vTbL3BXhBG3W4U3WkAq6Op8uIEnKtF702aWzETF9bOGXE2VnyjXIJVGQuDU86pOHLKxI7gw42cD/ZmvIYAQ==.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 98374,
+  "completion_tokens": 1660,
+  "total_tokens": 100034,
+  "cost": 0.0019004,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 97620,
+   "cache_write_tokens": 752,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0019004,
+   "upstream_inference_prompt_cost": 0.0010704,
+   "upstream_inference_completions_cost": 0.00083
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 95,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

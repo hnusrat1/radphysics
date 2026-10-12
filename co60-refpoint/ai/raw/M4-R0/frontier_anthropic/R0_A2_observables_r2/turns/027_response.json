@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791830218-vfbc2Ek2WTzf9qmXiO7r",
+ "object": "chat.completion",
+ "created": 1791830218,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "Now it runs in about 40 seconds. Next I'll run the \u03b4-ray chain and assemble the Layer 4 and Layer 5 outputs and the PDD.",
+    "refusal": null,
+    "reasoning": "Good, 41 seconds total so far, acceptable given the timing per call. Now I'm moving to the next part, computing sources, chains, outputs, and the PDD using the cached result from before.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_013eA3xcn18X5Bdx9bcvm78v",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nana5 = r'''\\n# ---------- solve chains ----------\\nQp=sources('p'); Qs=sources('s'); Qa=Qp+Qs\\nF0p,Fdp=chain(Qp); F0s,Fds=chain(Qs)\\nF0a=F0p+F0s; Fda=Fdp+Fds\\nFtot=F0a+Fda\\n# restrict to >=10 keV (idx) for outputs\\nmask=np.zeros(nT,bool); mask[idx]=True\\nFall=Ftot*mask\\nL4_fluence=Fall.sum()\\nL4_delta=(Fda*mask).sum()/Fall.sum()\\nL4_meanE=(Fall*Tcen).sum()/Fall.sum()\\nL4_spec=np.array([Fall[(Tcen>=edges25[k])&(Tcen<edges25[k+1])].sum() for k in range(25)])\\n# note bin 24 is [1.2,1.4]\\n# photon-based kerma\\nmtr_E=M.mu_tr_coef(EC)\\nK_scat=(Rs_fine*EC*mtr_E).sum()*CG\\nK_prim=(R_line*ELINES*M.mu_tr_coef(ELINES)).sum()*CG\\nK_tot=K_scat+K_prim\\nKrad_tot=(Fall*Srad).sum()*CG\\nKrad_s=((F0s+Fds)*mask*Srad).sum()*CG\\nKrad_p=((F0p+Fdp)*mask*Srad).sum()*CG\\nKcol=K_tot-Krad_tot\\ng_yield=Krad_tot/K_tot\\nKsc_col=K_scat-Krad_s\\nD_scat_frac=Ksc_col/Kcol\\n# electron-source check of K (all energies)\\nKcheck=(Qa*Tcen).sum()*CG\\n# Spencer-Attix\\nLw_D=float(np.interp(DELTA,Tcen,Lw)) if False else None\\nLwD=phys.estar(DELTA)[0]-phys.tail_fast(np.array([DELTA*2.0001]),DELTA)[0]*0  # placeholder\\n# track-end at Delta\\nF_at=Ftot[i10]/DT\\nSw_D=phys.estar(DELTA)[0]-0.0\\nLwD=Lw[i10]; LaD=La[i10]\\n# use L at T=Delta: restricted = unrestricted (T<2Delta)\\nnum=(Fall*Lw).sum()+DELTA*F_at*LwD\\nden=(Fall*La).sum()+DELTA*F_at*LaD\\nsw_air=num/den\\n# depth dose\\nKslab=np.zeros((2,M.NSLAB))\\nKslab=t['slab_K']*Fslab*CG\\nKz=Kslab.sum(axis=0)\\nzc=(np.arange(M.NSLAB)+0.5)*0.1\\nD5=0.5*(Kz[49]+Kz[50])\\nDmax=Kz.max(); kmax=int(np.argmax(Kz))\\nPDD5=100*D5/Dmax\\n# scoring-volume K from slabs for consistency\\nKscore_slab=0.5*(Kz[49]+Kz[50])\\nprint('Phi_prim',Phi_prim,'Phi_scat',Phi_scat,'L1 frac',L1_scat_frac)\\nprint('K_tot',K_tot,'K_check(e-source)',Kcheck,'Krad',Krad_tot,'Kcol',Kcol,'g',g_yield)\\nprint('K_scat',K_scat,'Ksc_col frac',D_scat_frac)\\nprint('L4 fluence',L4_fluence,'delta frac',L4_delta,'meanE',L4_meanE)\\nprint('L4 spec',L4_spec.round(5))\\nprint('s_w,air',sw_air,'num',num,'den',den,'track end',DELTA*F_at*LwD)\\nprint('Kz (slabs 0..12):',(Kz[:13]/Dmax).round(4))\\nprint('Dmax at z',zc[kmax],'PDD5',PDD5,'Kscore slab',Kscore_slab,'vs point K',K_tot)\\n'''\\ns=open('/tmp/ana4.py').read()+ana5\\nopen('/tmp/ana5.py','w').write(s)\\nimport time\\nt0=time.time()\\ng={}\\nexec(s,g)\\nprint('time',time.time()-t0)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Good, 41 seconds total so far, acceptable given the timing per call. Now I'm moving to the next part, computing sources, chains, outputs, and the PDD using the cached result from before.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSpQgKEAgSGAI4AUIIdGhpbmtpbmcSDBd5+vJZLRm+0HbjzxoM9TXmJcHevUW6weJTIjBjrMq+iZe/vyaS6qgv2Md+gqOzou5Q1aN3aJb5E7G9um82t1a2ZVSO+MKaVw7yHd4qwgckgVnzaS5x7dP4oLKid4PP8iF2fzYoEGs0pAlT2K7MO1Bl6we7i8GC0fdxo6gWlsttAjgHcTYySliepTrOZtH0n03KJh1wGndSKoAEs3maO7aXM4mh++1AAfucN7EJCDc8buzTzP9fpJ7lADvS2WmK/P7QR0juCylj4tqGOt9C/yZ9Bhz8Xwj5HcDFoRzLXg40nugbSHxONp+u8+bbzebbKH7kGiLXLMlIJm3SNBf1sDVJU+cIKC+ypuiC9Ez/P1Gij9PSxnQwVehUFDKa9ux/SmYeWuJU5qU5OaXGujuFku2D+iM5aZyjco97HO5AdOjhJ/gnHxRsvY3QyIOtOuItedZ/sNol3TSdSIV9auwumE/Nm17OV66netpc31FMZGoL3eVzHnu8r1DLilAaI5zYaR+Eo13rhmG6aGE2Kxbokj3CMSB1WSCp8aLgMk8MKnN0c9e2lHzsm1paqiuUrJuGLkcXUh8FeLZI1FW+5QiKFbBhB8e84KJm1AXzWWTfT/2zoF0Yb4BoSiP5MrgKB4oof2iXT+owDxGhs+HOBaGWZooqAZmiYotwkMfIPpz+KYLlLXHS9QBapXct3Rl+KApRlbpCaUmdbpqbN7ePwJS7tqg00xiiuYfk8SsOr+lgRpy8EnWXjglFebMk/RpOgrY3Xc2J7ozLg5dmNFKk10iPTXg7EAvTv7MgOg9BE8uDL1W8yKSOGBNmyMHpi9sT1stPmo09ee4UquwSD/vRpRhk6Ek9ZduHFrw7elj1zZbd9oxSEa70O/DVZqxOTqOeHb0mpgn8fKNFcCC4EAYmedZhkliy7uqhPICSrrkANUVcJN5cKpKo65RF4VKDO+U31ndR5bqtT1CFLcZpHBBSGsggQ3dwssWjnPrVMQbj0iqmiDi2NqlupKo2+NHhJAGLTa9gNuEs9QcvRDbCtGSWptN4JnRHQTk1otpG/BOshJjRePbZsZtleg+1QfycT9GggUWVaohHHI6fVVkYNP1j7huqNy4wqNYcol3s4g+pharSAa325FsoImZ3VY9RBNyNVRuTdfyHTLCo34XuAiFWszWEnoTdQpPepgCa9tg7y9gM0RjkbFThp8qGjLqatkx+dgcC8eSqIDvkyTnkm0oSOKq9AchqLKFmsbmpC7OQOrpJE5wZoHxzz53q5KhuSqtbn+BZeLXiX7MeqxtdN+6QCnu55WydS7PY7EJOCAx6whJ/QhyiEshtLwTsM/+dahDB6izCo87mdxleTsJoBW1CFMyrxvCPwQ/A7hV2GTzk73eleZGj4hgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 144303,
+  "completion_tokens": 1717,
+  "total_tokens": 146020,
+  "cost": 0.012217525,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 143068,
+   "cache_write_tokens": 1233,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.012217525,
+   "upstream_inference_prompt_cost": 0.007925025,
+   "upstream_inference_completions_cost": 0.0042925
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 107,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

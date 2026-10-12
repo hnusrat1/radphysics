@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791829802-7TAOJmGtqvXgpUjTkgRg",
+ "object": "chat.completion",
+ "created": 1791829802,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "The track-length estimator reproduces the earlier 5 cm scattered fluence (0.438) and is about 20 times faster. I'll now run a large production batch (16M histories on 4 cores) and save the merged tallies.",
+    "refusal": null,
+    "reasoning": "I'm double-checking the photon loop logic \u2014 photons that exit without colliding (where the segment length reaches the exit distance) are correctly dropped from the active set since they've left the phantom, so that part checks out.\n\nThe 5 cm scatter value of 0.4385 matches the earlier 0.439 estimate, confirming consistency, and 200k histories ran in about 1 second, so scaling to 16M histories across 4 cores should take roughly 80 seconds using a multiprocessing Pool with 4 jobs of 4M each. I'll run that full simulation and save the merged results to a file.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01RRUWuhK8pd7qDVN9xYHeKs",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport sys; sys.path.insert(0,'/tmp/work')\\nimport mc3, numpy as np, time, pickle\\nfrom concurrent.futures import ProcessPoolExecutor\\ndef job(seed): return mc3.run(4000000,seed)\\nt=time.time()\\nwith ProcessPoolExecutor(4) as ex:\\n    res=list(ex.map(job,[101,102,103,104]))\\nprint('time',time.time()-t)\\ndef merge(res):\\n    out={}\\n    for k in res[0]:\\n        vals=[r[k] for r in res]\\n        if isinstance(vals[0],np.ndarray): out[k]=np.sum(vals,axis=0)\\n        else: out[k]=sum(vals)\\n    return out\\nSM=merge(res)\\npickle.dump(SM,open('/tmp/work/SM.pkl','wb'))\\nOm=0.009975072683099257\\nF=Om*105**2/SM['N']\\nprint(SM['N'], (SM['g']*F))\\nprint('L3 w',SM['L3_w'], SM['L3_wT']/SM['L3_w'])\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I'm double-checking the photon loop logic \u2014 photons that exit without colliding (where the segment length reaches the exit distance) are correctly dropped from the active set since they've left the phantom, so that part checks out.\n\nThe 5 cm scatter value of 0.4385 matches the earlier 0.439 estimate, confirming consistency, and 200k histories ran in about 1 second, so scaling to 16M histories across 4 cores should take roughly 80 seconds using a multiprocessing Pool with 4 jobs of 4M each. I'll run that full simulation and save the merged results to a file.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "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.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 154538,
+  "completion_tokens": 904,
+  "total_tokens": 155442,
+  "cost": 0.01646805,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 143266,
+   "cache_write_tokens": 11270,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.01646805,
+   "upstream_inference_prompt_cost": 0.01420805,
+   "upstream_inference_completions_cost": 0.00226
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 427,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

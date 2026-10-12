@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791829928-1DwUS4Oeaa3OVYjHEAtU",
+ "object": "chat.completion",
+ "created": 1791829928,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "Analog scoring works (about 1.4 s per 50k histories). To get ~1% statistics I need several million histories, so I'll run the production batch in chunks.",
+    "refusal": null,
+    "reasoning": "With only 456 segments out of 50000 histories, the statistical error is around 5%, so I'd need roughly 5 million histories to get down to 0.5% precision, which should take about 140 seconds given the current rate. The scattered-to-incident ratio is coming out around 0.46 with analog methods now, compared to 0.41 from the earlier NEE run that had higher variance.\n\nLet me run a larger batch, say 4 million histories in chunks of 100k each (roughly 3 seconds per chunk, so about 40 chunks totaling 2 minutes), looping through within a single call to stay under the time limit. I also want to cross-check against the analytic primary transmission value, and set up a depth-profile analysis restricted to the region where |x| and |y| are both under 4, binned appropriately. Let me get this running.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01QZAab9jwV9YvczGcp8W8HH",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport sys, time, pickle; sys.path.insert(0,'/tmp/work')\\nimport numpy as np, importlib\\nimport mcana; importlib.reload(mcana)\\nfrom mcana import *\\nt0=time.time()\\ntal=new_tally(); rng=np.random.default_rng(100)\\nnchunks=0\\nwhile time.time()-t0<420 and nchunks<60:\\n    tal=chunk(100000, rng, tal); nchunks+=1\\nprint(\\\"chunks\\\",nchunks,\\\"time\\\",time.time()-t0,\\\"nh\\\",tal['nh'],\\\"nseg\\\",tal['nseg'])\\npickle.dump(tal,open('/tmp/work/tal_run1.pkl','wb'))\\nprint(\\\"scat fluence/Phi0\\\", tal['TLV']/tal['nh']/VCYL/Phi0_src)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "With only 456 segments out of 50000 histories, the statistical error is around 5%, so I'd need roughly 5 million histories to get down to 0.5% precision, which should take about 140 seconds given the current rate. The scattered-to-incident ratio is coming out around 0.46 with analog methods now, compared to 0.41 from the earlier NEE run that had higher variance.\n\nLet me run a larger batch, say 4 million histories in chunks of 100k each (roughly 3 seconds per chunk, so about 40 chunks totaling 2 minutes), looping through within a single call to stay under the time limit. I also want to cross-check against the analytic primary transmission value, and set up a depth-profile analysis restricted to the region where |x| and |y| are both under 4, binned appropriately. Let me get this running.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSmAsKEAgSGAI4AUIIdGhpbmtpbmcSDO9gHUjvV3sgYVnl5hoM2jgsi3NGFISAKXCtIjBLKvZuDHik0sEPyIWprDAhBccYEO8Owhx6/RR2lnajZo7ODfALneGzDNE/4PPnDUIqtQrma5WlIoUVGG4xTO5rjpntBfUkzuP/aTWynIkM5zSNFZmN8fvWhSBZ5ZuHqq3CTb4eXtIBuS/RnB4S7eTELYumX7KLAeBueH7vNa5YSe20DeMOCoifpzoeFKwSxUyYWoO0eDpYsgAyuFWzCWNmoDhd1i4jNvM5x1BHBAMvGuWQyRBS3WmdMW7puopAjJn1qUDxL/8YtUjjO0BZkKXTocG13/L1x+aFEGbCLkf52AWhSt5KGbWxsNUSK8xqJyHzZZ5q1kTLgDA4oEZ9OeDgpVx/TruM7PnmRAcNEewADcadhPws9Wc0aothqtHRVtvSgIfAhIv02we1g8I1G+jxM1qntgWWwOpXp+oe5WWMTh/GG+zgZ9FSK//NmEjumBc2gg06wgB3IsC92vCJPS5D+jmkuOC9gHRqCIaIupidSv9xxS+O/L/z7QF82yoVPHld6q1FhPRjMidZ/AbmcSqN+TE32n+BSK0DKAy1Aganu2TlxNTbdopoa6YMiRrgLcmAzvXYU9YH8Ue1R9raVsVjfdx3E/osIMQTwErGaVYWUfgoqmV2c1vuJCpoLJWDGlg6mkukUHqzvr896sdqQ2FrH1/XRwj6NzV7A0/1ereHppdZlwRSdUVuOwQvZOjerAC8z/XCgwYFaOg5FkBGg9aRGWxbcZP09iESzRWKz58nWPIlfNL/Pv0QEGyYTVJ/2kWpWrdFLDWZBmYQaXCVhtXfp2VqEi/FZ6oCjqcnh8dnA0vSNP1CcyopDTLFIxYUDwNGYYkIxPJRVnE/seBQXuUo390Q5VGy43dX0hBsuOSRd7mmtdNq4IZrm8qbx8GpSc2NWosE9k/1sJvKYj9EpPosy3qznPd45aCGwpXYjFQGmq4D4lcpKgjdqUwwMqVfzCpD1FLXWWpbI0jq/oZbCRbGuIu6dQEBMtJOrNrTtploG2/SndKgyhwgZzU/4sE+LASnR1IMCISly9XDrug7PfRyHSb9RFAcRqdn9ptVA9cX+BWVwiYcbyecbqqIHw3HK2+xN3WZ8nKL+XjRHxNaN4a+JhaKfV24VMpY7xa2LCQly8NC+HEWVXkTBSgIxGze3x3j0xmr4QcUYHrnR8eRCatRtljovP5SBIkFE4VZgk6Jb6M7F4JMgm9PtIZs+QWQb/V7cRQR6Cn+/y3KqFKSJtMehFyJBHwwWSKmq3kRPRge0PYeFFmELHVAE5h1KtEGmHEDciFlsd9xlCNoXHaW4MR+3W/ZW7N8Yf7M0u6UAgCGjguNN0BT3zsx/K8cnFbsPvtCqzARGxSBx74si8Om7XhdtU7WvnjzbP3mDyHaqUQ+oKZpjTpEJmRTFgQto9DKWN3uaPd59ct8Gv6XTjgdiAnKk0uH/3O/+xSkaLJeZwyr/G0oPaBYwbaQIxTTBN+WlAvOpCOSb08Ng3/bH8CTK2EWDtKeh0xnTMH85yzi8MM0F18roPldYEXRHF7lCLKowSOjxJ0zMbOCg1xtEcLjIt5H/XULMxu1+TcsGs42Y64qNVEJ6nuhRhm9fFZPtymmc0wXASDzMqqldWiuwp/pddBrDZmFaBblIvnCMFQ+NizVP3G5PVjCfad2cVgDDXrgIlTn9V9b07u9zSGX2GWuU2q71a1GcPilYHFLW8EGzfE95W7ofmIK+RExuaiGj0z5X3ZwngmGJpH8LzV5OPTQQ6/dAdpKRtvi/zUAw9LWWzQlnZX6WWZnhA0k+HimRc9nrHj7JDgMNzIa/OhTpv5VMXTDKOOwzGHZrfwDSLt19OQScBuspiaAIL/eGAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 149740,
+  "completion_tokens": 658,
+  "total_tokens": 150398,
+  "cost": 0.019822725,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 131147,
+   "cache_write_tokens": 18591,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.019822725,
+   "upstream_inference_prompt_cost": 0.018177725,
+   "upstream_inference_completions_cost": 0.001645
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 290,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

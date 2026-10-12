@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791829331-PFrnlEzhFqxqwyDiqK6w",
+ "object": "chat.completion",
+ "created": 1791829331,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "GMICloud",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "The atleast_1d for scalar makes it a 1-element array, so float() on array of size 1 fails. Use float(np.asarray(...).reshape(-1)[0]) or use np.atleast_1d semantics then index. Let me just fix by converting with float(np.squeeze(...)). Actually simplest: don't use get() dict arrays; compute directly with scalar interpolation functions using float inputs.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_de626a28aab14769824f47fa",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nfrom scipy.interpolate import interp1d\\n\\nph = np.loadtxt('/tmp/data/xcom_water.txt', comments='#')\\nEph = ph[:,0]\\ncoh = ph[:,1]; inc = ph[:,2]; pe = ph[:,3]; pair_n = ph[:,4]; pair_e = ph[:,5]; tot = ph[:,6]\\ndef mklog(x,y):\\n    ok = (y>0)&(x>0)\\n    return interp1d(np.log(x[ok]), np.log(y[ok]), kind='linear', bounds_error=False, fill_value='extrapolate')\\nfcoh = mklog(Eph,coh); finc = mklog(Eph,inc); fpe = mklog(Eph,pe); fpn = mklog(Eph,pair_n); fpe2 = mklog(Eph,pair_e); ftot = mklog(Eph,tot)\\ndef gx(f,E): return float(np.exp(f(np.log(float(E)))))\\n\\nfor E in [1.0,1.1732,1.3325]:\\n    c=gx(fcoh,E); i_=gx(finc,E); p=gx(fpe,E); pn=gx(fpn,E); pe_=gx(fpe2,E); t=gx(ftot,E)\\n    print(f\\\"E={E}: coh={c:.5f} inc={i_:.5f} pe={p:.6f} pair_n={pn:.6f} pair_e={pe_:.6f} tot={t:.5f}\\\")\\n    print(\\\"   frac: coh %.4f inc %.4f pe %.5f pair %.5f\\\"%(c/t,i_/t,p/t,(pn+pe_)/t))\\n\\nel = np.loadtxt('/tmp/data/estar_water.txt', comments='#')\\nEe=el[:,0]; Sc=el[:,1]; Sr=el[:,2]; St=el[:,3]; R=el[:,4]; Y=el[:,5]\\nprint(\\\"\\\\nESTAR:\\\")\\nfor E in [0.05,0.2,0.5,1.0,1.1732,1.3325,1.4]:\\n    print(f\\\"E={E:.4f}: Sc={float(np.interp(E,Ee,Sc)):.4f} Sr={float(np.interp(E,Ee,Sr)):.5f} St={float(np.interp(E,Ee,St)):.4f} Y={float(np.interp(E,Ee,Y)):.5f}\\\")\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The atleast_1d for scalar makes it a 1-element array, so float() on array of size 1 fails. Use float(np.asarray(...).reshape(-1)[0]) or use np.atleast_1d semantics then index. Let me just fix by converting with float(np.squeeze(...)). Actually simplest: don't use get() dict arrays; compute directly with scalar interpolation functions using float inputs.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 26731,
+  "completion_tokens": 676,
+  "total_tokens": 27407,
+  "cost": 0.0008042034,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 24057,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0008042034,
+   "upstream_inference_prompt_cost": 0.0006811714,
+   "upstream_inference_completions_cost": 0.000123032
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 86,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

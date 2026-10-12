@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791829325-8lFr6WXcI37zaCEcjvKG",
+ "object": "chat.completion",
+ "created": 1791829325,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "GMICloud",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Fix the formatting \u2014 g['E'] etc are arrays. Use float() conversion.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_2f5754dc9c27427b89367a4e",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nfrom scipy.interpolate import interp1d\\n\\nph = np.loadtxt('/tmp/data/xcom_water.txt', comments='#')\\nEph = ph[:,0]\\ncoh = ph[:,1]; inc = ph[:,2]; pe = ph[:,3]; pair_n = ph[:,4]; pair_e = ph[:,5]; tot = ph[:,6]\\ndef mklog(x,y):\\n    ok = (y>0)&(x>0)\\n    return interp1d(np.log(x[ok]), np.log(y[ok]), kind='linear', bounds_error=False, fill_value='extrapolate')\\nfcoh = mklog(Eph,coh); finc = mklog(Eph,inc); fpe = mklog(Eph,pe); fpn = mklog(Eph,pair_n); fpe2 = mklog(Eph,pair_e); ftot = mklog(Eph,tot)\\ndef get(E):\\n    E=np.atleast_1d(np.asarray(E,float))\\n    return dict(E=E, coh=np.exp(fcoh(np.log(E))), inc=np.exp(finc(np.log(E))), pe=np.exp(fpe(np.log(E))),\\n                pair_n=np.exp(fpn(np.log(E))), pair_e=np.exp(fpe2(np.log(E))), tot=np.exp(ftot(np.log(E))))\\nfor E in [1.0,1.1732,1.3325]:\\n    g=get(E)\\n    print(f\\\"E={E}: coh={float(g['coh']):.5f} inc={float(g['inc']):.5f} pe={float(g['pe']):.6f} pair_n={float(g['pair_n']):.6f} pair_e={float(g['pair_e']):.6f} tot={float(g['tot']):.5f}\\\")\\n    print(\\\"   fractions: coh %.4f inc %.4f pe %.5f pair %.5f\\\"%(g['coh']/g['tot'],g['inc']/g['tot'],g['pe']/g['tot'],(g['pair_n']+g['pair_e'])/g['tot']))\\n\\nel = np.loadtxt('/tmp/data/estar_water.txt', comments='#')\\nEe=el[:,0]; Sc=el[:,1]; Sr=el[:,2]; St=el[:,3]; R=el[:,4]; Y=el[:,5]\\nprint(\\\"\\\\nESTAR sample:\\\")\\nfor E in [0.05,0.2,0.5,1.0,1.1732,1.3325,1.4]:\\n    sc=float(np.interp(E,Ee,Sc)); sr=float(np.interp(E,Ee,Sr)); st=float(np.interp(E,Ee,St)); yy=float(np.interp(E,Ee,Y))\\n    print(f\\\"E={E:.4f}: Sc={sc:.4f} Sr={sr:.5f} St={st:.4f} Y={yy:.5f}\\\")\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Fix the formatting \u2014 g['E'] etc are arrays. Use float() conversion.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 25819,
+  "completion_tokens": 707,
+  "total_tokens": 26526,
+  "cost": 0.0008993894,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 21687,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0008993894,
+   "upstream_inference_prompt_cost": 0.0007707154,
+   "upstream_inference_completions_cost": 0.000128674
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 16,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

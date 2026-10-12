@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791830060-X8biIUhJ0atihK6GFoDB",
+ "object": "chat.completion",
+ "created": 1791830060,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I didn't save per-batch results, so I want to estimate statistical error by running several smaller batches instead. The gap between 0.4385 (200k single run) and 0.4200 (16M) is about 4%, which seems worth investigating\u2014so I'll run 8 batches of 1M each across 4 cores, roughly 45 seconds total, and check the spread.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01JLVA8ijEwFaJC3iGHgS1sc",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport sys; sys.path.insert(0,'/tmp/work')\\nimport mc3, numpy as np, time\\nfrom concurrent.futures import ProcessPoolExecutor\\ndef job2(seed): return mc3.run(1000000,seed)\\nif __name__=='__main__':\\n    t=time.time()\\n    with ProcessPoolExecutor(4) as ex:\\n        rr=list(ex.map(job2,range(500,508)))\\n    print(time.time()-t)\\n    v=np.array([r['g'][4]*0.009975072683099257*105**2/r['N'] for r in rr])\\n    print(v, v.mean(), v.std()/np.sqrt(len(v)))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I didn't save per-batch results, so I want to estimate statistical error by running several smaller batches instead. The gap between 0.4385 (200k single run) and 0.4200 (16M) is about 4%, which seems worth investigating\u2014so I'll run 8 batches of 1M each across 4 cores, roughly 45 seconds total, and check the spread.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS9ggKEAgSGAI4AUIIdGhpbmtpbmcSDD57iPCOYWZjSNVlFxoMzsnNgasaqY471RGPIjDN/16D7a4vPylsQCJlFW76Hbi3kJkTCZQnYM0I87oGz3v34iUL+uB+/em2AwSvZxMqkwhsyiF3vwxFq0bKuG70HtZ6eAJGYCrl6cJOQkAw2L+sAv9ZRy2UAHK2bKeq7j1O/w0iB2W2WrlMPOpDyTsg0WICi4DlZGnIw6jsE+RomejAVBp5GNBhvVmBzr74rkVCmDxZAQcZ+JvNK2oFEIE/6hkrUNWlBBUqevGSLWsp7XupnmV+Lt5GgXTPtIFPPxF2JJ2eZSQ0ARxNYGO9sXEGsEaX5GBg/HmLbajssaRLvJsHUunkTcL4J+Ezxxded8XXCV8jVEs/CPqi826jwme17Oavnso6g1AdwSph9C7c80aYHJ8d2BkhW0Z9p3JXPKMl5ro9hq1w3VZmNcl0xJJe7GnrGZtfwJGHpeEJE14Cn87a1JTulRNXJafMbozy9JbPGaNxsWPHNj1cJT8JcyhzNd1GM5nML/LWulrhg6czSkO4V2cNQi9dNP4gWAIHvcznuPZLDLiRItkNgeOAntiBaD+V+JlswpS/I0erDhC2gC8XjIBSGncSWiBUNBSq7766ph9DWE34TJO6cCVDspYs9awEevTPPkSRI9/C/HLKJiX4T4S7tY2O5z/lHfXgq6lElrorSPB73G8p0N1R1LyfVxZST9k7YeVcMaqxSzWw4LGy1t4YcdJJ2JwjVZj6X+Wa05MIheX1jk/XT51scrqPXpSdTmp0Ftsbt+OZnyvHXaCQg9QeLJkRzrI1vH3b9DBlCeEbd1XZ/l4HIWCpkg4kajIzcnFdubsBfuQ+75w0NmNSmQBA5LH6ERDRyVOiVdIA6TB9Bgt2ZZromsmC0erAH2PiEvxqpZwr50+Kgxd/b788TIGyQEt9q2ywdhNbimh3gVjsZy2dC11esGsUzuSKY7L2PUBkCh8ePmsAnXaM1mV5T0OwOY5a7prbXvXj6w6BHgNfSSlQD31TPnFMsc+zlE2G5hM5XZ0qz25JnCuAzvXwKK1OgfZod7YxK98VnJIc7N7ha24CsmJwQ1eGG07yk/VgECD1Q2Er4reSjCxx4vatbsafn0K6do1vkwYFmk3IU0S6iNf5vV54eN+LfMIRjVarNX68Tz6OE1zVQpWr3tBdTVMOD37dXrTm2T5nKWv4yGjjb62THXaqZ5UGW2m0G7ozKSFwwwDK+mkph8NzZou3O0H0HnJ2fg75LlSNnnAz3S0JH0ZEOJpiRcEDjGVktoKrTSboD2JSIOPHAgi3FG+RCSvzBZTY4KaAqQUPOx+PlPqngzxno4lP65PnFtt1h3gvVQ3Rl/5m80rLCN6frd6TlXQdP+WUPEKsAdNmwjhq1Y5L7JBCIJrtNVeARVEnPJFx4L2Ptfkt7FQLh+xNuRwaIuMEcnWiqbK1QwehxoNQvilg/MSLjJTzMn9vM7HrcQUWOSDUbyAJ99GTfosXBEi0UB0N3BgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 158571,
+  "completion_tokens": 401,
+  "total_tokens": 158972,
+  "cost": 0.009211975,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 158082,
+   "cache_write_tokens": 487,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.009211975,
+   "upstream_inference_prompt_cost": 0.008209475,
+   "upstream_inference_completions_cost": 0.0010025
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 134,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791829613-xSLpfoUbEE3Rf6QtUIJs",
+ "object": "chat.completion",
+ "created": 1791829613,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Using a separate \"python\" subprocess could point to the wrong interpreter, so it's simpler to just run the import directly in-process instead.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01AXjtq9STmpoVHzcN912378",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport ana, importlib\\nimportlib.reload(ana)\\nfor E in [0.1,0.5,1.1732,1.3325]:\\n    s,me=ana.kn_eps_stats(E); print(E, s/ana.kn_total(E), 1-me)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Using a separate \"python\" subprocess could point to the wrong interpreter, so it's simpler to just run the import directly in-process instead.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSxAcKEAgSGAI4AUIIdGhpbmtpbmcSDPfVjNfgk45wROFwrRoMpcoAtWxrs1YJAkzqIjBfaAh9U2mi8iSsIXtRtwcxwlDxbfp31RyppJsv/XTbqz90qFR14F2RzaR4LUli0Woq4QaWOoOKh360Z2Irz8TurTXN93gNNoYDdo0IJRVMU11tl4tujn413kXGFj2Ra0aHKnqQyQtQGqcxvKi90UMiWfFvLx3rzWFV3qJjMhE0BB2dOwnRR9FoZ7ZcBmhCYX4EO69PZ8J6Nb9muypWhJOo1OFirV31vXZif1cMDvcx6OHnppboyt29/VmYnIrPfcNPoGbOkQ62PLLU67A6lvkLT2a57ozrsoAgZepkE+X3BKfnasyNj6+K5PjKrqcwGJauL5kJ9X3qkRre9lXoa1lwwgZ/rMSKfmNgdI0drnlpoGYdS78X5/k8yZYmXijo3banbFeeZeVxohHlY92Sk8fR02JiIczZMgW2Mlyb4S9PAdGNHKSgV3ceCjlPg+fvIZy0zx2yd3tmopMPQ6IvrLXVbz0K0MUVzs/Wq8mcHd5X9Ce51mDmAs03hRzflALGdmxXLkiEutEqjpvyLrOfN6npNzdhw7xvmjOM6azHw17jbazupEBrqCaah8hER1Cj9I5rdAjMaYxuH/bu55IXUdCwv4pzXrBP0SRUPTTw5DTBJs9YPfZvo6dH8aKImxb4kbUIZJNQYzpul8MmJlORVcSp9ecAnQw4k3xgdA5ymjT1hfnnPfH21hnNBT4OwRL1fWr0TBunaa6YMiupQxR1vjW+bBuQYJpb2HKrb6raklf+wIPcm+UOe8OP8ztgh5aKOAum6NghLYhRILDGTxW5HuslTYRYLY+ei6/5nYqPGASnCiB+dJudPn5Qjsv1eC0mWDtIUfd5ahsdQwZYOF1fxXimbt4S4R2o9gJoZWog0GnqScwII/RE0UrmaitwCdxpD3uOQsFISv6GozP5IOHyXOSTmT4pKbj3dOOatiM152S22jbxfRVI0BN3Jk4c7NFY9uw5RbpwXfY/ndNoNlNlP6widi/dCP8JJrZvXlFG+zv/6SNPtF126KbR54CuKsxkMdNf+2Q9PF6HzWFQckcb1Pkm+yND/D/EG+OhsgeAuZ+oJUw+8eAlhUbJx/eGIPgB0HjXkndp+Mk3l4P7OcwWcenN47fbRY5r2CPlMLRlAuD7hvygSgCjtpn/kt7lO15tiGkSOaP81Sk5NTm9m8zOdi7NunZBX//wNBN5l+tuzhPNlQsmi7nxzxj9dDN5++FjGlKLYNABGAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 119286,
+  "completion_tokens": 179,
+  "total_tokens": 119465,
+  "cost": 0.006668575,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 118839,
+   "cache_write_tokens": 445,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.006668575,
+   "upstream_inference_prompt_cost": 0.006221075,
+   "upstream_inference_completions_cost": 0.0004475
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 49,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

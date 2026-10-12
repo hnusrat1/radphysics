@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791829572-vzqBOHVuTkI82XSAYIqg",
+ "object": "chat.completion",
+ "created": 1791829572,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "GMICloud",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "The code is not persistent between calls (each call is a fresh process; I need to write the module to a file to reuse it). Let me save the MC module to a file so I can import it in subsequent calls.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_1d3552b1eee84e0a8f996c99",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"# Save the working MC module to disk for reuse\\nmodule_code = r'''\\nimport numpy as np, time, os\\n\\nPH_EDGES = np.array([0,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,\\n                     0.8,0.85,0.9,0.95,1,1.05,1.1,1.15,1.2,1.25,1.3,1.35,1.4])\\nCT_EDGES = np.array([-1,-0.8,-0.6,-0.4,-0.2,0,0.2,0.4,0.6,0.8,1])\\n\\ndef seg_cyl_len(p0, p1, z0=5.0, R=1.0, hz=0.2):\\n    x0=p0[:,0]; y0=p0[:,1]; z0p=p0[:,2]\\n    sx=p1[:,0]-x0; sy=p1[:,1]-y0; sz=p1[:,2]-z0p\\n    L=np.sqrt(sx*sx+sy*sy+sz*sz); N=len(L)\\n    dx=np.zeros(N); dy=np.zeros(N); dz=np.zeros(N)\\n    nz=L>1e-15\\n    dx[nz]=sx[nz]/L[nz]; dy[nz]=sy[nz]/L[nz]; dz[nz]=sz[nz]/L[nz]\\n    a=(dx**2+dy**2)*L**2; b=2*(x0*dx+y0*dy)*L; c=x0**2+y0**2-R**2\\n    t1=np.zeros(N); t2=np.ones(N)\\n    par=a<1e-15; npar=~par\\n    disc=b[npar]**2-4*a[npar]*c[npar]; sq=np.sqrt(np.maximum(disc,0))\\n    t1[npar]=(-b[npar]-sq)/(2*a[npar]); t2[npar]=(-b[npar]+sq)/(2*a[npar])\\n    t1[par]=0.0; t2[par]=1.0\\n    q_ok=disc>0\\n    bad=np.zeros(N,bool); bad[par]=c[par]>0; bad[npar]=~q_ok\\n    tLo_r=np.clip(t1,0,1); tHi_r=np.clip(t2,0,1)\\n    zlo=z0-hz/2; zhi=z0+hz/2\\n    with np.errstate(divide='ignore',invalid='ignore'):\\n        tz_lo=np.where((np.abs(dz)*L)>1e-15,(zlo-z0p)/(dz*L),-1e9)\\n        tz_hi=np.where((np.abs(dz)*L)>1e-15,(zhi-z0p)/(dz*L),1e9)\\n    tLo_z=np.minimum(tz_lo,tz_hi); tHi_z=np.maximum(tz_lo,tz_hi)\\n    tLo=np.maximum(tLo_r,np.clip(tLo_z,0,1)); tHi=np.minimum(tHi_r,np.clip(tHi_z,0,1))\\n    good=(tHi>tLo)&~bad\\n    length=np.zeros(N); length[good]=L[good]*(tHi[good]-tLo[good])\\n    return length,good\\n\\ndef rotate_dir(d,cosT,sinT,phi):\\n    N=d.shape[0]\\n    ref=np.tile(np.array([0.,0.,1.]),(N,1))\\n    par=np.abs(d[:,2])>0.9\\n    if par.any(): ref[par]=np.array([1.,0.,0.])\\n    e1=np.cross(ref,d); e1/=np.linalg.norm(e1,axis=1,keepdims=True)+1e-30\\n    e2=np.cross(d,e1)\\n    return cosT[:,None]*d+sinT[:,None]*(np.cos(phi)[:,None]*e1+np.sin(phi)[:,None]*e2)\\n\\ndef sample_compton_angle(E_arr):\\n    E_arr=np.asarray(E_arr,float); N=len(E_arr)\\n    out=np.empty(N); got=np.zeros(N,bool); tries=0\\n    while not got.all():\\n        mu=np.random.uniform(-1,1,N)\\n        alpha=E_arr/0.51099895\\n        r=1.0/(1.0+alpha*(1.0-mu))\\n        f=r*r*(r+1.0/r-(1.0-mu**2))\\n        acc=np.random.uniform(0,3.0,N)<f\\n        sel=(~got)&acc; out[sel]=mu[sel]; got[sel]=True; tries+=1\\n        if tries>200000: out[~got]=1.0; got[~got]=True\\n    return out\\n\\ndef compton_after(E_arr,mu_arr):\\n    alpha=E_arr/0.51099895\\n    Ep=E_arr/(1.0+alpha*(1.0-mu_arr))\\n    Te=E_arr-Ep\\n    sinmu=np.sqrt(np.maximum(1-mu_arr**2,0))\\n    num=E_arr-Ep*mu_arr\\n    den=np.sqrt((E_arr-Ep*mu_arr)**2+(Ep*sinmu)**2)\\n    return Ep,Te,num/den\\n\\ndef boundary_dist(p,d,HW=15.0,ZD=30.0):\\n    N=p.shape[0]; t=np.full(N,1e9)\\n    z=p[:,2]; dz=d[:,2]\\n    m=dz>1e-12; t[m]=np.minimum(t[m],(ZD-z[m])/dz[m])\\n    m=dz<-1e-12; t[m]=np.minimum(t[m],(0.0-z[m])/dz[m])\\n    for axis in (0,1):\\n        pos=p[:,axis]; dd=d[:,axis]\\n        m=dd>1e-12; t[m]=np.minimum(t[m],(HW-pos[m])/dd[m])\\n        m=dd<-1e-12; t[m]=np.minimum(t[m],(-HW-pos[m])/dd[m])\\n    t[t<0]=0; return t\\n\\ndef load_xcom():\\n    from scipy.interpolate import interp1d\\n    d=np.loadtxt('/tmp/data/xcom_water.txt',comments='#')\\n    _E=d[:,0]; _coh=d[:,1]; _incoh=d[:,2]; _pe=d[:,3]; _pn=d[:,4]; _pef=d[:,5]; _tot=d[:,6]\\n    return dict(f_coh=interp1d(_E,_coh,bounds_error=False,fill_value=(_coh[0],_coh[-1])),\\n                f_incoh=interp1d(_E,_incoh,bounds_error=False,fill_value=(_incoh[0],_incoh[-1])),\\n                f_pe=interp1d(_E,_pe,bounds_error=False,fill_value=(_pe[0],_pe[-1])),\\n                f_pair=interp1d(_E,_pn+_pef,bounds_error=False,fill_value=(_pn[0]+_pef[0],_pn[-1]+_pef[-1])),\\n                f_tot=interp1d(_E,_tot,bounds_error=False,fill_value=(_tot[0],_tot[-1])))\\n\\ndef run_photon_mc(N=200000, depths=(5.0,), seed=12345, maxiter=80, HW=15.0, ZD=30.0, field_half=5.0):\\n    D=load_xcom(); rng=np.random.default_rng(seed); np.random.seed(seed)\\n    E1=1.1732; E2=1.3325\\n    u=rng.uniform(-field_half,field_half,N); v=rng.uniform(-field_half,field_half,N)\\n    norm=np.sqrt(u**2+v**2+100**2)\\n    dx=u/norm; dy=v/norm; dz=100.0/norm\\n    x=u.copy(); y=v.copy(); z=np.zeros(N)\\n    E=np.where(rng.random(N)<0.5,E1,E2)\\n    primary=np.ones(N,bool); alive=np.ones(N,bool)\\n    nz=len(depths)\\n    prim_tl=np.zeros(nz); scat_tl=np.zeros(nz)\\n    spec_prim=np.zeros(28); spec_scat=np.zeros(28)\\n    ang_prim=np.zeros(10); ang_scat=np.zeros(10)\\n    eflu_prim=0.0; eflu_scat=0.0\\n    imain=None\\n    for j,z0j in enumerate(depths):\\n        if abs(z0j-5.0)<1e-9: imain=j\\n    int_main={'comp':0,'pe':0,'pair':0,'ray':0,'comp_prim':0,'pe_prim':0,'pair_prim':0,'ray_prim':0}\\n    t0=time.time()\\n    for it in range(maxiter):\\n        ncur=len(x)\\n        if int(alive.sum())==0: break\\n        mu_tot=D['f_tot'](E)\\n        s=-np.log(np.maximum(rng.random(ncur),1e-30))/np.maximum(mu_tot,1e-10)\\n        tb=boundary_dist(np.stack([x,y,z],axis=1),np.stack([dx,dy,dz],axis=1),HW,ZD)\\n        s=np.minimum(s,tb); s=np.maximum(s,1e-12)\\n        p0=np.stack([x,y,z],axis=1)\\n        x2=x+dx*s; y2=y+dy*s; z2=z+dz*s\\n        p1=np.stack([x2,y2,z2],axis=1)\\n        if imain is not None:\\n            length,good=seg_cyl_len(p0,p1,z0=depths[imain])\\n            ebin=np.clip(np.searchsorted(PH_EDGES,E,side='right')-1,0,27)\\n            cbin=np.clip(np.searchsorted(CT_EDGES,dz,side='right')-1,0,9)\\n            m=good&alive\\n            mp=m&primary; ms=m&(~primary)\\n            spec_prim+=np.bincount(ebin[mp],weights=length[mp],minlength=28)\\n            spec_scat+=np.bincount(ebin[ms],weights=length[ms],minlength=28)\\n            ang_prim+=np.bincount(cbin[mp],weights=length[mp],minlength=10)\\n            ang_scat+=np.bincount(cbin[ms],weights=length[ms],minlength=10)\\n            eflu_prim+=float(np.sum(length[mp]*E[mp])); eflu_scat+=float(np.sum(length[ms]*E[ms]))\\n        for j,z0j in enumerate(depths):\\n            length,_=seg_cyl_len(p0,p1,z0=z0j)\\n            mp=(length>0)&alive&primary; ms=(length>0)&alive&(~primary)\\n            prim_tl[j]+=float(length[mp].sum()); scat_tl[j]+=float(length[ms].sum())\\n        x=x2; y=y2; z=z2\\n        exited=(x<-HW)|(x>HW)|(y<-HW)|(y>HW)|(z<0)|(z>ZD)\\n        alive &= ~exited\\n        ia=np.where(alive)[0]; nia=len(ia)\\n        if nia==0: continue\\n        Ea=E[ia]; mu_a=D['f_tot'](Ea)\\n        pcoh=D['f_coh'](Ea)/mu_a; pincoh=D['f_incoh'](Ea)/mu_a\\n        ppe=D['f_pe'](Ea)/mu_a; ppair=D['f_pair'](Ea)/mu_a\\n        r=rng.random(nia)\\n        if imain is not None:\\n            z0j=depths[imain]\\n            incyl=(np.abs(z[ia]-z0j)<=0.1)&(x[ia]**2+y[ia]**2<=1.0)\\n        else:\\n            incyl=np.zeros(nia,bool)\\n        prim_a=primary[ia]\\n        mcomp=(r<pincoh)\\n        if mcomp.sum()>0:\\n            idx=ia[mcomp]; is_prim=prim_a[mcomp]\\n            mu_arr=sample_compton_angle(E[idx])\\n            Ep,Te,cf=compton_after(E[idx],mu_arr)\\n            newd=rotate_dir(np.stack([dx[idx],dy[idx],dz[idx]],axis=1),mu_arr,np.sqrt(np.maximum(1-mu_arr**2,0)),rng.uniform(0,2*np.pi,len(idx)))\\n            dx[idx]=newd[:,0]; dy[idx]=newd[:,1]; dz[idx]=newd[:,2]\\n            E[idx]=Ep; primary[idx]=False\\n            ici=incyl[mcomp]; int_main['comp']+=int(ici.sum()); int_main['comp_prim']+=int((ici&is_prim).sum())\\n        mcoh=(r>=pincoh)&(r<pincoh+pcoh)\\n        if mcoh.sum()>0:\\n            idx=ia[mcoh]; n=len(idx)\\n            mu_c=np.empty(n); got=np.zeros(n,bool); tr=0\\n            while not got.all():\\n                cand=np.random.uniform(-1,1,n)\\n                acc=np.random.uniform(0,2,n)<(1+cand**2)\\n                sel=(~got)&acc; mu_c[sel]=cand[sel]; got[sel]=True; tr+=1\\n                if tr>200000: mu_c[~got]=1; got[~got]=True\\n            newd=rotate_dir(np.stack([dx[idx],dy[idx],dz[idx]],axis=1),mu_c,np.sqrt(np.maximum(1-mu_c**2,0)),rng.uniform(0,2*np.pi,n))\\n            dx[idx]=newd[:,0]; dy[idx]=newd[:,1]; dz[idx]=newd[:,2]\\n            is_prim=prim_a[mcoh]; primary[idx]=False\\n            ici=incyl[mcoh]; int_main['ray']+=int(ici.sum()); int_main['ray_prim']+=int((ici&is_prim).sum())\\n        mpe=(r>=pincoh+pcoh)&(r<pincoh+pcoh+ppe)\\n        if mpe.sum()>0:\\n            idx=ia[mpe]; is_prim=prim_a[mpe]\\n            ici=incyl[mpe]; int_main['pe']+=int(ici.sum()); int_main['pe_prim']+=int((ici&is_prim).sum())\\n            alive[idx]=False\\n        mpair=(r>=pincoh+pcoh+ppe)\\n        if mpair.sum()>0:\\n            idx=ia[mpair]; is_prim=prim_a[mpair]\\n            ici=incyl[mpair]; int_main['pair']+=int(ici.sum()); int_main['pair_prim']+=int((ici&is_prim).sum())\\n            alive[idx]=False\\n            for j in range(len(idx)):\\n                nvec=rng.standard_normal(3); nvec/=np.linalg.norm(nvec)+1e-30\\n                for sgn in (1.0,-1.0):\\n                    x=np.append(x,x[idx[j]]); y=np.append(y,y[idx[j]]); z=np.append(z,z[idx[j]])\\n                    dx=np.append(dx,sgn*nvec[0]); dy=np.append(dy,sgn*nvec[1]); dz=np.append(dz,sgn*nvec[2])\\n                    E=np.append(E,0.511); primary=np.append(primary,False); alive=np.append(alive,True)\\n    alive[:]=False\\n    return dict(prim_tl=prim_tl,scat_tl=scat_tl,spec_prim=spec_prim,spec_scat=spec_scat,\\n                ang_prim=ang_prim,ang_scat=ang_scat,eflu_prim=eflu_prim,eflu_scat=eflu_scat,\\n                int_main=int_main,N=N,time=time.time()-t0,iters=it)\\n'''\\nopen('mc_module.py','w').write(module_code)\\nprint(\\\"saved mc_module.py\\\")\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The code is not persistent between calls (each call is a fresh process; I need to write the module to a file to reuse it). Let me save the MC module to a file so I can import it in subsequent calls.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 83920,
+  "completion_tokens": 3802,
+  "total_tokens": 87722,
+  "cost": 0.0028913976,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 74688,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0028913976,
+   "upstream_inference_prompt_cost": 0.0021994336,
+   "upstream_inference_completions_cost": 0.000691964
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 44,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

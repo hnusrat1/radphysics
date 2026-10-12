@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791829610-9dvkosgHY017UioLQZOF",
+ "object": "chat.completion",
+ "created": 1791829610,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "The module isn't found because the sys.path insertion from before wasn't persisted across calls \u2014 I need to add it again before re-running the script.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_019tVuh4dVuufvDCt7aEMfsz",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport sys; sys.path.insert(0,'/tmp/work')\\nimport subprocess\\nprint(subprocess.run(['python','ana.py'],capture_output=True,text=True,cwd='/tmp/work'))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The module isn't found because the sys.path insertion from before wasn't persisted across calls \u2014 I need to add it again before re-running the script.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS1QgKEAgSGAI4AUIIdGhpbmtpbmcSDMoSEJfOgJX9Mf1ltRoMIQLm5ZOoZUwv4LvvIjDwtqbLKwI4ZoKoZvkG/6xqS2EZt0lUNK6vd4DT1Df3Hz1TtCAKlilOwhdIHfDgZsQq8gfmk8GWLEcAxQaHOM+Af2P6eOEGbEOYVIwgiUwSTZT5gOrNNxzaqHIepB/N3HfpncXA3lDYHaGb2KrpkHXQV/M7AA2NeZWumqHTetszrlBYtKPhv0tGg+cR+bKhIB5Ca5Ku0c6sDjHKhUlcMnNxyAM1zPvrQC5bojpKb3t4/PnVa7ZsWmVShG/zsdk90KTzpj9TGNNHdGi4ElHXgAd9zCy0NCOhYjLEfkq1GA1Oy2iToTG7/FRwnJ7JJOKI0K8QrsBM/YT96qzkrU3ZPLdKzJDr5Xa19xU0Zgh1cR49Ka0Equuy7cPzyEeOdju9gpR5lJO5GLQaGkwXLCuvSFYm55IoLKePiy9OOzjbOeQDhg9cAuAkmL/wSx3UoSBKJYtUS/3dnAqUetwXXTEwT302Ztspc1SR7mEYTuPrCzDNH+14J5Rxh12xD4YFoh1w7YCHRsQl4AVpow/dG5bbXlhCDdxnCWKQc1hoGgMv1AOPxEoyfOUsUKwI8TcwfnYjS5D4cMk1S5/ebr0+0faF9X4fa7LpLd6fgj7QzJqF/wIHoyEFROzvE4hBiPhymWSJHK2fdqvrdbVarc9uPpf/gAZZdskRAhJPclt9xqfTp9lAe33UqnZPX9FWxmj8srBMj21SY776hACo0WRWvOpMtMt4Y3n0xXWTXytSWVcOIFf+5+w6JhF1ISWFApmoX7wCf59jLRmSwPh+pr4TTu7FlGGXiwHjg7iPdxSHgn5tIBpZtf/VHMwX9gWo4aj1hPy4w1XSeFuAO6O76+8GZOoaO+628x6bbSlCIaSUDME5KitWsxJbH3epmU5jMke/9uSZHWTp5KDb71lOlLuq2fvnVmmoiev7M+NZekx+HYk8CJuC7Z18rYeudAEIlh/dT8OoNfxP9jglfIUEy+Tycx0jrni128/iiUMwmNc+jhKwBebZaFAJoSCdFBTjyn2jqGOsLLLphMYWsg7RnuwRBgmsS77WR7QDsZ20m25+RuCKs4xaSVe564e0AJnm+vZ7w/H+v32KefAA8F+trZ0n+TsC/AqqdwVK4YEgGnBCf6LCZN5bzo9PgdSWLLshWCmGOQ7QTsdbHeCdgyeYmZhbagj19q3zTqtjLyvAlQ5T65ihvzPfh3VtF7HX9hYfQEzGdanhlzP3X6luBL2AJrBj6kY1OhM05jY1cZr3vr3HEDk5J8fPeYTRwmveQQfY6JSFQYcdp+vGsm25kuh2x27/cCrGrKUMUk1XmuyPNqVO+ulBT7PeWSYU6+rHtaMnfkhhuJA7b8nP2OLqP8wrgmmh7rOoORjbA0g/ROQW1ajOzds2lrxbEKuDZ9pm1/iJTKNacg/2SoUKYYhvvhgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 118841,
+  "completion_tokens": 214,
+  "total_tokens": 119055,
+  "cost": 0.01741675,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 99815,
+   "cache_write_tokens": 19024,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.01741675,
+   "upstream_inference_prompt_cost": 0.01688175,
+   "upstream_inference_completions_cost": 0.000535
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 97,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

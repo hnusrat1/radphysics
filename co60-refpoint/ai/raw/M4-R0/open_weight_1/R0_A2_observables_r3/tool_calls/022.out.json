@@ -1,0 +1,9 @@
+{
+ "stdout": "interaction fractions all: {'comp': np.float64(0.9433793299491042), 'pe': np.float64(0.040904371687104216), 'pair': np.float64(0.00020071317854674912), 'rayleigh': np.float64(0.015515585185244792)}\nenergy-transfer fractions all: {'comp': np.float64(0.9955010460027192), 'pe': np.float64(0.004326799096446603), 'pair': np.float64(0.00017215490083434805), 'rayleigh': np.float64(0.0)}\ninteraction fractions primary: {'comp': np.float64(0.9989290390293009), 'pe': np.float64(3.802073615632465e-05), 'pair': np.float64(0.0004454646935731247), 'rayleigh': np.float64(0.0005874755409697346)}\ninteraction fractions scattered: {'comp': np.float64(0.899945408898178), 'pe': np.float64(0.07285747981734461), 'pair': np.float64(9.34371582997734e-06), 'rayleigh': np.float64(0.027187767568647474)}\nscattered share of interactions: 0.5612009683481026\n",
+ "stderr": "Traceback (most recent call last):\n  File \"/tmp/work/_call_022.py\", line 153, in <module>\n    counts_all,meanE_all,dir_all=electron_source_bins(groups_prim+groups_scat, EL_EDGES)\n                                 ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/work/_call_022.py\", line 121, in electron_source_bins\n    pdf,Ee,dPdE = compton_elec_pdf(E, EG_fine)\n                  ~~~~~~~~~~~~~~~~^^^^^^^^^^^^\n  File \"/tmp/work/_call_022.py\", line 49, in compton_elec_pdf\n    pdf=counts/widths[:-1]\n        ~~~~~~^~~~~~~~~~~~\nValueError: operands could not be broadcast together with shapes (21,) (20,) \n",
+ "exit_code": 1,
+ "timed_out": false,
+ "wall_s": 0.61,
+ "stdout_truncated": false,
+ "stderr_truncated": false
+}

@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791830626-jL1ryQJJlKMn8XbQAKgF",
+ "object": "chat.completion",
+ "created": 1791830626,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "OK good, the setup works. Now let me add the rest of the functions and the actual Monte Carlo in subsequent calls. I'll try to do it in manageable pieces.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_cef8e9720a4a43e796bfda77",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nfrom scipy.interpolate import interp1d\\nimport json, sys\\n\\n# (Setup from previous call persists in working directory)\\n# Let me rewrite everything in one complete script\\n\\nnp.random.seed(42)\\n\\nm_e = 0.51099895\\nr_e = 2.8179403262e-13\\nNA = 6.02214076e23\\nSSD = 100.0; fh = 5.0; zs = 0.0; zc = 5.0; zh = 0.1\\nzlo = zc - zh; zhi = zc + zh; Rc = 1.0\\nth = np.arctan(fh/SSD); Opyr = 4*np.arcsin(np.sin(th)**2)\\nne = 10.0*NA/18.015\\n\\nea = np.array([1.0, 1.1, 1.1732, 1.2, 1.25, 1.3, 1.3325, 1.4, 1.5])\\nmuT = np.array([0.07070, 0.06780, 0.06590, 0.06520, 0.06400, 0.06280, 0.06220, 0.06080, 0.05780])\\nmuC = np.array([0.06950, 0.06650, 0.06430, 0.06350, 0.06200, 0.06060, 0.06000, 0.05850, 0.05550])\\nmuP = np.array([0.00040, 0.00030, 0.00025, 0.00022, 0.00020, 0.00017, 0.00015, 0.00013, 0.00010])\\nmuPP=np.array([0.0, 0.0, 0.00020, 0.00028, 0.00050, 0.00080, 0.00100, 0.00130, 0.00150])\\nmuR = np.array([0.00080, 0.00068, 0.00060, 0.00055, 0.00050, 0.00043, 0.00040, 0.00035, 0.00030])\\n\\nfT = interp1d(ea, muT, kind='cubic', bounds_error=False, fill_value='extrapolate')\\nfC = interp1d(ea, muC, kind='cubic', bounds_error=False, fill_value='extrapolate')\\nfP = interp1d(ea, muP, kind='cubic', bounds_error=False, fill_value='extrapolate')\\nfPP= interp1d(ea, muPP, kind='cubic', bounds_error=False, fill_value='extrapolate')\\nfR = interp1d(ea, muR, kind='cubic', bounds_error=False, fill_value='extrapolate')\\n\\ndef mu_t(E): return float(fT(np.clip(E,0.01,10.0)))\\ndef mu_c(E): return float(fC(np.clip(E,0.01,10.0)))\\ndef mu_ph(E): return float(fP(np.clip(E,0.01,10.0)))\\ndef mu_pp(E): return float(fPP(np.clip(E,0.01,10.0)))\\ndef mu_rl(E): return float(fR(np.clip(E,0.01,10.0)))\\n\\n# physics\\ndef c_E(E,ct): return E/(1.0+(E/m_e)*(1.0-ct))\\ndef KN(E,ct):\\n    thv=np.arccos(np.clip(ct,-1.,1.)); Eo=c_E(E,ct)\\n    return (r_e**2/2.0)*(Eo/E)**2*(E/Eo+Eo/E-np.sin(thv)**2)\\n\\ndef sample_KN(E):\\n    mx=r_e**2*1.05\\n    while True:\\n        ct=np.random.uniform(-1.,1.)\\n        if np.random.random()*mx<KN(E,ct): break\\n    Eo=c_E(E,ct); te=E-Eo\\n    num=E-Eo*ct; den=np.sqrt(E**2+Eo**2-2*E*Eo*ct)\\n    ce=num/den if den>0 else 1.0\\n    return Eo,ct,te,ce\\n\\ndef rot(v,ct):\\n    u=v/np.linalg.norm(v); thv=np.arccos(np.clip(ct,-1.,1.))\\n    ph=np.random.uniform(0.,2.*np.pi)\\n    if abs(u[2])<0.999: w=np.cross(u,np.array([0.,0.,1.]))\\n    else: w=np.cross(u,np.array([1.,0.,0.]))\\n    w=w/np.linalg.norm(w); vv=np.cross(w,u)\\n    return u*ct+w*np.sin(thv)*np.cos(ph)+vv*np.sin(thv)*np.sin(ph)\\n\\ndef src_samp():\\n    E=1.1732 if np.random.random()<0.5 else 1.3325\\n    x=np.random.uniform(-fh,fh); y=np.random.uniform(-fh,fh)\\n    d=np.array([x,y,SSD]); d=d/np.linalg.norm(d)\\n    return E,d,x,y\\n\\ndef sample_proc(E):\\n    t=mu_c(E)+mu_ph(E)+mu_pp(E)+mu_rl(E); r=np.random.random()*t\\n    if r<mu_c(E): return 'compton'\\n    elif r<mu_c(E)+mu_ph(E): return 'photoelectric'\\n    elif r<mu_c(E)+mu_ph(E)+mu_pp(E): return 'pair'\\n    else: return 'rayleigh'\\n\\ndef intersect_cyl(ori, direc, R, zL, zH):\\n    d=direc/np.linalg.norm(direc)\\n    if d[2]>0:\\n        tzL=(zL-ori[2])/d[2]; tzH=(zH-ori[2])/d[2]\\n    elif d[2]<0:\\n        tzL=(zH-ori[2])/d[2]; tzH=(zL-ori[2])/d[2]\\n    else:\\n        if ori[2]<zL or ori[2]>zH: return None\\n        tzL=-1e30; tzH=1e30\\n    a=d[0]**2+d[1]**2\\n    if a<1e-15:\\n        if ori[0]**2+ori[1]**2<=R**2:\\n            return (tzL,tzH) if tzL<tzH else (tzH,tzL)\\n        return None\\n    b=2.0*(ori[0]*d[0]+ori[1]*d[1]); c=ori[0]**2+ori[1]**2-R**2\\n    disc=b*b-4.0*a*c\\n    if disc<0: return None\\n    sq=np.sqrt(disc); t1=(-b-sq)/(2.0*a); t2=(-b+sq)/(2.0*a)\\n    if t1>t2: t1,t2=t2,t1\\n    te=max(tzL,t1); tx=min(tzH,t2)\\n    if te>=tx or tx<0: return None\\n    return (te,tx)\\n\\nprint(\\\"Setup complete\\\", file=sys.stderr)\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "OK good, the setup works. Now let me add the rest of the functions and the actual Monte Carlo in subsequent calls. I'll try to do it in manageable pieces.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 76638,
+  "completion_tokens": 1783,
+  "total_tokens": 78421,
+  "cost": 0.001928194576,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 73728,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001928194576,
+   "upstream_inference_prompt_cost": 0.001604187816,
+   "upstream_inference_completions_cost": 0.00032400676
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 35,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

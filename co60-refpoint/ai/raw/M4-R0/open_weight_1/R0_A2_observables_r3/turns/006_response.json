@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791829402-zwGfhw8izOmunMB0vti8",
+ "object": "chat.completion",
+ "created": 1791829402,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "GMICloud",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Bug: axis test returned 0! The segment from z=4.9 to 5.1 along axis should give length 0.2. Let me debug: dz=1, L=0.2; a=(0)*L\u00b2=0 \u2192 disc=b\u00b2\u22124ac = 0 \u2212 4*0*(c) = 0 \u2192 ok=False because disc>0 fails. Oh, for a=0 (parallel to axis), the radial distance is constant: if c<=0 (start inside radius) then the whole segment is inside radially. Need special handling for a\u22480.\n\nLet me fix: for photons nearly parallel to the axis (a tiny), radial interval = [0,1] if c<=0 else none.\n\nAlso c = x0\u00b2+y0\u00b2\u2212R\u00b2: for axis test, c=\u22121 \u2192 inside. So handle a<eps.\n\nLet me fix the function.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_28fe04193c59468eb9619954",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"def seg_cyl_len(p0, p1, z0=5.0, R=1.0, hz=0.2):\\n    x0=p0[:,0]; y0=p0[:,1]; z0p=p0[:,2]\\n    sx=p1[:,0]-x0; sy=p1[:,1]-y0; sz=p1[:,2]-z0p\\n    L=np.sqrt(sx*sx+sy*sy+sz*sz)\\n    N=len(L)\\n    dx=np.zeros(N); dy=np.zeros(N); dz=np.zeros(N)\\n    nz=L>1e-15\\n    dx[nz]=sx[nz]/L[nz]; dy[nz]=sy[nz]/L[nz]; dz[nz]=sz[nz]/L[nz]\\n    a = (dx**2+dy**2)*L**2\\n    b = 2*(x0*dx+y0*dy)*L\\n    c = x0**2+y0**2-R**2\\n    t1=np.zeros(N); t2=np.ones(N)\\n    par = a<1e-15   # parallel to axis: radial distance const\\n    # for non-parallel: quadratic\\n    npar=~par\\n    disc = b[npar]**2-4*a[npar]*c[npar]\\n    sq=np.sqrt(np.maximum(disc,0))\\n    t1[npar] = (-b[npar]-sq)/(2*a[npar])\\n    t2[npar] = (-b[npar]+sq)/(2*a[npar])\\n    # parallel case: inside radius if c<=0\\n    t1[par]=0.0; t2[par]=1.0\\n    ok = np.ones(N,bool)\\n    q_ok = disc>0\\n    ok[npar] = q_ok\\n    # for parallel, need c<=0; for non-par, roots real\\n    bad = np.zeros(N,bool)\\n    bad[par] = c[par]>0\\n    bad[npar] = ~q_ok\\n    tLo_r = np.clip(t1,0,1); tHi_r = np.clip(t2,0,1)\\n    zlo=z0-hz/2; zhi=z0+hz/2\\n    tz_lo = np.where(np.abs(dz)>1e-12, (zlo-z0p)/(dz*L), -1e9)\\n    tz_hi = np.where(np.abs(dz)>1e-12, (zhi-z0p)/(dz*L),  1e9)\\n    tLo_z = np.minimum(tz_lo,tz_hi); tHi_z=np.maximum(tz_lo,tz_hi)\\n    tLo = np.maximum(tLo_r, np.clip(tLo_z,0,1))\\n    tHi = np.minimum(tHi_r, np.clip(tHi_z,0,1))\\n    good = (tHi>tLo)&~bad\\n    length=np.zeros(N); length[good]=L[good]*(tHi[good]-tLo[good])\\n    return length, good\\n\\np0=np.array([[0,0,4.9],[1.5,0,5.0],[0.5,0,4.8],[0,0,4.95]])\\np1=np.array([[0,0,5.1],[1.5,0,5.2],[1.2,0.7,5.4],[0,0,5.05]])\\nprint(seg_cyl_len(p0,p1)[0])\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Bug: axis test returned 0! The segment from z=4.9 to 5.1 along axis should give length 0.2. Let me debug: dz=1, L=0.2; a=(0)*L\u00b2=0 \u2192 disc=b\u00b2\u22124ac = 0 \u2212 4*0*(c) = 0 \u2192 ok=False because disc>0 fails. Oh, for a=0 (parallel to axis), the radial distance is constant: if c<=0 (start inside radius) then the whole segment is inside radially. Need special handling for a\u22480.\n\nLet me fix: for photons nearly parallel to the axis (a tiny), radial interval = [0,1] if c<=0 else none.\n\nAlso c = x0\u00b2+y0\u00b2\u2212R\u00b2: for axis test, c=\u22121 \u2192 inside. So handle a<eps.\n\nLet me fix the function.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 55498,
+  "completion_tokens": 1012,
+  "total_tokens": 56510,
+  "cost": 0.0017194996,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 48283,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0017194996,
+   "upstream_inference_prompt_cost": 0.0015353156,
+   "upstream_inference_completions_cost": 0.000184184
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 190,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

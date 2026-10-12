@@ -1,0 +1,51 @@
+slot: frontier_google
+provider: Google via OpenRouter
+api: openai_compatible
+model_requested: google/gemini-2.5-flash-lite
+settings:
+  reasoning:
+    effort: high
+  usage:
+    include: true
+condition: A1
+task: events
+config: R0
+prompt_version: v1
+prompt_sha256:
+  system_A1.txt: e06e9a5ea06c2f5ca29739818f324713f2dbbf775f019c11018d1aa7ef5416b8
+  task_events_R0.txt: 871cffaf3fb764b91cfda15169f125951e9eb985bfe79f27e1ac8bc6b710cf73
+started_utc: '2026-10-12T18:46:25Z'
+turns:
+- n: 1
+  usage:
+    input_tokens: 1291
+    output_tokens: 2190
+    reasoning_tokens: 2029
+  stop: stop
+  wall_s: 11.6
+  http_attempts: 1
+  model_reported: google/gemini-2.5-flash-lite
+  tool_calls: 0
+- n: 2
+  usage:
+    input_tokens: 1510
+    output_tokens: 4107
+    reasoning_tokens: 4000
+  stop: stop
+  wall_s: 74.69
+  http_attempts: 2
+  model_reported: google/gemini-2.5-flash-lite
+  tool_calls: 0
+tool_calls: 0
+retries: 1
+outcome: parse_failure
+model_reported: google/gemini-2.5-flash-lite
+first_parse_errors:
+- no JSON object found in the reply
+parse_errors:
+- '$.events: 0 items, expected 150-250'
+finished_utc: '2026-10-12T18:47:52Z'
+usage_total:
+  input_tokens: 2801
+  output_tokens: 6297
+  reasoning_tokens: 6029

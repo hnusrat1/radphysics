@@ -1,0 +1,69 @@
+slot: frontier_google
+provider: Google via OpenRouter
+api: openai_compatible
+model_requested: google/gemini-2.5-flash-lite
+settings:
+  reasoning:
+    effort: high
+  usage:
+    include: true
+condition: A1
+task: events
+config: R0
+prompt_version: v1
+prompt_sha256:
+  system_A1.txt: e06e9a5ea06c2f5ca29739818f324713f2dbbf775f019c11018d1aa7ef5416b8
+  task_events_R0.txt: 871cffaf3fb764b91cfda15169f125951e9eb985bfe79f27e1ac8bc6b710cf73
+started_utc: '2026-10-12T18:18:20Z'
+turns:
+- n: 1
+  usage:
+    input_tokens: 1291
+    output_tokens: 15210
+    reasoning_tokens: 13722
+  stop: tool_calls
+  wall_s: 1504.61
+  http_attempts: 7
+  model_reported: google/gemini-2.5-flash-lite
+  tool_calls: 1
+- n: 2
+  usage:
+    input_tokens: 17530
+    output_tokens: 12410
+    reasoning_tokens: 0
+  stop: stop
+  wall_s: 63.11
+  http_attempts: 2
+  model_reported: google/gemini-2.5-flash-lite
+  tool_calls: 0
+- n: 3
+  usage:
+    input_tokens: 27322
+    output_tokens: 2051
+    reasoning_tokens: 413
+  stop: stop
+  wall_s: 33.37
+  http_attempts: 2
+  model_reported: google/gemini-2.5-flash-lite
+  tool_calls: 1
+- n: 4
+  usage:
+    input_tokens: 41395
+    output_tokens: 24446
+    reasoning_tokens: 0
+  stop: stop
+  wall_s: 81.48
+  http_attempts: 2
+  model_reported: google/gemini-2.5-flash-lite
+  tool_calls: 0
+tool_calls: 2
+retries: 1
+outcome: ok
+model_reported: google/gemini-2.5-flash-lite
+first_parse_errors:
+- '$.events: 78 items, expected 150-250'
+finished_utc: '2026-10-12T18:46:25Z'
+usage_total:
+  input_tokens: 87538
+  output_tokens: 54117
+  reasoning_tokens: 14135

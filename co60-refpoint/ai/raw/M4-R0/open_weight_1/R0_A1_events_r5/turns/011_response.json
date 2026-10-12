@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791830264-kjvAj1Lk1kdBSyaVT5aa",
+ "object": "chat.completion",
+ "created": 1791830264,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "OK I keep having issues with running multiple calls. Let me write the complete script in a single call, very carefully.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_076c1f40135248599f7cae99",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nfrom scipy.interpolate import interp1d\\nimport json\\n\\nnp.random.seed(42)\\n\\n# === Constants ===\\nm_e = 0.51099895\\nr_e = 2.8179403262e-13\\nNA = 6.02214076e23\\n\\n# === Cross sections for water ===\\ne_arr = np.array([1.0, 1.1, 1.1732, 1.2, 1.25, 1.3, 1.3325, 1.4, 1.5])\\nmu_tot_v = np.array([0.07070, 0.06780, 0.06590, 0.06520, 0.06400, 0.06280, 0.06220, 0.06080, 0.05780])\\nmu_comp_v = np.array([0.06950, 0.06650, 0.06430, 0.06350, 0.06200, 0.06060, 0.06000, 0.05850, 0.05550])\\nmu_phot_v = np.array([0.00040, 0.00030, 0.00025, 0.00022, 0.00020, 0.00017, 0.00015, 0.00013, 0.00010])\\nmu_pair_v = np.array([0.0, 0.0, 0.00020, 0.00028, 0.00050, 0.00080, 0.00100, 0.00130, 0.00150])\\nmu_rayl_v = np.array([0.00080, 0.00068, 0.00060, 0.00055, 0.00050, 0.00043, 0.00040, 0.00035, 0.00030])\\n\\nf_tot = interp1d(e_arr, mu_tot_v, kind='cubic', bounds_error=False, fill_value='extrapolate')\\nf_comp = interp1d(e_arr, mu_comp_v, kind='cubic', bounds_error=False, fill_value='extrapolate')\\nf_phot = interp1d(e_arr, mu_phot_v, kind='cubic', bounds_error=False, fill_value='extrapolate')\\nf_pair = interp1d(e_arr, mu_pair_v, kind='cubic', bounds_error=False, fill_value='extrapolate')\\nf_rayl = interp1d(e_arr, mu_rayl_v, kind='cubic', bounds_error=False, fill_value='extrapolate')\\n\\ndef mu_t(E): return float(f_tot(np.clip(E, 0.01, 10.0)))\\ndef mu_c(E): return float(f_comp(np.clip(E, 0.01, 10.0)))\\ndef mu_ph(E): return float(f_phot(np.clip(E, 0.01, 10.0)))\\ndef mu_pp(E): return float(f_pair(np.clip(E, 0.01, 10.0)))\\ndef mu_rl(E): return float(f_rayl(np.clip(E, 0.01, 10.0)))\\n\\n# === Geometry ===\\nSSD = 100.0\\nsrc = np.array([0.0, 0.0, -SSD])\\nfield_half = 5.0\\nz_surf = 0.0\\nz_ctr = 5.0\\nz_half = 0.1\\nz_lo = z_ctr - z_half\\nz_hi = z_ctr + z_half\\ncyl_R = 1.0\\nscoring_ctr = np.array([0.0, 0.0, z_ctr])\\n\\n# Pyramid solid angle\\nth_half = np.arctan(field_half / SSD)\\nOmega_pyr = 4 * np.arcsin(np.sin(th_half)**2)\\n\\n# Electron density\\nn_e = 10.0 * NA / 18.015\\n\\nprint(f\\\"Omega_pyr = {Omega_pyr:.6f} sr\\\")\\nprint(f\\\"n_e = {n_e:.4e}\\\")\\n\\n# === Physics functions ===\\ndef compton_E(E_in, costh):\\n    return E_in / (1.0 + (E_in / m_e) * (1.0 - costh))\\n\\ndef KN_dcs(E_in, costh):\\n    th = np.arccos(np.clip(costh, -1.0, 1.0))\\n    E_out = compton_E(E_in, costh)\\n    return (r_e**2 / 2.0) * (E_out/E_in)**2 * (E_in/E_out + E_out/E_in - np.sin(th)**2)\\n\\ndef KN_total_sigma(E):\\n    \\\"\\\"\\\"Total Compton cross section per electron (cm^2/e-), integrated over all angles.\\\"\\\"\\\"\\n    # Numerical integration of 2*pi * integral of DCS from -1 to 1\\n    n_pts = 1000\\n    ct = np.linspace(-1, 1, n_pts)\\n    dcs = np.array([KN_dcs(E, c) for c in ct])\\n    # Simpson's rule\\n    h = 2.0 / (n_pts - 1)\\n    integral = h/3 * (dcs[0] + dcs[-1] + 4*np.sum(dcs[1:-1:2]) + 2*np.sum(dcs[2:-1:2]))\\n    return 2.0 * np.pi * integral\\n\\ndef sample_compton(E_in):\\n    max_d = r_e**2 * 1.05\\n    while True:\\n        ct = np.random.uniform(-1.0, 1.0)\\n        d = KN_dcs(E_in, ct)\\n        if np.random.random() * max_d < d:\\n            break\\n    E_out = compton_E(E_in, ct)\\n    t_e = E_in - E_out\\n    num = E_in - E_out * ct\\n    den = np.sqrt(E_in**2 + E_out**2 - 2.0*E_in*E_out*ct)\\n    ce = num / den if den > 0 else 1.0\\n    return E_out, ct, t_e, ce\\n\\ndef random_rot(v, costh):\\n    u = v / np.linalg.norm(v)\\n    th = np.arccos(np.clip(costh, -1.0, 1.0))\\n    ph = np.random.uniform(0.0, 2.0*np.pi)\\n    if abs(u[2]) < 0.999:\\n        w = np.cross(u, np.array([0.0, 0.0, 1.0]))\\n    else:\\n        w = np.cross(u, np.array([1.0, 0.0, 0.0]))\\n    w = w / np.linalg.norm(w)\\n    vv = np.cross(w, u)\\n    out = u*costh + w*np.sin(th)*np.cos(ph) + vv*np.sin(th)*np.sin(ph)\\n    return out / np.linalg.norm(out)\\n\\ndef source_sample():\\n    E = 1.1732 if np.random.random() < 0.5 else 1.3325\\n    x = np.random.uniform(-field_half, field_half)\\n    y = np.random.uniform(-field_half, field_half)\\n    d = np.array([x - src[0], y - src[1], z_surf - src[2]])\\n    d = d / np.linalg.norm(d)\\n    return E, d\\n\\ndef intersect_cyl(ori, dir, R, zL, zH):\\n    d = dir / np.linalg.norm(dir)\\n    if d[2] > 0:\\n        t_zL = (zL - ori[2]) / d[2]\\n        t_zH = (zH - ori[2]) / d[2]\\n    elif d[2] < 0:\\n        t_zL = (zH - ori[2]) / d[2]\\n        t_zH = (zL - ori[2]) / d[2]\\n    else:\\n        if ori[2] < zL or ori[2] > zH:\\n            return None\\n        t_zL = -1e30\\n        t_zH = 1e30\\n    \\n    a = d[0]**2 + d[1]**2\\n    if a < 1e-15:\\n        if ori[0]**2 + ori[1]**2 <= R**2:\\n            return (t_zL, t_zH) if t_zL < t_zH else (t_zH, t_zL)\\n        return None\\n    \\n    b = 2.0 * (ori[0]*d[0] + ori[1]*d[1])\\n    c = ori[0]**2 + ori[1]**2 - R**2\\n    disc = b*b - 4.0*a*c\\n    if disc < 0:\\n        return None\\n    sq = np.sqrt(disc)\\n    t1 = (-b - sq) / (2.0*a)\\n    t2 = (-b + sq) / (2.0*a)\\n    if t1 > t2:\\n        t1, t2 = t2, t1\\n    \\n    t_ent = max(t_zL, t1)\\n    t_ext = min(t_zH, t2)\\n    if t_ent >= t_ext or t_ext < 0:\\n        return None\\n    return (t_ent, t_ext)\\n\\ndef sample_proc(E):\\n    mt = mu_c(E) + mu_ph(E) + mu_pp(E) + mu_rl(E)\\n    r = np.random.random() * mt\\n    if r < mu_c(E):\\n        return 'compton'\\n    elif r < mu_c(E) + mu_ph(E):\\n        return 'photoelectric'\\n    elif r < mu_c(E) + mu_ph(E) + mu_pp(E):\\n        return 'pair'\\n    else:\\n        return 'rayleigh'\\n\\n# === Compute total Compton cross section for the two energies ===\\nsigma_c_117 = KN_total_sigma(1.1732)\\nsigma_c_133 = KN_total_sigma(1.3325)\\nprint(f\\\"\\\\nTotal Compton sigma (cm^2/e-): \u03c3(1.1732)={sigma_c_117:.4e}, \u03c3(1.3325)={sigma_c_133:.4e}\\\")\\nprint(f\\\"Expected \u03bc_comp = n_e*\u03c3: at 1.1732: {n_e*sigma_c_117:.6f}, at 1.3325: {n_e*sigma_c_133:.6f}\\\")\\nprint(f\\\"From NIST: at 1.1732: {mu_c(1.1732):.6f}, at 1.3325: {mu_c(1.3325):.6f}\\\")\\n\\n# === Compute rates ===\\n# For scattered photons, use forced detection approach:\\n# Instead of sampling the scatter angle, compute the exact scattering angle\\n# needed for the photon to reach the scoring volume, then weight by the DCS.\\n\\n# Primary rate\\nprint(\\\"\\\\nComputing primary rate...\\\")\\nN_MC = 500000\\nprim_tot = 0.0\\nprim_by = {'compton':0.0, 'photoelectric':0.0, 'pair':0.0, 'rayleigh':0.0}\\n\\nfor _ in range(N_MC):\\n    E, d = source_sample()\\n    dz = d[2]\\n    if dz <= 0:\\n        continue\\n    \\n    t_sc = (z_lo - z_surf) / dz\\n    if t_sc < 0:\\n        continue\\n    \\n    ep = np.array([0.0, 0.0, z_surf]) + t_sc * d\\n    if np.sqrt(ep[0]**2 + ep[1]**2) > cyl_R:\\n        continue\\n    \\n    path = 0.2 / dz\\n    muE = mu_t(E)\\n    att = np.exp(-muE * t_sc)\\n    p_int = 1.0 - np.exp(-muE * path)\\n    w = att * p_int\\n    \\n    prim_tot += w\\n    mt = mu_c(E) + mu_ph(E) + mu_pp(E) + mu_rl(E)\\n    prim_by['compton'] += w * mu_c(E) / mt\\n    prim_by['photoelectric'] += w * mu_ph(E) / mt\\n    prim_by['pair'] += w * mu_pp(E) / mt\\n    prim_by['rayleigh'] += w * mu_rl(E) / mt\\n\\nprim_tot /= N_MC\\nfor k in prim_by:\\n    prim_by[k] /= N_MC\\n\\nprint(f\\\"Primary: total={prim_tot:.8f}\\\")\\nfor k, v in prim_by.items():\\n    print(f\\\"  {k}: {v:.10f}\\\")\\n\\n# Scatter rate using forced detection\\nprint(\\\"\\\\nComputing scatter rate (forced detection)...\\\")\\nscat_tot = 0.0\\nscat_by = {'compton':0.0, 'photoelectric':0.0, 'pair':0.0, 'rayleigh':0.0}\\nn_scat_hits = 0\\n\\nfor _ in range(N_MC):\\n    E, d = source_sample()\\n    dz = d[2]\\n    if dz <= 0:\\n        continue\\n    \\n    muE = mu_t(E)\\n    t_max = 30.0 / dz\\n    C = 1.0 - np.exp(-muE * t_max)\\n    if C <= 0:\\n        continue\\n    \\n    # Sample scatter point\\n    t_scat = -np.log(1.0 - np.random.random() * C) / muE\\n    sp = np.array([0.0, 0.0, z_surf]) + t_scat * d\\n    \\n    if abs(sp[0]) > 15 or abs(sp[1]) > 15:\\n        continue\\n    \\n    pdf_scat = muE * np.exp(-muE * t_scat) / C\\n    \\n    # Compute the direction from scatter point to scoring volume center\\n    dir_to_vol = scoring_ctr - sp\\n    dist_to_vol = np.linalg.norm(dir_to_vol)\\n    if dist_to_vol < 0.01:\\n        continue\\n    dir_to_vol = dir_to_vol / dist_to_vol\\n    \\n    # Scatter angle needed\\n    costh_scat = np.dot(d, dir_to_vol)\\n    costh_scat = np.clip(costh_scat, -1.0, 1.0)\\n    \\n    # DCS at this angle\\n    dcs = KN_dcs(E, costh_scat)\\n    \\n    # Solid angle of scoring volume (approximate)\\n    # Area = \u03c0 * R^2, projected area \u2248 \u03c0 * R^2 * |cos(\u03b8_view)|\\n    # where \u03b8_view is the angle between the scattered direction and the normal to the scoring volume\\n    # The scoring volume is a cylinder on the z-axis, so the normal to the circular face is along z\\n    # The scattered photon approaches at angle arccos(dir_to_vol[2]) from the z-axis\\n    # The projected area is \u03c0*R^2 * abs(dir_to_vol[2]) for small angles\\n    cos_view = abs(dir_to_vol[2])\\n    proj_area = np.pi * cyl_R**2 * max(cos_view, 0.01)\\n    solid_angle = proj_area / (dist_to_vol**2)\\n    \\n    # Attenuation of scattered photon\\n    # Check if ray from scatter point to scoring volume intersects the cylinder\\n    it = intersect_cyl(sp, dir_to_vol, cyl_R, z_lo, z_hi)\\n    if it is None:\\n        continue\\n    \\n    t_ent, t_ext = it\\n    if t_ent < 0:\\n        t_ent = 0\\n    path_v = t_ext - t_ent\\n    if path_v <= 0:\\n        continue\\n    \\n    mu_out = mu_t(E_out := compton_E(E, costh_scat))\\n    att_to_vol = np.exp(-mu_out * t_ent)\\n    p_int_v = 1.0 - np.exp(-mu_out * path_v)\\n    \\n    # Weight = contribution / PDF\\n    # Contribution: n_e * dcs * solid_angle * att_to_vol * p_int_v * (dt factor)\\n    # PDF: pdf_scat (per unit t)\\n    # The dt factor cancels\\n    w = n_e * dcs * solid_angle * att_to_vol * p_int_v / pdf_scat\\n    \\n    scat_tot += w\\n    mt_out = mu_c(E_out) + mu_ph(E_out) + mu_pp(E_out) + mu_rl(E_out)\\n    scat_by['compton'] += w * mu_c(E_out) / mt_out\\n    scat_by['photoelectric'] += w * mu_ph(E_out) / mt_out\\n    scat_by['pair'] += w * mu_pp(E_out) / mt_out\\n    scat_by['rayleigh'] += w * mu_rl(E_out) / mt_out\\n    n_scat_hits += 1\\n\\nscat_tot /= N_MC\\nfor k in scat_by:\\n    scat_by[k] /= N_MC\\n\\nprint(f\\\"Scatter: total={scat_tot:.8f}, hits={n_scat_hits}/{N_MC}\\\")\\nfor k, v in scat_by.items():\\n    print(f\\\"  {k}: {v:.10f}\\\")\\n\\ntot_rate = prim_tot + scat_tot\\nprint(f\\\"\\\\nTotal rate: {tot_rate:.8f}\\\")\\nprint(f\\\"Scatter/prim: {scat_tot/prim_tot:.4f}\\\")\\nprint(f\\\"Scatter fraction: {scat_tot/tot_rate:.4f}\\\")\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "OK I keep having issues with running multiple calls. Let me write the complete script in a single call, very carefully.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 52984,
+  "completion_tokens": 4034,
+  "total_tokens": 57018,
+  "cost": 0.00554718472,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00554718472,
+   "upstream_inference_prompt_cost": 0.00481412624,
+   "upstream_inference_completions_cost": 0.00073305848
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 24,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

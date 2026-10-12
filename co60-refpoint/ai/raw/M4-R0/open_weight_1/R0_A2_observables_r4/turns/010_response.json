@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791829581-2WjZpWwr7f8fUzEsOWaM",
+ "object": "chat.completion",
+ "created": 1791829581,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "GMICloud",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Something wrong: it=1, no scores. The problem: after first iteration, all photons escaped? No... Let me debug: The issue may be that `Al[:nactive]` \u2014 I set nactive=N and Al[:N]=True. idx should be all. Then s_int etc. Maybe `tb` is tiny because box distance calculation is wrong. Let me check t1/t2: box is [-15,15]x[100,130]x[-15,15]. p0 = (100u,100v,100). For a photon direction (u,v,1)/n with small u,v, the ray goes in +z. t to plane z=130: (130-100)/d_z \u2248 30/1 = 30. t to z=100 is 0 (start at surface). Also x planes \u00b115: x0=100u\u2248\u00b10.1-5; for u=0.05, x0=5; going outward dx=d_x~0.05: t to x=15: (15-5)/0.05=200; to x=-15 negative \u2192 ignore. So t1=(min, t2=(max)). tlo = max(min,0), thi = max. tb=min over axes. Should be ~30\u00b7n \u2248 30. And s_int = -ln\u03be/\u03bc ~ 15 cm avg. So most photons travel s=15 to first interaction... fine.\n\nBut it=1 with no scores at all: means in the first iteration everything was killed and no continue. Possibly `inter` is False for all because tb < s_int? no... Actually if tb is computed wrong \u2014 e.g., t1/t2 arrays wrong \u2192 tb tiny \u2192 all escaped (Al[idx[escaped]]=False), and none interacted. Then nactive=0? No \u2014 nactive is the count of slots, not alive count; the while condition `nactive>0` uses the stack size (N), which stays N! Bug: `while nactive>0` should be `np.any(Al)`. Because dead slots remain with nactive=N. So the loop ran once and exited because... no, it says it=1 and time 1.14s; the loop condition nactive>0 always true, so it should loop until maxit... unless all alive false and the loop still runs. Hmm it says it=1 and stopped?? Let me check: `while nactive>0:` nactive=N=300000 > 0, so loop should continue. Actually after first iteration, if all photons escaped without interaction, the next iteration: idx = nonzero(Al[:nactive]) = empty; len(idx)==0 \u2192 break. So exit at it=1. So indeed all photons escaped without interacting: means tb < s_int for all, i.e., tb \u2248 0? That would mean photons start at boundary and move tiny amount... t1 for z plane 100: (100-100)/d_z=0; t2 z=130: 30/d_z. For other axes large. tlo=0; thi = min(30/dz, ...). tb\u224830>0. Unless d_z is wrong.\n\nWait, actually maybe the issue: `idx=np.nonzero(Al[:nactive])[0]` \u2014 Al[0:N]=True. Fine.\n\nHmm, but the \"ch\" scoring: s \u2248 min(s_int, tb). If all escaped (no interaction), the scoring of chord in the main cylinder still should have happened: the segments from surface z=100 to exit z=130 pass through the cylinder at z=105. The chord in the scoring cylinder should be ~0.2 cm for photons passing through it (radius 1 cm at 105: for photons with lateral offset <1 cm at z=105 \u2014 fraction \u03c0/110 \u2248 2.9%). So flu_prim should be >0 even with zero interactions! Unless the chord function fails. Let me debug the chord function and the loop on a small example.\n\nActually wait: in the first iteration, if all photons \"escaped\" (tb=0), then s=0, p1=p0, no chord. If tb>0 but s_int small (~15 cm), then most photons interact at s_int\u224815 (before exit at 30), so inter=True for most, meaning they continue with new energy... not all escaped. Either way flu_prim should get contributions from segments crossing the cylinder before interacting.\n\nLet me debug directly: run a small number and print intermediates.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_8c791ce0822043ba8a4f06a9",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"# Debug the photon MC pieces\\nimport numpy as np\\nfrom scipy.interpolate import interp1d\\n\\nph = np.loadtxt('/tmp/data/xcom_water.txt', comments='#')\\nEph = ph[:,0]; coh=ph[:,1]; inc=ph[:,2]; pe=ph[:,3]; pn=ph[:,4]; pel=ph[:,5]; tot=ph[:,6]\\nElg = np.logspace(np.log10(0.01), np.log10(2.0), 2500)\\ndef interp_log(x, y, xq):\\n    ok = (y>0)&(x>0)\\n    fi = interp1d(np.log(x[ok]), np.log(y[ok]), kind='linear', bounds_error=False, fill_value='extrapolate')\\n    return np.exp(fi(np.log(xq)))\\nTOT=interp_log(Eph,tot,Elg); logElg=np.log(Elg)\\ndef xs_lookup(arr,E): return np.exp(np.interp(np.log(np.maximum(E,2e-3)),logElg,np.log(arr)))\\n\\ndef cyl_chord(p0, p1, R, zc, hh):\\n    d = p1-p0\\n    L = np.sqrt(np.sum(d*d,axis=1))\\n    dx=d[:,0]; dy=d[:,1]; dz=d[:,2]\\n    x0=p0[:,0]; y0=p0[:,1]; z0=p0[:,2]\\n    a = dx*dx+dy*dy\\n    b = x0*dx+y0*dy\\n    c = x0*x0+y0*y0-R*R\\n    big = a>1e-16\\n    sq = np.sqrt(np.maximum(b*b-a*c,0))\\n    t1 = (-b-sq)/np.maximum(a,1e-30); t2=(-b+sq)/np.maximum(a,1e-30)\\n    lo=np.minimum(t1,t2); hi=np.maximum(t1,t2)\\n    lo[~big]=-1e9; hi[~big]=1e9\\n    outside = (~big)&(x0*x0+y0*y0>=R*R)\\n    invdz=np.where(np.abs(dz)>1e-12,1.0/dz,0.0)\\n    z1=(zc-hh-z0)*invdz; z2=(zc+hh-z0)*invdz\\n    zlo=np.minimum(z1,z2); zhi=np.maximum(z1,z2)\\n    dz0=np.abs(dz)<1e-12\\n    zlo[dz0]=0.; zhi[dz0]=1.\\n    bad=dz0 & (np.abs(z0-zc)>hh); zlo[bad]=1.; zhi[bad]=0.\\n    lo=np.maximum(np.maximum(lo,zlo),0); hi=np.minimum(np.minimum(hi,zhi),1)\\n    chord=L*np.maximum(0,hi-lo)\\n    chord[outside]=0\\n    return chord\\n\\n# test: photon on axis from (0,0,100) to (0,0,110)\\np0=np.array([[0.0,0.0,100.0]]); p1=np.array([[0.0,0.0,110.0]])\\nprint(\\\"on-axis chord:\\\", cyl_chord(p0,p1,1.0,105.0,0.1))  # expect 0.2\\n# photon off-axis x=2: from (2,0,100) to (2,0,110)\\np0=np.array([[2.0,0.0,100.0]]); p1=np.array([[2.0,0.0,110.0]])\\nprint(\\\"off-axis x=2 chord:\\\", cyl_chord(p0,p1,1.0,105.0,0.1))  # expect 0\\n# photon crossing cylinder diagonally\\np0=np.array([[0.5,0.0,100.0]]); p1=np.array([[0.6,0.0,110.0]])\\nprint(\\\"diag chord:\\\", cyl_chord(p0,p1,1.0,105.0,0.1))\\n# sample directions\\nrng=np.random.default_rng(7)\\na=0.05; n=5; u=rng.uniform(-a,a,n); v=rng.uniform(-a,a,n)\\nd=np.stack([u,v,np.ones(n)],axis=1); d/=np.sqrt(np.sum(d*d,axis=1,keepdims=True))\\nprint(\\\"d:\\\",d)\\np0=np.stack([u*100,v*100,np.full(n,100.0)],axis=1)\\nprint(\\\"p0:\\\",p0)\\n# mu at 1.17\\nprint(\\\"mu_tot:\\\", xs_lookup(TOT,np.array([1.1732]))) \\n# first-step test\\nEi=np.array([1.1732,1.3325])\\nmut=xs_lookup(TOT,Ei)\\nprint(\\\"mut:\\\",mut)\\ns_int=-np.log(rng.uniform(1e-300,1,2))/np.maximum(mut,1e-6)\\nprint(\\\"s_int:\\\",s_int)\\ndd=d[:2]; p00=p0[:2]\\ninv=np.abs(dd)>1e-12\\nt1=(np.array([-15.,100.,-15.])-p00)/dd; t2=(np.array([15.,130.,15.])-p00)/dd\\nprint(\\\"t1:\\\",t1); print(\\\"t2:\\\",t2)\\ntlo=np.maximum(np.minimum(t1,t2),0); thi=np.maximum(t1,t2)\\ntb=np.min(thi,axis=1)\\nprint(\\\"tlo:\\\",tlo,\\\"thi:\\\",thi,\\\"tb:\\\",tb)\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Something wrong: it=1, no scores. The problem: after first iteration, all photons escaped? No... Let me debug: The issue may be that `Al[:nactive]` \u2014 I set nactive=N and Al[:N]=True. idx should be all. Then s_int etc. Maybe `tb` is tiny because box distance calculation is wrong. Let me check t1/t2: box is [-15,15]x[100,130]x[-15,15]. p0 = (100u,100v,100). For a photon direction (u,v,1)/n with small u,v, the ray goes in +z. t to plane z=130: (130-100)/d_z \u2248 30/1 = 30. t to z=100 is 0 (start at surface). Also x planes \u00b115: x0=100u\u2248\u00b10.1-5; for u=0.05, x0=5; going outward dx=d_x~0.05: t to x=15: (15-5)/0.05=200; to x=-15 negative \u2192 ignore. So t1=(min, t2=(max)). tlo = max(min,0), thi = max. tb=min over axes. Should be ~30\u00b7n \u2248 30. And s_int = -ln\u03be/\u03bc ~ 15 cm avg. So most photons travel s=15 to first interaction... fine.\n\nBut it=1 with no scores at all: means in the first iteration everything was killed and no continue. Possibly `inter` is False for all because tb < s_int? no... Actually if tb is computed wrong \u2014 e.g., t1/t2 arrays wrong \u2192 tb tiny \u2192 all escaped (Al[idx[escaped]]=False), and none interacted. Then nactive=0? No \u2014 nactive is the count of slots, not alive count; the while condition `nactive>0` uses the stack size (N), which stays N! Bug: `while nactive>0` should be `np.any(Al)`. Because dead slots remain with nactive=N. So the loop ran once and exited because... no, it says it=1 and time 1.14s; the loop condition nactive>0 always true, so it should loop until maxit... unless all alive false and the loop still runs. Hmm it says it=1 and stopped?? Let me check: `while nactive>0:` nactive=N=300000 > 0, so loop should continue. Actually after first iteration, if all photons escaped without interaction, the next iteration: idx = nonzero(Al[:nactive]) = empty; len(idx)==0 \u2192 break. So exit at it=1. So indeed all photons escaped without interacting: means tb < s_int for all, i.e., tb \u2248 0? That would mean photons start at boundary and move tiny amount... t1 for z plane 100: (100-100)/d_z=0; t2 z=130: 30/d_z. For other axes large. tlo=0; thi = min(30/dz, ...). tb\u224830>0. Unless d_z is wrong.\n\nWait, actually maybe the issue: `idx=np.nonzero(Al[:nactive])[0]` \u2014 Al[0:N]=True. Fine.\n\nHmm, but the \"ch\" scoring: s \u2248 min(s_int, tb). If all escaped (no interaction), the scoring of chord in the main cylinder still should have happened: the segments from surface z=100 to exit z=130 pass through the cylinder at z=105. The chord in the scoring cylinder should be ~0.2 cm for photons passing through it (radius 1 cm at 105: for photons with lateral offset <1 cm at z=105 \u2014 fraction \u03c0/110 \u2248 2.9%). So flu_prim should be >0 even with zero interactions! Unless the chord function fails. Let me debug the chord function and the loop on a small example.\n\nActually wait: in the first iteration, if all photons \"escaped\" (tb=0), then s=0, p1=p0, no chord. If tb>0 but s_int small (~15 cm), then most photons interact at s_int\u224815 (before exit at 30), so inter=True for most, meaning they continue with new energy... not all escaped. Either way flu_prim should get contributions from segments crossing the cylinder before interacting.\n\nLet me debug directly: run a small number and print intermediates.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 65016,
+  "completion_tokens": 2259,
+  "total_tokens": 67275,
+  "cost": 0.0023517676,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 54613,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0023517676,
+   "upstream_inference_prompt_cost": 0.0019406296,
+   "upstream_inference_completions_cost": 0.000411138
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 954,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

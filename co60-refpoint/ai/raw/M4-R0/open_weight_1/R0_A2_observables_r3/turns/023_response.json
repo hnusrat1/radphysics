@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791830253-G3pOgMq84r7D8jYwD5b4",
+ "object": "chat.completion",
+ "created": 1791830253,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "GMICloud",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Small bug in compton_elec_pdf histogram widths. Fix: widths = np.diff(EG_fine) since histogram bins = EG_fine (21 edges \u2192 20 bins). Let me fix: use bins=EG_fine directly, widths=np.diff(EG_fine).\n\nL2 results so far:\n- interaction fractions all: comp 0.943, pe 0.0409, pair 0.0002, rayleigh 0.0155. \n\nWait, photoelectric interaction fraction 4%! Because scattered photons have low energies where PE rises. The scattered share of interactions is 56% (!). Because scattered photons have higher \u03bc and there are many of them (fluct 0.459 vs primary 0.729, but \u03bc_scat ~0.1-0.14 vs 0.06). So scattered interactions dominate. Hmm, 56% seems high but follows from scattered fluence 63% of primary and higher cross sections. Let me sanity check: interactions \u221d \u03a6 \u03bc. Primary: 0.7288\u00d70.063=0.0459. Scattered: \u03a3 \u03a6_scat,b \u03bc(E_b). With scattered spectrum mostly 0.1-0.6 MeV, \u03bc 0.1-0.15 \u2192 0.459\u00d7~0.11=0.0505. So scattered share = 0.0505/(0.0505+0.0459)=0.524. MC gives 0.561 (with actual spectrum). OK.\n\nThe fraction of PE interactions is 4% (from low-E scattered photons). Reasonable.\n\nNow fix the L3 function and rerun.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_bdc34198877d42aa9875a79d",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nfrom scipy.interpolate import interp1d\\nfrom scipy.integrate import quad\\nme=0.51099895\\nd=np.loadtxt('/tmp/data/xcom_water.txt',comments='#')\\n_Em=d[:,0]; _incoh=d[:,2]; _pe=d[:,3]; _pair=d[:,4]+d[:,5]; _coh=d[:,1]\\nf_incoh=interp1d(_Em,_incoh,bounds_error=False,fill_value=(_incoh[0],_incoh[-1]))\\nf_pe=interp1d(_Em,_pe,bounds_error=False,fill_value=(_pe[0],_pe[-1]))\\nf_pair=interp1d(_Em,_pair,bounds_error=False,fill_value=(_pair[0],_pair[-1]))\\nf_coh=interp1d(_Em,_coh,bounds_error=False,fill_value=(_coh[0],_coh[-1]))\\nPH_EDGES=np.array([0,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,\\n                   0.8,0.85,0.9,0.95,1,1.05,1.1,1.15,1.2,1.25,1.3,1.35,1.4])\\nEL_EDGES=np.array([0.01,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,\\n                   0.75,0.8,0.85,0.9,0.95,1,1.05,1.1,1.15,1.2,1.4])\\nphc=(PH_EDGES[:-1]+PH_EDGES[1:])/2\\nct=np.array([-1,-0.8,-0.6,-0.4,-0.2,0,0.2,0.4,0.6,0.8,1])\\nE1=1.1732; E2=1.3325\\ndef kn_ratio(E,mu):\\n    a=E/me; r=1/(1+a*(1-mu)); return r*r*(r+1/r-(1-mu**2))\\n\\ndef compton_elec(E):\\n    a=E/me\\n    mu=np.linspace(-1+1e-9,1-1e-9,4000)\\n    r=1/(1+a*(1-mu)); Ep=E*r; Ee=E-Ep\\n    dmu=mu[1]-mu[0]\\n    w=2*np.pi*kn_ratio(E,mu)*dmu\\n    dEe=np.abs(E*a*r**2)*dmu\\n    dP=w  # probability (normalized to tot)\\n    return Ee,dP\\n\\ndef compton_cosphi_dist(E):\\n    a=E/me\\n    mu=np.linspace(-1+1e-9,1-1e-9,4000)\\n    r=1/(1+a*(1-mu)); Ep=E*r\\n    sinmu=np.sqrt(np.maximum(1-mu**2,0))\\n    num=E-Ep*mu; den=np.sqrt((E-Ep*mu)**2+(Ep*sinmu)**2)\\n    cosphi=num/den\\n    w=2*np.pi*kn_ratio(E,mu)\\n    hist,bins=np.histogram(cosphi,bins=ct,weights=w)\\n    return hist/hist.sum()\\n\\nr=np.load('mc_results.npz',allow_pickle=True)\\nVcyl=np.pi*0.2; N=int(r['N']); i5=np.argmin(abs(r['depths']-5.0))\\nprim_phi=0.5*(np.exp(-0.0653626*5)+np.exp(-0.06122524*5))\\nk=prim_phi/(r['prim_tl'][i5]/Vcyl/N)\\nspec_scat_per=r['spec_scat']/Vcyl/N*k\\nf1=0.5*np.exp(-0.0653626*5); f2=0.5*np.exp(-0.06122524*5)\\ngroups_prim=[(E1,f1),(E2,f2)]\\ngroups_scat=[(phc[i],spec_scat_per[i]) for i in range(28) if spec_scat_per[i]>0]\\n\\ndef electron_source_bins(groups):\\n    nb=len(EL_EDGES)-1\\n    counts=np.zeros(nb); meanE=np.zeros(nb); dirfrac=np.zeros(10)\\n    for E,w in groups:\\n        m_in=f_incoh(E)\\n        if m_in>0:\\n            Ee,dP=compton_elec(E)\\n            tot=dP.sum()\\n            idx=np.clip(np.searchsorted(EL_EDGES,Ee,side='right')-1,0,nb-1)\\n            for i in range(nb):\\n                m=idx==i\\n                counts[i]+=w*m_in*dP[m].sum()\\n                meanE[i]+=w*m_in*(Ee[m]*dP[m]).sum()\\n            dirfrac+=w*m_in*compton_cosphi_dist(E)\\n        m_pe=f_pe(E)\\n        if m_pe>0:\\n            i=np.clip(np.searchsorted(EL_EDGES,E,side='right')-1,0,nb-1)\\n            counts[i]+=w*m_pe; meanE[i]+=w*m_pe*E\\n            binw=np.diff(ct); dirfrac+=w*m_pe*(binw/2)\\n        m_p=f_pair(E)\\n        if m_p>0 and E>1.022:\\n            Te=(E-1.022)/2\\n            i=np.clip(np.searchsorted(EL_EDGES,Te,side='right')-1,0,nb-1)\\n            counts[i]+=2*w*m_p; meanE[i]+=2*w*m_p*Te; dirfrac[9]+=2*w*m_p\\n    return counts,meanE,dirfrac\\n\\ncounts_all,meanE_all,dir_all=electron_source_bins(groups_prim+groups_scat)\\ncounts_p,meanE_p,dir_p=electron_source_bins(groups_prim)\\nL3_spec=counts_all/counts_all.sum()\\nL3_spec_p=counts_p/counts_p.sum()\\nprint(\\\"L3 mean init E all:\\\",meanE_all.sum()/counts_all.sum(),\\\" primary-parent:\\\",meanE_p.sum()/counts_p.sum())\\nprint(\\\"L3 spec all:\\\",np.round(L3_spec,4))\\nprint(\\\"L3 spec primary:\\\",np.round(L3_spec_p,4))\\nprint(\\\"L3 dir all:\\\",np.round(dir_all/dir_all.sum(),4))\\nprint(\\\"L3 dir primary:\\\",np.round(dir_p/dir_p.sum(),4))\\nnp.save('L3_arrays.npy', np.array([counts_all,counts_p,meanE_all,dir_all,dir_p],dtype=object), allow_pickle=True)\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Small bug in compton_elec_pdf histogram widths. Fix: widths = np.diff(EG_fine) since histogram bins = EG_fine (21 edges \u2192 20 bins). Let me fix: use bins=EG_fine directly, widths=np.diff(EG_fine).\n\nL2 results so far:\n- interaction fractions all: comp 0.943, pe 0.0409, pair 0.0002, rayleigh 0.0155. \n\nWait, photoelectric interaction fraction 4%! Because scattered photons have low energies where PE rises. The scattered share of interactions is 56% (!). Because scattered photons have higher \u03bc and there are many of them (fluct 0.459 vs primary 0.729, but \u03bc_scat ~0.1-0.14 vs 0.06). So scattered interactions dominate. Hmm, 56% seems high but follows from scattered fluence 63% of primary and higher cross sections. Let me sanity check: interactions \u221d \u03a6 \u03bc. Primary: 0.7288\u00d70.063=0.0459. Scattered: \u03a3 \u03a6_scat,b \u03bc(E_b). With scattered spectrum mostly 0.1-0.6 MeV, \u03bc 0.1-0.15 \u2192 0.459\u00d7~0.11=0.0505. So scattered share = 0.0505/(0.0505+0.0459)=0.524. MC gives 0.561 (with actual spectrum). OK.\n\nThe fraction of PE interactions is 4% (from low-E scattered photons). Reasonable.\n\nNow fix the L3 function and rerun.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 115606,
+  "completion_tokens": 2015,
+  "total_tokens": 117621,
+  "cost": 0.003733184,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 98265,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.003733184,
+   "upstream_inference_prompt_cost": 0.003366454,
+   "upstream_inference_completions_cost": 0.00036673
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 349,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

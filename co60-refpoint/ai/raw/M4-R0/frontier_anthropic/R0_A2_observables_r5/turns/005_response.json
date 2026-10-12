@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791829702-FrAiHrmQMsu9RASL90eF",
+ "object": "chat.completion",
+ "created": 1791829702,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "Cross sections check out (KN vs XCOM incoherent agree to about 0.1%). Next, the restricted Bethe stopping power for the Spencer\u2013Attix ratio, checked against ESTAR's unrestricted collision stopping power.",
+    "refusal": null,
+    "reasoning": "Now I need to check the Moller and Bethe calculations: comparing the restricted Bethe formula against ESTAR's unrestricted values at \u0394=\u03c4/2, so I'm setting up the restricted Bethe function for this comparison.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01Wr1BVKnLQapsueagu9iabW",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\ndef Srestr(T, Delta, I_eV, ZA, delta=None):\\n    \\\"\\\"\\\"Restricted collision stopping power (MeV cm2/g), ICRU37 electron formula (Delta, T in MeV).\\\"\\\"\\\"\\n    T=np.asarray(T,float); Delta=np.minimum(np.asarray(Delta,float), T/2)\\n    tau=T/mc2; b2=1-1/(1+tau)**2; Ip=I_eV*1e-6/mc2; D=Delta/mc2\\n    if delta is None: delta=np.zeros_like(T)\\n    F = -1-b2+np.log((tau-D)*D)+tau/(tau-D)+(D**2/2+(2*tau+1)*np.log(1-D/tau))/(tau+1)**2\\n    K = 2*np.pi*re**2*mc2*6.02214076e23*ZA\\n    return K/b2*(np.log(2*(tau+2)/Ip**2)+F-delta)\\n# check unrestricted (Delta=T/2) vs ESTAR water\\nfor T in [0.1,0.5,1.0,1.25]:\\n    d = DEL(T)\\n    print(T, Srestr(T,T/2,75.0,0.55508,d), S_col(T))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Now I need to check the Moller and Bethe calculations: comparing the restricted Bethe formula against ESTAR's unrestricted values at \u0394=\u03c4/2, so I'm setting up the restricted Bethe function for this comparison.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSjgcKEAgSGAI4AUIIdGhpbmtpbmcSDFn6jiRM2Eq/IPJM6hoMnxskpiomynvm47KFIjAEA3iDf3ifqpFDithMG3pjJ8JBLKIcMni2+mGpVEU6Nlpx3/nLbI9Bk7U4+5rmaXYqqwY1YkIb9MHQjqRz0pEkTzTDoq98kYzkYma5NNAkp5KfxUpucgyrCQbSD5ihKAGeuW2hdYSSQ7VE6s9NvUjy8rOtyhzTel+fYSOfVC6DKVtjZcZAYIy46Wo7fUA7woLY4MBt5LAYV3DARrf5424RQmbIgZfmp9Z0hxdOpUDpxuMXPEQn+1cTrpSZ+EzPXjs/YYeDSof58mNaXJR7nj5djisgystQnXDe3ra2KUZN6AmXX5pG1MTHnKyMnrAvhYgYLbvl/SfnMyP/Xqff0L42xz1nHXLVE/D9KkNMdfIW2IJT6UG/Uh60Lp8/l+VbixDHfZNyyYDOxcsbWjaEVS56PNNc2/CNz49w5vMZsY47MRrE97ZpzciAvqq44xedVr58iFk1imoB/iwSdnQI/r+i+KQ6IQwbriFSEPpyg5qMcd+65RNo0NaInYdErqHJ8dSBsfH1FSDIeLZHhj0P8Z+djUWw74sc7LbNbKY7fKIKAIVyCK7a/kGjE9wiG4HaXhsLAIlfcN6KFRZqQ2nytGeKWE1amlJ+6apKXvMU3sZAMTwUQ5IPB3vHQAA+qSbaqenIj0wwILufTHU/C5PmoidsS7FZfrkMscvxFkxMgA9Qh1A3UVd+lyl3clfCq1UO60BSqqbT6LGdt7TWAsXKW1kI2NWc2aenWBzBG7G1sDm9kLriGasVTtHkAUyvvgXdtIKnLcXdopxi2Pe5NnhPxXB/WWHm6XcIuNs7SKXjF3URG1QdrOWLI6VbQ9+Iq3yVOIMBm90H8uUiaQ7hihSqpP2U0qfk8P/EZycPKd+nu61VeSMoBXt3qQsgPq/RY/enl+qnmm1WGL7B1HfAcYzgvq4sw0jhR/DOz/CTv2JhxyRysZC+7cl1Ivm063wywUTLPh+69THVCheZXG5cdgGOyZ3Fv0pn/AECkkkvQjpDtdi3kiUnPTkSd0SAuz+ocXy8fDM0OjkISImJGkxM6bgY6OFIjpNyM9dUbzS9P+HEarhtqBfDyaGyO8B0e/S+fCA/vhNalO+gcY/9ocETv+0l3OwMV/dOqRZ7YCH8fOdqn0E8RxhrRZ4VX2gBmKbO9BJmGAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 97622,
+  "completion_tokens": 605,
+  "total_tokens": 98227,
+  "cost": 0.004740515,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 67519,
+   "cache_write_tokens": 30101,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.004740515,
+   "upstream_inference_prompt_cost": 0.004438015,
+   "upstream_inference_completions_cost": 0.0003025
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 66,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

@@ -1,0 +1,57 @@
+{
+ "id": "gen-1791830481-r30znCl2AN0x872qXale",
+ "object": "chat.completion",
+ "created": 1791830481,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "GMICloud",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_7b2070825574437d93047449",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import sys, numpy as np, time\\nsys.path.insert(0,'/tmp')\\nimport emc\\nrph=np.load('/tmp/photon_mc_final.npy',allow_pickle=True).item()\\nsrc=emc.build_source_fns(rph)\\nt0=time.time()\\nres=emc.run_electron_mc(5.0,20000,seed=101,src=src)\\nprint(\\\"time %.1f it %d steps %d ndelta %d\\\"%(res['time'],res['it'],res['steps'],res['n_delta']))\\nprint(\\\"N_birth:\\\",res['N_birth'],\\\"w_el:\\\",res['w_el'])\\nV=np.pi*0.2\\nprint(\\\"e fluence/Phi0:\\\",res['sumChord']/V*res['w_el'])\\nD=(res['sumSrest']+res['trackend'])/V*res['w_el']*1.602e-10\\nprint(\\\"D/Phi0 Gycm2:\\\",D)\\nprint(\\\"dose prim frac:\\\",res['dose_prim']/(res['dose_prim']+res['dose_sec']))\\nprint(\\\"dose sec frac:\\\",res['dose_sec']/(res['dose_prim']+res['dose_sec']))\\nprint(\\\"mean E:\\\",res['sumE']/res['sumChord'])\\nprint(\\\"Srad/Scol:\\\",res['sumSrad']/res['sumScol'])\\nprint(\\\"delta flu frac:\\\",res['flu_delta'].sum()/res['flu'].sum())\\nprint(\\\"angular:\\\",np.round(res['ang']/res['ang'].sum(),4))\\nprint(\\\"spectrum:\\\",np.round(res['flu']/res['flu'].sum(),4))\\nnp.save('/tmp/emc_test.npy',res,allow_pickle=True)\"}"
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 156842,
+  "completion_tokens": 438,
+  "total_tokens": 157280,
+  "cost": 0.0041902588,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 139589,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0041902588,
+   "upstream_inference_prompt_cost": 0.0041105428,
+   "upstream_inference_completions_cost": 7.9716e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 0,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

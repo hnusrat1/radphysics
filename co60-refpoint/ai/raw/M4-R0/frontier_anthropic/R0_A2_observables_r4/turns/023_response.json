@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791830206-cmdYVDrntC41dKGkIZjY",
+ "object": "chat.completion",
+ "created": 1791830206,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I notice I used a generator expression instead of a list comprehension when building that array, which needs a parentheses fix\u2014np.array should wrap a list comprehension, not a generator.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01YCUJ7H2RbAoUEBsRBuXYFY",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nsrc=open('/tmp/work/ana2.py').read()\\nsrc=src.replace(\\\"pr_trE=np.array([phi[i]*(mu_inc(LN[i])*LN[i]*ftr_f(LN[i])), phi[i]*mu_pe(LN[i])*LN[i], phi[i]*mu_pair(LN[i])*max(LN[i]-1.022,0), 0.0] for i in range(2)).sum(0)\\\",\\n\\\"pr_trE=np.array([[phi[i]*(mu_inc(LN[i])*LN[i]*ftr_f(LN[i])), phi[i]*mu_pe(LN[i])*LN[i], phi[i]*mu_pair(LN[i])*max(LN[i]-1.022,0), 0.0] for i in range(2)]).sum(0)\\\")\\nopen('/tmp/work/ana2.py','w').write(src)\\nimport sys,time; sys.path.insert(0,'/tmp/work')\\nt=time.time()\\nimport ana2\\nprint('time',time.time()-t)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I notice I used a generator expression instead of a list comprehension when building that array, which needs a parentheses fix\u2014np.array should wrap a list comprehension, not a generator.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS/QcKEAgSGAI4AUIIdGhpbmtpbmcSDCBCsZ0M+YmOygwsuRoMiaSFGbWd2gjCX18YIjDTZ330bPdSxXCGHjngkc/jbuMwt34fDaBQqGIV0y/S8gxFXnQuJJaqBDlrLveDCNIqmgc+XqAlNTcL9p1UP+ZsgddZJOusnSShudAvOmQzVcSaUH7I0K8HqGX6Uf7IoFXbpiE5XdPU7119TVH0DVpeOpdyYYZ941WDHsavBeaTolAlxmr6Q7WARRDyK8d4hyPmq3tsXwKmOwJKt8zfx7sNWsUcX9PCBadA7ChssDRmPKAnXuoR54HLyXxn28N03CDp3L+LIRHRrMPPyRduPZXA/x0WFb4AOlOm+wq8s9N3lJv5WAFBrrxoEwEeYpCZGAijPrWsDk3SqZ8ZogJvWFj2gb9vVRwntRBLi5OP+Oe0bD2pOqUNWXwc6HdGGdAFtQgiZSVbj8Ct/2s31MrdoNwgzgkUDse0HYnL2cxiNvOEyr5lR/3KuPNEYstOfVZcG4fEaTYCzjwrpyL12Mbj5xzmeEpVeDW9sAEvXlCCsKu+GoGYjCUUDKA7jw1t86a+/QpULiKf1A4qb/MhyuLAdTfaKJ8Gw8vaPWvZWhQXku6v4amJ/vmnTc8aAjBt28g/1O2W+PRTgOfjmiaQ7cGDgUAl0LbXymKEz87CMHiGyuAxf8B/q3yWTtJgVVAWiUF/aPrxoTXt+doz9Tf652mgovj8rpvmiKnV/QLO/AdTwMxPl3ReHDeGMMxeHyAUvvbdRE4bF2oGwdE9hw6nuKnP9sJ4AF0DaWns8bDp1M0YttCaub419cq/G1AcYGfla4OH2xH6Yj3FVyQWGKGzui/nPiKtIhiaXjr65unf9CxxwEsSgyBAqHNuUhKPt+JY1sw2z+RduwzegqNTPOj0221PwhrbN5DHT30N9XhFeuUrWp64/+JOvV8Fjo468CmPwRD06ROOGnXUX5AMQ6Is2lTF3P7GymAYHnkTTRo5OtosuuR72zL8oTgTh5v8K4r5/f+HfhtszSF2BVu3xsXUEvZmArTg5NPl7aRE33dgDn5rPvYvPcyQw93tOLdS3SDBI4I9l2N7pVp2xeyDBRm/S2X0+8d+ue843HDEMtaTAGlGNpdM26AEvMnYyqznVvUIQhmTy83l/FENYLoBzGltwwEJ/3WtImXyg1AdssthIrW2aNILyVYI3fD/Bx1cyFS+Me1iE+5McZO/fH1n+U6qLO4ScCbwNJG/XhnhYXSxkAFBAyD2bruVc0h1pT6uyGPQxpoww2378V/tZdN/qjGBmee3dWruhiEivqRMpuguupNROHUspVP0z/VBMSnsstChXms3qPU+s5vAtr56zVjoRDsZGAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 172288,
+  "completion_tokens": 481,
+  "total_tokens": 172769,
+  "cost": 0.010455475,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 171177,
+   "cache_write_tokens": 1109,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.010455475,
+   "upstream_inference_prompt_cost": 0.009252975,
+   "upstream_inference_completions_cost": 0.0012025
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 90,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

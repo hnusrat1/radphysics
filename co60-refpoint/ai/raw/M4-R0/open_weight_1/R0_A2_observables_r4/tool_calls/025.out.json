@@ -1,0 +1,9 @@
+{
+ "stdout": "",
+ "stderr": "Traceback (most recent call last):\n  File \"/tmp/work/_call_025.py\", line 277, in <module>\n    res=run_electron_mc(5.0,20000,seed=101,src=src)\n  File \"/tmp/work/_call_025.py\", line 191, in run_electron_mc\n    pos,d,E0,parent,ispos,w_el,N_birth=sample_sources(z0,src,N_el,rng,R_lat=R_lat,zr=zr)\n                                       ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/work/_call_025.py\", line 146, in sample_sources\n    norm=np.trapz(S,zg)\n         ^^^^^^^^\n  File \"/opt/venv/lib/python3.13/site-packages/numpy/__init__.py\", line 769, in __getattr__\n    raise AttributeError(f\"module {__name__!r} has no attribute {attr!r}\")\nAttributeError: module 'numpy' has no attribute 'trapz'. Did you mean: 'trace'?\n",
+ "exit_code": 1,
+ "timed_out": false,
+ "wall_s": 1.29,
+ "stdout_truncated": false,
+ "stderr_truncated": false
+}

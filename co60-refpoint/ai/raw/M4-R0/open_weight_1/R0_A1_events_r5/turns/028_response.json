@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791830735-cerZZH7DcsggjRKvqJnG",
+ "object": "chat.completion",
+ "created": 1791830735,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "OK I'm going to write the entire script to a file using Python's write, then execute it. Let me try a different approach - write everything as a single Python file.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_2db01c07313041b6abf1fd43",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"with open('/tmp/full_sim.py', 'w') as f:\\n    f.write('''import numpy as np\\nfrom scipy.interpolate import interp1d\\nimport json\\nimport sys\\n\\nnp.random.seed(42)\\n\\nm_e = 0.51099895\\nr_e = 2.8179403262e-13\\nNA = 6.02214076e23\\nSSD = 100.0\\nfh = 5.0\\nzs = 0.0\\nzc = 5.0\\nzh = 0.1\\nzlo = zc - zh\\nzhi = zc + zh\\nRc = 1.0\\nth = np.arctan(fh/SSD)\\nOpyr = 4.0 * np.arcsin(np.sin(th)**2)\\nne = 10.0 * NA / 18.015\\n\\nprint(f\\\"O={Opyr:.6f} ne={ne:.4e}\\\", file=sys.stderr)\\n\\nea = np.array([1.0, 1.1, 1.1732, 1.2, 1.25, 1.3, 1.3325, 1.4, 1.5])\\nxT = np.array([0.07070, 0.06780, 0.06590, 0.06520, 0.06400, 0.06280, 0.06220, 0.06080, 0.05780])\\nxC = np.array([0.06950, 0.06650, 0.06430, 0.06350, 0.06200, 0.06060, 0.06000, 0.05850, 0.05550])\\nxP = np.array([0.00040, 0.00030, 0.00025, 0.00022, 0.00020, 0.00017, 0.00015, 0.00013, 0.00010])\\nxPP = np.array([0.0, 0.0, 0.00020, 0.00028, 0.00050, 0.00080, 0.00100, 0.00130, 0.00150])\\nxR = np.array([0.00080, 0.00068, 0.00060, 0.00055, 0.00050, 0.00043, 0.00040, 0.00035, 0.00030])\\n\\nfT = interp1d(ea, xT, kind=\\\"cubic\\\", bounds_error=False, fill_value=\\\"extrapolate\\\")\\nfC = interp1d(ea, xC, kind=\\\"cubic\\\", bounds_error=False, fill_value=\\\"extrapolate\\\")\\nfP = interp1d(ea, xP, kind=\\\"cubic\\\", bounds_error=False, fill_value=\\\"extrapolate\\\")\\nfPP = interp1d(ea, xPP, kind=\\\"cubic\\\", bounds_error=False, fill_value=\\\"extrapolate\\\")\\nfR = interp1d(ea, xR, kind=\\\"cubic\\\", bounds_error=False, fill_value=\\\"extrapolate\\\")\\n\\ndef mu_t(E):\\n    return float(fT(np.clip(E, 0.01, 10.0)))\\ndef mu_c(E):\\n    return float(fC(np.clip(E, 0.01, 10.0)))\\ndef mu_ph(E):\\n    return float(fP(np.clip(E, 0.01, 10.0)))\\ndef mu_pp(E):\\n    return float(fPP(np.clip(E, 0.01, 10.0)))\\ndef mu_rl(E):\\n    return float(fR(np.clip(E, 0.01, 10.0)))\\n\\ndef c_E(E, ct):\\n    return E / (1.0 + (E / m_e) * (1.0 - ct))\\n\\ndef KN(E, ct):\\n    thv = np.arccos(np.clip(ct, -1.0, 1.0))\\n    Eo = c_E(E, ct)\\n    return (r_e**2 / 2.0) * (Eo/E)**2 * (E/Eo + Eo/E - np.sin(thv)**2)\\n\\ndef sample_KN(E):\\n    mx = r_e**2 * 1.05\\n    while True:\\n        ct = np.random.uniform(-1.0, 1.0)\\n        if np.random.random() * mx < KN(E, ct):\\n            break\\n    Eo = c_E(E, ct)\\n    te = E - Eo\\n    num = E - Eo * ct\\n    den = np.sqrt(E**2 + Eo**2 - 2.0*E*Eo*ct)\\n    ce = num / den if den > 0 else 1.0\\n    return Eo, ct, te, ce\\n\\ndef rot(v, ct):\\n    u = v / np.linalg.norm(v)\\n    thv = np.arccos(np.clip(ct, -1.0, 1.0))\\n    ph = np.random.uniform(0.0, 2.0*np.pi)\\n    if abs(u[2]) < 0.999:\\n        w = np.cross(u, np.array([0.0, 0.0, 1.0]))\\n''')\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "OK I'm going to write the entire script to a file using Python's write, then execute it. Let me try a different approach - write everything as a single Python file.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 88137,
+  "completion_tokens": 1258,
+  "total_tokens": 89395,
+  "cost": 0.001984400572,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 86016,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001984400572,
+   "upstream_inference_prompt_cost": 0.001755796812,
+   "upstream_inference_completions_cost": 0.00022860376
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 36,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

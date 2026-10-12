@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791829392-UnybK4uJC1XUhPSvDk4M",
+ "object": "chat.completion",
+ "created": 1791829392,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "GMICloud",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "mu1=0.06536, mu2=0.06123; prim fluence/Phi0 at z=5 = 0.5(e^{-0.3268}+e^{-0.3061}) = 0.5(0.7210+0.7364)=0.7287.\n\nCompton mean cos 0.383 for 1.25 MeV\u2014reasonable (average scattering angle cos ~ 0.38? Actually average cos for 1.25 MeV KN is around 0.4\u2014plausible).\n\nNow let me build the vectorized photon MC. I'll write the segment-cylinder intersection function.\n\nThen run a test.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_1dcefc8cb9f0470e944f4199",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np, time\\n\\n# ---------- vectorized intersection of photon segment [p0,p1] with cylinder (z0, R, hz) ----------\\ndef seg_cyl_len(p0, p1, z0=5.0, R=1.0, hz=0.2):\\n    # p0,p1 arrays (N,3); returns length inside cylinder (N,), and whether crossed\\n    x0=p0[:,0]; y0=p0[:,1]; z0p=p0[:,2]\\n    sx=p1[:,0]-x0; sy=p1[:,1]-y0; sz=p1[:,2]-z0p\\n    L=np.sqrt(sx*sx+sy*sy+sz*sz)\\n    # handle zero-length (shouldn't happen)\\n    nz = L>0\\n    dx=np.zeros_like(L); dy=np.zeros_like(L); dz=np.zeros_like(L)\\n    dx[nz]=sx[nz]/L[nz]; dy[nz]=sy[nz]/L[nz]; dz[nz]=sz[nz]/L[nz]\\n    # radial quadratic on t in [0,1]\\n    a = (dx**2+dy**2)*L**2\\n    b = 2*(x0*dx+y0*dy)*L\\n    c = x0**2+y0**2-R**2\\n    disc = b*b-4*a*c\\n    length=np.zeros_like(L)\\n    ok = disc>0\\n    # radial interval [t1,t2]\\n    t1=np.zeros_like(L); t2=np.ones_like(L)\\n    sq=np.sqrt(np.maximum(disc,0))\\n    # t = (-b \u00b1 sqrt(disc))/(2a); handle a~0\\n    t1[ok] = (-b[ok]-sq[ok])/(2*a[ok])\\n    t2[ok] = (-b[ok]+sq[ok])/(2*a[ok])\\n    tLo_r = np.clip(t1,0,1); tHi_r = np.clip(t2,0,1)\\n    bad = (tHi_r < tLo_r) | ~ok\\n    # z interval\\n    zlo=z0-hz/2; zhi=z0+hz/2\\n    tz_lo = np.where(np.abs(dz)>1e-12, (zlo-z0p)/(dz*L), -1e9)\\n    tz_hi = np.where(np.abs(dz)>1e-12, (zhi-z0p)/(dz*L),  1e9)\\n    tLo_z = np.minimum(tz_lo,tz_hi); tHi_z=np.maximum(tz_lo,tz_hi)\\n    tLo = np.maximum(tLo_r, np.clip(tLo_z,0,1))\\n    tHi = np.minimum(tHi_r, np.clip(tHi_z,0,1))\\n    good = (tHi>tLo)&~bad\\n    length[good] = L[good]*(tHi[good]-tLo[good])\\n    return length, good\\n\\n# quick test: primary photon straight down axis through cylinder at z=5: p0=[0,0,4.9], p1=[0,0,5.1]\\np0=np.array([[0,0,4.9]]); p1=np.array([[0,0,5.1]])\\nprint(\\\"axis test:\\\", seg_cyl_len(p0,p1)[0])\\n# off-axis\\np0=np.array([[1.5,0,5.0]]); p1=np.array([[1.5,0,5.2]])\\nprint(\\\"off-axis:\\\", seg_cyl_len(p0,p1)[0])\\n# oblique\\np0=np.array([[0.5,0,4.8]]); p1=np.array([[1.2,0.7,5.4]])\\nprint(\\\"oblique:\\\", seg_cyl_len(p0,p1)[0])\\n\\n# ---------- rotation helpers ----------\\ndef rotate_dir(d, cosT, sinT, phi):\\n    # d: (N,3); returns rotated unit directions making angle theta with d\\n    # build basis e1 perp to d, e2 = d x e1\\n    N=d.shape[0]\\n    # arbitrary reference not parallel to d\\n    ref=np.tile(np.array([0.,0.,1.]),(N,1))\\n    # choose ref not parallel\\n    par = np.abs(d[:,2])>0.9\\n    ref[par]=[1.,0.,0.]\\n    e1 = np.cross(ref,d); e1 /= np.linalg.norm(e1,axis=1,keepdims=True)+1e-30\\n    e2 = np.cross(d,e1)\\n    cT=cosT[:,None]; sT=sinT[:,None]; cp=np.cos(phi)[:,None]; sp=np.sin(phi)[:,None]\\n    return cT*d + sT*(cp*e1+sp*e2)\\n\\n# ---------- ionization / photoelectron dir ----------\\ndef sample_iso_dir(N):\\n    z=np.random.uniform(-1,1,N); phi=np.random.uniform(0,2*np.pi,N)\\n    r=np.sqrt(1-z*z)\\n    return np.stack([r*np.cos(phi), r*np.sin(phi), z],axis=1)\\n\\ndef sample_forward_dir(N, spread=0.3):\\n    # forward peaked, cos ~ 1 - |exp| small: use mu = 1 - spread*|gauss|\\n    mu = np.minimum(1.0, 1.0 - spread*np.abs(np.random.normal(0,1,N)))\\n    phi=np.random.uniform(0,2*np.pi,N); r=np.sqrt(1-mu**2)\\n    return np.stack([r*np.cos(phi), r*np.sin(phi), mu],axis=1)\\n\\nprint(\\\"helpers ok\\\")\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "mu1=0.06536, mu2=0.06123; prim fluence/Phi0 at z=5 = 0.5(e^{-0.3268}+e^{-0.3061}) = 0.5(0.7210+0.7364)=0.7287.\n\nCompton mean cos 0.383 for 1.25 MeV\u2014reasonable (average scattering angle cos ~ 0.38? Actually average cos for 1.25 MeV KN is around 0.4\u2014plausible).\n\nNow let me build the vectorized photon MC. I'll write the segment-cylinder intersection function.\n\nThen run a test.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 53930,
+  "completion_tokens": 1476,
+  "total_tokens": 55406,
+  "cost": 0.0017998708,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 46379,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0017998708,
+   "upstream_inference_prompt_cost": 0.0015312388,
+   "upstream_inference_completions_cost": 0.000268632
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 139,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

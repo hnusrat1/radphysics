@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791829319-3aXFZObA6et13NLJ9PRk",
+ "object": "chat.completion",
+ "created": 1791829319,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "GMICloud",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Now I have data. Let me examine relevant values at 1.1732 and 1.3325 MeV photon energies, and electron stopping data.\n\nLet me compute the photon cross sections at the two line energies and other needed values.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_5fecf3233daf4677b9a7c5d8",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nfrom scipy.interpolate import interp1d\\n\\nph = np.loadtxt('/tmp/data/xcom_water.txt', comments='#')\\nEph = ph[:,0]\\ncoh = ph[:,1]; inc = ph[:,2]; pe = ph[:,3]; pair_n = ph[:,4]; pair_e = ph[:,5]; tot = ph[:,6]\\n# interpolators log-log\\ndef mklog(x,y):\\n    ok = (y>0)&(x>0)\\n    return interp1d(np.log(x[ok]), np.log(y[ok]), kind='linear', bounds_error=False, fill_value='extrapolate')\\nfcoh = mklog(Eph,coh); finc = mklog(Eph,inc); fpe = mklog(Eph,pe); fpn = mklog(Eph,pair_n); fpe2 = mklog(Eph,pair_e); ftot = mklog(Eph,tot)\\ndef get(E):\\n    E=np.atleast_1d(np.asarray(E,float))\\n    return dict(E=E, coh=np.exp(fcoh(np.log(E))), inc=np.exp(finc(np.log(E))), pe=np.exp(fpe(np.log(E))),\\n                pair_n=np.exp(fpn(np.log(E))), pair_e=np.exp(fpe2(np.log(E))), tot=np.exp(ftot(np.log(E))))\\nfor E in [1.0,1.1732,1.3325]:\\n    g=get(E)\\n    print(f\\\"E={E}: coh={g['coh']:.5f} inc={g['inc']:.5f} pe={g['pe']:.6f} pair_n={g['pair_n']:.6f} pair_e={g['pair_e']:.6f} tot={g['tot']:.5f}\\\")\\n    print(\\\"   fractions: coh %.4f inc %.4f pe %.5f pair %.5f\\\"%(g['coh']/g['tot'],g['inc']/g['tot'],g['pe']/g['tot'],(g['pair_n']+g['pair_e'])/g['tot']))\\n\\nel = np.loadtxt('/tmp/data/estar_water.txt', comments='#')\\nEe=el[:,0]; Sc=el[:,1]; Sr=el[:,2]; St=el[:,3]; R=el[:,4]; Y=el[:,5]\\nprint(\\\"\\\\nESTAR sample near 0.05..1.4 MeV:\\\")\\nfor E in [0.05,0.2,0.5,1.0,1.1732,1.3325,1.4]:\\n    sc=np.interp(E,Ee,Sc); sr=np.interp(E,Ee,Sr); st=np.interp(E,Ee,St); yy=np.interp(E,Ee,Y)\\n    print(f\\\"E={E:.4f}: Sc={sc:.4f} Sr={sr:.5f} St={st:.4f} Y={yy:.5f}\\\")\\n# radiation yield of 0.661 MeV? typical Compton recoil 0.6 MeV electron Y~0.0025\\n# kerma numbers\\n# mu_tr at 1.25: pe: (E-Eb)/E=1 *mu_pe (Eb~0.5keV negligible); inc: <T>/E ~?; pair: (E-1.022)/E\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Now I have data. Let me examine relevant values at 1.1732 and 1.3325 MeV photon energies, and electron stopping data.\n\nLet me compute the photon cross sections at the two line energies and other needed values.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 24810,
+  "completion_tokens": 818,
+  "total_tokens": 25628,
+  "cost": 0.0009074884,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 20592,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0009074884,
+   "upstream_inference_prompt_cost": 0.0007586124,
+   "upstream_inference_completions_cost": 0.000148876
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 46,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

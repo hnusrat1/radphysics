@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791829877-gZn9h8zQlWJo39yPvOcf",
+ "object": "chat.completion",
+ "created": 1791829877,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "The worker processes failed because the NPZ file was being read lazily from several processes at once. I'll load the table arrays eagerly and rerun.",
+    "refusal": null,
+    "reasoning": "NpzFile's lazy loading isn't safe across threads or processes, so I should fix this by eagerly loading all arrays into a plain dict at module import time instead, making sure that happens fresh in each process.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01SSAH9AjNdKNqsjAng6uadP",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nsrc=open('/tmp/work/mc3.py').read().replace(\\\"_tab=np.load('/tmp/work/tables.npz')\\\",\\\"_tab={k:v for k,v in np.load('/tmp/work/tables.npz').items()}\\\")\\nopen('/tmp/work/mc3.py','w').write(src)\\nimport sys; sys.path.insert(0,'/tmp/work')\\nimport importlib, mc3, numpy as np, time, pickle\\nfrom concurrent.futures import ProcessPoolExecutor\\ndef job(seed): return mc3.run(4000000,seed)\\nif __name__=='__main__':\\n    t=time.time()\\n    with ProcessPoolExecutor(4) as ex:\\n        res=list(ex.map(job,[101,102,103,104]))\\n    print('time',time.time()-t)\\n    def merge(res):\\n        out={}\\n        for k in res[0]:\\n            vals=[r[k] for r in res]\\n            if isinstance(vals[0],np.ndarray): out[k]=np.sum(vals,axis=0)\\n            else: out[k]=sum(vals)\\n        return out\\n    SM=merge(res)\\n    pickle.dump(SM,open('/tmp/work/SM.pkl','wb'))\\n    Om=0.009975072683099257\\n    F=Om*105**2/SM['N']\\n    print(SM['N'], (SM['g']*F))\\n    print('L3 w',SM['L3_w'], SM['L3_wT']/SM['L3_w'])\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "NpzFile's lazy loading isn't safe across threads or processes, so I should fix this by eagerly loading all arrays into a plain dict at module import time instead, making sure that happens fresh in each process.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSiQgKEAgSGAI4AUIIdGhpbmtpbmcSDOE6sSozfAiA+BY5EhoMNVOCcx9Ps5hGYMjqIjCW+9uarEHZA/i5krD69LKU/tyyPOtG6bQ7X4+crVuOIkxk5Y5YEgfcSjK6RqWkHsoqpgdm3aoiNevH549RLqS7y7J4wx0tCd13rJ/HdmZsN/2PTwxnPrdMZGe877jjrSKJaZEsQckmZdH4wMq4J3YYBcLLv18ontBlSkD61jH2mRwx1vyGSUW6ykGDmXnDXrKMem7gf5v4ZIF6xoYr3IBKISiWKKYRBLmw/rA11FjD1uFGpX+SbAAEJTOx1edL1qBg9fShOopkOQhBFt3Esmold3X1W6QXVjoqbYQ6Xn+A2YdbERQt93gY58Yw+XKJJtehzRSUkrVLIMmB9ngtbYAs62ii6BC+htUjTBJoM6YQ5owO4p9wg1dlVZDnC5Wrn6B9yQgHl1HCZ2L7Hg2Xil8EYkRoTpdzmrM9KZJp68dyyxLW7PvpEI44t0ioLID149qQVloKdPWAXoUUPkeWoPvdXkfq/8i81OF3jPPe1Bp/fSHUSMtYi/I94+xSvz+tIeT+HRclTrGPZbDXIyx5DgYyZPGk6i2+VtTL5/ZJIzqPGDGb0FJSmBfaou9YyX1KGFCtw3IfPu9Jy+MzKNU+9V9ZforZV9ffKEKg5ReygfyNaWg7nfcAradv9aD6aiC6ZUFcLMgtTGPccrxKl+a6NSI+TryCf5lDxMQkYgCmlilEc3Rz5Dpg1wXXOc0AmHt3dnN5UY5H7fefnHADbhlMlnsB0aMg14+/ux/cwrJYyZY3+tcI91bSlB+J1Sv2u0qBqwf/5H/DkGqCNQV3G6Tby8muP0pOAMLfM87XopOFpZ3bffNWxAsX0/2ZxlBFT6QCsxI+lx/xHDEqSQDatcN0wtUj7Ex+HiXYzNr3B7RumA1mRrmP2x3I9lEJyqXK4YhnUQ1aNr6HA2bj6N9fZ2BZLA7N6ySJNDwwN8THzi5D9Xbf3CdNoD9g57CjiCFgIo+ZefAp76H4GnTnQI5vCqADSwVPdHUjmCK/7oyZJsx58filO5fMYD26fE6depCN7lyfRFZU9dbTZohLlc8GSvGEYKm4Cinw3CDLtyOUQrI+1JsLVeduqZPJtGvPKZAwPJbzEHeFfHw6SM1QxxBgQf5BX5Afnoxx8OyorV+IL+odIYSktT4sW5GsxD4ilD22XEJKtqsOfpI6ItPVd+M/Ja+7Uk2Iu7z7VJF8kgCtepPUzzP43eEfCk2y6IjqvUa3LteEyyHxx+gpzMUE8lf4Qdr07a0nj3XaQ95ht9J2R+KTIAdewsCSpbMAZC8+vNCEOv4HbxduUYz4D9IVwYOoH6l5Q5jXvy9oQLUIdbQsGAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 156646,
+  "completion_tokens": 669,
+  "total_tokens": 157315,
+  "cost": 0.0107178,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 154536,
+   "cache_write_tokens": 2108,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0107178,
+   "upstream_inference_prompt_cost": 0.0090453,
+   "upstream_inference_completions_cost": 0.0016725
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 94,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

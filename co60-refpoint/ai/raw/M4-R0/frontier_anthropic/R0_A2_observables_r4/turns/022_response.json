@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791830199-8CftAacM31BxLBG6USnN",
+ "object": "chat.completion",
+ "created": 1791830199,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I'm checking that all the functions I'm using\u2014mu_inc, Scol_f, moller_dsig, kn_total, and others\u2014are properly imported from phys, including Y_f from the ESTAR table. I'm also noting that building the Mmat matrix via a list comprehension over 900\u00d7900 elements means 810k calls to moller_dsig, which could be slow in pure Python.\n\nI realize moller_dsig actually accepts array inputs since its formula works with T and eps=Td/T, so I can vectorize the row computation instead of looping scalar calls, which should keep runtime down to a few seconds. The Q0 loop over ~700 energy values and the Ldisc quadrature over 900 points should both be fine performance-wise, and the cumulative trapezoid integration using np.gradient for weights looks correct near the 1/T\u00b2 kernel region.\n\nI'm going to fix the Mmat computation to use the vectorized form, then run the ana2 script by importing it directly in-process so its top-level code executes.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_019DRJrFh1Zxnxq3XtYs4Lp2",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nsrc=open('/tmp/work/ana2.py').read()\\nsrc=src.replace(\\\"\\\"\\\"    Mmat[j,:]=np.where(sel, ne*np.array([moller_dsig(T,Tp) if T>=2*Tp else 0.0 for T in Tg]),0.0)\\\"\\\"\\\",\\n\\\"\\\"\\\"    Mmat[j,:]=np.where(sel, ne*moller_dsig(Tg,Tp),0.0)\\\"\\\"\\\")\\nopen('/tmp/work/ana2.py','w').write(src)\\nimport sys,time; sys.path.insert(0,'/tmp/work')\\nt=time.time()\\nimport ana2\\nprint('time',time.time()-t)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I'm checking that all the functions I'm using\u2014mu_inc, Scol_f, moller_dsig, kn_total, and others\u2014are properly imported from phys, including Y_f from the ESTAR table. I'm also noting that building the Mmat matrix via a list comprehension over 900\u00d7900 elements means 810k calls to moller_dsig, which could be slow in pure Python.\n\nI realize moller_dsig actually accepts array inputs since its formula works with T and eps=Td/T, so I can vectorize the row computation instead of looping scalar calls, which should keep runtime down to a few seconds. The Q0 loop over ~700 energy values and the Ldisc quadrature over 900 points should both be fine performance-wise, and the cumulative trapezoid integration using np.gradient for weights looks correct near the 1/T\u00b2 kernel region.\n\nI'm going to fix the Mmat computation to use the vectorized form, then run the ana2 script by importing it directly in-process so its top-level code executes.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSphEKEAgSGAI4AUIIdGhpbmtpbmcSDO+y+yDWPeGV89FIXxoM53PHuvMnYwcOGNySIjBkGDoSbmoad/Ob71nZf0mKJc9pwv693s+HmQAXapJjLsCt4I2HAod5FUA4SijUaZIqwxC+oCgnSA31vHxRzxdRRjHzQZS1OwaPt+ogkJhvPDTK+Q8pg0JO4HZuD7cy7DjP9WtmN39onvixwnwoqf0qVZOigGKtyvkjJW49FxsW2uL9Y4ilSteJdu6rRW50glKkrGSLo1tjUKP2/1Q7uo49Tjd4gEu/yTs1vMxsj9QFYDtpruoj+auwHjlpJ2IL0ZvcFWKaCqbgNGQpN39HmD/hyARVHu+lMxgzASC7Krowg+rGJmIZa1G/S2u+n27eYeyBWsEqN90isuRf8dLlVZv36+wo33IYPd9xXEJTwiW1i1yQEzXbptKWkKinZsQxGPqV3yRRdk2G1tjpy5TQOPdbwLi/v6p7yZ/Lqljy4noLShB9vn+/fR+j7dRcCR1YJ6FDclqiaLSxG4F8S9IFXv1vlTTM4KQPJ6bYMkRt9HNqZ1HjpqYR7+SFmexq/1U7Z8ILovG1e2b8vmCqBLEftt9XXdwhRHBq/damjH6ihPpwx7zExmklvwfLB0UPZoQHYlh7ZDmdq0QuMzsitW/h9AY/JBBaUFj8gqq0BSD7Fcb5pIf52ncl/OvzWJMXCrEa3+kxCuL2Gkhb74l/K7YCNQaUQQkogXj2pM9m7JvbLOJMDO6xIc7m+O9Ey08x0apm7uOUxjk6fuQFumg52VjF8h17nEmm9XzFQ7+58J52ly23cZq8R58tltre53kXr0F8D1Qy5b5lIoj5aqlv7NgULS5YS7Sq8tp7jmYObRX3vbpjhb9e7ByIp2mzuYmQKEPRNdct7QpIqtYma6XnDXw1xqZhy5F7SsHOF3OlKX9FkrPOJ7tSdac3hv+RJQIGQ5X88sZqxwufMo3s6A5/6VYJx9VZ3jrlGfX+po2GCDL6Bm3FNyYOmqsLrVE3NGxjFxpITWkxeIdRsuXSs4zVm2qlxDbpOMk89rCSlUgKVxntEgHmVapejDJX0t3Jnoz1d5fAnaIBvXfEsRc27h3taeCdq7fG3NKLQOUfT28sOQb0FkAWCBg6CFbzZHmt0npX6crVVbJku7oOWVg8Ith/C39uk1c6mrZgov2a4sh75GOQwifW/3+jrntltVYp3kTWTDOqq4wJ6epJdNL5aEqDY9a410UY9YuRfNjPt+q9q9YdYZypVW84YCHGNnTxOiuuAeb4wXu74Tac0S+nym+gqFi0UrzMs1JN/l4DDI3/nlNPzyWXh5Rloq5IFE6VJDjhOaaxMvuOdigk1rs0d3uNyp+aZCXzFPcyIUYlA4AdB5gmkl4/qKgzzKprGpboCutM8KkUCl+oGyMl3QCJtGdGPW55/Gq9kRVUtqYsb8PIxy6pvdYr6WJrDLIO6tkDDVgz4a+PtmKSpJrTwp9XY/jpu1EWQ/UmHkQ2VjVf+g+i5KZafC7zR0OD2qBP1cs4O2HZ+s35GWLAiRpjKdETbdpJ/sDPuRb+nR7AeOTeG7xu+PdwtoV3HHO8beqQxRRG5z3E2L9Jfj3+8/a8nHIKntWIM8yVB5flEjHS1gbacNTBf2cvTv0R6N9mQ8BWmni6sq4eB6giX1WgrMQznDzC/0K3cZvU7SaIEKCkxMNPfxNuO0OsBGjfAapeD68RxWvmuc8pSIibmLSYXa0mWrbF360j6t2nrULIimtQAGMpOlrU0AmMEdawMFMbb8DrTAX1TRsJXaYD2pRLoL7YIsbkYtNDeqErOWzl/NYwcOlCM78dd2//FxkGr6S8pr7dMBMt275ctO9Uu0biLdbPjwNvZ7boD3Lw+1HQ4xnUw6weLVEM8WMgrzYByy8p6L6EO/nSAtJGPTXzZBUq5iD7rmQvD2yyShNxRjsaQgwtxopSPMgv3bF/5KhVIBrzFHCk8otN+iZhKg/HfCLiUzB8yLqI5oRS+Rw7L2pHgOtRDbZ7mCd9H2KlDHU6MVS2Wrc961Udly+YT+l8HopH97+5BxVh/X2UiRQi3wNeS7VffU/wNsIu/HTK7MWlD1qh0U4pYqgieGSKPQmyPf6vqA0Is6r0s1RwNWJegzYfl0Kb8AykiXguhGoAB402OGNqVmyTrhyoittE7VaYzu28dJzwamS3tE0EgdoMqrMYDKmrB23eOpj/agYsV9lql2GcdS/ZrSeRtk+NX1ySJ5LgNfd+YF05ayTMQHYvRmYkwjnKKlNNH9vklmmApzqdJQ3bX+0yEau4oUeVwemWOan8LxIr0NIHBa91tmxCVS46zblWS0xgauzSBwMNwnajQxeBARM2J/YXGCH/14Q22kycpbW2sEeIHX/ZXOvRBqt5pox1UHwftDiZFo0fikrZknNemmxaHLsurdIagsd+yU0+h8D48hM73gM3a1lqxmmUEDHGr3lM+RnSQ2YzIJdOIGzzyg2AEz7ywEtoBT2iQk0DhE4qhws7JSGraNY9KP+2H9dJExFJaQ6ZKf06ZxEQzrbw8+XIN55JU2bDpTiXAp4Uy19fZ6Q4EHWFwXjHW1EUnJyJlFUETA4K7xZ9a9FT+tZ6XXqGakjMDr8n0jVQHIF9FbD3qeeqI3mjOyfs9FvlSOGSyYqVB0AK0s+rGEvzh3eSwUgVAFbo7M/j8khjKK24mPlv59vsZajrKZacu5tuRswc2cW820nzO2pG15YY42RwWnG2VJgQXzT7FJ4XxNT5nerYqDNOe65HSfnxlsECr9F/BMrrLND3IBiiA2roqBklOE9xMLjZMQrvvdjk2cYSxNihNBJE9rkLpIydzBVwIH91dH8n/UhuoQ2zYh+79GIQNl/9BCuvRAI4xQDIYNL7+xbnJUxuBkilXemg5cULEEo2uQYQzgYq5/OzNNND16s3/mVngIxN2sAAHJ6WIv3ofPx730AYAQ==.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 171179,
+  "completion_tokens": 877,
+  "total_tokens": 172056,
+  "cost": 0.017685125,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 159120,
+   "cache_write_tokens": 12057,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.017685125,
+   "upstream_inference_prompt_cost": 0.015492625,
+   "upstream_inference_completions_cost": 0.0021925
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 619,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

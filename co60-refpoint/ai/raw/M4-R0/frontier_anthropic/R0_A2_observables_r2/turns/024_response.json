@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791829562-zM1sqqKDQaaERdlJ92Wg",
+ "object": "chat.completion",
+ "created": 1791829562,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "The Bethe check agrees with ESTAR to 4 significant figures, which validates the stopping-power treatment. That call was slow, so I'll time the pieces before continuing.",
+    "refusal": null,
+    "reasoning": "Still 452 seconds again, and I'm trying to pin down where the time actually goes \u2014 the sig matrix loop with the Moller evaluation seems too small to account for it, same with the kn_hist and estar loops, so I suspect the real bottleneck is elsewhere, maybe in that exec call.\n\nRather than keep guessing, I should actually profile the code and separately cache the precomputed objects like the sig matrix and Pmat to disk so I'm not recomputing them every process run \u2014 I'll verify with a small timing test next.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_016K58dtAWtEKGWVSTVR6XD2",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport time,sys\\nsys.path.insert(0,'/tmp')\\nimport numpy as np, phys\\nt0=time.time(); import pickle\\nt=pickle.load(open('/tmp/tallies.pkl','rb')); print('load',time.time()-t0)\\nt0=time.time()\\nfor T in np.linspace(0.01,1.4,279): phys.estar(T)\\nprint('estar loop',time.time()-t0)\\nt0=time.time()\\nx=phys.moller_dsde(0.5,np.linspace(0.01,0.2,6),1); print('moller',time.time()-t0)\\nt0=time.time()\\nfrom scipy.interpolate import interp1d\\nimport mc\\nprint('import mc',time.time()-t0)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Still 452 seconds again, and I'm trying to pin down where the time actually goes \u2014 the sig matrix loop with the Moller evaluation seems too small to account for it, same with the kn_hist and estar loops, so I suspect the real bottleneck is elsewhere, maybe in that exec call.\n\nRather than keep guessing, I should actually profile the code and separately cache the precomputed objects like the sig matrix and Pmat to disk so I'm not recomputing them every process run \u2014 I'll verify with a small timing test next.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "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.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 141460,
+  "completion_tokens": 882,
+  "total_tokens": 142342,
+  "cost": 0.090238325,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 659,
+   "cache_write_tokens": 140799,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.090238325,
+   "upstream_inference_prompt_cost": 0.088033325,
+   "upstream_inference_completions_cost": 0.002205
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 543,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

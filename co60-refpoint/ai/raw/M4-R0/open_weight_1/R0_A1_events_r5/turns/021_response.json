@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791830643-OJYczxisPLwOkmpfOr2R",
+ "object": "chat.completion",
+ "created": 1791830643,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Good, the setup works. Now let me run the actual Monte Carlo computation.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_eb80c1b9783047dc9a790f46",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import sys, json\\nimport numpy as np\\n\\n# The setup from previous calls persists\\n\\n# ============ PRIMARY RATE ============\\nN_MC = 500000\\nprim_tot = 0.0\\nprim_by = {'compton':0.0, 'photoelectric':0.0, 'pair':0.0, 'rayleigh':0.0}\\n\\nfor _ in range(N_MC):\\n    E, d, x, y = src_samp()\\n    dz = d[2]\\n    if dz <= 0: continue\\n    \\n    # Ray position at z=zlo (scoring volume entry)\\n    x_ep = x * (SSD + zlo) / SSD\\n    y_ep = y * (SSD + zlo) / SSD\\n    if np.sqrt(x_ep**2 + y_ep**2) > Rc: continue\\n    \\n    # Path through scoring volume (along z)\\n    path = 0.2 / dz\\n    \\n    muE = mu_t(E)\\n    # Attenuation path = distance in water from surface to scoring entry\\n    # This is the slant path through water\\n    t_sc = (zlo - zs) / dz\\n    att = np.exp(-muE * t_sc)\\n    p_int = 1.0 - np.exp(-muE * path)\\n    w = att * p_int\\n    \\n    prim_tot += w\\n    mt = mu_c(E) + mu_ph(E) + mu_pp(E) + mu_rl(E)\\n    prim_by['compton'] += w * mu_c(E) / mt\\n    prim_by['photoelectric'] += w * mu_ph(E) / mt\\n    prim_by['pair'] += w * mu_pp(E) / mt\\n    prim_by['rayleigh'] += w * mu_rl(E) / mt\\n\\nprim_tot /= N_MC\\nfor k in prim_by: prim_by[k] /= N_MC\\n\\nprint(\\\"Primary rate: {:.8f}\\\".format(prim_tot), file=sys.stderr)\\nfor k,v in prim_by.items():\\n    print(\\\"  {}: {:.10f}\\\".format(k,v), file=sys.stderr)\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Good, the setup works. Now let me run the actual Monte Carlo computation.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 78486,
+  "completion_tokens": 527,
+  "total_tokens": 79013,
+  "cost": 0.001867863536,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 73728,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001867863536,
+   "upstream_inference_prompt_cost": 0.001772097096,
+   "upstream_inference_completions_cost": 9.576644e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 16,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}
