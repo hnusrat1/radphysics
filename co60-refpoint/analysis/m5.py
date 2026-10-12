@@ -168,6 +168,41 @@ def score_events(ai_events, mc, delta_c, seed=1):
     return out
 
 
+def outcome(d, meta, task):
+    """The conversation's outcome. The harness records ok, parse_failure, api_error or tool_budget; a parse
+    failure whose last reply is a JSON object with nothing in it (an empty events list, or no observable with a
+    value) is counted as a refusal (STUDY_PLAN Section 5.2). The rule reads final.txt and never changes ai/raw/."""
+    out = meta["outcome"] or "unknown"
+    if out.endswith("ok"):
+        return "ok"
+    if out == "parse_failure" and (d / "final.txt").exists():
+        from ai.harness.parse import extract_json
+        obj, _ = extract_json((d / "final.txt").read_text())
+        if isinstance(obj, dict):
+            if task == "events" and obj.get("events") == []:
+                return "refusal"
+            if task == "observables" and all(obj.get(k) in (None, [], {}) for k in OBS):
+                return "refusal"
+    return out
+
+
+def count_outcomes(tag, config="R0"):
+    """{slot: {task: {condition: counts}}} for every conversation in ai/raw/<tag>/."""
+    counts = {}
+    for d in sorted((ROOT / "ai" / "raw" / tag).glob(f"*/{config}_*_r*")):
+        if not (d / "meta.yaml").exists():
+            continue
+        slot, (_, cond, task, _) = d.parent.name, d.name.split("_")
+        meta = yaml.safe_load(open(d / "meta.yaml"))
+        c = counts.setdefault(slot, {}).setdefault(task, {}).setdefault(
+            cond, {"ok": 0, "parse_failure": 0, "refusal": 0, "api_error": 0, "tool_calls": 0, "retries": 0})
+        key = outcome(d, meta, task)
+        c[key] = c.get(key, 0) + 1
+        c["tool_calls"] += meta.get("tool_calls", 0)
+        c["retries"] += meta.get("retries", 0)
+    return counts
+
+
 def load_events_answers(tag, config="R0"):
     base = ROOT / "ai" / "raw" / tag
     out = {}
@@ -181,20 +216,12 @@ def load_events_answers(tag, config="R0"):
 def load_answers(tag, config="R0"):
     """{slot: {condition: [parsed answers]}} and outcome counts, from ai/raw/<tag>/."""
     base = ROOT / "ai" / "raw" / tag
-    answers, counts = {}, {}
+    answers = {}
     for d in sorted(base.glob(f"*/{config}_*_observables_r*")):
         slot, cond = d.parent.name, d.name.split("_")[1]
-        meta = yaml.safe_load(open(d / "meta.yaml"))
-        c = counts.setdefault(slot, {}).setdefault(cond, {"ok": 0, "parse_failure": 0, "api_error": 0,
-                                                          "refusal": 0, "tool_calls": 0, "retries": 0})
-        out = meta["outcome"] or "unknown"
-        key = "ok" if out.endswith("ok") else out
-        c[key] = c.get(key, 0) + 1
-        c["tool_calls"] += meta.get("tool_calls", 0)
-        c["retries"] += meta.get("retries", 0)
         if (d / "parsed.json").exists():
             answers.setdefault(slot, {}).setdefault(cond, []).append(json.load(open(d / "parsed.json")))
-    return answers, counts
+    return answers, count_outcomes(tag, config)
 
 
 def control_answers(ref):
