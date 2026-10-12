@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791829082-h4693QxdFxxRS0eyrtbo",
+ "object": "chat.completion",
+ "created": 1791829082,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Again the invisible backspace character. Let me rewrite the mu_ray function more carefully.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_8b96a2eae53d43299024cd86",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nimport math\\n\\nmec2=0.511\\nr0=2.8179403262e-13\\nnepm3=3.3456e23\\n\\ndef mu_inc(E):\\n    if E<=0: return 0.0\\n    a=E/mec2; a2=a*a; x=1+2*a; lx=math.log(x)\\n    t1=(1+a)/a2*(2*(1+a)/x-lx/a)\\n    t2=lx/(2*a)-(1+3*a)/(x*x)\\n    return 2*math.pi*r0*r0*(t1+t2)*nepm3\\n\\ndef mu_pp(E):\\n    if E<=2*mec2: return 0.0\\n    e_arr=np.array([1.1732,1.3325,2.0,3.0,5.0,10.0])\\n    mu_arr=np.array([0.006205,0.006286,0.0082,0.0109,0.0126,0.0120])\\n    if E<=1.1732:\\n        t=E-2*mec2\\n        if t<=0: return 0.0\\n        t0=1.1732-1.022\\n        return 0.006205*(t/t0)**2\\n    elif E>=10.0:\\n        return 0.0120\\n    else:\\n        le=math.log(E); lea=np.log(e_arr); lma=np.log(mu_arr)\\n        return math.exp(np.interp(le,lea,lma))\\n\\ndef mu_pe_func(E):\\n    if E<=0: return 0.0\\n    e_arr=np.array([0.01,0.02,0.05,0.1,0.2,0.3,0.5,1.0,1.1732,1.3325,2.0])\\n    mu_arr=np.array([5.33,0.742,0.0321,0.0164,0.0097,0.0057,0.0026,0.0011,0.001735,0.001524,0.00078])\\n    if E<=0.01:\\n        return 5.33*(E/0.01)**(-3.5)\\n    elif E>=2.0:\\n        return 0.00078*(E/2.0)**(-3.0)\\n    else:\\n        le=math.log(E); lea=np.log(e_arr); lma=np.log(mu_arr)\\n        return math.exp(np.interp(le,lea,lma))\\n\\ndef mu_ray(E):\\n    if E<=0: return 0.0\\n    e_arr=np.array([0.01,0.02,0.05,0.1,0.2,0.5,1.0,1.1732,1.3325,2.0,5.0])\\n    mu_arr=np.array([0.0008,0.0010,0.0012,0.0016,0.0021,0.0024,0.0025,0.00253,0.00213,0.0012,0.0003])\\n    if E<=0.01:\\n        val=0.0008*(E/0.01)**0.3\\n        return val\\n    elif E>=5.0:\\n        val=0.0003*(E/5.0)**(-1.5)\\n        return val\\n    else:\\n        le=math.log(E); lea=np.log(e_arr); lma=np.log(mu_arr)\\n        return math.exp(np.interp(le,lea,lma))\\n\\nfor E in [0.05, 0.1, 0.17, 0.3, 0.5, 0.8, 1.1732, 1.3325]:\\n    mi=mu_inc(E); mp=mu_pp(E); mpe=mu_pe_func(E); mr=mu_ray(E)\\n    mt=mi+mp+mpe+mr\\n    print(f\\\"E={E:.4f}: total={mt:.6f}, inc={mi:.6f} ({mi/mt*100:.1f}%), pp={mp:.6f} ({mp/mt*100:.1f}%), pe={mpe:.6f} ({mpe/mt*100:.1f}%), ray={mr:.6f} ({mr/mt*100:.1f}%)\\\")\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Again the invisible backspace character. Let me rewrite the mu_ray function more carefully.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 50946,
+  "completion_tokens": 1039,
+  "total_tokens": 51985,
+  "cost": 0.002733650304,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 28672,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.002733650304,
+   "upstream_inference_prompt_cost": 0.002544843224,
+   "upstream_inference_completions_cost": 0.00018880708
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 18,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

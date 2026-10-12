@@ -420,3 +420,21 @@ number written `.0008`; r4: U+FFFC characters between keys) before either reache
 - **Fix after R0.** Skip the fallback when a fenced block exists, and report the decode error.
 - **Scorer.** `analysis/m5.py` counts a refusal only for a top-level answer (one that has `method`), so a nested
   fallback object is no longer read as an empty answer.
+
+## D035. R0 execution: parallel processes, API-error reruns (2026-10-12)
+
+- **Parallel processes.** R0 started as one process per model. Once DeepSeek and Haiku had reached their tool
+  conditions, extra processes were started for their remaining blocks: A1 events and A2 observables, plus A2
+  observables for Qwen. Each process skips a conversation whose directory exists, so every conversation runs once.
+  The order of conversations changes; nothing a model sees does.
+- **API errors are rerun.** Gemini had four `api_error` conversations:
+  - two in-band errors with no error code;
+  - one 429 that outlasted 6 retries;
+  - one upstream 504 idle timeout.
+
+  An API error is an infrastructure failure, not model behaviour, so these four were moved to
+  `ai/raw/M4-R0-void/<slot>/<name>.api_error` and rerun. Together with the empty attempts in D033, they carry
+  $0.0045 of charge. For the reruns the harness retries in-band errors without a code as well, with backoff of 20
+  s doubling over 8 attempts. This applies to the reruns and to conversations started after 18:20 UTC; earlier
+  ones used D033's 6 attempts from 10 s. Only the API retry differs; the prompts, the parser and the model's
+  retry text do not.

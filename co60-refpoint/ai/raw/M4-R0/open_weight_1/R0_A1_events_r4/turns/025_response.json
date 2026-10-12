@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791829101-DQNsdvhLED77pYKtob7j",
+ "object": "chat.completion",
+ "created": 1791829101,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "For cos_theta=1.0, the electron energy is 0, so pe=0. Let me skip that case.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_8c06a3a4005742ec96aabd0e",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import math\\n\\nE=1.1732\\nmec2=0.511\\na=E/mec2\\n\\nfor cos_theta in [0.9, 0.5, 0.0, -0.5, -0.9]:\\n    k=1.0/(1.0+a*(1.0-cos_theta))\\n    Eout=k*E\\n    te=E-Eout\\n    theta=math.acos(cos_theta)\\n    tan_half=math.tan(theta/2)\\n    cot_phi=(1.0+a)*tan_half\\n    phi=math.atan2(1.0,cot_phi)\\n    pe=math.sqrt(te*(te+2*mec2))\\n    if pe>0:\\n        cos_phi2=(E-Eout*cos_theta)/pe\\n    else:\\n        cos_phi2=1.0\\n    print(f\\\"cos_theta={cos_theta:.3f}, Eout={Eout:.4f}, te={te:.4f}, phi={math.degrees(phi):.2f}deg, cos_phi={cos_phi2:.6f}, my_cos={math.cos(phi):.6f}\\\")\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "For cos_theta=1.0, the electron energy is 0, so pe=0. Let me skip that case.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 53686,
+  "completion_tokens": 332,
+  "total_tokens": 54018,
+  "cost": 0.001663210472,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 45056,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001663210472,
+   "upstream_inference_prompt_cost": 0.001602879432,
+   "upstream_inference_completions_cost": 6.033104e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 27,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}
