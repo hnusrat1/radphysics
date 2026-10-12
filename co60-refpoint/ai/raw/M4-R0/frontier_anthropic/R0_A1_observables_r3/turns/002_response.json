@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791825780-zJ3UStkpiCepGo7zb4ya",
+ "object": "chat.completion",
+ "created": 1791825780,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "Klein-Nishina checks pass (\u03bc_C(1 MeV)\u22480.0706 cm\u207b\u00b9 matches NIST). Next, the photon Monte Carlo with forced detection to the scoring points.",
+    "refusal": null,
+    "reasoning": "The Klein-Nishina check looks consistent, giving attenuation coefficients around 0.065 and 0.061 cm\u207b\u00b9 at these energies. I'm cross-checking against NIST water values near 1.25 MeV to make sure the Compton-only coefficient I'm computing lines up reasonably well with known tabulated data.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_013mYw9p1UiPrJuMg2bmkGab",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nSF=110.25  # 0.01*105^2\\nlines=np.array([1.1732,1.3325])\\nEb=np.array([0,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1,1.05,1.1,1.15,1.2,1.25,1.3,1.35,1.4])\\ncb=np.array([-1,-0.8,-0.6,-0.4,-0.2,0,0.2,0.4,0.6,0.8,1.0])\\nebE=np.array([0.01,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1,1.05,1.1,1.15,1.2,1.4])\\n\\n# KN tables: <T>, <T(1-g)> per E\\ndef rad_S(T, X0=36.08):  # MeV cm2/g approx radiative stopping power (water)\\n    f=np.minimum(0.31*np.maximum(T,1e-4)**0.3,1.0)\\n    return (T+me)/X0*f\\ndef Scol_bethe(T, I, ZA, neg):\\n    tau=T/me; b2=tau*(tau+2)/(tau+1)**2\\n    Kc=2*np.pi*re**2*me*neg\\n    F=1-b2+(tau**2/8-(2*tau+1)*np.log(2))/(tau+1)**2\\n    return Kc/b2*(np.log(tau**2*(tau+2)/(2*(I/me)**2))+F)\\nneg_w=6.02214e23*0.55509\\nneg_a=6.02214e23*0.49919\\nIw=75e-6; Ia=85.7e-6\\nfor T in [0.01,0.1,0.3,1.0,10]:\\n    print(T, Scol_bethe(T,Iw,0,neg_w), Scol_bethe(T,Ia,0,neg_a))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The Klein-Nishina check looks consistent, giving attenuation coefficients around 0.065 and 0.061 cm\u207b\u00b9 at these energies. I'm cross-checking against NIST water values near 1.25 MeV to make sure the Compton-only coefficient I'm computing lines up reasonably well with known tabulated data.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSmQsKEAgSGAI4AUIIdGhpbmtpbmcSDALwmXKh3/rZubUD5RoMZTsPbC/8QNGM+Tc7IjAG7L9h4go5vxBS7PGpcqgnK4GfDu7xhmVtq7VM84z95mfzFhcbbMZXJrt3KWvBz2Uqtgry0C2XYm49raQBjlKwaEGTquHiq2wkjmPU21pKq0k8eiSADumiVEammYkk+xHrhjhy845XOo9/cqmR6SRgIRzbOrH8jyYcFB/qfcAjIOhdP/cPKIAmxuVHEvZ+ntM7b3Rjm4mY9xWBhLzQaJYn9DPp2P65OgPTg/agyxcR9mubCnG025jIq4nX+hxJQTXXDhcZA0ED+x6TzaIBxVqDku+NCq/wwXG4Dvkrb4i7jP/3CuB4MyiSQ03qSJ6iOx1sgFlvwqNd51UNSSGkufACXKlVy5o9JdTElrAS51fR0r5o2olsxzDKmOySGEM0ZOXKtmAVfP3IrfoLb7imsSaICpEMRCEuztUUvobx5kPrITmKh1kgxUTfpNE/11MOB53uSE1LvTmsMIIdy7cumZzXFIE9OZebnLPOYWLvwbWfiozaQ3r3b7MMkIYtuRLSmQz/ZSTfhAIPRFvbSnnKpKKpcnxHRBGzqxgQJj43hWokxHIpWADkrSuEYht8Eb7GE1j4DizmO1RaGiiDkH5CG9L/RJEIWwyZYMhn/5NWmCcGImbH0aFL0W0a9AAJIDYP0LbxJgi136Z76PUl1E2iAu7idX7oSdAt49giQMk8qOuJ3iVnRyqkF4rjdginzZFTIdtGdpBwaT2OVqEPDMe2esfN4u++5RrUja+k7FXiumrMsUmn0STzLA1gSwZnq4Xl0RgfqkiyI92dpqS6FvrKrjeOuRON7V3r6YffCfwJMcW6B2J68ifJR/iTiVzO1o8V2uOAaDwj2cC0DXOlyJl2wR2sG0Rs+1KCiR4Wz2nS5cf82yZk90lSg7KwJ80vXuwGDlDnOfhAQkas/JMn+MUQuRpRQFmNfDa7b8zVkuio46stxAIlpLNvDVtr/nsZsulQS7zz+O1XLK38KjfkuGx6vYQEjf8+AF9OhEnsKzRrKOaA0RYeWrlwp/kV/RKA+SHs81IvgPNPKtBKeK/aNr7sqd7pvha1DtOxREUwE85L+rDlgyMRaBBsLb3slVE4Z3Qp9HaJ18LZiCSefPHhLcCBl3H/X20+p0rjssGXMCI0M0FTDI23fk0VKiPIEwkhLB6e+jmghpW1QeiKxg1c2jo7BRZkqTdteuezMtHhCMF0pn0eCwSDePrszJe1yKl4AoLMObhsYPWbdNG16m857BPvMgohrBmdyPLaUZmdZ3ynLhl3MkGW5uW4w0sRxJkNRNMDekK0sVdxN/nevjcY6xUSbxw+25kwckA308EUh6kpy+2XyPSEdJYe1Qu+QKBB+LhLZbh8CjLgle6sv7WSVJ71SJqNQLFAEYgphj8V+8y18rb1Mi0LL1e0Pqng9vlhjpasgalKkiHW5VEaEbhZY51wcAt+5VtYQQdutndzVW/v9uxFdvXWTpahccl8VxMiKf1ZXa9cLZ6NgNGb+aUiqHAxXo/NwInRShV8P7Rx27OxeTI/d+wRdahD7jkJEvgHjXvSxpiUKM/NwoZk+CAVHAtQx0vTnMaWo80UY4iTDBku/xKyrMqQID+OmejiHDos5OuLK29qlDUv+xVnTVb1Y+FYfGNTqAS1b9UxgDerYEdIImlemasW/dDZOAvu85jEKrQnuvqDJa4nijf0vPCkzFA2TF9HSpWsfAX9cnXctQnu3O0Ntc09QGBcnqpOg8K2JXNRTvVaZdVPtkJBm62I6pJyJXwPULyMG68V4qdEvOzP022/sr83tFdO43pl2PZTyrL+bYugzRH8v5Fdwvoj5RIMFTJfLFdaKLxQM0JT6z1Dt28o5ncLIf7gi2AoHxgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 97192,
+  "completion_tokens": 1233,
+  "total_tokens": 98425,
+  "cost": 0.01276545,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 97190,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.01276545,
+   "upstream_inference_prompt_cost": 0.01214895,
+   "upstream_inference_completions_cost": 0.0006165
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 409,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

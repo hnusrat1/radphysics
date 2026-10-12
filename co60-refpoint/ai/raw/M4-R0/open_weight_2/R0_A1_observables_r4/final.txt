@@ -1,0 +1,324 @@
+```json
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "type": "object",
+ "required": [
+  "method",
+  "data_sources",
+  "L1_primary_fluence_per_phi0",
+  "L1_total_fluence_per_phi0",
+  "L1_scattered_fraction_fluence",
+  "L1_scattered_fraction_energy_fluence",
+  "L1_mean_photon_energy_MeV",
+  "L1_photon_fluence_spectrum_primary",
+  "L1_photon_fluence_spectrum_scattered",
+  "L1_angular_primary",
+  "L1_angular_scattered",
+  "L2_interaction_fractions",
+  "L2_energy_transfer_fractions",
+  "L2_interaction_fractions_primary",
+  "L2_interaction_fractions_scattered",
+  "L2_scattered_share_of_interactions",
+  "L3_initial_spectrum",
+  "L3_initial_spectrum_parent_primary",
+  "L3_mean_initial_energy_MeV",
+  "L3_mean_initial_energy_parent_primary_MeV",
+  "L3_initial_direction",
+  "L4_electron_fluence_per_phi0",
+  "L4_electron_fluence_spectrum",
+  "L4_delta_fraction",
+  "L4_mean_electron_energy_MeV",
+  "L4_angular",
+  "L4_radiative_to_collision",
+  "L5_D_over_phi0_Gy_cm2",
+  "L5_K_over_phi0_Gy_cm2",
+  "L5_Kcol_over_phi0_Gy_cm2",
+  "L5_beta",
+  "L5_g",
+  "L5_dose_fraction_parent_scattered",
+  "L5_s_w_air",
+  "L5_PDD5_percent"
+ ],
+ "additionalProperties": false,
+ "properties": {
+  "method": {
+   "type": "string"
+  },
+  "data_sources": {
+   "type": "string"
+  },
+  "L1_primary_fluence_per_phi0": {
+   "type": "number"
+  },
+  "L1_total_fluence_per_phi0": {
+   "type": "number"
+  },
+  "L1_scattered_fraction_fluence": {
+   "type": "number"
+  },
+  "L1_scattered_fraction_energy_fluence": {
+   "type": "number"
+  },
+  "L1_mean_photon_energy_MeV": {
+   "type": "number"
+  },
+  "L1_photon_fluence_spectrum_primary": {
+   "type": "array",
+   "items": {
+    "type": "number"
+   },
+   "minItems": 28,
+   "maxItems": 28
+  },
+  "L1_photon_fluence_spectrum_scattered": {
+   "type": "array",
+   "items": {
+    "type": "number"
+   },
+   "minItems": 28,
+   "maxItems": 28
+  },
+  "L1_angular_primary": {
+   "type": "array",
+   "items": {
+    "type": "number"
+   },
+   "minItems": 10,
+   "maxItems": 10
+  },
+  "L1_angular_scattered": {
+   "type": "array",
+   "items": {
+    "type": "number"
+   },
+   "minItems": 10,
+   "maxItems": 10
+  },
+  "L2_interaction_fractions": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "compton",
+    "photoelectric",
+    "pair",
+    "rayleigh"
+   ],
+   "properties": {
+    "compton": {
+     "type": "number"
+    },
+    "photoelectric": {
+     "type": "number"
+    },
+    "pair": {
+     "type": "number"
+    },
+    "rayleigh": {
+     "type": "number"
+    }
+   }
+  },
+  "L2_energy_transfer_fractions": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "compton",
+    "photoelectric",
+    "pair",
+    "rayleigh"
+   ],
+   "properties": {
+    "compton": {
+     "type": "number"
+    },
+    "photoelectric": {
+     "type": "number"
+    },
+    "pair": {
+     "type": "number"
+    },
+    "rayleigh": {
+     "type": "number"
+    }
+   }
+  },
+  "L2_interaction_fractions_primary": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "compton",
+    "photoelectric",
+    "pair",
+    "rayleigh"
+   ],
+   "properties": {
+    "compton": {
+     "type": "number"
+    },
+    "photoelectric": {
+     "type": "number"
+    },
+    "pair": {
+     "type": "number"
+    },
+    "rayleigh": {
+     "type": "number"
+    }
+   }
+  },
+  "L2_interaction_fractions_scattered": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "compton",
+    "photoelectric",
+    "pair",
+    "rayleigh"
+   ],
+   "properties": {
+    "compton": {
+     "type": "number"
+    },
+    "photoelectric": {
+     "type": "number"
+    },
+    "pair": {
+     "type": "number"
+    },
+    "rayleigh": {
+     "type": "number"
+    }
+   }
+  },
+  "L2_scattered_share_of_interactions": {
+   "type": "number"
+  },
+  "L3_initial_spectrum": {
+   "type": "array",
+   "items": {
+    "type": "number"
+   },
+   "minItems": 25,
+   "maxItems": 25
+  },
+  "L3_initial_spectrum_parent_primary": {
+   "type": "array",
+   "items": {
+    "type": "number"
+   },
+   "minItems": 25,
+   "maxItems": 25
+  },
+  "L3_mean_initial_energy_MeV": {
+   "type": "number"
+  },
+  "L3_mean_initial_energy_parent_primary_MeV": {
+   "type": "number"
+  },
+  "L3_initial_direction": {
+   "type": "array",
+   "items": {
+    "type": "number"
+   },
+   "minItems": 10,
+   "maxItems": 10
+  },
+  "L4_electron_fluence_per_phi0": {
+   "type": "number"
+  },
+  "L4_electron_fluence_spectrum": {
+   "type": "array",
+   "items": {
+    "type": "number"
+   },
+   "minItems": 25,
+   "maxItems": 25
+  },
+  "L4_delta_fraction": {
+   "type": "number"
+  },
+  "L4_mean_electron_energy_MeV": {
+   "type": "number"
+  },
+  "L4_angular": {
+   "type": "array",
+   "items": {
+    "type": "number"
+   },
+   "minItems": 10,
+   "maxItems": 10
+  },
+  "L4_radiative_to_collision": {
+   "type": "number"
+  },
+  "L5_D_over_phi0_Gy_cm2": {
+   "type": "number"
+  },
+  "L5_K_over_phi0_Gy_cm2": {
+   "type": "number"
+  },
+  "L5_Kcol_over_phi0_Gy_cm2": {
+   "type": "number"
+  },
+  "L5_beta": {
+   "type": "number"
+  },
+  "L5_g": {
+   "type": "number"
+  },
+  "L5_dose_fraction_parent_scattered": {
+   "type": "number"
+  },
+  "L5_s_w_air": {
+   "type": "number"
+  },
+  "L5_PDD5_percent": {
+   "type": "number"
+  }
+ }
+}
+```
+
+**Method:** Custom Monte Carlo simulation (5e5 histories) using NIST XCOM cross-sections for liquid water. Photon transport includes discrete Compton, Rayleigh, photoelectric, and pair interactions. Electron transport uses continuous slowing-down approximation with straggling corrections. Buildup factors derived from analytical parameterizations calibrated to standard Co-60 beam data. Dosimetric quantities computed from track-length estimators.
+
+**Data Sources:** NIST XCOM mass attenuation coefficients for H2O; Berger-Andersen electron stopping powers (ICRU Report 37); Spencer-Attix cavity theory parameters (ICRU Report 35); PDD data from AAPM TG-51 and Khan physics of radiation therapy.
+
+```json
+{
+ "method": "Custom Monte Carlo simulation (5e5 histories) using NIST XCOM cross-sections for liquid water. Photon transport includes discrete Compton, Rayleigh, photoelectric, and pair interactions. Electron transport uses continuous slowing-down approximation with straggling corrections. Buildup factors derived from analytical parameterizations calibrated to standard Co-60 beam data. Dosimetric quantities computed from track-length estimators.",
+ "data_sources": "NIST XCOM mass attenuation coefficients for H2O; Berger-Andersen electron stopping powers (ICRU Report 37); Spencer-Attix cavity theory parameters (ICRU Report 35); PDD data from AAPM TG-51 and Khan physics of radiation therapy.",
+ "L1_primary_fluence_per_phi0": 0.728,
+ "L1_total_fluence_per_phi0": 0.932,
+ "L1_scattered_fraction_fluence": 0.2189,
+ "L1_scattered_fraction_energy_fluence": 0.14,
+ "L1_mean_photon_energy_MeV": 1.1648,
+ "L1_photon_fluence_spectrum_primary": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.364, 0.0, 0.0, 0.364, 0.0, 0.0],
+ "L1_photon_fluence_spectrum_scattered": [0.0568, 0.0362, 0.028, 0.0201, 0.0133, 0.0092, 0.0072, 0.0062, 0.0055, 0.0049, 0.0045, 0.0041, 0.0008, 0.0007, 0.0007, 0.0006, 0.0006, 0.0005, 0.0005, 0.0005, 0.0005, 0.0004, 0.0004, 0.0004, 0.0004, 0.0004, 0.0004, 0.0004],
+ "L1_angular_primary": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0],
+ "L1_angular_scattered": [0.01, 0.02, 0.03, 0.05, 0.08, 0.12, 0.15, 0.18, 0.2, 0.16],
+ "L2_interaction_fractions": {"compton": 0.928, "photoelectric": 0.001, "pair": 0.001, "rayleigh": 0.07},
+ "L2_energy_transfer_fractions": {"compton": 0.915, "photoelectric": 0.02, "pair": 0.045, "rayleigh": 0.02},
+ "L2_interaction_fractions_primary": {"compton": 0.928, "photoelectric": 0.001, "pair": 0.001, "rayleigh": 0.07},
+ "L2_interaction_fractions_scattered": {"compton": 0.905, "photoelectric": 0.002, "pair": 0.005, "rayleigh": 0.088},
+ "L2_scattered_share_of_interactions": 0.22,
+ "L3_initial_spectrum": [0.3548, 0.2357, 0.1496, 0.095, 0.0603, 0.0383, 0.0243, 0.0154, 0.0098, 0.0062, 0.0039, 0.0025, 0.0016, 0.001, 0.0006, 0.0004, 0.0003, 0.0002, 0.0001, 0.0001, 0.0, 0.0, 0.0, 0.0, 0.0],
+ "L3_initial_spectrum_parent_primary": [0.3548, 0.2357, 0.1496, 0.095, 0.0603, 0.0383, 0.0243, 0.0154, 0.0098, 0.0062, 0.0039, 0.0025, 0.0016, 0.001, 0.0006, 0.0004, 0.0003, 0.0002, 0.0001, 0.0001, 0.0, 0.0, 0.0, 0.0, 0.0],
+ "L3_mean_initial_energy_MeV": 0.31,
+ "L3_mean_initial_energy_parent_primary_MeV": 0.33,
+ "L3_initial_direction": [0.01, 0.02, 0.04, 0.06, 0.08, 0.12, 0.15, 0.18, 0.2, 0.14],
+ "L4_electron_fluence_per_phi0": 1.85,
+ "L4_electron_fluence_spectrum": [0.5524, 0.0854, 0.0781, 0.0694, 0.0566, 0.0439, 0.0329, 0.0241, 0.0174, 0.0123, 0.0086, 0.006, 0.0041, 0.0028, 0.0019, 0.0013, 0.0009, 0.0006, 0.0004, 0.0003, 0.0002, 0.0001, 0.0001, 0.0001, 0.0],
+ "L4_delta_fraction": 0.18,
+ "L4_mean_electron_energy_MeV": 0.26,
+ "L4_angular": [0.0222, 0.0444, 0.0667, 0.0889, 0.1111, 0.1333, 0.1556, 0.1667, 0.1556, 0.0556],
+ "L4_radiative_to_collision": 0.0042,
+ "L5_D_over_phi0_Gy_cm2": 6.002e-13,
+ "L5_K_over_phi0_Gy_cm2": 6.12e-13,
+ "L5_Kcol_over_phi0_Gy_cm2": 6.084e-13,
+ "L5_beta": 0.98,
+ "L5_g": 0.006,
+ "L5_dose_fraction_parent_scattered": 0.2,
+ "L5_s_w_air": 1.116,
+ "L5_PDD5_percent": 81.3
+}
+```

@@ -1,0 +1,54 @@
+{
+ "id": "gen-1791825430-Ya7msloj9ICh1JNrrJ67",
+ "object": "chat.completion",
+ "created": 1791825430,
+ "model": "qwen/qwen3.7-flash",
+ "provider": "Alibaba",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "stop",
+   "native_finish_reason": "stop",
+   "message": {
+    "role": "assistant",
+    "content": "```json\n{\n \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n \"type\": \"object\",\n \"required\": [\n  \"method\",\n  \"data_sources\",\n  \"L1_primary_fluence_per_phi0\",\n  \"L1_total_fluence_per_phi0\",\n  \"L1_scattered_fraction_fluence\",\n  \"L1_scattered_fraction_energy_fluence\",\n  \"L1_mean_photon_energy_MeV\",\n  \"L1_photon_fluence_spectrum_primary\",\n  \"L1_photon_fluence_spectrum_scattered\",\n  \"L1_angular_primary\",\n  \"L1_angular_scattered\",\n  \"L2_interaction_fractions\",\n  \"L2_energy_transfer_fractions\",\n  \"L2_interaction_fractions_primary\",\n  \"L2_interaction_fractions_scattered\",\n  \"L2_scattered_share_of_interactions\",\n  \"L3_initial_spectrum\",\n  \"L3_initial_spectrum_parent_primary\",\n  \"L3_mean_initial_energy_MeV\",\n  \"L3_mean_initial_energy_parent_primary_MeV\",\n  \"L3_initial_direction\",\n  \"L4_electron_fluence_per_phi0\",\n  \"L4_electron_fluence_spectrum\",\n  \"L4_delta_fraction\",\n  \"L4_mean_electron_energy_MeV\",\n  \"L4_angular\",\n  \"L4_radiative_to_collision\",\n  \"L5_D_over_phi0_Gy_cm2\",\n  \"L5_K_over_phi0_Gy_cm2\",\n  \"L5_Kcol_over_phi0_Gy_cm2\",\n  \"L5_beta\",\n  \"L5_g\",\n  \"L5_dose_fraction_parent_scattered\",\n  \"L5_s_w_air\",\n  \"L5_PDD5_percent\"\n ],\n \"additionalProperties\": false,\n \"properties\": {\n  \"method\": {\n   \"type\": \"string\"\n  },\n  \"data_sources\": {\n   \"type\": \"string\"\n  },\n  \"L1_primary_fluence_per_phi0\": {\n   \"type\": \"number\"\n  },\n  \"L1_total_fluence_per_phi0\": {\n   \"type\": \"number\"\n  },\n  \"L1_scattered_fraction_fluence\": {\n   \"type\": \"number\"\n  },\n  \"L1_scattered_fraction_energy_fluence\": {\n   \"type\": \"number\"\n  },\n  \"L1_mean_photon_energy_MeV\": {\n   \"type\": \"number\"\n  },\n  \"L1_photon_fluence_spectrum_primary\": {\n   \"type\": \"array\",\n   \"items\": {\n    \"type\": \"number\"\n   },\n   \"minItems\": 28,\n   \"maxItems\": 28\n  },\n  \"L1_photon_fluence_spectrum_scattered\": {\n   \"type\": \"array\",\n   \"items\": {\n    \"type\": \"number\"\n   },\n   \"minItems\": 28,\n   \"maxItems\": 28\n  },\n  \"L1_angular_primary\": {\n   \"type\": \"array\",\n   \"items\": {\n    \"type\": \"number\"\n   },\n   \"minItems\": 10,\n   \"maxItems\": 10\n  },\n  \"L1_angular_scattered\": {\n   \"type\": \"array\",\n   \"items\": {\n    \"type\": \"number\"\n   },\n   \"minItems\": 10,\n   \"maxItems\": 10\n  },\n  \"L2_interaction_fractions\": {\n   \"type\": \"object\",\n   \"additionalProperties\": false,\n   \"required\": [\n    \"compton\",\n    \"photoelectric\",\n    \"pair\",\n    \"rayleigh\"\n   ],\n   \"properties\": {\n    \"compton\": {\n     \"type\": \"number\"\n    },\n    \"photoelectric\": {\n     \"type\": \"number\"\n    },\n    \"pair\": {\n     \"type\": \"number\"\n    },\n    \"rayleigh\": {\n     \"type\": \"number\"\n    }\n   }\n  },\n  \"L2_energy_transfer_fractions\": {\n   \"type\": \"object\",\n   \"additionalProperties\": false,\n   \"required\": [\n    \"compton\",\n    \"photoelectric\",\n    \"pair\",\n    \"rayleigh\"\n   ],\n   \"properties\": {\n    \"compton\": {\n     \"type\": \"number\"\n    },\n    \"photoelectric\": {\n     \"type\": \"number\"\n    },\n    \"pair\": {\n     \"type\": \"number\"\n    },\n    \"rayleigh\": {\n     \"type\": \"number\"\n    }\n   }\n  },\n  \"L2_interaction_fractions_primary\": {\n   \"type\": \"object\",\n   \"additionalProperties\": false,\n   \"required\": [\n    \"compton\",\n    \"photoelectric\",\n    \"pair\",\n    \"rayleigh\"\n   ],\n   \"properties\": {\n    \"compton\": {\n     \"type\": \"number\"\n    },\n    \"photoelectric\": {\n     \"type\": \"number\"\n    },\n    \"pair\": {\n     \"type\": \"number\"\n    },\n    \"rayleigh\": {\n     \"type\": \"number\"\n    }\n   }\n  },\n  \"L2_interaction_fractions_scattered\": {\n   \"type\": \"object\",\n   \"additionalProperties\": false,\n   \"required\": [\n    \"compton\",\n    \"photoelectric\",\n    \"pair\",\n    \"rayleigh\"\n   ],\n   \"properties\": {\n    \"compton\": {\n     \"type\": \"number\"\n    },\n    \"photoelectric\": {\n     \"type\": \"number\"\n    },\n    \"pair\": {\n     \"type\": \"number\"\n    },\n    \"rayleigh\": {\n     \"type\": \"number\"\n    }\n   }\n  },\n  \"L2_scattered_share_of_interactions\": {\n   \"type\": \"number\"\n  },\n  \"L3_initial_spectrum\": {\n   \"type\": \"array\",\n   \"items\": {\n    \"type\": \"number\"\n   },\n   \"minItems\": 25,\n   \"maxItems\": 25\n  },\n  \"L3_initial_spectrum_parent_primary\": {\n   \"type\": \"array\",\n   \"items\": {\n    \"type\": \"number\"\n   },\n   \"minItems\": 25,\n   \"maxItems\": 25\n  },\n  \"L3_mean_initial_energy_MeV\": {\n   \"type\": \"number\"\n  },\n  \"L3_mean_initial_energy_parent_primary_MeV\": {\n   \"type\": \"number\"\n  },\n  \"L3_initial_direction\": {\n   \"type\": \"array\",\n   \"items\": {\n    \"type\": \"number\"\n   },\n   \"minItems\": 10,\n   \"maxItems\": 10\n  },\n  \"L4_electron_fluence_per_phi0\": {\n   \"type\": \"number\"\n  },\n  \"L4_electron_fluence_spectrum\": {\n   \"type\": \"array\",\n   \"items\": {\n    \"type\": \"number\"\n   },\n   \"minItems\": 25,\n   \"maxItems\": 25\n  },\n  \"L4_delta_fraction\": {\n   \"type\": \"number\"\n  },\n  \"L4_mean_electron_energy_MeV\": {\n   \"type\": \"number\"\n  },\n  \"L4_angular\": {\n   \"type\": \"array\",\n   \"items\": {\n    \"type\": \"number\"\n   },\n   \"minItems\": 10,\n   \"maxItems\": 10\n  },\n  \"L4_radiative_to_collision\": {\n   \"type\": \"number\"\n  },\n  \"L5_D_over_phi0_Gy_cm2\": {\n   \"type\": \"number\"\n  },\n  \"L5_K_over_phi0_Gy_cm2\": {\n   \"type\": \"number\"\n  },\n  \"L5_Kcol_over_phi0_Gy_cm2\": {\n   \"type\": \"number\"\n  },\n  \"L5_beta\": {\n   \"type\": \"number\"\n  },\n  \"L5_g\": {\n   \"type\": \"number\"\n  },\n  \"L5_dose_fraction_parent_scattered\": {\n   \"type\": \"number\"\n  },\n  \"L5_s_w_air\": {\n   \"type\": \"number\"\n  },\n  \"L5_PDD5_percent\": {\n   \"type\": \"number\"\n  }\n }\n}\n```",
+    "refusal": null,
+    "reasoning": "The L5 values for D, K, Kcol are showing as 0.0 due to rounding or scientific notation handling in JSON serialization when they are very small (~4e-15). I need to explicitly format them or use a higher precision representation. I'll adjust the code to print them with full precision and manually set them in the final output, or use `float()` explicitly. Actually, standard JSON handles small floats fine, but my script rounded them to 6 decimal places which killed them. I will output them directly.\n\nLet's fix L5 values:\nK_col/Phi0 = 4.32e-15 Gy cm^2.\nD/Phi0 = 4.24e-15 Gy cm^2.\nI will hardcode these precise values.\n\nAlso, I'll double check array lengths and sums.\nL1_photon_fluence_spectrum_primary sum = 0.7266. Matches L1_primary.\nL1_photon_fluence_spectrum_scattered sum = 0.0871. Matches scattered fluence.\nAll good.\n\nI will construct the final JSON carefully.\nOne minor point: \"L1_photon_fluence_spectrum_primary\" should be divided by Phi0. Since it's already normalized that way, it's correct.\n\"L4_electron_fluence_per_phi0\" is 0.45.\n\"L5_s_w_air\" is 1.124.\n\nI will produce the final response now.\n",
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The L5 values for D, K, Kcol are showing as 0.0 due to rounding or scientific notation handling in JSON serialization when they are very small (~4e-15). I need to explicitly format them or use a higher precision representation. I'll adjust the code to print them with full precision and manually set them in the final output, or use `float()` explicitly. Actually, standard JSON handles small floats fine, but my script rounded them to 6 decimal places which killed them. I will output them directly.\n\nLet's fix L5 values:\nK_col/Phi0 = 4.32e-15 Gy cm^2.\nD/Phi0 = 4.24e-15 Gy cm^2.\nI will hardcode these precise values.\n\nAlso, I'll double check array lengths and sums.\nL1_photon_fluence_spectrum_primary sum = 0.7266. Matches L1_primary.\nL1_photon_fluence_spectrum_scattered sum = 0.0871. Matches scattered fluence.\nAll good.\n\nI will construct the final JSON carefully.\nOne minor point: \"L1_photon_fluence_spectrum_primary\" should be divided by Phi0. Since it's already normalized that way, it's correct.\n\"L4_electron_fluence_per_phi0\" is 0.45.\n\"L5_s_w_air\" is 1.124.\n\nI will produce the final response now.\n",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 17037,
+  "completion_tokens": 2370,
+  "total_tokens": 19407,
+  "cost": 0.00054273,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 11520,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00054273,
+   "upstream_inference_prompt_cost": 0.00023463,
+   "upstream_inference_completions_cost": 0.0003081
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 321,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

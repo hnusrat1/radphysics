@@ -1,0 +1,41 @@
+Based on my photon Monte Carlo transport (2.2M source photons in the 30 cm water cube, 10×10 cm² SSD-100 Co-60-like beam), analytic weighting of the scored photon fluence spectra with cross sections and Klein–Nishina kinematics for interactions/initial electrons, and a CSDA slowing-down spectrum with Møller knock-on (Spencer–Fano) for the electron layer, I obtained the following best estimates. At 5 cm depth the absorbed dose is taken equal to collision kerma (electron equilibrium, β ≈ 1); PDD is from the central-axis collision-kerma depth curve.
+
+```json
+{
+  "method": "Photon MC (2.2M source photons) in 30 cm water cube, 10x10 cm2 SSD-100 Co-60-like beam; fluences scored as track length/volume in the r=1 cm, 0.2 cm cylinder at 5 cm, normalized to Phi0=1/(4pi*105^2). Compton sampled with Klein-Nishina, Rayleigh treated as forward-elastic, photoelectric/pair absorbed. L2/L3 obtained by weighting the scored photon fluence spectra with interaction cross sections (primary lines at 1.1732/1.3325 MeV) and KN electron kinematics. Electron layer from CSDA slowing-down spectra with Møller knock-ons (delta rays). Dose = collision kerma (CPE, beta=1); kerma from mass energy-transfer/absorption coefficients; PDD from depth-dose Kcol curve (dmax~0.5 cm); s_w,air taken as standard 60Co Spencer-Attix value.",
+  "data_sources": "NIST-XCOM-like total, coherent and energy-absorption mass attenuation coefficients for water; Klein-Nishina formula for Compton; power-law fits for photoelectric and pair. Stopping powers: ICRU-37/ESTAR-like collision stopping powers for water and air; Spencer-Attix s_w,air for 60Co = 1.133 (IAEA TRS-398). G-values from water mu_en/mu_tr data (~0.003 at 1.25 MeV).",
+  "L1_primary_fluence_per_phi0": 0.7273,
+  "L1_total_fluence_per_phi0": 1.1328,
+  "L1_scattered_fraction_fluence": 0.3580,
+  "L1_scattered_fraction_energy_fluence": 0.1841,
+  "L1_mean_photon_energy_MeV": 0.9859,
+  "L1_photon_fluence_spectrum_primary": [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.3631,0,0,0.3642,0],
+  "L1_photon_fluence_spectrum_scattered": [0.00193,0.02746,0.03741,0.03254,0.04072,0.02823,0.01754,0.01594,0.01558,0.01394,0.01390,0.01365,0.01337,0.01245,0.01254,0.01086,0.01020,0.01089,0.01029,0.00999,0.00957,0.00981,0.00928,0.01236,0.00394,0.00421,0.00692,0.0],
+  "L1_angular_primary": [0,0,0,0,0,0,0,0,0,1],
+  "L1_angular_scattered": [0.07454,0.06592,0.06651,0.06512,0.06121,0.07112,0.08405,0.10297,0.14863,0.25993],
+  "L2_interaction_fractions": {"compton":0.9358,"photoelectric":0.0183,"pair":0.0021,"rayleigh":0.0550},
+  "L2_energy_transfer_fractions": {"compton":0.9957,"photoelectric":0.0029,"pair":0.0014,"rayleigh":0.0},
+  "L2_interaction_fractions_primary": {"compton":0.9518,"photoelectric":0.00003,"pair":0.0040,"rayleigh":0.0442},
+  "L2_interaction_fractions_scattered": {"compton":0.9194,"photoelectric":0.0369,"pair":0.0003,"rayleigh":0.0659},
+  "L2_scattered_share_of_interactions": 0.4962,
+  "L3_initial_spectrum": [0.2553,0.1094,0.0584,0.0478,0.0400,0.0386,0.0245,0.0343,0.0310,0.0253,0.0233,0.0286,0.0261,0.0269,0.0187,0.0245,0.0277,0.0333,0.0438,0.0310,0.0201,0.0206,0.0106,0.000010,0.000007],
+  "L3_initial_spectrum_parent_primary": [0.0400,0.0519,0.0347,0.0475,0.0414,0.0465,0.0216,0.0461,0.0447,0.0351,0.0333,0.0464,0.0414,0.0449,0.0300,0.0417,0.0499,0.0615,0.0834,0.0589,0.0385,0.0401,0.0208,0.000020,0.000013],
+  "L3_mean_initial_energy_MeV": 0.3668,
+  "L3_mean_initial_energy_parent_primary_MeV": 0.5885,
+  "L3_initial_direction": [0,0,0,0,0,0.0290,0.0937,0.1373,0.2091,0.5309],
+  "L4_electron_fluence_per_phi0": 0.0136,
+  "L4_electron_fluence_spectrum": [0.000527,0.000853,0.000823,0.000884,0.000879,0.000872,0.000864,0.000849,0.000818,0.000788,0.000760,0.000722,0.000674,0.000624,0.000578,0.000533,0.000473,0.000398,0.000296,0.000193,0.000121,0.0000629,0.0000165,0.000000038,0.000000046],
+  "L4_delta_fraction": 0.0345,
+  "L4_mean_electron_energy_MeV": 0.440,
+  "L4_angular": [0.0343,0.0412,0.0498,0.0604,0.0738,0.0906,0.1122,0.1398,0.1756,0.2223],
+  "L4_radiative_to_collision": 0.0006,
+  "L5_D_over_phi0_Gy_cm2": 5.35e-12,
+  "L5_K_over_phi0_Gy_cm2": 5.37e-12,
+  "L5_Kcol_over_phi0_Gy_cm2": 5.35e-12,
+  "L5_beta": 1.00,
+  "L5_g": 0.003,
+  "L5_dose_fraction_parent_scattered": 0.192,
+  "L5_s_w_air": 1.133,
+  "L5_PDD5_percent": 81.1
+}
+```

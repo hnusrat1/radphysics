@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791825389-r8Y1kJr6o9om5JP71pwn",
+ "object": "chat.completion",
+ "created": 1791825389,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "We need to define m_e in the same namespace. Let me put everything together in a single script.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_dd68256096a54d9b85906f5d",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nfrom scipy import interpolate\\n\\n# ---- Physical constants ----\\nm_e = 0.510998950  # MeV\\nr_e = 2.8179403262e-13  # cm\\nN_A = 6.02214076e23\\n\\n# Water composition\\nN_e_per_g = N_A * 10 / 18.01528\\n\\n# ---- Cross sections ----\\ndef klein_nishina_sigma(E_MeV):\\n    alpha = E_MeV / m_e\\n    if alpha <= 0:\\n        return 0.0\\n    term1 = (1+alpha)/alpha**2 * (2*(1+alpha)/(1+2*alpha) - np.log(1+2*alpha)/alpha)\\n    term2 = np.log(1+2*alpha) / (2*alpha)\\n    term3 = (1+3*alpha) / (1+2*alpha)**2\\n    sigma = 2*np.pi * r_e**2 * (term1 + term2 - term3)\\n    return sigma\\n\\ndef mu_compton(E):\\n    return klein_nishina_sigma(E) * N_e_per_g\\n\\n# Photoelectric interpolation\\npe_energies = np.array([0.01, 0.015, 0.02, 0.03, 0.04, 0.05, 0.06, 0.08, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.6, 0.8, 1.0, 1.5, 2.0, 3.0, 5.0, 10.0])\\npe_murho = np.array([4.89, 1.23, 0.359, 0.0559, 0.0150, 0.0050, 0.0019, 0.00038, 0.000163, 0.000044, 0.000020, 0.000008, 0.000004, 0.0000025, 0.0000018, 0.0000010, 0.0000007, 0.0000003, 0.0000002, 0.0000001, 0.00000003, 0.00000001])\\nf_pe_log = interpolate.interp1d(np.log(pe_energies[pe_energies>0]), np.log(np.maximum(pe_murho[pe_energies>0], 1e-20)), kind='linear', bounds_error=False, fill_value='extrapolate')\\ndef mu_pe(E):\\n    if E <= 0:\\n        return 0.0\\n    if E < 0.01:\\n        return pe_murho[0] * (E/0.01)**(-3.5)\\n    if E > 10.0:\\n        return 1e-10\\n    return max(0.0, float(np.exp(f_pe_log(np.log(E)))))\\n\\n# Pair production\\npair_energies = np.array([1.022, 1.5, 2.0, 3.0, 5.0, 10.0, 20.0])\\npair_murho = np.array([0.0, 0.00004, 0.00013, 0.00046, 0.0015, 0.0048, 0.0077])\\nf_pair = interpolate.interp1d(pair_energies, pair_murho, kind='linear', bounds_error=False, fill_value=0.0)\\ndef mu_pair(E):\\n    if E <= 2*m_e:\\n        return 0.0\\n    if E > 20.0:\\n        return 0.0077 + 0.00002 * (E-20)\\n    return float(f_pair(E))\\n\\ndef mu_rayleigh(E):\\n    if E < 0.01:\\n        return 0.16\\n    elif E < 0.1:\\n        return 0.16 * (E/0.01)**(-3.5)\\n    elif E < 0.5:\\n        return 0.0002 * (E/0.1)**(-4)\\n    else:\\n        return 0.0\\n\\ndef mu_total(E):\\n    return mu_compton(E) + mu_pe(E) + mu_pair(E) + mu_rayleigh(E)\\n\\n# ---- Compton scattering ----\\ndef sample_compton(energy, rng=np.random):\\n    E = energy\\n    alpha = E / m_e\\n    \\n    while True:\\n        xi1 = rng.uniform()\\n        xi2 = rng.uniform()\\n        mu = 2.0 * xi1 - 1.0  # cos\u03b8 in [-1,1]\\n        ratio = 1.0 / (1.0 + alpha * (1.0 - mu))\\n        f_kn = ratio**2 * (ratio + 1.0/ratio - (1.0 - mu**2))\\n        # Maximum f_kn is 2 at mu=1 (forward scattering)\\n        if xi2 <= f_kn / 2.0:\\n            e_out = E * ratio\\n            cos_scatter = mu\\n            break\\n    \\n    e_electron = E - e_out\\n    \\n    # Electron direction\\n    denom = np.sqrt(E**2 + e_out**2 - 2.0 * E * e_out * cos_scatter)\\n    if denom > 0:\\n        cos_electron = (E - e_out * cos_scatter) / denom\\n    else:\\n        cos_electron = 1.0\\n    \\n    return e_out, cos_scatter, e_electron, cos_electron\\n\\n# ---- Rayleigh scattering ----\\ndef sample_rayleigh(energy, rng=np.random):\\n    \\\"\\\"\\\"\\n    Rayleigh scattering: no energy loss, just direction change.\\n    Differential cross section d\u03c3/d\u03a9 \u221d (1+cos^2\u03b8) * F(q,Z)^2\\n    For water at low energies, we approximate with a simple form factor.\\n    Here we just sample cos\u03b8 from a distribution that approximates Rayleigh.\\n    At low energies, Rayleigh is strongly forward-peaked.\\n    We'll use a simple model: sample cos\u03b8 from distribution \u221d (1+cos^2\u03b8) * exp(-a*(1-cos\u03b8))\\n    where a depends on energy.\\n    \\\"\\\"\\\"\\n    # For simplicity, use a forward-peaked distribution\\n    # Sample cos\u03b8 close to 1\\n    # Use sigma ~ 0.02 / (E * Z^(1/3)) in radians, roughly\\n    # For water, Z=10, at 0.1 MeV, sigma_\u03b8 ~ 0.02/(0.1*10^(1/3)) ~ 0.02/0.215 = 0.093 rad ~ 5 deg\\n    # At lower energies, wider.\\n    E = energy\\n    # Simple approximation: theta in Gaussian with sigma ~ 0.02 / (E * Z_eff^(1/3))\\n    Z_eff = 10.0  # sum Z for H2O\\n    theta_sigma = 0.02 / (max(E, 0.01) * Z_eff**(1/3))\\n    # Sample theta from Rayleigh distribution? Use simple rejection\\n    while True:\\n        mu = 1.0 - 0.001 * rng.exponential()  # not great\\n        # Actually let's use a simple model: cos\u03b8 = 1 - 2*u^2 where u is uniform in [0, a]\\n        # Better: use the form factor approximation\\n        # For simplicity, just sample mu from uniform in [cos(\u03b8_max), 1] where \u03b8_max is small\\n        # But this is approximate. Let's use a more physical approach.\\n        \\n        # Physical Rayleigh cross section (Thomson) times form factor squared\\n        # Form factor F(q,Z) ~ Z / (1 + (q*r_a)^2) where r_a ~ a0/Z^(1/3)\\n        # For water, the molecular form factor is complex.\\n        # Let's just use a simple rejection sampling with (1+cos^2\u03b8) and a cutoff.\\n        \\n        # Sample cos\u03b8 uniformly in [0,1] (forward hemisphere only)\\n        mu = rng.uniform(0.0, 1.0)\\n        # The differential cross section is roughly (1+mu^2) times form factor squared\\n        # Form factor squared is ~ exp(-b*(1-mu)) approximately\\n        # For simplicity, accept with probability proportional to (1+mu^2)\\n        if rng.uniform() <= (1.0 + mu**2) / 2.0:\\n            return mu, E  # cos_scatter, e_out\\n    \\n    # If we get here, just return forward\\n    return 1.0, E\\n\\n# ---- Photoelectric ----\\n# Photoelectric: photon absorbed, electron emitted\\n# Angular distribution: approx d\u03c3/d\u03a9 \u221d sin^2\u03b8 / (1-\u03b2cos\u03b8)^4 (non-relativistic)\\n# but we can approximate as isotropic or forward peaked\\ndef sample_photoelectric(energy, rng=np.random):\\n    \\\"\\\"\\\"Return (cos_electron) where electron gets kinetic energy = energy - binding energy\\\"\\\"\\\"\\n    E = energy\\n    # Binding energy for water ~ 0.5 keV for K-shell (oxygen), negligible\\n    t_e = E  # approximately, ignoring binding energy\\n    # Angular distribution: at 2 MeV, forward peaked but we approximate as isotropic\\n    cos_electron = rng.uniform(-1.0, 1.0)\\n    return t_e, cos_electron\\n\\n# ---- Pair production ----\\n# Photon -> e- + e+\\n# Energy sharing: the differential cross section for pair production is approximately\\n# d\u03c3/dT_e \u2248 constant (if we ignore screening and other effects)\\n# So sample T_e (kinetic energy of electron) uniformly in [0, E - 2m_e]\\n# Then T_pos = (E - 2m_e) - T_e\\n# Angular distribution: both particles are forward peaked with angle ~ m_e/E\\ndef sample_pair(energy, rng=np.random):\\n    E = energy\\n    if E <= 2*m_e:\\n        return 0.0, 1.0, 0.0  # shouldn't happen\\n    T_total = E - 2*m_e\\n    # Sample electron kinetic energy uniformly\\n    t_e = rng.uniform(0.0, T_total)\\n    t_pos = T_total - t_e\\n    # Angular distribution: approximate as forward peaked with cos\u03b8 ~ 1 - (m_e/E)^2\\n    # Actually the average angle is ~ m_e/E\\n    # For simplicity, sample cos\u03b8 close to 1\\n    # Use a small deviation\\n    theta_avg = m_e / E  # radians\\n    # Sample from distribution: p(\u03b8) \u221d \u03b8 / (\u03b8^2 + (m_e/E)^2)^2\\n    # For simplicity, use Gaussian with sigma = m_e/E\\n    theta = rng.rayleigh(scale=theta_avg)\\n    cos_electron = np.cos(theta)\\n    # Positron angle is approximately opposite? Actually both go forward.\\n    # For pair, we only need t_pos (kinetic energy of positron), not its angle.\\n    return t_e, cos_electron, t_pos\\n\\n# Test sampling\\nprint(\\\"Testing samplers:\\\")\\ne_out, mu_s, t_e, mu_e = sample_compton(2.0)\\nprint(f\\\"Compton: E_out={e_out:.4f}, cos\u03b8={mu_s:.4f}, T_e={t_e:.4f}, cos\u03b8_e={mu_e:.4f}\\\")\\n\\nt_e, mu_e = sample_photoelectric(2.0)\\nprint(f\\\"PE: T_e={t_e:.4f}, cos\u03b8_e={mu_e:.4f}\\\")\\n\\nt_e, mu_e, t_pos = sample_pair(5.0)\\nprint(f\\\"Pair: T_e={t_e:.4f}, cos\u03b8_e={mu_e:.4f}, T_pos={t_pos:.4f}\\\")\\n\\nmu_s, e_out = sample_rayleigh(0.1)\\nprint(f\\\"Rayleigh: cos\u03b8={mu_s:.4f}, E_out={e_out}\\\")\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "We need to define m_e in the same namespace. Let me put everything together in a single script.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 14755,
+  "completion_tokens": 2750,
+  "total_tokens": 17505,
+  "cost": 0.001244909204,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 8192,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001244909204,
+   "upstream_inference_prompt_cost": 0.000745179204,
+   "upstream_inference_completions_cost": 0.00049973
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 21,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

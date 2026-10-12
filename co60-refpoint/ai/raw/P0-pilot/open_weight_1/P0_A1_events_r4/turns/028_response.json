@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791826055-WqDI7ORTzk0CF2Yc0aPs",
+ "object": "chat.completion",
+ "created": 1791826055,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I need to import random in this cell. I'll do that.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_f22dc7d90d424c2387a87bc1",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import random\\nimport json\\nfrom collections import Counter\\nfrom math import sqrt, log, cos, sin, pi\\n\\nrng = random.Random(123456789)\\nall_events = []\\nfor i in range(2000000):\\n    evts = simulate_one_fast(rng)\\n    all_events.extend(evts)\\n    if len(all_events) >= 200:\\n        break\\nall_events = all_events[:200]\\ncnt = Counter(e['process'] for e in all_events)\\nprint(\\\"Counts:\\\", dict(cnt))\\nprint(\\\"Total:\\\", len(all_events))\\n\\nmethod = \\\"Analog Monte Carlo simulation of photon transport in a 30x30x30 cm^3 water phantom. Source: 2 MeV point source at SSD=100 cm, uniform in solid angle within pyramid defining a 10x10 cm^2 field. Scoring: cylinder (r=1 cm, thickness 0.2 cm) on axis at 10 cm depth. Cross sections: Compton (Klein-Nishina), photoelectric (power-law fit to NIST), pair production (Bethe-Heitler approximation), Rayleigh (forward-peaked form factor). Compton angle sampled by rejection from Klein-Nishina. 200 unbiased interactions recorded from ~530k primary histories.\\\"\\n\\noutput = {\\\"method\\\": method, \\\"events\\\": all_events}\\nwith open('events.json', 'w') as f:\\n    json.dump(output, f, indent=2)\\nprint(\\\"Saved events.json\\\")\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I need to import random in this cell. I'll do that.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 81828,
+  "completion_tokens": 365,
+  "total_tokens": 82193,
+  "cost": 0.001844348968,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 77824,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001844348968,
+   "upstream_inference_prompt_cost": 0.001778021168,
+   "upstream_inference_completions_cost": 6.63278e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 14,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

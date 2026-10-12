@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791825832-QhkO6pQXuwjmbQSdL0qy",
+ "object": "chat.completion",
+ "created": 1791825832,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Since each call runs as a new process, the working directory likely isn't on the path, so I need to add a sys.path insert to fix that.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_012swnZayiq6wxFc9qSXYCJS",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport sys; sys.path.insert(0,'/tmp/work')\\nimport os; print(os.path.exists('/tmp/work/mc.py'))\\ns=open('/tmp/work/mc.py').read()\\ns=s.replace(\\\"def run(N, zpts, seed=7, Emin=0.005, store_main=None):\\\",\\\"def run(N, zpts, seed=7, Emin=0.005, store_main=None, maxgen=200):\\\")\\ns=s.replace(\\\"if gen>200: break\\\",\\\"if gen>=maxgen: break\\\")\\nopen('/tmp/work/mc.py','w').write(s)\\nimport mc as M, physics as P\\nimport numpy as np\\nfrom scipy import integrate\\nres1=M.run(400000,[5.0],seed=11,maxgen=1)\\nprint(\\\"MC first-order scatter/Phi0:\\\", P.SF/400000*res1['A_tot'][0])\\ndef integrand(z,rho,E):\\n    field_half=5*(100+z)/100\\n    if rho>field_half: return 0.0\\n    phip=(105/(100+z))**2*np.exp(-P.mutot(E)*z)\\n    rv_z=5-z; r=np.sqrt(rv_z**2+rho**2)\\n    cpsi=rv_z/r\\n    eps=1/(1+E/P.me*(1-cpsi)); Ep=E*eps\\n    dsig=0.5*P.re**2*eps**2*(eps+1/eps-(1-cpsi**2))\\n    p=dsig/P.KN_sigma(E)\\n    att=np.exp(-P.mutot(Ep)*r)\\n    return P.muC(E)*phip*p*att/r**2*2*np.pi*rho\\ntot=0\\nfor E,wt in [(1.1732,0.5),(1.3325,0.5)]:\\n    val,err=integrate.dblquad(lambda rho,z: integrand(z,rho,E), 0,30, lambda z:0, lambda z:min(5*(100+z)/100,15), epsabs=1e-8, epsrel=1e-4)\\n    tot+=wt*val\\nprint(\\\"numerical first-order:\\\", tot)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Since each call runs as a new process, the working directory likely isn't on the path, so I need to add a sys.path insert to fix that.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSrAcKEAgSGAI4AUIIdGhpbmtpbmcSDDk1Zd7X/R8hZtJdeBoMTX9atw78UWWg/aF+IjBbqel+/ZxEyXDJx2kh2fm8SeOcw4gD50bLjnND1g7YtvQJXY8IYahPbTXoBU02dXIqyQbaGih/bHDZy27d7fkGxMziY0zmhh0/Ew3IQVhg7ZJ9eAi6p/kqBb6qz3WrjKS7XdMQGohWAz9S0YDJ0K9aI66C8nd8FqalYVxcd0kYXpaM/1HUCZQf3ues2o9nG3DApq+P1Kiqd/CI1SR62Q0Nq5jFMIodSi4C1qOLaibMQYJQBYJb9hnWMwcYy7rJiq0qV82QRIdoh+RUEgTIsJ8/EuEgkLB9GeiH0BUjX5y2264OILQQXx7aJ7mR9fmGyEhTonApFTqTF1BbRPBuBdt4JBKkmuVkkcTrAgvPMk4YaV4QRqRtjCaOPa3m9HwKYN/lEgiCV6VtH0uNf0FpeLKjo8tkYMCI0IPweytKaGploZbGwdd/Pk5lM9uKbwL9owSZIUuY1GmlSR8KMAIzMBOsKmXh6ts8XT+H76bE4hVsv08BCmXMdzdmceJqQzUKAJ2jUjk7RzdntwJqip1Rhv0pdL3fe5x3kYJm09KG2AmWDq7RX6EOWrnjxCSLWwEwCWYSaxFkyNVQXP3mcolrn1pDGB/ecKnHOZSsiCbl/q9ZbNXASN0faOOk7u9LyyOivcEx9nfqySSCMiQDSpvtCcv3rmo2FUsA3oseLyaf3xzRIgsXxcinFAGCLSQcRfqGH/5BjOxOK4AXRBqVfyRZtWJvxszSdnTEA1PL3fO+12ZLzB5OTjapxwAWO8kg+qEjMOyGIcqqB3Tx7ahLZxzerKgnE12NcKMWjeUguFeyosl8fHGb9wxSLLLfPeUOkHz/j3b+E8mTWSb69S5ZSSON0aeRH+KEquFG7QsAees9IF4EFHy0wzhTTxwIvfkxEwQTI3jH2wmbRC1WpVKU4teU5WT6L0UhKl9JVZe26QsGki3p85REE9toJttaQsx/Sa7eaz/vLSXVrtfRBipUiZiSIO2FpUtwkUzc7Zaq6usVLDw9Et0t2lLbV77sKlLJP3K+GmJFliXtRBp6G6ZPPFgVB5ZIWcb4nS3xfhSNET2DMzuevTHsjD7E04v5xFECEwV9nlLLjxSCk+F3EPy5QMoNmzk7uXPKjlc50hHWlht7rcxhhrJDB6++qjqDQH10TMSbWG9nmAR0cd13wiTeoD2dT38cInYgqnh8v7eprZ6iGAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 110847,
+  "completion_tokens": 783,
+  "total_tokens": 111630,
+  "cost": 0.009084875,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 108090,
+   "cache_write_tokens": 2755,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.009084875,
+   "upstream_inference_prompt_cost": 0.007127375,
+   "upstream_inference_completions_cost": 0.0019575
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 44,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

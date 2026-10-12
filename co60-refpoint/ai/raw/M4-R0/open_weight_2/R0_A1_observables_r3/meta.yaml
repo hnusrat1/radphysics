@@ -1,0 +1,108 @@
+slot: open_weight_2
+provider: open-weight via OpenRouter (pinned weights)
+api: openai_compatible
+model_requested: qwen/qwen3.7-flash
+settings:
+  reasoning:
+    effort: high
+  usage:
+    include: true
+condition: A1
+task: observables
+config: R0
+prompt_version: v1
+prompt_sha256:
+  system_A1.txt: e06e9a5ea06c2f5ca29739818f324713f2dbbf775f019c11018d1aa7ef5416b8
+  task_observables_R0.txt: 57d3c391f7d6e1e76358e1b31939b48e00fb008344fd731011f63a2acf79e07e
+started_utc: '2026-10-12T17:15:16Z'
+turns:
+- n: 1
+  usage:
+    input_tokens: 4823
+    output_tokens: 6550
+    reasoning_tokens: 5561
+  stop: tool_calls
+  wall_s: 83.39
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 1
+- n: 2
+  usage:
+    input_tokens: 11537
+    output_tokens: 3029
+    reasoning_tokens: 754
+  stop: tool_calls
+  wall_s: 30.24
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 1
+- n: 3
+  usage:
+    input_tokens: 17037
+    output_tokens: 2370
+    reasoning_tokens: 321
+  stop: stop
+  wall_s: 20.49
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 0
+- n: 4
+  usage:
+    input_tokens: 12868
+    output_tokens: 5355
+    reasoning_tokens: 2914
+  stop: tool_calls
+  wall_s: 61.36
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 1
+- n: 5
+  usage:
+    input_tokens: 20701
+    output_tokens: 1309
+    reasoning_tokens: 1135
+  stop: tool_calls
+  wall_s: 17.77
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 1
+- n: 6
+  usage:
+    input_tokens: 22100
+    output_tokens: 2401
+    reasoning_tokens: 409
+  stop: stop
+  wall_s: 21.2
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 0
+tool_calls: 4
+retries: 1
+outcome: ok
+model_reported: qwen/qwen3.7-flash
+first_parse_errors:
+- '$.method: missing'
+- '$.data_sources: missing'
+- '$.L1_primary_fluence_per_phi0: missing'
+- '$.L1_total_fluence_per_phi0: missing'
+- '$.L1_scattered_fraction_fluence: missing'
+- '$.L1_scattered_fraction_energy_fluence: missing'
+- '$.L1_mean_photon_energy_MeV: missing'
+- '$.L1_photon_fluence_spectrum_primary: missing'
+- '$.L1_photon_fluence_spectrum_scattered: missing'
+- '$.L1_angular_primary: missing'
+- '$.L1_angular_scattered: missing'
+- '$.L2_interaction_fractions: missing'
+- '$.L2_energy_transfer_fractions: missing'
+- '$.L2_interaction_fractions_primary: missing'
+- '$.L2_interaction_fractions_scattered: missing'
+- '$.L2_scattered_share_of_interactions: missing'
+- '$.L3_initial_spectrum: missing'
+- '$.L3_initial_spectrum_parent_primary: missing'
+- '$.L3_mean_initial_energy_MeV: missing'
+- '$.L3_mean_initial_energy_parent_primary_MeV: missing'
+finished_utc: '2026-10-12T17:19:11Z'
+usage_total:
+  input_tokens: 89066
+  output_tokens: 21014
+  reasoning_tokens: 11094

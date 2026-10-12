@@ -1,0 +1,9 @@
+{
+ "stdout": "n_e water = 3.342796093094307e+23\nE=0.0100 MeV: comp=0.21410 coh=1.40259 pho=3.99052 pair=0.00000 tot=5.60721 cm2/g\nE=0.0500 MeV: comp=0.18770 coh=0.59923 pho=0.01970 pair=0.00000 tot=0.80662 cm2/g\nE=0.1000 MeV: comp=0.16472 coh=0.19987 pho=0.00200 pair=0.00000 tot=0.36659 cm2/g\nE=0.2000 MeV: comp=0.13588 coh=0.05718 pho=0.00020 pair=0.00000 tot=0.19327 cm2/g\nE=0.5000 MeV: comp=0.09666 coh=0.00957 pho=0.00001 pair=0.00000 tot=0.10624 cm2/g\nE=1.0000 MeV: comp=0.07060 coh=0.00241 pho=0.00000 pair=0.00000 tot=0.07301 cm2/g\nE=1.1732 MeV: comp=0.06520 coh=0.00175 pho=0.00000 pair=0.00068 tot=0.06763 cm2/g\nE=1.2500 MeV: comp=0.06312 coh=0.00154 pho=0.00000 pair=0.00103 tot=0.06569 cm2/g\nE=1.3325 MeV: comp=0.06106 coh=0.00136 pho=0.00000 pair=0.00140 tot=0.06382 cm2/g\nE=1.5000 MeV: comp=0.05735 coh=0.00107 pho=0.00000 pair=0.00215 tot=0.06058 cm2/g\nE=2.0000 MeV: comp=0.04892 coh=0.00060 pho=0.00000 pair=0.00440 tot=0.05393 cm2/g\nmu_en 0.05 0.0409\nmu_en 0.1 0.025499999999999995\nmu_en 0.3 0.0288\nmu_en 0.5 0.0328\nmu_en 0.8 0.032200000000000006\nmu_en 1.0 0.031\nmu_en 1.1732 0.0303\nmu_en 1.25 0.0297\nmu_en 1.3325 0.029400000000000003\nmu_en 1.5 0.0284\n\nStopping powers water:\n",
+ "stderr": "Traceback (most recent call last):\n  File \"/tmp/work/_call_002.py\", line 110, in <module>\n    print(E, Scol_w(E), \"air\", Scol_a(E))\n             ~~~~~~^^^\n  File \"/tmp/work/_call_002.py\", line 98, in Scol_w\n    return bethe_col(E, 10/18.01528, 78.0, 1.0)\n  File \"/tmp/work/_call_002.py\", line 92, in bethe_col\n    arg = 2*mec2*beta2*gamma2/(I*1e-6)  # I in MeV\n                       ^^^^^^\nNameError: name 'gamma2' is not defined. Did you mean: 'gamma'?\n",
+ "exit_code": 1,
+ "timed_out": false,
+ "wall_s": 0.87,
+ "stdout_truncated": false,
+ "stderr_truncated": false
+}
