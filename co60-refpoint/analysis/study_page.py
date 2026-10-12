@@ -212,6 +212,10 @@ def main():
             ev = np.array(sp[key_e]["mean"], float)
             sel = slice(1, n) if key_g == "electron" else slice(0, n)
             ee = e[sel.start:]
+            if key_g == "photon":      # drop the two primary-line bins so the scattered spectrum is visible
+                line = (np.abs(top - 1.18) < 1e-6) | (np.abs(top - 1.34) < 1e-6)
+                g, ev = np.where(line, 0.0, g), np.where(line, 0.0, ev)
+                title = "B0 photon fluence without the two line bins (shape)"
             ser = [("Geant4 option4", g[sel] / g[sel].sum() / 0.01, None, "--s1", None),
                    ("EGSnrc", ev[sel] / ev[sel].sum() / 0.01, None, "--s4", "6 3")]
             charts.append(spectra_with_ratio(ser, ee, xl, "fraction per MeV", title, "EGSnrc / Geant4",
