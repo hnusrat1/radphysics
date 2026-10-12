@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791831298-xehP54yC20mZjVXvhsQN",
+ "object": "chat.completion",
+ "created": 1791831298,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "GMICloud",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Wait, there's an inefficiency: I recompute Etr for all interactions in each generation for the PDD depths, looping over ~16 depths with in_d check. That loop is 16 vectorized ops per generation on the interaction subset (~75% of photons in gen1... actually interactions per generation ~ n_alive*interact fraction). For 6M photons gen1 has ~4.7M interactions \u2192 16 checks on 4.7M-element arrays = ~75M ops in gen 1; fine.\n\nBut note the loop happens for every generation even if most interactions are outside the depth range; still fine.\n\nLet me test on a small N to make sure the module runs and Kdep is populated.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_7cfd3d742e3f4ce4a8d8a6a5",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import importlib, sys, time, numpy as np\\nsys.path.insert(0,'/tmp')\\nimport photonmc\\nimportlib.reload(photonmc)\\npd_depths=[0.2,0.35,0.5,0.65,0.8,1.0,1.5,2,3,4,5,6,8,10]\\nres = photonmc.photon_mc(300000, seed=5, verbose=False, save_src=False, pd_depths=pd_depths)\\nprint('int_all',res['int_all'])\\nprint('Kdep', res['Kdep'])\\nprint('Ndep', res['Ndep'])\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Wait, there's an inefficiency: I recompute Etr for all interactions in each generation for the PDD depths, looping over ~16 depths with in_d check. That loop is 16 vectorized ops per generation on the interaction subset (~75% of photons in gen1... actually interactions per generation ~ n_alive*interact fraction). For 6M photons gen1 has ~4.7M interactions \u2192 16 checks on 4.7M-element arrays = ~75M ops in gen 1; fine.\n\nBut note the loop happens for every generation even if most interactions are outside the depth range; still fine.\n\nLet me test on a small N to make sure the module runs and Kdep is populated.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 103902,
+  "completion_tokens": 337,
+  "total_tokens": 104239,
+  "cost": 0.003011372,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 89355,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.003011372,
+   "upstream_inference_prompt_cost": 0.002950038,
+   "upstream_inference_completions_cost": 6.1334e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 146,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

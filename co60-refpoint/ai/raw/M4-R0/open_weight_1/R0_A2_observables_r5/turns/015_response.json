@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791831056-oQIIF7fNa9hkQGzOVMH0",
+ "object": "chat.completion",
+ "created": 1791831056,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "GMICloud",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "The simulated primary fluence ratio (0.7204) matches the analytic (0.7295) within ~1.2% statistical error (50k photons). Good.\n\nNow, the scattered fluence fraction: scattered/(primary+scattered) = 109.2/315 = 0.347. Reasonable.\n\nNow let me scale up. I'll run the photon MC with larger N. Time for 50k: 0.32 s. For 5M: ~32 s. For 10M: ~64 s. Memory: fine. Let me run N=6e6 (a good compromise) or 1e7. Let me estimate stats:\n- Interactions in scoring volume for N: at 50k we got 27 Compton in sc vol \u2192 for 5M: 2700. Good enough for Layer 2/3 (expect ~2700 electrons in L3).\n- Electron sources in region: 30787/50k \u2192 for 5M: 3.08M sources. Hmm that's more than I want for electron MC. Let me set a subsample cap ~1.5M for electron MC: keep fraction f = 1.5M/3.08M \u2248 0.487 with weight 1/f.\n\nActually for electron MC statistics: with 3M sources and weights 1, running all 3M might be too slow. Let me plan to subsample to ~1.5-2M.\n\nLet me run the photon MC with N=6e6, save results and sources (subsampled in the electron MC step, not in photon MC). Actually, to keep the photon MC result files manageable, let me save sources as float32 (pos, dir, T, par, kind). 3M \u00d7 13 bytes = 40 MB. Fine.\n\nLet me also decide whether to save the sources from this single photon MC (region z\u2208[0,13], r\u22644.5). For the electron MC PDD at depths up to 10 cm and dmax, this region is good.\n\nBut wait: should the electron source region be bigger radially for shallow depths? Electrons at dmax (0.5 cm) come from interactions near the surface, z\u2208[0,1.2], r\u2264~1.5. Region covers it.\n\nLet's run N=6e6. Also I want to double-check that the photon MC captures the primary angular distribution (should all be in cos\u03b8 bin 9). Let me check with the 50k result quickly, then run large.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_3d33cf7580954070bb3861aa",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import sys, time, numpy as np\\nsys.path.insert(0,'/tmp')\\nimport photonmc, importlib\\nimportlib.reload(photonmc)\\nres = photonmc.photon_mc(200000, seed=123, verbose=True, debug=False)\\nprint('ang_prim', res['ang_prim']/res['ang_prim'].sum())\\nprint('scat frac flu', res['fl_scat'].sum()/(res['fl_prim'].sum()+res['fl_scat'].sum()))\\nprint('int_all', res['int_all'], 'int_prim', res['int_prim'], 'int_scat', res['int_scat'])\\nprint('etr_all', res['etr_all'])\\n# mean energies\\nE_edges=np.linspace(0,1.4,29); Ec=(E_edges[:-1]+E_edges[1:])/2\\nflt=res['fl_prim']+res['fl_scat']\\nmeanE=(Ec*flt).sum()/flt.sum()\\nprint('mean photon E', meanE)\\nprint('src count', len(res['src']['T']))\\nprint('L3 mean Te', res['L3_Te'].mean() if len(res['L3_Te']) else None, 'n', len(res['L3_Te']))\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The simulated primary fluence ratio (0.7204) matches the analytic (0.7295) within ~1.2% statistical error (50k photons). Good.\n\nNow, the scattered fluence fraction: scattered/(primary+scattered) = 109.2/315 = 0.347. Reasonable.\n\nNow let me scale up. I'll run the photon MC with larger N. Time for 50k: 0.32 s. For 5M: ~32 s. For 10M: ~64 s. Memory: fine. Let me run N=6e6 (a good compromise) or 1e7. Let me estimate stats:\n- Interactions in scoring volume for N: at 50k we got 27 Compton in sc vol \u2192 for 5M: 2700. Good enough for Layer 2/3 (expect ~2700 electrons in L3).\n- Electron sources in region: 30787/50k \u2192 for 5M: 3.08M sources. Hmm that's more than I want for electron MC. Let me set a subsample cap ~1.5M for electron MC: keep fraction f = 1.5M/3.08M \u2248 0.487 with weight 1/f.\n\nActually for electron MC statistics: with 3M sources and weights 1, running all 3M might be too slow. Let me plan to subsample to ~1.5-2M.\n\nLet me run the photon MC with N=6e6, save results and sources (subsampled in the electron MC step, not in photon MC). Actually, to keep the photon MC result files manageable, let me save sources as float32 (pos, dir, T, par, kind). 3M \u00d7 13 bytes = 40 MB. Fine.\n\nLet me also decide whether to save the sources from this single photon MC (region z\u2208[0,13], r\u22644.5). For the electron MC PDD at depths up to 10 cm and dmax, this region is good.\n\nBut wait: should the electron source region be bigger radially for shallow depths? Electrons at dmax (0.5 cm) come from interactions near the surface, z\u2208[0,1.2], r\u2264~1.5. Region covers it.\n\nLet's run N=6e6. Also I want to double-check that the photon MC captures the primary angular distribution (should all be in cos\u03b8 bin 9). Let me check with the 50k result quickly, then run large.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 93127,
+  "completion_tokens": 863,
+  "total_tokens": 93990,
+  "cost": 0.0028011438,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 80089,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0028011438,
+   "upstream_inference_prompt_cost": 0.0026440778,
+   "upstream_inference_completions_cost": 0.000157066
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 536,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

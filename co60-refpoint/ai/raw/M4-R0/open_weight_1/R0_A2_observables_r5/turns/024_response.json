@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791831401-aPREYZ6gneftOHz9dVrP",
+ "object": "chat.completion",
+ "created": 1791831401,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "GMICloud",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Now with the fixed process sampling, pair interactions in the scoring volume = 0 (int_all[3]=0). Interesting: previously the 6M run had 3 pairs, 2 of which were spurious; the real pair rate in scoring volume is ~0 at this N (expected ~0.5-1). So pair contributions ~0 in the scoring volume; pair is negligible.\n\nint_all = [23 coherent, 3273 compton, 27 photoelectric, 0 pair]: \n- Compton fraction: 3273/(3323) = 0.985\n- coherent: 23/3323 = 0.0069\n- photoelectric: 27/3323 = 0.0081\n- pair: 0\n\nFor primary interactions: all 1638 Compton (0 pair/pe/coherent in primary).\nFor scattered: [23 coherent, 1635 compton, 27 pe].\n\nfl_prim 24842.8, fl_scat 14289.9 (fixed: similar to before since the geometry fix was applied before; the pair fix barely changes).\n\nNow let me process Layer 1-3 results from the saved pickle, and then build the electron MC.\n\nLayer 1 calculations:\n- Omega = 0.0099751, Phi0_per_emitted = 1/(\u03a9*105\u00b2) = 0.00909296 cm^-2.\n- L1_primary_fluence_per_phi0 = fl_prim.sum()/(N*V)/Phi0_per_emitted.\n- L1_total_fluence_per_phi0 = (fl_prim+fl_scat).sum()/(N*V)/Phi0.\n- Scattered fraction fluence.\n- Energy fluence: fl_prim*E_bin etc. For energy-fluence fraction, need fluence weighted by energy: use bin centers. Hmm, using bin centers gives slight bias for the primary lines (they're not at centers but the tally already sums track length into bins by energy, so the bin total is exact; the mean energy should use the actual photon energies. Better: also tally energy-weighted track length. I didn't tally E-weighted fluence. I can approximate using bin centers: for the primary lines the bins are narrow (0.05 wide) and the lines at 1.1732 and 1.3325; bin centers 1.175 and 1.325 introduce ~0.4% error in mean energy. For scattered spectra, bin centers are fine.\n\nActually, let me be more careful: mean photon energy = \u03a3_bins E_center_bin * (fl_prim[b]+fl_scat[b]) / total. The primary line at 1.1732 is in bin [1.15,1.2] center 1.175 (0.15% error), at 1.3325 in [1.3,1.35] center 1.325 (0.56% error). Small. OK.\n\nAlternatively, modify the photon MC to also accumulate energy-weighted fluence. But it's a minor error; fine with bin centers. Actually, for scattered fraction of energy fluence and mean photon energy, small bias acceptable.\n\nNow Layer 2:\n- L2_interaction_fractions: int_all/3323.\n- L2_energy_transfer_fractions: etr_all / sum.\n- L2_interaction_fractions_primary: int_prim/1638.\n- L2_interaction_fractions_scattered: int_scat/(23+1635+27=1685).\n- L2_scattered_share_of_interactions: 1685/3323 = 0.507.\n\nLayer 3:\n- L3_Te (3300 values), L3_cos, L3_parent.\n- L3_initial_spectrum: histogram over electron bins [0.01,...,1.4] (25 bins), normalized.\n- L3_initial_spectrum_parent_primary: subset parent==1.\n- L3_mean_initial_energy: mean of Te.\n- L3_mean_initial_energy_parent_primary: mean Te[parent==1].\n- L3_initial_direction: histogram of L3_cos by cos_theta bins.\n\nNow the electron MC. Let me first examine the electron source distribution and plan.\n\nLet me load the saved data and compute Layer 1-3 numbers, and also inspect source energy distribution.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_cbe16c5f4b784943b3ca9105",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np, pickle\\nwith open('/tmp/photon_results.pkl','rb') as f:\\n    res = pickle.load(f)\\nd = np.load('/tmp/photon_sources.npz')\\nsrc_pos=d['pos']; src_dir=d['dir']; src_T=d['T']; src_par=d['par']; src_kind=d['kind']\\nprint('src', src_pos.shape, 'T range', src_T.min(), src_T.max(), 'mean', src_T.mean())\\nprint('par frac primary', (src_par==1).mean())\\nprint('kind frac positron', (src_kind==1).mean())\\n# T distribution\\nfor lo,hi in [(0,0.1),(0.1,0.2),(0.2,0.4),(0.4,0.6),(0.6,0.8),(0.8,1.0),(1.0,1.2)]:\\n    print(f'T {lo}-{hi}: {((src_T>=lo)&(src_T<hi)).mean():.4f}')\\n# positions in region: z range, r range\\nr=np.sqrt(src_pos[:,0]**2+src_pos[:,1]**2)\\nprint('z min/max', src_pos[:,2].min(), src_pos[:,2].max(), 'r max', r.max())\\nN=6000000\\nV= np.pi*1.0**2*0.2\\nOmega=4*np.arcsin(np.sin(np.arctan(5/100))**2)\\nPhi0=1/(Omega*105**2)\\nprint('Phi0 per emitted', Phi0)\\nfl_prim=res['fl_prim']; fl_scat=res['fl_scat']\\nL1_prim = fl_prim.sum()/(N*V)/Phi0\\nL1_tot = (fl_prim.sum()+fl_scat.sum())/(N*V)/Phi0\\nprint('L1_primary_fluence_per_phi0', L1_prim, 'analytic 0.7295')\\nprint('L1_total_fluence_per_phi0', L1_tot)\\nprint('L1 scattered frac flu', fl_scat.sum()/(fl_prim.sum()+fl_scat.sum()))\\nEdges=np.linspace(0,1.4,29); Ec=(Edges[:-1]+Edges[1:])/2\\nEfl_prim=(Ec*fl_prim).sum(); Efl_scat=(Ec*fl_scat).sum()\\nprint('L1 scattered frac energy flu', Efl_scat/(Efl_prim+Efl_scat))\\nprint('L1 mean photon E', (Ec*(fl_prim+fl_scat)).sum()/(fl_prim+fl_scat).sum())\\nprint('L3 n', len(res['L3_Te']), 'mean Te', res['L3_Te'].mean())\\np=res['L3_parent']==1\\nprint('mean Te primary parent', res['L3_Te'][p].mean())\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Now with the fixed process sampling, pair interactions in the scoring volume = 0 (int_all[3]=0). Interesting: previously the 6M run had 3 pairs, 2 of which were spurious; the real pair rate in scoring volume is ~0 at this N (expected ~0.5-1). So pair contributions ~0 in the scoring volume; pair is negligible.\n\nint_all = [23 coherent, 3273 compton, 27 photoelectric, 0 pair]: \n- Compton fraction: 3273/(3323) = 0.985\n- coherent: 23/3323 = 0.0069\n- photoelectric: 27/3323 = 0.0081\n- pair: 0\n\nFor primary interactions: all 1638 Compton (0 pair/pe/coherent in primary).\nFor scattered: [23 coherent, 1635 compton, 27 pe].\n\nfl_prim 24842.8, fl_scat 14289.9 (fixed: similar to before since the geometry fix was applied before; the pair fix barely changes).\n\nNow let me process Layer 1-3 results from the saved pickle, and then build the electron MC.\n\nLayer 1 calculations:\n- Omega = 0.0099751, Phi0_per_emitted = 1/(\u03a9*105\u00b2) = 0.00909296 cm^-2.\n- L1_primary_fluence_per_phi0 = fl_prim.sum()/(N*V)/Phi0_per_emitted.\n- L1_total_fluence_per_phi0 = (fl_prim+fl_scat).sum()/(N*V)/Phi0.\n- Scattered fraction fluence.\n- Energy fluence: fl_prim*E_bin etc. For energy-fluence fraction, need fluence weighted by energy: use bin centers. Hmm, using bin centers gives slight bias for the primary lines (they're not at centers but the tally already sums track length into bins by energy, so the bin total is exact; the mean energy should use the actual photon energies. Better: also tally energy-weighted track length. I didn't tally E-weighted fluence. I can approximate using bin centers: for the primary lines the bins are narrow (0.05 wide) and the lines at 1.1732 and 1.3325; bin centers 1.175 and 1.325 introduce ~0.4% error in mean energy. For scattered spectra, bin centers are fine.\n\nActually, let me be more careful: mean photon energy = \u03a3_bins E_center_bin * (fl_prim[b]+fl_scat[b]) / total. The primary line at 1.1732 is in bin [1.15,1.2] center 1.175 (0.15% error), at 1.3325 in [1.3,1.35] center 1.325 (0.56% error). Small. OK.\n\nAlternatively, modify the photon MC to also accumulate energy-weighted fluence. But it's a minor error; fine with bin centers. Actually, for scattered fraction of energy fluence and mean photon energy, small bias acceptable.\n\nNow Layer 2:\n- L2_interaction_fractions: int_all/3323.\n- L2_energy_transfer_fractions: etr_all / sum.\n- L2_interaction_fractions_primary: int_prim/1638.\n- L2_interaction_fractions_scattered: int_scat/(23+1635+27=1685).\n- L2_scattered_share_of_interactions: 1685/3323 = 0.507.\n\nLayer 3:\n- L3_Te (3300 values), L3_cos, L3_parent.\n- L3_initial_spectrum: histogram over electron bins [0.01,...,1.4] (25 bins), normalized.\n- L3_initial_spectrum_parent_primary: subset parent==1.\n- L3_mean_initial_energy: mean of Te.\n- L3_mean_initial_energy_parent_primary: mean Te[parent==1].\n- L3_initial_direction: histogram of L3_cos by cos_theta bins.\n\nNow the electron MC. Let me first examine the electron source distribution and plan.\n\nLet me load the saved data and compute Layer 1-3 numbers, and also inspect source energy distribution.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 105515,
+  "completion_tokens": 1615,
+  "total_tokens": 107130,
+  "cost": 0.0034433854,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 88632,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0034433854,
+   "upstream_inference_prompt_cost": 0.0031494554,
+   "upstream_inference_completions_cost": 0.00029393
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 926,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

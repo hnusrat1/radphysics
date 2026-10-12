@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791831521-XPcRgMDkT9bLvTsShgMc",
+ "object": "chat.completion",
+ "created": 1791831521,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "GMICloud",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Now test the electron MC with a subset of the sources (say 200k) to check speed and sanity.\n\nFirst, let me set up the subsampling: total sources 3.72M. For the test, use first 200k with weight 1. Then scale to full.\n\nLet me also decide target: to get good stats, maybe 1.2M sources (f=0.32, weight=3.1). Let me see timing for 200k first.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_b25c7ec82a704ab5be3258e8",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import sys, time, numpy as np\\nsys.path.insert(0,'/tmp')\\nimport electronmc, importlib\\nimportlib.reload(electronmc)\\nd = np.load('/tmp/photon_sources.npz')\\nsrc_pos=d['pos'][:200000]; src_dir=d['dir'][:200000]; src_T=d['T'][:200000]\\nsrc_par=d['par'][:200000]; src_kind=d['kind'][:200000]\\ndepths=np.array([0.2,0.35,0.5,0.65,0.8,1.0,1.5,2,3,4,5,6,8,10])\\nt0=time.time()\\nres=electronmc.electron_run(src_pos, src_dir, src_T, src_par, src_kind, np.ones(len(src_T)), depths, seed=3, verbose=True)\\nprint('elapsed', time.time()-t0)\\nprint('dose', res['dose'])\\nprint('dose_scat', res['dose_scat'])\\nprint('flu_tot5', res['flu_tot5'], 'flu_delta5', res['flu_delta5'])\\nprint('spectrum', res['flu_e_spectrum']/res['flu_tot5'] if res['flu_tot5']>0 else None) \\nprint('angular', res['flu_angular']/res['flu_tot5'])\\nprint('rad/col', res['rad_col_num']/res['rad_col_den'])\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Now test the electron MC with a subset of the sources (say 200k) to check speed and sanity.\n\nFirst, let me set up the subsampling: total sources 3.72M. For the test, use first 200k with weight 1. Then scale to full.\n\nLet me also decide target: to get good stats, maybe 1.2M sources (f=0.32, weight=3.1). Let me see timing for 200k first.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 124386,
+  "completion_tokens": 471,
+  "total_tokens": 124857,
+  "cost": 0.0036173592,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 106971,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0036173592,
+   "upstream_inference_prompt_cost": 0.0035316372,
+   "upstream_inference_completions_cost": 8.5722e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 101,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

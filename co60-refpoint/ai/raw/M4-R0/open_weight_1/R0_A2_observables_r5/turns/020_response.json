@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791831253-tXkj0FfluPwaXg2ETFa0",
+ "object": "chat.completion",
+ "created": 1791831253,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "GMICloud",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "The problem: mut_at(E, mu_tot) at 0.12 = 0.16103, but c3 = 0.16055. The total is 0.00048 larger than c3! That's because the `total` column includes coherent + incoherent + photoelectric + pair = 0.00376+0.15526+0.00152 = 0.16055... but total = 0.16103. Difference 0.00048. This is a discrepancy in the XCOM table itself? Let me check: at 0.1: coherent 0.0053493 + incoherent 0.16228 + pe 0.0027626 = 0.170392; total_with_coherent = 0.17039. OK matches. At 0.15: 0.002442+0.14704+0.00073076=0.15021; total 0.15021. OK. At 0.08: 0.0081645+0.16937+0.0057699=0.18330; total 0.18331. OK.\n\nAt 0.12 (interpolated): my interpolation of the individual components in log space vs the total in log space gives slightly different results due to log-log interpolation of sums vs components. The table only has points at 0.1 and 0.15, and log-log interpolation of the total between 0.1 and 0.15 gives 0.16103 while summing independently log-interpolated components gives 0.16055. The difference of 0.05% is interpolation inconsistency: linear (in log) interpolation of a sum \u2260 sum of linear interpolations. This creates a mismatch: rp = rng*mu_tot can fall in [c3, mu_tot], which the digitization treats as \"pair\" (since rp>=c3 \u2192 proc=3), even though there is no pair cross-section. That's the bug!\n\nFix: sample process using rp = rng * (c1+c2+c3+c4) computed consistently (i.e., use the sum of the interpolated components), not the separate total column. Better: compute mu_tot_own = c4 = c1+c2+c3+c4 and use that for distance sampling too? The distance should use the true total. The XCOM total column has its own interpolation; the difference is tiny (0.05%). To be consistent, let me compute the total as the sum of components for both distance and process sampling. Or simpler: set rp = rng * c4 (sum of interpolated components) and proc via rp<c1, <c2, <c3, else pair. Then no spurious pair.\n\nLet me update photonmc.py: \n- `mu = mut_at(Ea, mu_tot)` for distance: keep as-is (tiny difference, fine), but to be fully consistent use sum. I'll change to compute components and sum for the process sampling; keep distance with the total column (0.05% difference is negligible). But the same inconsistency could also create spurious photoelectric? proc = digitize(rp, [c1,c2,c3]) with rp<c3 gives 2 (pe), else 3. rp in [c2,c3) \u2192 pe. Since rp < c4 and c4-c3 = 1e-30 (below threshold), the only issue is rp in [c3, mu_tot] where mu_tot>c3 \u2192 proc=3. So fix by using rp = rng*c4.\n\nLet me patch: replace `rp = rng.random(len(ii))*mu_i` with `mu_own = c1+c2+c3+c4; rp = rng.random(len(ii))*mu_own` \u2014 but mu_own is computed after c1..c4. I'll restructure: compute components first, then mu_own, then rp.\n\nAlso fix the Etr sign issue: properly, the pair energy transfer = E - 1.022; with the bug fixed, no negative. But let me also guard: Tpair = np.maximum(E_int[m_pair]-1.022,0).\n\nLet me patch the module.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_a872e0c7e8f04a4e837c604b",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"code = open('/tmp/photonmc.py').read()\\nold = \\\"\\\"\\\"            mu_i = mu[ii]\\n            rp = rng.random(len(ii))*mu_i\\n            muc = mut_at(E_int, mu_coh); mui = mut_at(E_int, mu_inc); mup = mut_at(E_int, mu_pe); mupair = mut_at(E_int, mu_pair)\\n            c1=muc; c2=c1+mui; c3=c2+mup; c4=c3+mupair\\n            proc = np.where(rp<c1, 0, np.where(rp<c2, 1, np.where(rp<c3, 2, 3)))\\n            proc = np.where(rp>=c4, 3, proc)\\\"\\\"\\\"\\nnew = \\\"\\\"\\\"            muc = mut_at(E_int, mu_coh); mui = mut_at(E_int, mu_inc); mup = mut_at(E_int, mu_pe); mupair = mut_at(E_int, mu_pair)\\n            c1=muc; c2=c1+mui; c3=c2+mup; c4=c3+mupair\\n            mu_own = c4\\n            rp = rng.random(len(ii))*mu_own\\n            proc = np.where(rp<c1, 0, np.where(rp<c2, 1, np.where(rp<c3, 2, 3)))\\n            proc = np.where(rp>=c4, 3, proc)\\\"\\\"\\\"\\nassert old in code\\ncode=code.replace(old,new)\\n# guard pair Tpair\\nold2 = \\\"                Tpair = E_int[m_pair]-1.022\\\"\\nnew2 = \\\"                Tpair = np.maximum(E_int[m_pair]-1.022,0.0)\\\"\\nassert old2 in code\\ncode=code.replace(old2,new2)\\nopen('/tmp/photonmc.py','w').write(code)\\nimport importlib, sys, time\\nsys.path.insert(0,'/tmp')\\nimport photonmc\\nimportlib.reload(photonmc)\\nphotonmc.PAIRDBG0 = None\\nt0=time.time()\\nres = photonmc.photon_mc(2000000, seed=11, verbose=False, debug=False)\\nprint('elapsed', time.time()-t0)\\nprint('int_all', res['int_all'], 'etr_all', res['etr_all'])\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The problem: mut_at(E, mu_tot) at 0.12 = 0.16103, but c3 = 0.16055. The total is 0.00048 larger than c3! That's because the `total` column includes coherent + incoherent + photoelectric + pair = 0.00376+0.15526+0.00152 = 0.16055... but total = 0.16103. Difference 0.00048. This is a discrepancy in the XCOM table itself? Let me check: at 0.1: coherent 0.0053493 + incoherent 0.16228 + pe 0.0027626 = 0.170392; total_with_coherent = 0.17039. OK matches. At 0.15: 0.002442+0.14704+0.00073076=0.15021; total 0.15021. OK. At 0.08: 0.0081645+0.16937+0.0057699=0.18330; total 0.18331. OK.\n\nAt 0.12 (interpolated): my interpolation of the individual components in log space vs the total in log space gives slightly different results due to log-log interpolation of sums vs components. The table only has points at 0.1 and 0.15, and log-log interpolation of the total between 0.1 and 0.15 gives 0.16103 while summing independently log-interpolated components gives 0.16055. The difference of 0.05% is interpolation inconsistency: linear (in log) interpolation of a sum \u2260 sum of linear interpolations. This creates a mismatch: rp = rng*mu_tot can fall in [c3, mu_tot], which the digitization treats as \"pair\" (since rp>=c3 \u2192 proc=3), even though there is no pair cross-section. That's the bug!\n\nFix: sample process using rp = rng * (c1+c2+c3+c4) computed consistently (i.e., use the sum of the interpolated components), not the separate total column. Better: compute mu_tot_own = c4 = c1+c2+c3+c4 and use that for distance sampling too? The distance should use the true total. The XCOM total column has its own interpolation; the difference is tiny (0.05%). To be consistent, let me compute the total as the sum of components for both distance and process sampling. Or simpler: set rp = rng * c4 (sum of interpolated components) and proc via rp<c1, <c2, <c3, else pair. Then no spurious pair.\n\nLet me update photonmc.py: \n- `mu = mut_at(Ea, mu_tot)` for distance: keep as-is (tiny difference, fine), but to be fully consistent use sum. I'll change to compute components and sum for the process sampling; keep distance with the total column (0.05% difference is negligible). But the same inconsistency could also create spurious photoelectric? proc = digitize(rp, [c1,c2,c3]) with rp<c3 gives 2 (pe), else 3. rp in [c2,c3) \u2192 pe. Since rp < c4 and c4-c3 = 1e-30 (below threshold), the only issue is rp in [c3, mu_tot] where mu_tot>c3 \u2192 proc=3. So fix by using rp = rng*c4.\n\nLet me patch: replace `rp = rng.random(len(ii))*mu_i` with `mu_own = c1+c2+c3+c4; rp = rng.random(len(ii))*mu_own` \u2014 but mu_own is computed after c1..c4. I'll restructure: compute components first, then mu_own, then rp.\n\nAlso fix the Etr sign issue: properly, the pair energy transfer = E - 1.022; with the bug fixed, no negative. But let me also guard: Tpair = np.maximum(E_int[m_pair]-1.022,0).\n\nLet me patch the module.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 100950,
+  "completion_tokens": 1458,
+  "total_tokens": 102408,
+  "cost": 0.0031315284,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 86817,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0031315284,
+   "upstream_inference_prompt_cost": 0.0028661724,
+   "upstream_inference_completions_cost": 0.000265356
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 904,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791831487-kTx3RcVITMsrpVhXgJsN",
+ "object": "chat.completion",
+ "created": 1791831487,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "GMICloud",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "g \u2248 0.0026 (0.26%), which is plausible for ~0.35 MeV mean electron energy in water (radiation yield for 1 MeV is 0.44%, for 0.5 MeV 0.20%). Good.\n\nNow write the electron MC module. Let me carefully code it and test on a subset.\n\nNote on the SA ratio: electron fluence spectrum needs electron fluence per phi0 per bin. We'll get from electron MC.\n\nLet me write /tmp/electronmc.py.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_f8c5e108074d4ae4a326a1a3",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"code = r'''\\nimport numpy as np, time\\n\\nestar = np.loadtxt('/tmp/data/estar_water.txt', comments='#')\\neT = estar[:,0]; Scol = estar[:,1]; Srad = estar[:,2]; Yy = estar[:,5]\\nlnT = np.log(eT)\\ndef scol_at(T):\\n    return np.exp(np.interp(np.log(np.clip(T,1e-4,20.)), lnT, np.log(Scol)))\\ndef srad_at(T):\\n    return np.exp(np.interp(np.log(np.clip(T,1e-4,20.)), lnT, np.log(Srad)))\\ndef yield_at(T):\\n    return np.interp(T, eT, Yy)\\n\\nm_e=0.5109989461\\nX0=36.08\\nEs=21.2\\nTCUT=0.010\\nn_e=3.343e23  # electrons/cm3 water\\nr02=2.8179403227e-13**2\\n\\ndef moller_rate(T):\\n    # dN/ds above TCUT\\n    beta2 = 1.0 - 1.0/((T/m_e+1.0)**2)\\n    gamma = 1.0+T/m_e\\n    C = 2*np.pi*r02*m_e*np.maximum(beta2,1e-6)**(-1)\\n    Tc=TCUT\\n    U = (T-Tc)/2.0\\n    bracket = 1.0/Tc - 1.0/(T-Tc) + (2*gamma-1)/(gamma*gamma*T)*np.log(Tc/(T-Tc))\\n    return n_e*C*bracket\\n\\ndef sample_delta_energy(T, n, rng):\\n    # returns T_s in [TCUT,(T-TCUT)/2], rejection\\n    gamma=1.0+T/m_e\\n    beta2=1.0-1.0/(gamma*gamma)\\n    C=2*np.pi*r02*m_e/np.maximum(beta2,1e-6)\\n    Tc=TCUT; U=(T-Tc)/2.0\\n    out=np.zeros(n)\\n    # proposal sample from 1/Ts^2 on [Tc,U]\\n    a=1.0/Tc; b=1.0/U\\n    for it in range(3):\\n        u=rng.random(n)\\n        Ts=1.0/(a - u*(a-b))\\n        # pdf prop ~ 1/Ts^2, exact CDF: g(Ts)= (1/Tc -1/Ts)/(1/Tc-1/U)*(1/Ts^2)... standard\\n        # q(Ts)=c/Ts^2 with c=(1/Tc-1/U)^-1\\n        dsdT = C*(1.0/Ts**2 + 1.0/(T-Ts)**2 - (2*gamma-1)/(gamma*gamma*Ts*(T-Ts)))\\n        # envelope: 2*C/Ts^2\\n        env = 2.0*C/Ts**2\\n        acc = rng.random(n) < dsdT/env\\n        if it==0:\\n            out = Ts\\n            remaining = ~acc\\n        else:\\n            out[remaining] = Ts[remaining]\\n            remaining[remaining] = ~acc[remaining]\\n        if not remaining.any(): break\\n    # fallback: uniform in log\\n    rem = remaining if 'remaining' in dir() else np.zeros(n,dtype=bool)\\n    if rem.any():\\n        out[rem] = Tc*np.exp(rng.uniform(0, np.log(U/Tc), rem.sum()))\\n    return out\\n\\ndef rot_dir(u, theta, phi):\\n    # rotate unit vectors u by polar angle theta, azimuth phi\\n    a = np.column_stack([-u[:,1], u[:,0], np.zeros(len(u))])\\n    na=np.sqrt(a[:,0]**2+a[:,1]**2+1e-30)\\n    bad=na<1e-6\\n    a[bad]=[1,0,0]\\n    na=np.sqrt(a[:,0]**2+a[:,1]**2+a[:,2]**2)\\n    a=a/na[:,None]\\n    b=np.cross(u,a)\\n    ct=np.cos(theta); st=np.sin(theta)\\n    return u*ct[:,None] + st[:,None]*(a*np.cos(phi)[:,None]+b*np.sin(phi)[:,None])\\n\\ndef electron_run(src_pos, src_dir, src_T, src_par, src_kind, weights, depths, seed=1,\\n                 maxsteps=400, rho=1.0, verbose=True):\\n    # depths: array of cylinder centers (radius 1, half-thickness 0.1)\\n    rng=np.random.default_rng(seed)\\n    depths=np.asarray(depths,float)\\n    nsc=len(depths)\\n    dose=np.zeros(nsc); dose_scat=np.zeros(nsc)\\n    # tallies at 5-cm cylinder: index of depth closest to 5.0\\n    i5=int(np.argmin(np.abs(depths-5.0)))\\n    flu_tot5=0.0; flu_delta5=0.0; flu_e_spectrum=np.zeros(25); flu_angular=np.zeros(10)\\n    rad_col_num=0.0; rad_col_den=0.0\\n    e_edges=np.array([0.01,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1.0,1.05,1.1,1.15,1.2,1.4])\\n    cos_edges=np.linspace(-1,1,11)\\n    # queue\\n    queue=[(src_pos.astype(np.float64), src_dir.astype(np.float64), src_T.astype(np.float64),\\n            src_par.astype(np.int8), src_kind.astype(np.int8), weights.astype(np.float64),\\n            np.zeros(len(src_T),dtype=bool))]  # last: is_delta\\n    batch_count=0\\n    t0=time.time()\\n    while queue:\\n        pos, dirv, T, par, kind, w, is_delta = queue.pop(0)\\n        n=len(T)\\n        if n==0: continue\\n        alive=np.ones(n,dtype=bool)\\n        step=0\\n        while alive.any() and step<maxsteps:\\n            step+=1\\n            n_a=alive.sum()\\n            p=pos[alive]; d=dirv[alive]; Te=T[alive]; pa=par[alive]; ki=kind[alive]; ww=w[alive]; dl=is_delta[alive]\\n            Sc=scol_at(Te); Sr=srad_at(Te)\\n            ds=np.minimum(0.02, 0.08*Te/np.maximum(Sc,1e-6))\\n            dEc=Sc*ds; dEr=Sr*ds\\n            # delta production\\n            if (Te>0.05).any():\\n                rate=moller_rate(Te)\\n                lam=np.where(Te>0.05, rate*ds, 0.0)\\n                nd=rng.poisson(lam)\\n                if nd.sum()>0:\\n                    totd=int(nd.sum())\\n                    # sample energies\\n                    reps=np.repeat(np.arange(n_a), nd)\\n                    Ts=sample_delta_energy(Te[reps], totd, rng)\\n                    # direction\\n                    cosf=np.sqrt(Ts*(Te[reps]+2*m_e)/(Te[reps]*(Ts+2*m_e)))\\n                    sinf=np.sqrt(np.maximum(1-cosf*cosf,0))\\n                    phid=rng.uniform(0,2*np.pi,totd)\\n                    dird=np.column_stack([sinf*np.cos(phid), sinf*np.sin(phid), cosf])\\n                    # rotate relative to primary direction: use rot_dir\\n                    newd=rot_dir(d[reps], np.arccos(np.clip(cosf,-1,1)), phid)\\n                    # store deltas (parent type inherited, kind inherited, not delta->is_delta True)\\n                    queue.append((p[reps], newd, Ts.astype(np.float32), pa[reps].astype(np.int8),\\n                                  ki[reps].astype(np.int8), ww[reps].astype(np.float64),\\n                                  np.ones(totd,dtype=bool)))\\n            # multiple scattering\\n            pc=np.sqrt(np.maximum(Te*(Te+2*m_e),0)); beta=pc/(Te+m_e)\\n            theta_sig=np.sqrt(2.0)*Es/np.maximum(beta*pc,1e-6)*np.sqrt(ds/X0)\\n            theta_sig=np.minimum(theta_sig, 2.0)\\n            th=rng.rayleigh(theta_sig)\\n            phi=rng.uniform(0,2*np.pi,n_a)\\n            newd=rot_dir(d, th, phi)\\n            # advance\\n            pmid = p + newd*ds[:,None]*0.5\\n            pnew = p + newd*ds[:,None]\\n            Tnew = Te - (dEc+dEr)\\n            # scoring inside cylinders (depth list)\\n            r2=pmid[:,0]**2+pmid[:,1]**2\\n            for kd,zd in enumerate(depths):\\n                mask=(np.abs(pmid[:,2]-zd)<=0.1)&(r2<=1.0)\\n                if mask.any():\\n                    add=dEc[mask]*ww[mask]\\n                    dose[kd]+=add.sum()\\n                    if pa[mask].sum()==0:\\n                        # parent scattered flag: par==0 means scattered parent (we stored 1=primary)\\n                        dose_scat[kd]+=add.sum()\\n            # 5-cm tallies\\n            m5=(np.abs(pmid[:,2]-depths[i5])<=0.1)&(r2<=1.0)\\n            if m5.any():\\n                flu_tot5 += (ds[m5]*ww[m5]).sum()\\n                flu_delta5 += (ds[m5]*dl[m5]*ww[m5]).sum()\\n                bin_e=np.clip(np.searchsorted(e_edges, Te[m5],'right')-1,0,24)\\n                np.add.at(flu_e_spectrum, bin_e, ds[m5]*ww[m5])\\n                bin_c=np.clip(np.searchsorted(cos_edges, newd[m5][:,2],'right')-1,0,9)\\n                np.add.at(flu_angular, bin_c, ds[m5]*ww[m5])\\n                rad_col_num += (Sr[m5]*ds[m5]*ww[m5]).sum()\\n                rad_col_den += (Sc[m5]*ds[m5]*ww[m5]).sum()\\n            # update positions/directions/energies\\n            # kill: T<TCUT, out of box\\n            rnew=np.sqrt(pnew[:,0]**2+pnew[:,1]**2)\\n            dead=(Tnew<TCUT)|(rnew>5.5)|(pnew[:,2]<-1.5)|(pnew[:,2]>15.0)\\n            alive[alive]=~dead\\n            pos_new=pnew[~dead]; dir_new=newd[~dead]; T_new=Tnew[~dead]\\n            # update arrays for alive subset: need new arrays\\n            # easiest: rebuild\\n            pos=pos_new if pos_new.shape[0]>0 else np.zeros((0,3))\\n            dirv=dir_new; T=T_new\\n            # primitive: reconstruct full arrays? This is slow. Better update in place:\\n            # We'll handle by direct assignment below instead\\n            break\\n        # NOTE: this simple loop needs rework - T/dir arrays must persist across iterations.\\n        break\\n    print('electron_run placeholder')\\n    return None\\n'''\\nopen('/tmp/electronmc_placeholder.py','w').write(code)\\nprint('written placeholder (needs rework)')\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "g \u2248 0.0026 (0.26%), which is plausible for ~0.35 MeV mean electron energy in water (radiation yield for 1 MeV is 0.44%, for 0.5 MeV 0.20%). Good.\n\nNow write the electron MC module. Let me carefully code it and test on a subset.\n\nNote on the SA ratio: electron fluence spectrum needs electron fluence per phi0 per bin. We'll get from electron MC.\n\nLet me write /tmp/electronmc.py.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 118272,
+  "completion_tokens": 2849,
+  "total_tokens": 121121,
+  "cost": 0.0037043188,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 104079,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0037043188,
+   "upstream_inference_prompt_cost": 0.0031858008,
+   "upstream_inference_completions_cost": 0.000518518
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 104,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791831067-Wf0oTjAVQkp9tDUeO53M",
+ "object": "chat.completion",
+ "created": 1791831067,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "GMICloud",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "For 200k: scattered fraction fluence 0.373, mean photon energy 0.969 MeV, L3 mean initial energy 0.412 MeV. Interactions in scoring volume: 120 total (68 primary Compton, 52 scattered Compton, 3 coherent scattered). Energy transfer: all Compton 49.4 MeV.\n\nMean photon energy 0.97 seems lowish; for Co-60 at 5 cm depth with 10x10, the mean photon energy is around 1.1-1.2? Actually scattered photons are at lower energies; if scattered fraction of fluence is 37%, and their mean energy ~0.6-0.7, the fluence-weighted mean = 0.63*1.25 + 0.37*0.65 \u2248 0.79+0.24 = 1.03. Hmm we got 0.969 from bin centers. Wait, I used bin centers with the 28 bins: bin centers: 0.025, 0.075...1.375. The primary lines at 1.173 (bin 23 center 1.175) and 1.3325 (bin 26 center 1.325). So mean = [0.5*1.175+0.5*1.325]*prim_frac + scat contribution \u2248 1.25*0.627 + ... = 0.784 + scat. If scat mean ~0.6, 0.37*0.6=0.222; total 1.006. We got 0.969, so scat mean ~0.50. Plausible.\n\nL3 mean initial energy 0.412 MeV \u2014 plausible (Compton recoil for 1.25 MeV: d\u03c3/dTe weighted; mean Te ~0.58 from earlier KN sampling at 1.25 single energy, but the spectrum is weighted by interactions at both energies and includes scattered photon interactions at lower energies, reducing mean).\n\nNow, the stats at 200k: L3 has 120 electrons \u2014 good enough to get a spectrum shape but noisy. For N=6e6, ~3600 electrons.\n\nLet me now run the big photon MC, N=6e6, and save results + sources. This should take ~50-60 s based on 200k in 1.6 s (0.8 \u00b5s/photon... 200k\u21921.6s, so 6e6\u219248s). Let me run it.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_e57a33d84c664a27aac437fb",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import sys, time, numpy as np, pickle\\nsys.path.insert(0,'/tmp')\\nimport photonmc, importlib\\nimportlib.reload(photonmc)\\n\\nt0=time.time()\\nres = photonmc.photon_mc(6000000, seed=20240517, verbose=True, debug=False)\\nprint('elapsed', time.time()-t0)\\n# save\\nwith open('/tmp/photon_results.pkl','wb') as f:\\n    pickle.dump({k:v for k,v in res.items() if k!='src'}, f)\\nnp.savez_compressed('/tmp/photon_sources.npz', pos=res['src']['pos'], dir=res['src']['dir'],\\n                    T=res['src']['T'], par=res['src']['par'], kind=res['src']['kind'])\\nprint('saved. src count', len(res['src']['T']), 'L3', len(res['L3_Te']))\\nprint('fl_prim sum', res['fl_prim'].sum(), 'fl_scat sum', res['fl_scat'].sum())\\nprint('int_all', res['int_all'], 'int_prim', res['int_prim'], 'int_scat', res['int_scat'])\\nprint('etr_all', res['etr_all'])\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "For 200k: scattered fraction fluence 0.373, mean photon energy 0.969 MeV, L3 mean initial energy 0.412 MeV. Interactions in scoring volume: 120 total (68 primary Compton, 52 scattered Compton, 3 coherent scattered). Energy transfer: all Compton 49.4 MeV.\n\nMean photon energy 0.97 seems lowish; for Co-60 at 5 cm depth with 10x10, the mean photon energy is around 1.1-1.2? Actually scattered photons are at lower energies; if scattered fraction of fluence is 37%, and their mean energy ~0.6-0.7, the fluence-weighted mean = 0.63*1.25 + 0.37*0.65 \u2248 0.79+0.24 = 1.03. Hmm we got 0.969 from bin centers. Wait, I used bin centers with the 28 bins: bin centers: 0.025, 0.075...1.375. The primary lines at 1.173 (bin 23 center 1.175) and 1.3325 (bin 26 center 1.325). So mean = [0.5*1.175+0.5*1.325]*prim_frac + scat contribution \u2248 1.25*0.627 + ... = 0.784 + scat. If scat mean ~0.6, 0.37*0.6=0.222; total 1.006. We got 0.969, so scat mean ~0.50. Plausible.\n\nL3 mean initial energy 0.412 MeV \u2014 plausible (Compton recoil for 1.25 MeV: d\u03c3/dTe weighted; mean Te ~0.58 from earlier KN sampling at 1.25 single energy, but the spectrum is weighted by interactions at both energies and includes scattered photon interactions at lower energies, reducing mean).\n\nNow, the stats at 200k: L3 has 120 electrons \u2014 good enough to get a spectrum shape but noisy. For N=6e6, ~3600 electrons.\n\nLet me now run the big photon MC, N=6e6, and save results + sources. This should take ~50-60 s based on 200k in 1.6 s (0.8 \u00b5s/photon... 200k\u21921.6s, so 6e6\u219248s). Let me run it.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 94366,
+  "completion_tokens": 849,
+  "total_tokens": 95215,
+  "cost": 0.0029711864,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 79267,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0029711864,
+   "upstream_inference_prompt_cost": 0.0028166684,
+   "upstream_inference_completions_cost": 0.000154518
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 527,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}
