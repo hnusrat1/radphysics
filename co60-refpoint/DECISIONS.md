@@ -392,3 +392,18 @@ of the other non-Haiku models.
 **Launch.** R0 runs under Humza's rule ("run the full R0 matrix if it fits under $10"), with a hard stop:
 `--budget 9.5` stops new conversations once R0's measured charge reaches $9.50. The headroom covers the five
 conversations in flight. `ai/models.yaml` and `ai/prompts/v1/MANIFEST.yaml` are frozen as of this entry.
+
+## D033. OpenRouter errors inside HTTP 200 replies (2026-10-12)
+
+OpenRouter reports some upstream failures inside an HTTP 200 body: `finish_reason: "error"` with an error object,
+for example 429 "temporarily rate-limited upstream" or 504 "Upstream idle timeout exceeded". The harness read these
+as empty replies, so they became parse failures after the one retry.
+
+- **Fix.** `providers.in_band_error` detects them. Retryable codes (408, 409, 429, 5xx) are retried with backoff
+  (10 s doubling, 6 attempts). Anything else, or a persistent error, raises and the conversation is recorded as
+  `api_error`. Checked on every stored response: it flags exactly the 17 error replies and none of the other 368.
+- **R0.** Stopped about 3 minutes after launch. Seven conversation directories with no model output were moved to
+  `ai/raw/M4-R0-void/`: two Gemini conversations whose only replies were in-band 429s, and five cut off by the stop
+  before any reply. None was charged. R0 restarted with the fix.
+- **P0 reading.** 13 Gemini pilot replies were in-band 429 or 504 errors, so some of Gemini's pilot "parse
+  failures" were rate limits, not model behaviour. The pilot is excluded from analysis and is not rerun.
