@@ -1,0 +1,9 @@
+{
+ "stdout": "Cross-section model check:\n  E=0.10: comp=0.16472, pe=2.13e-03, pair=0.00000, ray=0.00682, total=0.17367\n  E=0.30: comp=0.11815, pe=2.35e-05, pair=0.00000, ray=0.00331, total=0.12148\n  E=0.50: comp=0.09666, pe=4.12e-06, pair=0.00000, ray=0.00199, total=0.09866\n  E=1.00: comp=0.07060, pe=4.43e-07, pair=0.00000, ray=0.00087, total=0.07148\n  E=1.25: comp=0.06312, pe=2.20e-07, pair=0.00064, ray=0.00065, total=0.06441\n  E=1.50: comp=0.05735, pe=1.23e-07, pair=0.00151, ray=0.00050, total=0.05937\n  E=2.00: comp=0.04892, pe=5.81e-08, pair=0.00318, ray=0.00033, total=0.05243\n  E=3.00: comp=0.03847, pe=1.91e-08, pair=0.00720, ray=0.00015, total=0.04582\n\nPrimary attenuation at 2 MeV, 10 cm: exp(-0.5243) = 0.5920\n",
+ "stderr": "/tmp/work/_call_010.py:78: RuntimeWarning: divide by zero encountered in log\n  return np.exp(np.interp(np.log(E), np.log(E_pair_arr), np.log(mu_pair_arr)))\n",
+ "exit_code": 0,
+ "timed_out": false,
+ "wall_s": 0.63,
+ "stdout_truncated": false,
+ "stderr_truncated": false
+}

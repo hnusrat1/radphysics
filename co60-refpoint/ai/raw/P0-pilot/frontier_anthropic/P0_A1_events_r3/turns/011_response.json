@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791816237-TTEJGEY0Xd41lamsiSN1",
+ "object": "chat.completion",
+ "created": 1791816237,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Checking the Compton event energy balance confirms it adds up correctly, so now I need to generate the remaining 130 rows, covering rows 70 through 200.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01JMiRqqdGYKujSF5KNtPWuU",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"print(\\\"\\\\n\\\".join(rows[70:140]))\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Checking the Compton event energy balance confirms it adds up correctly, so now I need to generate the remaining 130 rows, covering rows 70 through 200.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS/QcKEAgSGAI4AUIIdGhpbmtpbmcSDEqBWFr+XX9pRjJ5fxoMiujWX6L/lIB0d9GPIjCKXEZ07u9pNB+Hcuuk7pCANzANGviD6Ds8ZlW5IlH/R9VqtPKPakppMQ8AHY6pCdsqmgf2fZ7FI6pbA9GI0pmHLzCJKGeVUjEA4gHH0OBha4BhraDwq9GZ/0T3jUS3Y6mrqfyVsTwSTEE+mTakobLlltdoVUR98Z/N168kSiKkAfhZRVyEJxV3TGpc8XUfDaHi5ds7ZQGUZY9yA+kjvwjPGgCOnUnsduVzv/98QcTS4g+VrErZuc8Lx0uQQB/1P+UM9oSJYtqhTZehuiHD+LU4gca+xtdV5cemkVY4iS3Oq7ibLLQkxymN4BLCeYCWs3eu0L54+ZSd0BD0sL3pR8OzCNlrA72ALe64Ap7LlSBZaZ43jsRAnrPbiKsgVb1TmGCabe8ljeCAZeaZBvDJfWVl58jr/RXkPg47IGqLzSry+fODukrZfsQkLLL6Y5HlnUQamlDfFiAj+cYw6XpWmoWWSQRLSoXePgkECVmbCK0P9bu5cfEY3ru4XQOPpOb3FcVqOWNCQyz3kjTgsRcxU7KWeQENjj4H57bSzlFUd2xQ/7cVmetPnZgoNEMH8iLj1Y4ynqHnVS7A726fuk2AYli8Q77msXSfPKPW+IKDGLVie/Z7kh2t9wncSNd7ra7xOBPUMBR3Hwp5W066H8iCv/U/nzQ8KIe7prBiyKRqF4/bXlCgrbXyH5MvNqofyDze4Y1Y7HGb8aadn5KaS1ALMVaYZzNg/uGYeksEVFg0xXAxmMKb9DdX9brixUfREQ3CdAgx+HEFeqKCThEJnSUSlYtQxqHFY7yDYXtSwd9yja6jMogGgkt6I4rHu617NxWBl+orksfWbyvnbOAOzq6NhR8Ra0rJKUwhgk1m5zL/axwAwVGBO7rPaiGptd/Z/hYuNNOHXnSeKKvQ5OKxVojVKi/BdsAiK0JFadQ72FCO0LKpveM/sNGmSqdWPXXS5OJqfNg1U3N8+1epbaUb5DDeT4CrtLq81nq3q2+M2UCjJXYSF6qegjIygZjg+vpjmY1h8yiiiSWGUXMPWhIv3KjoZtr7frfVqTDHppiA9WirpqN+hc1Xex/DkSfoez/UoUsIJ9eyYa3Qoaqc5ssiN0NhwLhZ3d7QkMf+D2dByRrkwiHDjWQ2ridprmmD5lRYWF4SehkyWxmLzop60jdp8s22crEA4A2vEvJ73Go1tUFXvyVKMPJMY2Rie33wc9bT/80xpez8RO2WSN7jXPo13mmpvPhre/D1w2Vm5RAglYh6JRmtJE2vn1538ykgUMcFSX+lZ+mNoMVllHcx+rXPvIThGAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 46907,
+  "completion_tokens": 179,
+  "total_tokens": 47086,
+  "cost": 0.0047802,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0047802,
+   "upstream_inference_prompt_cost": 0.0046907,
+   "upstream_inference_completions_cost": 8.95e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 119,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

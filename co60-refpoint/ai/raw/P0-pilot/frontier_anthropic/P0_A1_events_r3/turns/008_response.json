@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791816220-ri5LFjsake0Ug5qxgdx5",
+ "object": "chat.completion",
+ "created": 1791816220,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "With 2283 events total, I'm checking the interaction composition \u2014 photoelectric events make up roughly 1.6% of interactions, which seems reasonable given scattered photons in the 0.2-0.3 MeV range. Now I'll sample 200 events uniformly without replacement from the pool and prepare the JSON output.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01Fa2y8wyEg128LN53ssmcud",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport pickle, json, collections\\nev=pickle.load(open('events_6000000.pkl','rb'))\\nprint(len(ev), collections.Counter(e[0] for e in ev))\\nprint(collections.Counter((e[0], e[1]==2.0) for e in ev))\\nrng2=np.random.default_rng(2024)\\nidx=rng2.choice(len(ev),200,replace=False)\\nsample=[ev[i] for i in idx]\\nprint(collections.Counter(e[0] for e in sample))\\nevents=[]\\nfor (proc,ein,eout,cs,te,ce,tp) in sample:\\n    events.append({\\\"process\\\":proc,\\\"e_in_MeV\\\":round(ein,6),\\n                   \\\"e_out_MeV\\\":None if eout is None else round(eout,6),\\n                   \\\"cos_scatter\\\":None if cs is None else round(cs,6),\\n                   \\\"t_e_MeV\\\":round(te,6),\\n                   \\\"cos_electron\\\":None if ce is None else round(ce,6),\\n                   \\\"t_positron_MeV\\\":None if tp is None else round(tp,6)})\\nmethod=(\\\"Analog Monte Carlo (numpy). Source photons sampled uniformly in solid angle in the 10x10 cm2 pyramid at SSD 100 cm; \\\"\\n \\\"straight-line transport in homogeneous water (30 cm cube, vacuum outside), free paths sampled with total coefficient \\\"\\n \\\"(Klein-Nishina Compton, rejection-sampled exactly; Rayleigh with (1+cos^2)/2 angular shape; pair ~0.48 mb-free estimate 4.8e-4 cm2/g at 2 MeV; photoelectric approximated as 2.76e-3(0.1/E)^3 cm2/g; \\\"\\n \\\"coherent approximated). Pair: annihilation photons 2x0.511 MeV tracked. Each interaction whose point lies in the 1 cm radius, 0.2 cm thick cylinder at 10 cm depth was recorded; \\\"\\n \\\"6x10^6 primary histories gave 2283 events; 200 drawn at random without replacement. Electron energies/angles from kinematics (Compton); pair energy split uniform, angles approximate; binding ignored.\\\")\\nout={\\\"method\\\":method,\\\"events\\\":events}\\nprint(len(events))\\nprint(json.dumps(out)[:600])\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "With 2283 events total, I'm checking the interaction composition \u2014 photoelectric events make up roughly 1.6% of interactions, which seems reasonable given scattered photons in the 0.2-0.3 MeV range. Now I'll sample 200 events uniformly without replacement from the pool and prepare the JSON output.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSlwwKEAgSGAI4AUIIdGhpbmtpbmcSDBo6wfU3d4HFuS4K4BoMMFUwBGVcDx9UoYDLIjCh4VDQdeJ91aHnTd/YklcWgzyltONkPQtX2otVmToPQb7ME/+uiH4soRvYga8pG7UqtAtsyDZQ9IRSabROgT6ex4F/b1c1tIvYc5rayqC3azmqG0JCZKLcVfZ26tVB+4FFNTJq/+ox+sMhIX0AdXhC+hVngDzFI68HWYMu3nXU5svqKKcUoCv0kDnluHaVoUbpH4ncoyp6jXVxC4PEefdRd7icGcJc833ZIizEcVhtetfZX28f0LiSkS+Avs77TSQfq2sc91k4+MzG2ca0gJ/kf/KC3OTTLWoC5VXu/zsB/QpnevBDFtNBr2o8eUdic27bJIFbG6OSlhY1nCosrf847FmqxX0H2Y2SOd0tRWbymd/Ax8mqRZ+EGHmMN2r1xObhYI9syBbvj2CciZv31FMVJMgi8rsTaiK6yk13Br5Ce12QkZsYTips+Wu4KzcqdcG4JxjK17bg3vz7hYlQkq0D/55DK+PVtt8/Gr+2M5UkNSV/5j6bE4G/eBFvzQO6DKKM2LdC7hAfJiC9O3EwDnXspUR49kc5/oR12fjBu2pDMtRnyIcvDrqdLzs/iwVpQSDZXesl869HwusQru54P9KekS0Ob7IuKPQR5E6XFVp5FMLpK44QMZQEFTX8JPh/JKpAlfirZ7OWgS0qO9x1H9+2/kBGAUe1qoLsdWEvOuEgjk3BuFNi/vguMVBSErhSbeZqjmUwgosiY2KT5A9s/fN67Hv2Ix9xTeQFwqywBI0tPHl/PkRXn75T97wNsVgDA6NMHN1KH5NRh14yQlZL0AILbkRWM11qHpSsXZKZVe/A4Z4x0cLXfvIWv7pZo6pFKI62x+NnxrsEABDfIQjUV7bvXh/QRKN7E04fxBr98K57Ec7hZP/nV4APBf70AphMN3//XtbUeU4n507ptWx8muBJvDPFdsQB3CKv/b6EL2OeCnzf+W9mcAvo+F0HUwbZRo7JOjC+/l8dEGpn5uCmkLFA44l2Hs3S8e3U/WerJSfA7ZZMXiaKUQWIV2lOZWAJEFYXYYHG81hzGqg5uhz/nUuHArqydyfwXqEdlQ2b/wJQLEqWjAJgyYJ13Q91cgGPk4NCsZSXwuKLpjJirttTTwlC9vW68ExZ2dWqg1XyklDM9iPCxzsG6cd6WASRsxfkrytEf/0CLLnNY4RNk0thg8lcelADIqVtDvgPYgNNmT/S2YBTcMwRFZcxflR4pMq9G5qIO33jlgwiKSm4K4D7eK7QbfdLSWfK1gGbsHlNbe4QCqXHZc5/7x944a16Rb8LI93wAb34v+RHK3GITtijBiiaED2c1lp51NtZUyrSBgelqLP3TNVOUVWf78zBeK4ZR41o+eVoArOhO9rVg7Qn+q3opLuC3pyd2NYfYdvt+xfJhpw3s1RQXk3+p/ieJYhjgppiUNkiiRqRP/Cx426VI4IBrszzonosytPMxErMATpkz6Q9fbCEObD1rlGJItzUTDdbPmSek56eRweHiPZr+IQxYxXEAJWrQXoUzVMXqa7qL2s9qnnG2WQsp8A3WJFT91LFesBxy0pEFNBLK1QAU63VbpT0iwPfM2kR0YjBGemwu4G/6QEdg4tVFr2m2lHeSuawmg4tBhHroI6upHrd7t6Kp5BjsmNd1f47/b5TBvOEGEkxI5ISAzNY49Cx9cB0997pJxYhprze3IIZKSXnn3hOrIQ0xR1GpilzvZuWxfL2h+PCSBErIfqV2cDhG81zymZOANN9hdoVY4qE+Da+dDKcrAjtYgu53xe/4+l8zzcdddIQqasrEs+c5g2anDinUa+ypTnC4DEpAQRItKKipp9eQJPIB0EFANC5s1VTI+clYtI4nLgSsvs5apWK0rpo5o6kaLnI0+C1TSm9xL5YwVEUtW5gKZk0y4UPi41SAMRpX40mdew93EwtN3N6At/A0ZZ/JRHQdgc1pfcN6R8EUE84mh9iqKXqSNju1Dz/0AIlhEz9pu5Emm59JAhbtalw3mwX/RlRVIM9PoP9zo4PenSlob7dkJKJCxgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 28036,
+  "completion_tokens": 1115,
+  "total_tokens": 29151,
+  "cost": 0.0033611,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0033611,
+   "upstream_inference_prompt_cost": 0.0028036,
+   "upstream_inference_completions_cost": 0.0005575
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 308,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

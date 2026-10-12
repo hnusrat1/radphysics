@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791813995-vhMYxU2Z39H5D0rF8NAG",
+ "object": "chat.completion",
+ "created": 1791813995,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Calculating energy radiation yield**\n\nI'm considering the data here, noting that for an electron with an average energy of 0.5, the radiation yield from energy loss during slowing down is much less than the instantaneous ratio at the starting energy. It seems like the total energy radiated could be around 0.1%. I should also reference the ESTAR radiation yield column for verification. There\u2019s a lot of detail in the calculations, so I\u2019ll make sure to double-check everything!",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_ILXlA7r1bVHcDKQwb0aNSqfm",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import numpy as np\\na=np.loadtxt('/tmp/data/estar_water.txt');\\nfor E in [.1,.2,.5,1,2]: print(E,np.interp(E,a[:,0],a[:,5]))\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Calculating energy radiation yield**\n\nI'm considering the data here, noting that for an electron with an average energy of 0.5, the radiation yield from energy loss during slowing down is much less than the instantaneous ratio at the starting energy. It seems like the total energy radiated could be around 0.1%. I should also reference the ESTAR radiation yield column for verification. There\u2019s a lot of detail in the calculations, so I\u2019ll make sure to double-check everything!",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzOlt-ptp7EG5wlJNLwYS8lqrp0fy_3oxg7Oul8ygsNlKIci9Cko1Di3Mi4jdSed6ov9YbO6T1FRicUf3KLWMymf1fonYrQ_kQdurxu4mnycZcVQ5R-9cZyO5CWtHzvsBKxzK7tVDh6fxc68mvHm5CYlMAnRR7bXUiuQ3_nwQwMxtTRiiisMCU_RmAa8yH9YLX3teYsTiAsBhOw6fOUEb4RVMKg_o3iMJkKvauVW1hhANjFevJFfIsdVkVuAJZKXwkqbKlx-AQHE0gUwot532s21KMZa41-baPJgFBDtUOG2JgDNZGawj2-yb3l7-d3uf7krIGSMSApJWo9TcDtKYPKCK80hdbsYROFX94-yfYunw72BaJ4pT9A5soKw78RTII05bVuOEe3R5WB2zrFjLk40nDu7zqbZaAwNZI7KambQQ44O5T8-MKzUxc3eAsCTigEHAWHexkxsZdyw_UAJxzmQPYPM5eC2y87vxMVeAT6gjH8qW99F_9wWn48ooo5B08DUQHp9Q7nRBv9coIa9BLM1LNRHkkE0pEbbfL15cFrtEFKUMPz0lQ0pJhf25Rak9Ij9aFZ_Tb4q0saVx2WxuDhb17TYmLKCKJg7FZ8ELRQQzyWulsLlDgtzE94PbVIT5FBveUVDMh9SLg84QvysZWxiLWy7wEhz6Kvrud2wnPlkedFwi3YsQjOxIu8F5a-hcCBLa44_WxDTfTB2zPVNxlTstXSC3E5of6bzQgaPVVefzDTf96YceCXNJswg7Db6BbV--jYMONJu5VLOBNDK3Z0-LclyMlr4W7VNG-K4-4xBcLrbP_Hsz_O5wfHM_xtm4-_K1iF4dhBs99VCTlWuVxjMAHeX6Wykq_nC0stFEPYZtRGmb1oFG_2aYRI3nC0HWKNyBAI4HSCarD1UryjZJjJ-puy2zR9kba6qXzmRExR09LxKSmq02yxPRVBEMp8X3dnX-8nrSY8P3XL6TKrjZe5W9rdbd046N6J0rWduCZs37Uubhce1k6s7X2ETvx4-Yj8u_4iaLiCYLrv0Ae5K1FeeJSnf9TgG4gZ3Z5dDJsbzkp9xEtjrdpf2WEnZ-lE69S29DaDb2Rs64-ddhbGcNBsoqUQ6iKz1MJAQ6kAEpcPLP7dFZb8b_KHAkVfzon8isT-ADVaqt62Dl0blVqcG_rmSaW3OwRmY-rwK9Qn2Y0jdQLQos8k11tUEwWBuxCRj-G8zeSJuiXgm9LxgHs_cx7chvYRP5P6mLjHjSdfOst6epBq6TMw9EjtmRG0TKTj848aNH-b-wt7660Gy0jnyM4HaKUQeYT_fBVGLQlQcZO0hAUQHen8BvvH1sbcGfERfO2cfY1oWkZ-BYyO03HGJZgAnI8CYqBoFa4wb0J3fVt_aktLia8dz81-UFvaOFang08lkD8dbNU2C1o86d6zA5rqkkeTJ7kLWmVoFbIlXkCC2C0z_lZuiySSj941mvbLNaqnaUQiYZ0MpxN26Wj2kbFlBzqG2DtHvVTTr0GTM1KW7UnmeqD_1y26UIuWZNz9bqgCyF5pbyOvTRNSfg2QaS8gbDGOn36wjxTaZbg6X2KaElajs755d5xS-RDsVA959L1HYjCa3t0gLzTYnCilakAd8dT94EaY14Szv61PcJOjtcKszrE0FR1eqm9iDl4wSTektSlxAgF1YmZZK_x4L0NxPRA0l1cJKIeGSKSwPlw6k1JdXO_HW18nycb-Krns94lg50532O9i4BhFBuTuoeSFp9p-yyZfCWKrK9XdSqM86GtuOvTaa4-BmkJCy0t8fBdkiqioHQS5E9Suydz5m2IBlGWICI1V_l_agyiJdLi3RXJauGxJ4wJ8FRWXyd4qYcqdnfzlhqdnsVu2cP9tYcmAolyyyAZR5D3Ob5SeDfqxlu7Bw7Nk98rRDyJRPqbEYmjoVaj1_pAveInhiTdDEkxrWyJNulqGqiI1ij_px7bfMQo-0dEgynSzBO2RnBdwacO64s5BwNBYu1MfVxY6ulwXeAcFtAo-acDWUjq9LmNflzC4U5R_HqhW0KUbEIKVlo58jPdahFxk2uNi57hJHQ17vKSwKEZ7Pc3513R3Lk4JL-NragxXzALzSpx4f8Mxu4u5rLPpLpI64NNTTQ7Dpw2PIZHHHc61LOaH95p61dUN4AU9FuhLxBkzi2bNx78KwNNkrXejuE2qQrLLtIoHE61536v8xzUGYNZCs_Wm6twA_WAWFaPBXXl3kdc5lMwXW3meFRwfWQYoWhSfh98-7uJf7Dt5HVGLH1Mijxs70pBmGCI3E=.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_01093ad1e47df242016acce96c274087d1a42cbe154b42b71b",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 11724,
+  "completion_tokens": 121,
+  "total_tokens": 11845,
+  "cost": 0.0003052,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 10615,
+   "cache_write_tokens": 1106,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0003052,
+   "upstream_inference_prompt_cost": 0.0002447,
+   "upstream_inference_completions_cost": 6.05e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 56,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

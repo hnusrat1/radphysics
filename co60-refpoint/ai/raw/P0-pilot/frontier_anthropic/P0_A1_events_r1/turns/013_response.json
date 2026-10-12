@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791815552-Nlqe4leg99cq8lJS0RzO",
+ "object": "chat.completion",
+ "created": 1791815552,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "With about 3700 events in the pool, I want to sanity check the process fractions and energy spectra, plus look at the scatter ratio and Compton fraction to make sure everything's consistent.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_013pK5mVk8bbZFXgov6E7dx4",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport json,collections,numpy as np\\nev=[]\\nfor s in range(2,6): ev+=json.load(open(f'events_{s}.json'))\\nprint(len(ev), collections.Counter(e['process'] for e in ev))\\nprim=[e for e in ev if e['e_in_MeV']==2.0]\\nprint('primary-energy interactions', len(prim), collections.Counter(e['process'] for e in prim))\\nc=[e for e in ev if e['process']=='compton']\\nein=np.array([e['e_in_MeV'] for e in c]); print('compton e_in quantiles', np.percentile(ein,[5,25,50,75,95]))\\nprint('frac e_in==2', np.mean(ein==2.0))\\nprint('pair', [ (e['e_in_MeV'],e['t_e_MeV'],e['t_positron_MeV']) for e in ev if e['process']=='pair'][:5])\\nray=[e for e in ev if e['process']=='rayleigh']; print('rayleigh e_in', collections.Counter(round(e['e_in_MeV'],3) for e in ray).most_common(5))\\npe=[e for e in ev if e['process']=='photoelectric']; print('pe', collections.Counter(round(e['e_in_MeV'],3) for e in pe).most_common(5))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "With about 3700 events in the pool, I want to sanity check the process fractions and energy spectra, plus look at the scatter ratio and Compton fraction to make sure everything's consistent.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSogcKEAgSGAI4AUIIdGhpbmtpbmcSDCRUWGxd+lZprRHRpRoMZKVS8tSbIZS328ZUIjCLIDVqL0XF7shRnGJTFf/hLb6ey2A/PV6O2QfD3XXXVHPWoNI3BRQp2CUrQ7yTwTsqvwbfhaAJ7BD/dP4loq0ReGeKYjsUWyEl9QZQEg0uCPWaymXlr256jZBVWfVkAYcFghqtzPmQvjxAZN+Dc5KsgRxdZ+d8tkRMoG0BJ3weHcFW5UbIVRyROuhmrxwg2vGCRO1usDDF/WvUPzdLw8/eGOYMkTIRcEx6SvpcYvaNUBut0bM1J6yQesh/v2evMvm+UnabFtxyLmJ2JTCaZU9nx2kLylA/A61xQXDf3vOuF74OhtevbJlb12e1etYZPqi6UeaDYggyd2d5doxN3hev4t1da/p+GdVVP76pK2HcJsj5/JvNGZw9gpIGZ05P8wnwAtmTBvX9MkXQ3gcRkiwJAf63dnhktHk7lR6lSqq1MDhFTVjdse8R6UcaG9Hxtb4hTMUIrrVuhyXwmv8MaRp0zK9VAQZ8kXr1VEpMOCz6hE2JtjjF6hdIOZOnF9zjoQWwno+eyfjAfQ5R6i/WfS3+hhrKLZFeW5NJbXzEnqYWOTg3aGfknOhCldHoulM9/5zXC/vWrz9FggQPY10F8EJo3UAVymYJ9KET+5nTj4+TOF2+KqfCAzMce6vGembezzprb7OSBjcg9oemuBalsRzKgGDsl0oPLgQUYo5QFdLDM5uiuVpUqsr2d0yDlD7Pqxbr8HlKP6rxXOCVstOszM8lEs0dExGMlPCB8YWWlOaNyUqU4pjPG3I/5yxLuRC048WoSKQ//2UJ9nxcrKDelUWhYkoOsVyjanJj/TbwsmdlNbuWZAiD9vUOQj3e23Vc+ncAe5ClWr3DvG2fWAI3QWQqTV+KYPfvNtNprjiFXROla5mrLGgvuE5BzEEKIEpVj7W53XSLkZl3lfa1BDpZqY60Qak4mDdU88BE0uHjKNO68AV8qBZ5irC3V4sZXgA9cQzW8j/Ab6XV7n1ep0yX0DPjZbvgSBSzkfj4zwHwJLL0knEe3PFyzeAS6LRShebeszUbrQpiqb6K1Q//WrFcIflUy6i2xd0RwMxzPeGCy9lJvO2I4NXG7Egeo+zWTauOYRdN8+kBQOcOAxo74y1cOp02l/TOvtuePL1s/c9kVZPUt+I7s9AHx8Jijf3NzAJQTCOZe6Gtc1iJXztV06BUlMFPVGMYAQ==.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 43212,
+  "completion_tokens": 531,
+  "total_tokens": 43743,
+  "cost": 0.0045867,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0045867,
+   "upstream_inference_prompt_cost": 0.0043212,
+   "upstream_inference_completions_cost": 0.0002655
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 51,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791815281-DCOqV62LMBMSDcxTi44m",
+ "object": "chat.completion",
+ "created": 1791815281,
+ "model": "qwen/qwen3.7-flash",
+ "provider": "Alibaba",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Good, the file is written. Now I will read it and output it exactly. I'll use `cat` or python to print it fully. Since stdout might be truncated again, I'll just print it directly but split into chunks if necessary, or rely on the fact that the system handles it. Actually, I'll just print it.\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_ea8b46d484bf4d4a826624db",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import sys\\nwith open('events.json', 'r') as f:\\n    content = f.read()\\nsys.stdout.write(content)\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Good, the file is written. Now I will read it and output it exactly. I'll use `cat` or python to print it fully. Since stdout might be truncated again, I'll just print it directly but split into chunks if necessary, or rely on the fact that the system handles it. Actually, I'll just print it.\n",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 38372,
+  "completion_tokens": 124,
+  "total_tokens": 38496,
+  "cost": 0.00093768,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 36864,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00093768,
+   "upstream_inference_prompt_cost": 0.00088808,
+   "upstream_inference_completions_cost": 4.96e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 69,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

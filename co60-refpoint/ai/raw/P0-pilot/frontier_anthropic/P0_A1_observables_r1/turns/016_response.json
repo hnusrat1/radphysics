@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791815057-XcJfnX7qYBxTHN4VnGXk",
+ "object": "chat.completion",
+ "created": 1791815057,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "Variables don't persist between calls, so I'll put the whole analysis into one script file.",
+    "refusal": null,
+    "reasoning": "It seems state isn't persisting between calls since previous variables are gone, so I'll write a single self-contained analysis script that loads everything and run it as one file.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_0176PZnFXne5BTKiqqUT5EUi",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nana = r'''\\nimport sys, pickle, numpy as np\\nsys.path.insert(0,'/tmp/work')\\nfrom phys import *\\ntrap=np.trapezoid\\nouts=[pickle.load(open(f'/tmp/work/out_{s}.pkl','rb')) for s in [11,12,13,14]]\\nNt=sum(o['N'] for o in outs)\\nOmega=outs[0]['Omega']; Vc=outs[0]['Vc']\\nNORM=Omega*110.0**2/(Nt*Vc)\\ninter={k:sum(o['inter'][k] for o in outs) for k in outs[0]['inter']}\\ntransf={k:sum(o['transf'][k] for o in outs) for k in outs[0]['transf']}\\nLsum={p:sum(o['Lsum'][p] for o in outs) for p in 'PS'}\\nESum={p:sum(o['ESum'][p] for o in outs) for p in 'PS'}\\nhp=sum(o['hist_prim'] for o in outs); hs=sum(o['hist_scat'] for o in outs)\\nap=sum(o['ang_prim'] for o in outs); as_=sum(o['ang_scat'] for o in outs)\\nep={k:np.concatenate([o['ep'][k] for o in outs]) for k in outs[0]['ep']}\\nev={k:np.concatenate([o['ev'][k] for o in outs]) for k in outs[0]['ev']}\\nnames={'c':'compton','pe':'photoelectric','pair':'pair','coh':'rayleigh'}\\ndef fr(d,ps):\\n    tot=sum(d[(p,t)] for p in ps for t in names)\\n    return {names[t]: float(sum(d[(p,t)] for p in ps)/tot) for t in names}\\nR={}\\nfP=NORM*Lsum['P']; fS=NORM*Lsum['S']\\nR['L1_primary_fluence_per_phi0']=fP\\nR['L1_total_fluence_per_phi0']=fP+fS\\nR['L1_scattered_fraction_fluence']=fS/(fP+fS)\\nR['L1_scattered_fraction_energy_fluence']=ESum['S']/(ESum['P']+ESum['S'])\\nR['L1_mean_photon_energy_MeV']=(ESum['P']+ESum['S'])/(Lsum['P']+Lsum['S'])\\nR['L1_photon_fluence_spectrum_primary']=[0.0]*28\\nR['L1_photon_fluence_spectrum_scattered']=list(NORM*hs)\\nR['L1_angular_primary']=list(ap/ap.sum())\\nR['L1_angular_scattered']=list(as_/as_.sum())\\nR['L2_interaction_fractions']=fr(inter,'PS')\\nR['L2_energy_transfer_fractions']=fr(transf,'PS')\\nR['L2_interaction_fractions_primary']=fr(inter,'P')\\nR['L2_interaction_fractions_scattered']=fr(inter,'S')\\nR['L2_scattered_share_of_interactions']=float(sum(inter[('S',t)] for t in names)/sum(inter.values()))\\n# ---- Layer 3 ----\\nedges3=np.array([0.01,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1,1.05,1.1,1.15,1.2,1.4])\\ncb=np.array([-1,-0.8,-0.6,-0.4,-0.2,0,0.2,0.4,0.6,0.8,1.0])\\ndef hist_e(T,w): \\n    h,_=np.histogram(T,bins=edges3,weights=w); return h\\nw=ep['w']; T=ep['T']; pr=ep['prim']; cz=ep['cos']; kind=ep['kind']\\nh3=hist_e(T,w); R['L3_initial_spectrum']=list(h3/h3.sum())\\nhp3=hist_e(T[pr],w[pr]); R['L3_initial_spectrum_parent_primary']=list(hp3/hp3.sum())\\nR['L3_mean_initial_energy_MeV']=float((w*T).sum()/w.sum())\\nR['L3_mean_initial_energy_parent_primary_MeV']=float((w*T)[pr].sum()/w[pr].sum())\\nhd,_=np.histogram(np.clip(cz,-1,1),bins=cb,weights=w); R['L3_initial_direction']=list(hd/hd.sum())\\n# ---- Layer 4 : CSDA-type recursion with Moller delta rays ----\\ndE=0.002; n=1000; Eg=(np.arange(n)+0.5)*dE\\nQg=np.zeros(n)\\nm4=kind!=3   # electrons only\\nhq,_=np.histogram(T[m4],bins=n,range=(0,n*dE),weights=w[m4]); Qg=NORM*hq/dE  # per MeV per Phi0\\ndef Sbethe(Tk, ZA=0.55508, I=75e-6):\\n    t=Tk/mc2; b2=t*(t+2)/(t+1)**2\\n    F=(1-b2)*(1+t*t/8-(2*t+1)*np.log(2))\\n    return 0.153537*ZA/b2*(np.log(t*t*(t+2)/(2*(I/mc2)**2))+F)\\ndef Stot(Tk): return Sbethe(Tk)*(1+0.00927*Tk)\\ndef dsigdT(Tp,Tk):\\n    # Moller differential cross section per electron, per MeV of delta energy (cm2/MeV)\\n    t=Tk/mc2; b2=t*(t+2)/(t+1)**2\\n    eps=Tp/Tk\\n    f=1/eps**2+1/(1-eps)**2+(t/(t+1))**2-(2*t+1)/(t+1)**2/(eps*(1-eps))\\n    return 2*np.pi*re**2*mc2/(b2*Tk)*f/Tk\\ndef recursion(withdelta):\\n    Phi=np.zeros(n); cum=0.0\\n    Qd=np.zeros(n)\\n    for i in range(n-1,4,-1):\\n        Ti=Eg[i]\\n        if withdelta:\\n            k=np.where(Eg>=2*Ti)[0]\\n            if k.size:\\n                Qd[i]=ne*np.sum(Phi[k]*dE*dsigdT(Ti,Eg[k]))\\n        Qi=Qg[i]+Qd[i]\\n        cum+=Qi*dE\\n        Phi[i]=cum/Stot(Ti)\\n    return Phi\\nPhi_t=recursion(True); Phi_n=recursion(False)\\nsel=np.arange(n)>=5\\nL4_fl=np.sum(Phi_t[sel]*dE)\\nR['L4_electron_fluence_per_phi0']=float(L4_fl)\\nspec=[]\\nfor j in range(len(edges3)-1):\\n    m=(Eg>=edges3[j])&(Eg<edges3[j+1])\\n    spec.append(float(np.sum(Phi_t[m]*dE)))\\nR['L4_electron_fluence_spectrum']=spec\\nR['L4_delta_fraction']=float(1-np.sum(Phi_n[sel]*dE)/L4_fl)\\nR['L4_mean_electron_energy_MeV']=float(np.sum(Eg[sel]*Phi_t[sel]*dE)/L4_fl)\\n# angular: approximate with production direction distribution of electrons (L3 all-electron)\\nR['L4_angular']=list(hd/hd.sum())\\nSrad_ratio=lambda Tk: 0.00927*Tk\\nR['L4_radiative_to_collision']=float(np.sum(Phi_t[sel]*dE*Sbethe(Eg[sel])*Srad_ratio(Eg[sel]))/np.sum(Phi_t[sel]*dE*Sbethe(Eg[sel])))\\n# ---- Layer 5 ----\\nconv=1.602176e-10\\nKtot=NORM*sum(transf.values())*conv\\ng=0.004635*np.sum(w*T**2)/np.sum(w*T)\\nKcol=Ktot*(1-g)\\nR['L5_K_over_phi0_Gy_cm2']=float(Ktot)\\nR['L5_Kcol_over_phi0_Gy_cm2']=float(Kcol)\\nR['L5_g']=float(g)\\nR['L5_D_over_phi0_Gy_cm2']=float(Kcol)   # CPE\\nR['L5_beta']=1.0\\nR['L5_dose_fraction_parent_scattered']=float(sum(transf[('S',t)] for t in names)/sum(transf.values()))\\n# Spencer-Attix water/air, Delta=10 keV\\ndef Lres(Tk,ZA,I,nelec):\\n    S=Sbethe(Tk,ZA,I)\\n    # delta energy above Delta: nelec * int_Delta^{T/2} Tp dsig/dTp dTp\\n    Dl=0.01\\n    Tp=np.linspace(Dl,Tk/2,400)\\n    out=np.zeros_like(Tk)\\n    for j,tk in enumerate(np.atleast_1d(Tk)):\\n        if tk/2<=Dl: continue\\n        tp=np.linspace(Dl,tk/2,400)\\n        out[j]=nelec*trap(tp*dsigdT(tp,tk),tp)\\n    return S-out\\nEsel=Eg[sel]\\nLw=np.array([Sbethe(e)-(lambda tk:(0 if tk/2<=0.01 else ne*trap(np.linspace(0.01,tk/2,400)*dsigdT(np.linspace(0.01,tk/2,400),tk),np.linspace(0.01,tk/2,400))))(e) for e in Esel])\\nLa=np.array([Sbethe(e,0.49919,85.7e-6)-(0 if e/2<=0.01 else (6.022e23*0.49919)*trap(np.linspace(0.01,e/2,400)*dsigdT(np.linspace(0.01,e/2,400),e),np.linspace(0.01,e/2,400))) for e in Esel])\\nR['L5_s_w_air']=float(np.sum(Phi_t[sel]*Lw)/np.sum(Phi_t[sel]*La))\\n# ---- depth dose (straight-ahead CSDA tally) ----\\nTg=np.linspace(1e-5,2.0,40001)\\nSg=Sbethe(Tg)\\nRg=np.concatenate([[0],np.cumsum(0.5*(1/Sg[1:]+1/Sg[:-1])*np.diff(Tg))])\\ndef Rof(E): return np.interp(E,Tg,Rg)\\nx=ev['x']; Te=ev['T']; uu=ev['u']\\nz0=x[:,2]; uz=uu[:,2]\\nedz=np.arange(0,30.01,0.1); D=np.zeros(len(edz)-1)\\nM=16\\nRt=Rof(Te)\\nfor j in range(M):\\n    Ea=Te*(1-j/M); Eb_=Te*(1-(j+1)/M)\\n    sa=Rt-Rof(Ea); sb=Rt-Rof(Eb_)\\n    smid=0.5*(sa+sb)\\n    zz=z0+uz*smid\\n    dEj=(Ea-Eb_)*0  # placeholder\\n    dEj=Te/M\\n    m=(zz>=0)&(zz<30)\\n    h,_=np.histogram(zz[m],bins=edz,weights=dEj[m])\\n    D+=h\\nzc=0.5*(edz[1:]+edz[:-1])\\nimax=np.argmax(D[:]); \\nDmax=D[imax]\\ni5=np.argmin(abs(zc-5.0))\\nR['L5_PDD5_percent']=float(100*D[i5]/Dmax)\\nR['_dmax_cm']=float(zc[imax]); R['_PDD']=list(map(float,100*D/Dmax)[:60])\\nR['_Kcol_check_pointcount']=float(len(Te))\\npickle.dump(R,open('/tmp/work/R.pkl','wb'))\\nimport json\\nprint(json.dumps({k:v for k,v in R.items() if not k.startswith('_PDD')},indent=1,default=float))\\nprint('dmax', zc[imax], 'PDD at depths 0.5..10:', [round(float(100*D[np.argmin(abs(zc-z))]/Dmax),1) for z in [0.5,1,1.5,2,3,4,5,6,8,10]])\\n'''\\nopen('/tmp/work/ana.py','w').write(ana)\\nimport subprocess\\nr=subprocess.run(['python','/tmp/work/ana.py'],capture_output=True,text=True,cwd='/tmp/work')\\nprint(r.stdout[-6000:],r.stderr[-3000:])\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "It seems state isn't persisting between calls since previous variables are gone, so I'll write a single self-contained analysis script that loads everything and run it as one file.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS4gcKEAgSGAI4AUIIdGhpbmtpbmcSDALdGo56u+HvK3cJ1RoMtiopxF1TrpOBtMpbIjBVIM5wEnDU9kTtllcm8SrO+S/Ic6/RAkubp5b6Q7S2ALFut5qyRLdQox9WNatqpssq/waDMe6HtpVNE3keDvyRoNKdnTTJuju/j65MCnkesQIMzG9G1AU99/fFtfngK+fS3S5HfZ7qulEMBZW3gI98NaSEHYEQJCYqs0Y2Rd1H4p1MZ9IhYb3PSRSA16WemftHiA+HER5dvvVVD1vxKQluVakqVA2d3p8Vp6RfXYa8I6FT3c3lfnhFaCHoA5FDxxiOeot8qBHkshb081U/DXMyyNBj9x23nZnv+KTwLMhNqCea4zkT1PNLWZQjmKIcSiNachqQkwmwKEXNcxhtRmTBhT+dSEDQ29ogEjqeoVTNK8PYhSCZiYzI2l+e3DoOgG6QnwHKCub0in5h3iPlEhF1Kyu5GdMgIQeeaACVUMFqOi6urkSLCVDEzuMLQIv38L8ycO8u4Mz2yO3WJerD7R5rg8JDM5/pPeM5etMlkQbDsl3YHpIzKsWL9Bp/vMyRrxJKM8+7tjQM/wO8HDbk9kEQ7M90G9xI7KooAIV2iWqUeuh1xkh6w73LrlrUYDCz4LPrD3Ze/Jnqy30SSAUIvnStndDok29QUE4gJ1vfk3efk6dAuzhUjYOMQS+MXk8xNmA51L8K+R996zxrzDLi3rj5mOoiMJedk4hlEjgSVJDPuF9P+AFLC2/7dDqx6Xk0BhStRYriL+8EUb2wN9yWAfpJM6Ynqnf08AvF3fQnkodc+aJZiqQ8OKoekU/CQ1kT0C57Z99Xq5SEIgYoZ/j7nurKDAQC7tToutkeJcsY17INr6WxhrEiAP3Fj9KveytcDkWpF5ROPeW7DNfLmHpINIeX1AjE7mkqSEh8ZN+r13MWOOdyeN8SmhDNIuqc3Wv6pbaFiHSoYkgLPQBybwUk+pW0+a++bmULlXBG4+yY3ZwLFBPVpIrgjYBVOk/nQugfK5oZWbtuKQKwCZ7xnNENuRkPJ/XHF/UCk+fMErMMB6V0ezwMaRAwWaMPMtW/CE0Rq6ax3qeic1Fzpz0uSgUbnxRt1RsRjkXh04EFFw9SeIlA9JBMjtkQiPF7rWQ8htTkuPSF7fV/xNqjnGUFUXPi+Gz44V9Ck/X8rhE5sQILwQDw7pohNt1BcZ2/JbNeNjYoiVaMQAwhVA/MUzrJnvBkSmWE+ZhoDFrkqMUUkdoXnBguJtBmvCFa34FjkTp9yNKLTTQl+3Zn/eka1vQXtioVxN+74dejUrtojdcYA4PmKg8Uf9k2GAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 101507,
+  "completion_tokens": 4591,
+  "total_tokens": 106098,
+  "cost": 0.062231,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.062231,
+   "upstream_inference_prompt_cost": 0.0507535,
+   "upstream_inference_completions_cost": 0.0114775
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 61,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

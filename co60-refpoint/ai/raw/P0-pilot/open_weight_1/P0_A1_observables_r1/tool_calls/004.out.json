@@ -1,0 +1,9 @@
+{
+ "stdout": "",
+ "stderr": "Traceback (most recent call last):\n  File \"/tmp/work/_call_004.py\", line 28, in <module>\n    print(f\"\u03c3_C(2 MeV) via integration: {sigma_C(2.0):.6e} cm^2\")\n                                         ~~~~~~~^^^^^\n  File \"/tmp/work/_call_004.py\", line 25, in sigma_C\n    return 2*np.pi * integrate.simps(f, np.linspace(-1, 1, 1000))\n                     ^^^^^^^^^^^^^^^\nAttributeError: module 'scipy.integrate' has no attribute 'simps'. Did you mean: 'simpson'?\n",
+ "exit_code": 1,
+ "timed_out": false,
+ "wall_s": 0.58,
+ "stdout_truncated": false,
+ "stderr_truncated": false
+}

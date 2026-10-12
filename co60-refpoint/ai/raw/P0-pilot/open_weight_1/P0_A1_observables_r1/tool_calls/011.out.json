@@ -1,0 +1,9 @@
+{
+ "stdout": "Model cross sections for water (cm^2/g):\n  E=2.000: comp=0.04648, pe=5.81e-08, pair=0.00318, ray=0.00033, tot=0.04998\n  E=1.000: comp=0.06707, pe=4.43e-07, pair=0.00000, ray=0.00087, tot=0.06795\n  E=0.500: comp=0.09183, pe=4.12e-06, pair=0.00000, ray=0.00199, tot=0.09382\n  E=0.100: comp=0.15648, pe=2.13e-03, pair=0.00000, ray=0.00682, tot=0.16543\n  E=0.200: comp=0.12908, pe=1.11e-04, pair=0.00000, ray=0.00467, tot=0.13387\n\nCompton at 2 MeV: sigma=1.4636e-25, <E_sc>=0.9383, <E_tr>=1.0617\n",
+ "stderr": "Traceback (most recent call last):\n  File \"/tmp/work/_call_011.py\", line 143, in <module>\n    print(f\"mu_en_rho(2 MeV) = {mu_en_rho(2.0):.5f}\")\n                                ~~~~~~~~~^^^^^\n  File \"/tmp/work/_call_011.py\", line 120, in mu_en_rho\n    result[i] = mu_en\n    ~~~~~~^^^\nIndexError: too many indices for array: array is 0-dimensional, but 1 were indexed\n",
+ "exit_code": 1,
+ "timed_out": false,
+ "wall_s": 0.56,
+ "stdout_truncated": false,
+ "stderr_truncated": false
+}

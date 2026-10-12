@@ -1,0 +1,9 @@
+{
+ "stdout": "[0.0278 0.0346 0.0344 0.0342 0.034  0.0339 0.0338 0.0337 0.0336 0.0335\n 0.0335 0.0335 0.0336 0.0337 0.0338 0.034  0.0343 0.0346 0.035  0.0356\n 0.0362 0.037  0.038  0.0391 0.1746]\n[0.     0.     0.     0.     0.     0.0116 0.0384 0.0796 0.166  0.7045]\n",
+ "stderr": "/tmp/work/_call_004.py:5: RuntimeWarning: invalid value encountered in divide\n  pz=E-ep*mu; pperp=ep*np.sqrt(1-mu**2); ca=pz/np.sqrt(pz**2+pperp**2)\nTraceback (most recent call last):\n  File \"/tmp/work/_call_004.py\", line 8, in <module>\n    print('meanT',np.trapz(w*t,mu)/np.trapz(w,mu), 'above1.4fraction',np.trapz(w*(t>1.4),mu)/np.trapz(w,mu))\n                  ^^^^^^^^\n  File \"/opt/venv/lib/python3.13/site-packages/numpy/__init__.py\", line 769, in __getattr__\n    raise AttributeError(f\"module {__name__!r} has no attribute {attr!r}\")\nAttributeError: module 'numpy' has no attribute 'trapz'. Did you mean: 'trace'?\n",
+ "exit_code": 1,
+ "timed_out": false,
+ "wall_s": 0.46,
+ "stdout_truncated": false,
+ "stderr_truncated": false
+}

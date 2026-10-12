@@ -1,0 +1,59 @@
+slot: frontier_google
+provider: Google via OpenRouter
+api: openai_compatible
+model_requested: google/gemini-2.5-flash-lite
+settings:
+  reasoning:
+    effort: high
+  usage:
+    include: true
+condition: A1
+task: events
+config: P0
+prompt_version: v1
+prompt_sha256:
+  system_A1.txt: e06e9a5ea06c2f5ca29739818f324713f2dbbf775f019c11018d1aa7ef5416b8
+  task_events_P0.txt: 994719c1edf5944e6dac9acaa42f55a5117a6c605f5bcfb8316e676dfdbbc913
+started_utc: '2026-10-12T14:15:05Z'
+turns:
+- n: 1
+  usage:
+    input_tokens: 1272
+    output_tokens: 65531
+    reasoning_tokens: 17135
+  stop: length
+  wall_s: 173.45
+  http_attempts: 1
+  model_reported: google/gemini-2.5-flash-lite
+  tool_calls: 0
+- n: 2
+  usage:
+    input_tokens: 0
+    output_tokens: 0
+    reasoning_tokens: 0
+  stop: error
+  wall_s: 12.08
+  http_attempts: 1
+  model_reported: google/gemini-2.5-flash-lite
+  tool_calls: 0
+tool_calls: 0
+retries: 1
+outcome: parse_failure
+model_reported: google/gemini-2.5-flash-lite
+first_parse_errors:
+- '$.method: missing'
+- '$.events: missing'
+- '$.process: not in schema'
+- '$.e_in_MeV: not in schema'
+- '$.e_out_MeV: not in schema'
+- '$.cos_scatter: not in schema'
+- '$.t_e_MeV: not in schema'
+- '$.cos_electron: not in schema'
+- '$.t_positron_MeV: not in schema'
+parse_errors:
+- no JSON object found in the reply
+finished_utc: '2026-10-12T14:18:10Z'
+usage_total:
+  input_tokens: 1272
+  output_tokens: 65531
+  reasoning_tokens: 17135

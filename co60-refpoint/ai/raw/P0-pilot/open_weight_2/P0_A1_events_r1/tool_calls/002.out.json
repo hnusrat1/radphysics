@@ -1,0 +1,9 @@
+{
+ "stdout": "[\n  {\n    \"process\": \"compton\",\n    \"e_in_MeV\": 2.0,\n    \"e_out_MeV\": 1.004883,\n    \"cos_scatter\": 0.746984,\n    \"t_e_MeV\": 0.988476,\n    \"cos_electron\": 0.882502,\n    \"t_positron_MeV\": null\n  },\n  {\n    \"process\": \"compton\",\n    \"e_in_MeV\": 2.0,\n    \"e_out_MeV\": 0.393575,\n    \"cos_scatter\": -0.042852,\n    \"t_e_MeV\": 1.275078,\n    \"cos_electron\": 1.024267,\n    \"t_positron_MeV\": null\n  },\n  {\n    \"process\": \"compton\",\n    \"e_in_MeV\": 2.0,\n    \"e_out_MeV\": 1.620597,\n    \"cos_scatter\": 0.940184,\n    \"t_e_MeV\": 0.225841,\n    \"cos_electron\": 0.666895,\n    \"t_positron_MeV\": null\n  }\n]\n",
+ "stderr": "/tmp/work/_call_002.py:60: RuntimeWarning: invalid value encountered in sqrt\n  p_e_mag = np.sqrt(T_e_lab**2 + 2*T_e_lab*mc2)\nTraceback (most recent call last):\n  File \"/tmp/work/_call_002.py\", line 107, in <module>\n    counts = {p: sum(1 for e in evs if e['process']==p) for p in procs}\n                                                                 ^^^^^\nNameError: name 'procs' is not defined\n",
+ "exit_code": 1,
+ "timed_out": false,
+ "wall_s": 0.24,
+ "stdout_truncated": false,
+ "stderr_truncated": false
+}

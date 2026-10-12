@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791813818-WO2Wt3O3FN2EGztyiYzK",
+ "object": "chat.completion",
+ "created": 1791813818,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Evaluating JSON output options**\n\nTo respond, I\u2019m considering writing a compact JSON object for each event. While I need to manage this in chunks, it can feel cumbersome. I could output the whole JSON file through a function, but there\u2019s a limit of around 10k. So, I\u2019ll request eight chunks, getting 25 events each. With this approach, I think I can format everything as compact JSON lines while keeping the individual calls straightforward. Let's get started with the first chunk of 25.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_EWTFhK0TF2I0veSNbhUxd102",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import json\\nx=json.load(open('/tmp/events.json'))\\nfor i,e in enumerate(x[:25],1): print(json.dumps(e,separators=(',',':'))+(',' if i<25 else ''))\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Evaluating JSON output options**\n\nTo respond, I\u2019m considering writing a compact JSON object for each event. While I need to manage this in chunks, it can feel cumbersome. I could output the whole JSON file through a function, but there\u2019s a limit of around 10k. So, I\u2019ll request eight chunks, getting 25 events each. With this approach, I think I can format everything as compact JSON lines while keeping the individual calls straightforward. Let's get started with the first chunk of 25.",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzOi-sm7sh_EiwL6COFqBX5awkONNVLwgdZ5Y4mJ1pGObT51pxLlZJ-33yJVQZsZCsrUfO-mo_nJv522BCZdC5BUGZ6ifr2UzQixVV0D-S281UR2toTQoU4OyG1XjFrDWpTa4OrMRY-CfXbzx6HTZONTTSLT7qIEQHrv3fvrDX1-mdzp0eIg1HIuSPP69a3kCLMXzMRkJ6UcNjhPkTqcB7S0oUctpZsdyOPJEgVGuopzQeomX3PhGHyw6dyPXMP4VnVhOCPDBEHr3Bq-glKi0V8atyzVb2nXYiu4m5ZiEGGyo8SmcKAKe8wwRzMi4K-TOUN02GeeiSLGzjtHZltQBuYmS78Rh_U9sQO63NRfBn6lXEvoiJbLFwVcXX5XMhzhMy7UmXw4z58__-EgzYcuwRFLmvk9urpaJmRV9Mvi56g9fZNHQoLjlls9WfWIdNXRVZjJePWtC_1kPRSe6UFwsZKUgzAxwIIVfpUbSotWyj55RmzCTmPBynqrmi31HZWvk6QoWo-a-haHuEqwyQJOdqlxr7GGErLlNL9lKcj5RUIgamWP25t3hnHg-Y1Zfim9AmW4N3OmL1TtUfmpBhhzfnF8L-7M_du5B-MnfYq0-eGLixC5VJriWFXJIUqMFATp7zRjsdPZiIpBxWwMxPb4uqsLRf6wCBaXeFyD0a_4_klPHIltR7FM0etDkM1_NjYDlHxtez3iPfe6Kk2qjVGof5cBYR9Va1ww4ggeZtVfW8ROWFmiTahVNEa2TFoiHXL6C5nCs06LfruWDEHCtbB2i6ey9wyVliNT1-fa6FCkCfNZEUcKBdVaIEGdf_W1mIeqMVtwh2fLuIDdQp697l5CsjFiR2b5T9hHQP8Y_heTDI3Od7JyQxV13LFQcOtjHdghXapGYj8QGVKKkZgzZOL9jzz55cs_q-3XJTsoYUNRnzbydI9fedv6PBfDYs0X78y8wv4et4TiWyTiOYAmjW8NCmfLQUgzPLpV3TgXqe0FGSxPM1A8Ov9X3yRpCXv0IR_0H7T3n8pbiK53jEy4BE-Z8TPTitAbsUte4Bh5-Edu6EEfg94eVzOtgAtU5gQq3wP9hCp5pMjhC2QVCWeg3ZXagIjGwoYgZ_MnicjPiJCYuiugfUgGvGJWK7TMg4lXzsML2H9z14ByPMSwoMXmuZWqFLWYElnziHCBjVA2nvXWUQ5T3r5jnnhiNC-RhFl3xDprQC-94ZAno6qIKNvIWJSihE9CQ41WF0fCONc7bE967ThWuFxK5vmh8S1bDsfKjVhbqCe_wnWdPh5l_AOS0uoaxYR5CShWXSMJT3UzwticmzPZ_FffMCz8JYR5froLCASoIx1uibveKU_L8OBqvMbFGMC9LAvZhuOoOReIu-qGS33G0oIFpbyojwMOgHQ9E83IJlC1wgusQY3QDqvFUkL6-yzgXMc54yEg1Dxc3AhEbef4Wr8ojmj7o7NuS6bKqHnbYjoxnMzliDjh7pioqXbDS96LMlF6N5Ja5NMeYs_VR782WkELcFJOrkX7oXJSxoE6F_I60VSNEVV3ByPV77q-jdwoUXLK508HLQ7a6CEDy1voZ8_zgnz5ApshdNqcMo3I7grybKxEHGDl5lU-HsCR7jBO6pzUr2YAYhwY-dCPVNnSGW-g3HT1SdoMfO2yBflolSeuFPiwuXnmu6L6QNIZZiPAeL5LQrQyTp7gOmd54UUuWtytp7B65XNSkhp16eLSZ_hVhuFOKDeXI7Iove21HyqnfPXjh80LDIt2Qlv0ktGhcegv7iFTD5oJgmSpUcq9aFlUfuLqblWqJXAT4Q3YEe1QsrsMwoXgnbTF1vbuyhlW5XxLC4l30LlQqFhrT7--ZARskp-Qh85yyabECHgYjmngQoZBWehwlAosIHOmq94Rvnf-oX_DvAak-UxFJi7O-Lw1o746EA2ygxiMAZlneAs0VAiXWREXH-ajJNEYlKsSia0TR7yhdnCuJe6Dt-C7uGrfBM8cAvQMX1B1_Et-8pEzeuseRCiGMlUWrIdgLoj0fsFqcW64SdSyucOniX0esy7RwWNrcoZA-I_ND436C-9NQIa34ptunsQCz_wi3XK8aMUmUHARX2rw5XaY7y1Sdec6ctTb3Nmrat8Q3NI6Ki_4Ueg9B2VcJIB9mtB6wx2gbq0yIi3hHKGvblOHLs-YPpffdtTCdN3keVOq9CkCRn09rK_hyMoD-F6jgs7_kr15CdpYgVGxpPY-WHZsEQitJZBI4i0PSfylCLulS93UmvqTTX9e5wJccbaAJUEOwBD3j0bQkrXvC9kTnpXA_OC1JJmd5--OXY-u7YUEK791iAlG4mpkfo548_tsBgQAwd7p_XStlZG0lsqctdnPoB8CtGBafgaqwj3E6oRwTutLuMJYWEEugVklu-bHhQQmCJA_QvBVrvL0SI0G64c1D2ecrsTcqbiHGtdDC-JHS8l3h2J9IAcaFdBjeBFUb2KREJ82jGR_PYESE6ibYcrN7k06S4Q7bFIxljZ30WEMe8eqXY9FGjj8R7pmZc5jHF7FtEaUgU4-EQbG7Cql0egVH-T3pcb5SWIXjpRmY1jfEidR5hp4rGiupHlVTxlpotoODqc5ODe7_xK2HOgcMBne--RG2nLrAjYDiW8YacBl9-a5gZjE9T-yCuj9bH7QnOl7mvw7lP22hl0jZUXAzo8Qi3sfAxDpEAlyVHXe9cAp472Ek7m7zWguXCTC56JdLvqMO2xEWewHkG-g6Yi0ep1gfbSpCv39pUMU9CMjiXOfQaCCiVRa4jKVDAGTiw2dCsGCRPUbJe2lCX46r7N3542EnPtjEKsjcrfZySvI6PD53XWXrZRgEOX-FQGT_RNymIlqIbb_zdFTW2ccSxMnI8ymmOoDAliRgfErm5GLRDLeCycksAQgRkHHWZE4-zaphB_9zWrKvoFWyAm2SI4JJSQ8GSd9AYlQ4wFYT5S0Z7_u4_PmtKN_RZ-IqNUU2Yhqp0J5MSxeqaP4-_qOx9qnbXyyxpuRbuvUWiLSOHhhjKOO0ttEUhA3u06lQsbKPtGdrbki8q7ynbwp5tkLo7DrHLaX2MUW1qprQrlrkMb73fpTPYdu2jkkf7bCZlmbfz1yvvOypyfnC_i-AcVy2uafKkIjRwneF5-YmBUvg9FhuqUdGej5Zu0x8gNhNETDdmk-NgfYVonAuCT6mz4vN0tBn6zvEGjl_DWkl-ofA_kW_5cD_UkaN9gdCfhFOEEKW-I5_jn6kNtEYs0kChfr9SeTzLKdy6iXk6urRl6PAJ9KlIhFzxDFGNkqkcDuDXUGYeWlTUTBGTMPstB0t-7aM_wKx6xT_NzcqotW9MbnIdmaOiELTX3WqLYBTHg9krhNxLzVCrclmQ86ugsmZjR9KCa6rUYuO29ZvekbT0E09Ht4aJbFVlYoG7Jsfq1fOXZeu0O84YoaDL1Im988NmFuaKmZiEoVi6exKiaTNdyKsTScI9y75ipN0Jj1YIHilNbiNzI6qEv0ZkGM1REM=.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_007c8b4144af0c0c016acce8bb772087d191f9ea2ebf0a88cd",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 34071,
+  "completion_tokens": 217,
+  "total_tokens": 34288,
+  "cost": 0.000495825,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 33665,
+   "cache_write_tokens": 403,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000495825,
+   "upstream_inference_prompt_cost": 0.000387325,
+   "upstream_inference_completions_cost": 0.0001085
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 154,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791816486-gaih6Kx846JuSUKHJTPg",
+ "object": "chat.completion",
+ "created": 1791816486,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "The Klein-Nishina value at 2 MeV comes out higher than the XCOM incoherent value, suggesting a binding correction factor around 0.95 at 2 MeV versus about 0.99 at 0.1 MeV, so I'm working out an interpolated correction factor to bring the KN results in line with XCOM across this energy range.  With that correction applied, I adjust the pair production coefficient so the total matches around 0.0494 at 2 MeV, settling on roughly 2.66e-3 for pair contribution there.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01DwrcG62tfeJMZZoW8RteQn",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\ndef fbind(E): return 1-0.046*np.clip(E/2.0,1e-3,None)**0.42\\ndef mu_inc(E): return sKN(E)*ne*fbind(E)\\ndef mu_pair(E):\\n    f=np.clip((E-1.022)/0.978,0,None); return 2.66e-3*f**1.5\\ndef mu_tot(E): return mu_inc(E)+mu_pe(E)+mu_coh(E)+mu_pair(E)\\nprint(mu_tot(2.0), mu_tot(0.1), mu_tot(1.0), mu_tot(0.5))\\nmugrid=np.log(mu_tot(Egrid))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The Klein-Nishina value at 2 MeV comes out higher than the XCOM incoherent value, suggesting a binding correction factor around 0.95 at 2 MeV versus about 0.99 at 0.1 MeV, so I'm working out an interpolated correction factor to bring the KN results in line with XCOM across this energy range.  With that correction applied, I adjust the pair production coefficient so the total matches around 0.0494 at 2 MeV, settling on roughly 2.66e-3 for pair contribution there.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "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.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 26830,
+  "completion_tokens": 852,
+  "total_tokens": 27682,
+  "cost": 0.003109,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.003109,
+   "upstream_inference_prompt_cost": 0.002683,
+   "upstream_inference_completions_cost": 0.000426
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 583,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

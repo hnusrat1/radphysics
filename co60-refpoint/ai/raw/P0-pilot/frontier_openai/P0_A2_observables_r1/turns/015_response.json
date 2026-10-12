@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791814092-Be0AIxpPTFJ11sV9rFZr",
+ "object": "chat.completion",
+ "created": 1791814092,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_HK7fZ58bXhQdZbTM1uRb5mOH",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import numpy as np\\nx=np.loadtxt('/tmp/data/xcom_water.txt')\\ndef interp(E,col): return np.exp(np.interp(np.log(E),np.log(x[:,0]),np.log(np.maximum(x[:,col],1e-300))))\\ndef tf(E):\\n m=.51099895; u=np.linspace(-1,1,30001); ep=E/(1+E/m*(1-u)); r=ep/E; w=r*r*(r+1/r-(1-u*u));return np.trapezoid(w*(1-ep/E),u)/np.trapezoid(w,u)\\ndef mutr(E):\\n c=interp(E,2); ph=interp(E,3); pair=interp(E,4)+interp(E,5); return c*tf(E)+ph+pair*max(E-1.0219979,0)/E\\nedges=np.arange(0,1.40001,.05); mids=(edges[:-1]+edges[1:])/2\\nshape=np.exp(-.5*((mids-.78)/.42)**2)*(0.35+.65*mids/1.4); spec=shape/shape.sum()*.19\\nphif=.6108\\nenergycoeff=phif*2*mutr(2)+sum(spec[j]*mutr(mids[j])*mids[j] for j in range(28))+.05*1.7*mutr(1.7)\\nprint(energycoeff,energycoeff*1.602176634e-7, 'primary',phif*2*mutr(2))\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzOnO0843PxBsMqfB-U0i81ZYcyG3-hw8N2IjsIUaaKW4uVJQAVk4rH0UItBWG12C-RwLtO_GDjqNFcxuV5-bKYZBJTWxxN8NWtsmnSLg6VW9LUDvV5rHtIe_wNjB6edhdfklg4UsuGgcDcA4IFfNqZF8V8lkndczYA7fE_gpc9Ycv3EhBjapE5UhCjE6n_DplVRmiX4kBpIc8bjKbgLKneWJoRTzh5ZJSOUA9L_edQYwIY6MD3fpl-k4udfP4sZvEVASgBlXw-O-9H4Ya7fzGp1TiuFYZTVqTzgDNNBAqxNvd83mgH5N0RGDxmylAr8e3P5Ke_anF2v8zdJaW0kS_zaVLLBOOwaGuXm82YAbkFxTDq18b94iqC4hLbX64HOPjsnQlwTmbGoJHV17lUvTfzYqxxV8mjuAwjoK1BwrYAeQ5BUfYPgdCqHagss_4qD_hUmCeRJHvW3L9QtrEuId6csdHgs0RnuHw_VPTY0W_3Axu3ndaLRq2K-Ubavc_kNP5RndWy8F7nKGviMeNWQMjC6IM7jwzC8-DEaqlhDBVmlSvmXoCWabb-l_MgzVjo6JtyEiUTAzfuidfHhpdpRfYfpcRt4RoOibsslGOixZ3LkF4OtW822BIAFUoryzqi-gTADPfdty6X_aE0yNB89jAEHxSgN2j3mgV0Wd5oAB-T-d3XjdATJ0KpqNMXBMIaFwPjW86Jynk6i0AVgxSdqA8903SvAg8shpxQDThVyhkRtHhV4Hb3OkIFjgREf1ZAvL2xMuIjrV0UDVlw00z6dWrf3tZ_SkFeXAQxvJodBg6SvwBQ1lAAZN7c-dltJveJzIfhbD4qo9mISeScDzl82_XYsQdYlJ1_R3rCzM9DWGovQt2I9a5lXTqcMzeA9nysFJ-6jVUdHP3kP9z_OmP30YgZKByL5JQJjXi8xpmTXquMfdZB04sCxsn5MDndkxcBqT_2j-wckRsLuFvRFCtkdt0sqIVpbDRXpfbJX4MBy0OHcAtt259UJrmeyIXcmsddz3x7ZAR92llTphKV0CpKFJARm10h7Ju-RO-XXxDhCqlmFvNwz9BVfHJRg-bUDAEN7YP_7cBU5uXGbRVx4oWBXp0JmvUF17_U8p8-w3mRADJEuL7qfL5aGYklDg2ir0IcX5zVDkZ29wbMhs1rstVupfWSWD3AgJq1d-wzPh2xocog6ECj0Nc_lBPtmDq3WXDczv1rhyz6t-97j-vlmj3p6Hb6Z2etWDUMdGRVPRu8ow27BD87ljEyNhce3QHbzVEM0YDcdH8Zvc0gEASiBrSzfQR_mbKGrvKqL8JbOZIs-T7vxI2Ln_BiqmdOZPs6wpVnquEE4ZC7VFg9jrBku_ty97HIK3ox8K-IzSTiEHxBDYxKNGFR-hPJoTbpmiLzAyAdoxECX2TWhsb4X-gEcWPNFehq4ur_J-C2iuCyCGjgeWPVM6MwSVoewG2vhYzhIOkpbp3lMuCk41in-hCWiOHcYT7PeUDTWvBEg7n7IvD68ZsMV8zlDOjJ2cM3jsS2sF7VRRvSmbI_iJo-TXd7DICoqUF1eOOeUwCXLuM1Mu3NE6fp5xAKvZNT2ZielEqUtKJaSG4E0fqyfBSznviDM_FhYYKQPgk_Tn1kAucHM8BgTOIFKjLUa_awL-BRRpw07ZWCTWnElL.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_01093ad1e47df242016acce9cdea0487d184fe199a01c35a8a",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 21939,
+  "completion_tokens": 360,
+  "total_tokens": 22299,
+  "cost": 0.000726605,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 19093,
+   "cache_write_tokens": 2843,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000726605,
+   "upstream_inference_prompt_cost": 0.000546605,
+   "upstream_inference_completions_cost": 0.00018
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 7,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

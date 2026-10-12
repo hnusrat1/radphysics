@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791815476-Ckc5xC4O7O480Jbb7re8",
+ "object": "chat.completion",
+ "created": 1791815476,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "The bound on f blows up near backscatter since 1/\u03b5 gets large there, so a flat envelope won't work. I need a proposal density weighted like 1/\u03b5 instead, sampling \u03b5 through its log so the envelope matches the singular behavior.\n\nWith g(\u03b5) \u221d 1/\u03b5, normalized over the range gives ln(1+2k) as the normalization, and I can sample \u03b5 by exponentiating a uniform random variable scaled by that log. Then the ratio f/(1/\u03b5) simplifies nicely to 1+\u03b5\u00b2-\u03b5(1-c\u00b2), which stays bounded by 2, so I can accept with probability equal to that ratio over 2 \u2014 a clean, efficient rejection scheme.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_018r4atLxN9jB4WzMyT74eay",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\ncode=open('mc.py').read()\\nold=code[code.index('def sample_compton(E):'):code.index('def iso_dir(n):')]\\nnew='''def sample_compton(E):\\n    # proposal density in eps: 1/(eps*ln(1/epsmin)); f/(1/eps) = 1+eps^2-eps*sin^2 <= 2\\n    n=E.size; k=E/me\\n    epsmin=1/(1+2*k)\\n    L=np.log(1/epsmin)\\n    out_eps=np.empty(n)\\n    todo=np.arange(n)\\n    while todo.size:\\n        kk=k[todo]; L_=L[todo]; em=epsmin[todo]\\n        eps=np.exp(-L_*rng.random(todo.size))    # in [epsmin,1]\\n        c=1-(1/eps-1)/kk\\n        ratio=(1+eps*eps-eps*(1-c*c))/2.0\\n        acc=rng.random(todo.size) < ratio\\n        out_eps[todo[acc]]=eps[acc]\\n        todo=todo[~acc]\\n    return out_eps\\n'''\\ncode=code.replace(old,new)\\n# remove the faulty assert block\\ni0=code.index('# check the bound numerically'); i1=code.index('def iso_dir(n):')\\ncode=code[:i0]+code[i1:]\\nopen('mc.py','w').write(code)\\nimport subprocess,time\\nt=time.time()\\nr=subprocess.run(['python','mc.py','1','20000'],capture_output=True,text=True)\\nprint(r.stdout[-2000:], r.stderr[-3000:], time.time()-t)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The bound on f blows up near backscatter since 1/\u03b5 gets large there, so a flat envelope won't work. I need a proposal density weighted like 1/\u03b5 instead, sampling \u03b5 through its log so the envelope matches the singular behavior.\n\nWith g(\u03b5) \u221d 1/\u03b5, normalized over the range gives ln(1+2k) as the normalization, and I can sample \u03b5 by exponentiating a uniform random variable scaled by that log. Then the ratio f/(1/\u03b5) simplifies nicely to 1+\u03b5\u00b2-\u03b5(1-c\u00b2), which stays bounded by 2, so I can accept with probability equal to that ratio over 2 \u2014 a clean, efficient rejection scheme.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS0QkKEAgSGAI4AUIIdGhpbmtpbmcSDJ6q9/ujUWVBKhWwchoMvjS1nTmhCDP0EEDUIjBwD0HkUknYgQkNEmxiwelR8UiDl2Cu2zicmBmB6B8j6vCOPXpP0h0wP/I+VCdI72wq7ghHlMejx9j17CTG3g5sj87obORbegvjP9KW8mNB2h6PZ1Kp43YmBkQxRHiBeKVZUl0IqNT2T4sXUKy2sn4+8R1hhiFAyZsMM70GY1qAs+lFei61Msd4ej1UCEsbdeBEZ+PS4uFHGP3rOhiT4Jq76Z9Fx9zYa30keM2Yjol+Z2DK/kzyRV/ZLA++BPta8ate5r0M/O+SgOpjti4k/LW61IjLA9HFblTdi2wkqmXkcK+qIQf0tVHWM0AMzooz5qMPj4AGERshknW2xnElitolhyJdHPubuUL+fgd2EgwUTQhBHfd+UGL/VfHkAxrDM7TXG1X9mGxxXfU01WAiXQ6Q4qwhDBKghUaZjUj4Ju1gC7OrDJOQ9p+jrCahU32Z2TR2dZrUslXIr57Uo7dz21TQjIwZqN3zIJGB1fuyKMR7lS8A4ZvvE03i6oU8hH/rhCnxxnH+WoR6J17FCexC9ufgvFfypSVPFRxh25gjBCr2Qskp8P1ui5/nscCUsCdpkSkRDMJuQZr4DlRDV48dYzc/oD+DPm10VCK8b9Y75ScfbmnQLzkF6bAFdelK24Pv+ncncljh1QIuNLqwCQ9wQkCmbKucmvEpy4OyyUaI8THEgmGVcDgIEbUivedv/SDGzbPSxgCZYH1Lqd7VdwbdjzIn16/RGbONMVSYh9MJVZ+ANLdgfF++9fWAEV3T5B7kWbrPSRvkBwvQcKRVL6Qs+5QqiHXxSOje4N8unZ1qcQZ+jXZALCZ3z5GcMjjegLq8fUM7xCgaP9hmxiiHc6dMgyJaPY5HaUeRlk2sMvdr5+x72TiWkFwUAtBlrnCSqMdVcxFbpXdfG8lUfo9fgYAApd3OAIMa1fMVouR2vykXno9DJdYXLTJZDrTMOALjY5i3k8D/JG6A8/I04ITS5sxCNCPCRZfM3lzVOmJZGFlICAabU8lvfR/rfFYcVKLSjf/ZFg0CFqIFHmp9Gpxn9bQBTCqWBm75k0NpH97k9mz5DDyJQizj+8rVSgDHCFR5r82CEE3J498fMHSF+aqvKyhR6U51Q/EUWexkYdSIEnh3U41pVVrw/uUDfdDWOmZ+n1eRjvAluQCQj3ue6UBYpvf5/Iid22qHlTJaFpFZtf8uF32XeQGLlCwQTP7jXQtKUcEXGFVhjlUqwuMv8iVfq0ZJkfb4YFgdtX67pWS4DI1+1P4D6AuXX64Z7TXBVgJJHinZoKqqwzaaP68SRADXLhkgfflB51JXwMoBT2gSC5i0N4NuVS9LDqrdi0AR3tTZt3dE2zbL5EH0zYwFaRJSbId6+kLDHNu/FCxZizXOwdYZZZsIW6Jg/cFlXnWkaNytgmX/H6RWOsIgqsNsB61u2+EPqFHgZMPIQ3EEn4GL/lkKgDtfRlAPnxfEqcJGIp0V3Bz4yhX+MFjHJnXUerEG+7/r+02rNabps7F7yq5jyiKNEfkz9HL/CukyuCL53yzKEvHNCq/rrfDPCPas94T98Aqi3OFO8lW0q6dZP9ZfXRUgNFbtGY0YAQ==.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 31199,
+  "completion_tokens": 882,
+  "total_tokens": 32081,
+  "cost": 0.0035609,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0035609,
+   "upstream_inference_prompt_cost": 0.0031199,
+   "upstream_inference_completions_cost": 0.000441
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 297,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

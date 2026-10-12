@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791815576-QI8chTpS3a0HwqOv4Bru",
+ "object": "chat.completion",
+ "created": 1791815576,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Writing out all 200 events will take a lot of space, so I'm considering trimming decimal precision to make the transcription more manageable while keeping the data accurate enough.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01FdKNESX2u19dZHnKZktkym",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nprint(s[:8000])\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Writing out all 200 events will take a lot of space, so I'm considering trimming decimal precision to make the transcription more manageable while keeping the data accurate enough.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "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.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 75898,
+  "completion_tokens": 495,
+  "total_tokens": 76393,
+  "cost": 0.0078373,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0078373,
+   "upstream_inference_prompt_cost": 0.0075898,
+   "upstream_inference_completions_cost": 0.0002475
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 440,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

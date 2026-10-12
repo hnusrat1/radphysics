@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791815853-ieBT325lC8apS6xyBBfA",
+ "object": "chat.completion",
+ "created": 1791815853,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "This is going to be a long output since I need all 200 events with their full schema fields. I'll print the remaining lines in a compact format to piece together the complete JSON.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01DX3p3SS7t5qwtgxuAiN9FG",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"print(\\\"\\\\n\\\".join(lines[65:135]))\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "This is going to be a long output since I need all 200 events with their full schema fields. I'll print the remaining lines in a compact format to piece together the complete JSON.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS3QkKEAgSGAI4AUIIdGhpbmtpbmcSDOmoptpbWrZ9QGVeExoM/7lR8FzgJwBycMZIIjCOiYBtPTDxcLtK/cj5KtaOBnBZ+rlRtbhd5ghgv/GFVsgm298DbJ355qIoQYR0GW0q+ggPNOOdRh59y5vKgrGyPTapElwe9Di5PgjMfKAUvKAq8t2bJoR4MQeoQrBtqulXNvzozgtPOSwT3+NGzKidxBUa9WMgq/a7yf/iOZ4j1I5SlmM1jZ+BbFt1SVrpe76Oi11IjJDDKC26gGW5+4U4xOwLVqGCztmz7pyQvWD868vr07gQh7AKJlOV41NOmgzhdLcrkV486a9PsgzaNOzsHNDfToXn8cpXbegcsR9EgzZJNaebZ78jGFyp7P2hzBQ21Ki6Rj7McqCw5RYgOggXsG02LEenThzbo6+QE/K1My0uhDxFzyigNEB1AYASPaA4rDC1j9eyRKiYPxFOqAG6tD5Xwcxj9P6CVEl3fBt+lyHHILWYPhg2dhpKOANztHbBQnWet5oRXCjnba+h5Q5xX4xBtlfKerj0hIp6bfRhet8oZKcy5EXNIP0//uPKYNDccT45ZAOvdoZuqlzwfVZetxxtGIJfMjWX8WYhWhGtcOomS0qrjC5qSq4XN8Ac1OZjvSjNzwXGut+I+cs3Pv716YP9saj4VdUo3RLioFAqT/ELVsFYJ2rxXJnyG3C+l4CXX1fnj9aCkBSOtLOtVYoMJdSS4h1ZFrD1YLQgsnLRL3myP3mdGIXphkAkf0UWzuvZzf7GNkS9Fnpy9FKBtuDd4YGRDhrGNpPZCkbOanRACam8ac50881LnyAIwJHZ2JkBF2rtqCKFzT0OEyPh0uO8mDHqGzTmqZpNtBNbuTtKnMD5SVPZ498Q78PykJSQGEWjvPHVvbtZw4M71x9KoFiAKQJinAngA7LQSLR9fDJ14JD8HW+L4x7jL4RD7lizuZDm6K8Z+RQpw/4Tvu4pyh/E0UZY0ZKHGGFBGUCzAb0ya5NzxJtnuKbIL7oqRlCXWzbO/q6rqv9YWTTTIr1eo3XJaX3ahQbAK3CfKnNN7jQ8eBvBzZfjdu9eGFi2wTfjbRrHt7+ILdP85t4P0K07dFxIpGVgljPb3MzL0OtDradtRUVvCn1zTQIWX/7CR+TGKbcLBGBrpJ+uEp0xZe9ghtqW09xA9+kGhmB8k3fVDuGgEJknVB/nlGBkF6TlhOLPbU0IkeMUnlB6cu5InUeHKcC+qxpsFaWAgbDzFcAgcnhvh+Eb7Prje9+xOWKzVugpV8m1/j5i1oPrAdV9xKZyEHkWxyeziCYjvtxoVy9PgUG79UoBKBjwgZv0JbSGgXacCHniJfHT0iJGNorurENViZp3jgZz7qiSFJZgD04RlWqNUTcmufyYkLV4zls310HU4/Lrpl8kXeuu/bQBiW23GJ8V4Aw3vqyoBjh9DZVdpC2NwlVv2Zg/i/3vDVlv8mvkX5Iagw5VN8PeK5ozx5/qRLKBfH0Fuc9eqyVLz6QPsk8UgjFTda8tzXT8u7mKAjQhOyn2oE324lbUTtyf02muX7oiMuzRh/Opufcyzaozb0KfQe/kcYB+kl+tyvt34na8TR9XRI/wBIcQSKmOdvTrNHwM70Vnj5Qo5sfPwdW9fht3Pf5+HaGmGWZIxvqyD0IYAQ==.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 49923,
+  "completion_tokens": 219,
+  "total_tokens": 50142,
+  "cost": 0.0051018,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0051018,
+   "upstream_inference_prompt_cost": 0.0049923,
+   "upstream_inference_completions_cost": 0.0001095
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 159,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

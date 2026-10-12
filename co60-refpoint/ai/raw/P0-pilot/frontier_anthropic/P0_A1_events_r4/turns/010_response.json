@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791816537-swxCJmnQqYfURdC6rnmF",
+ "object": "chat.completion",
+ "created": 1791816537,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Comparing my values against NIST reference points across several energy levels, I'm running about 1.5% low consistently, which is close enough to proceed without tweaking the FB parameter further.\n\nNow I'm writing the MC script.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01LUAwzhYFVYjBqjvn3EmoVH",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nmc = r'''\\nimport numpy as np, sys, time, json\\nsys.path.insert(0,'/tmp/work')\\nfrom xs import mu_of, mu_inc, mu_pair, mu_pe, mu_coh, mu_tot, sKN, ne\\nMEc=0.51099895\\nLO=np.array([-15.,-15.,0.]); HI=np.array([15.,15.,30.])\\n\\ndef rand_dirs_perp(d, rng):\\n    n=d.shape[0]\\n    a=np.zeros_like(d); sel=np.abs(d[:,0])<0.9\\n    a[sel,0]=1.0; a[~sel,1]=1.0\\n    e1=np.cross(a,d); e1/=np.linalg.norm(e1,axis=1)[:,None]\\n    e2=np.cross(d,e1)\\n    phi=rng.uniform(0,2*np.pi,n)\\n    return np.cos(phi)[:,None]*e1+np.sin(phi)[:,None]*e2\\n\\ndef sample_compton(E, rng):\\n    al=E/MEc; emin=1/(1+2*al)\\n    eps=np.empty_like(E); cth=np.empty_like(E)\\n    todo=np.ones(E.shape[0],bool)\\n    while todo.any():\\n        idx=np.where(todo)[0]\\n        r=rng.uniform(size=idx.size)\\n        e=emin[idx]**r\\n        a=al[idx]\\n        c=1-(1/e-1)/a\\n        s2=1-c*c\\n        acc=rng.uniform(size=idx.size)<(1+e*e-e*s2)/2\\n        ok=idx[acc]\\n        eps[ok]=e[acc]; cth[ok]=c[acc]\\n        todo[ok]=False\\n    return eps,cth\\n\\ndef sample_photo_cos(E, rng):\\n    beta=np.sqrt(1-(MEc/(E+MEc))**2)\\n    out=np.empty_like(E); todo=np.ones(E.shape[0],bool)\\n    M=1/(1-beta)**4\\n    while todo.any():\\n        idx=np.where(todo)[0]\\n        c=rng.uniform(-1,1,idx.size)\\n        f=(1-c*c)/(1-beta[idx]*c)**4\\n        acc=rng.uniform(size=idx.size)*M[idx]<f\\n        ok=idx[acc]; out[ok]=c[acc]; todo[ok]=False\\n    return out\\n\\ndef run_chunk(N, rng, events):\\n    # source photons\\n    tx=rng.uniform(-0.05,0.05,N); ty=rng.uniform(-0.05,0.05,N)\\n    acc=rng.uniform(size=N)<(1+tx*tx+ty*ty)**(-1.5)\\n    tx=tx[acc]; ty=ty[acc]; n=np.sqrt(tx*tx+ty*ty+1)\\n    d=np.stack([tx/n,ty/n,1/n],1)\\n    p=np.stack([100*tx,100*ty,np.zeros_like(tx)],1)\\n    E=np.full(p.shape[0],2.0)\\n    nsrc=p.shape[0]\\n    it=0\\n    while E.size>0:\\n        it+=1\\n        mu=mu_of(E)\\n        s=-np.log(rng.uniform(size=E.size))/mu\\n        with np.errstate(divide='ignore',invalid='ignore'):\\n            tb=np.where(d>0,(HI-p)/d,np.where(d<0,(LO-p)/d,np.inf))\\n        texit=tb.min(axis=1)\\n        inter=s<texit\\n        p=p[inter]; d=d[inter]; E=E[inter]; s=s[inter]; mu=mu[inter]\\n        if E.size==0: break\\n        E=E.copy()\\n        q=p+s[:,None]*d\\n        # kill very low-energy photons\\n        keep=E>=0.01\\n        q=q[keep]; d=d[keep]; E=E[keep]; mu=mu[keep]\\n        if E.size==0: break\\n        inV=(q[:,0]**2+q[:,1]**2<=1.0)&(q[:,2]>=9.9)&(q[:,2]<=10.1)\\n        u=rng.uniform(size=E.size)*mu\\n        pinc=mu_inc(E); ppe=mu_pe(E); pcoh=mu_coh(E); ppair=mu_pair(E)\\n        is_c=u<pinc\\n        is_pe=(~is_c)&(u<pinc+ppe)\\n        is_coh=(~is_c)&(~is_pe)&(u<pinc+ppe+pcoh)\\n        is_pair=(~is_c)&(~is_pe)&(~is_coh)\\n        newp=[];newd=[];newE=[]\\n        # Compton\\n        ic=np.where(is_c)[0]\\n        if ic.size:\\n            eps,cth=sample_compton(E[ic],rng)\\n            Ein=E[ic]; Eout=eps*Ein; Te=Ein-Eout\\n            sth=np.sqrt(np.clip(1-cth*cth,0,None))\\n            dn=d[ic]\\n            perp=rand_dirs_perp(dn,rng)\\n            nd=cth[:,None]*dn+sth[:,None]*perp\\n            ce=(Ein-Eout*cth)/np.sqrt(Ein**2+Eout**2-2*Ein*Eout*cth)\\n            ce=np.clip(ce,-1,1)\\n            m=inV[ic]\\n            for k in np.where(m)[0]:\\n                events.append((\\\"compton\\\",float(Ein[k]),float(Eout[k]),float(cth[k]),float(Te[k]),float(ce[k]),None))\\n            newp.append(q[ic]); newd.append(nd); newE.append(Eout)\\n        # Photoelectric\\n        ip=np.where(is_pe)[0]\\n        if ip.size:\\n            cpe=sample_photo_cos(E[ip],rng)\\n            m=inV[ip]\\n            for k in np.where(m)[0]:\\n                events.append((\\\"photoelectric\\\",float(E[ip][k]),None,None,float(E[ip][k]),float(cpe[k]),None))\\n        # Coherent\\n        ih=np.where(is_coh)[0]\\n        if ih.size:\\n            lam=0.012398/E[ih]\\n            sig=0.6*lam\\n            th=sig*np.sqrt(-2*np.log(rng.uniform(size=ih.size)))\\n            cth=np.cos(th); sth=np.sin(th)\\n            dn=d[ih]; perp=rand_dirs_perp(dn,rng)\\n            nd=cth[:,None]*dn+sth[:,None]*perp\\n            m=inV[ih]\\n            for k in np.where(m)[0]:\\n                events.append((\\\"rayleigh\\\",float(E[ih][k]),float(E[ih][k]),float(cth[k]),0.0,None,None))\\n            newp.append(q[ih]); newd.append(nd); newE.append(E[ih])\\n        # Pair\\n        ipr=np.where(is_pair)[0]\\n        if ipr.size:\\n            T=E[ipr]-2*MEc\\n            f=rng.uniform(size=ipr.size)\\n            Te=f*T; Tp=(1-f)*T\\n            th=np.abs(rng.normal(size=ipr.size))*MEc/E[ipr]\\n            ce=np.cos(th)\\n            m=inV[ipr]\\n            for k in np.where(m)[0]:\\n                events.append((\\\"pair\\\",float(E[ipr][k]),None,None,float(Te[k]),float(ce[k]),float(Tp[k])))\\n            # annihilation photons (two back-to-back 511 keV), isotropic\\n            z=rng.normal(size=(ipr.size,3)); z/=np.linalg.norm(z,axis=1)[:,None]\\n            newp.append(q[ipr]); newd.append(z); newE.append(np.full(ipr.size,MEc))\\n            newp.append(q[ipr]); newd.append(-z); newE.append(np.full(ipr.size,MEc))\\n        if newE:\\n            p=np.concatenate(newp); d=np.concatenate(newd); E=np.concatenate(newE)\\n        else:\\n            p=np.zeros((0,3)); d=np.zeros((0,3)); E=np.zeros(0)\\n    return\\n\\nif __name__==\\\"__main__\\\":\\n    Ntot=int(sys.argv[1]); seed=int(sys.argv[2]); chunk=int(sys.argv[3])\\n    rng=np.random.default_rng(seed)\\n    events=[]\\n    t0=time.time()\\n    done=0\\n    while done<Ntot:\\n        n=min(chunk,Ntot-done)\\n        run_chunk(n,rng,events)\\n        done+=n\\n    print(\\\"histories\\\",Ntot,\\\"events\\\",len(events),\\\"time\\\",time.time()-t0)\\n    import pickle\\n    with open(f\\\"/tmp/work/events_{seed}.pkl\\\",\\\"wb\\\") as f: pickle.dump(events,f)\\n    from collections import Counter\\n    print(Counter(e[0] for e in events))\\n'''\\nwith open('/tmp/work/mc.py','w') as f: f.write(mc)\\nimport subprocess\\nr=subprocess.run(['python3','/tmp/work/mc.py','1000000','1','250000'],capture_output=True,text=True,cwd='/tmp/work')\\nprint(r.stdout, r.stderr[-3000:])\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Comparing my values against NIST reference points across several energy levels, I'm running about 1.5% low consistently, which is close enough to proceed without tweaking the FB parameter further.\n\nNow I'm writing the MC script.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQStAgKEAgSGAI4AUIIdGhpbmtpbmcSDDn3F5RIaTX/8ai/KxoMNmBbut169MztBLVeIjBr+3Yqu5kL+VeIjnoEpmpOb2azO6IWFmPMDuYGfYG7meUov3ZwGq/bE/GVN3jqm/4q0QfuqxqlNrftjVnKa2UbVtTLduStGdR3xcJKErfxbUbspap5/mvpHCAKu8RzeEi6ReIxjz74F9gJHqpP1f1Ntd/jUg95DiaVoegfUDQ+9lcT7mn0Cu9qpY667zxr6aLn3sx+ryP3Emw0VwMKebFVQlzEVpMtOH8XbpAfaBDuBmXvGPoafsGVStWS73tokBnvG1FjQr2UoMTqKsvUpn41dbSkyGws2fHxOHpDVDn9sd3UKkO799CAT/zMLAqBcc0kzT7UAL+4E/A5egphVqxP94brKlO2frnhXbQvgz8Wxzs6/rcdbJ3yxTU9fjFvNPPZi5gs67RTxpfBM4sj+K1Y8KZGWnJNOH1e4x/0LvMpBgKMMmZVyZA/Q/H9K5Uc+ARxD9Wsruux7frs2dLpH9kOsycr85wK7jYRVsd9CsZ2Hpzv1Rmij/BVU7lVAcj7QM2lB1B6dM9OSVlzkkJ20uJ10T0XyR5gzTcw2kOYUlrpWhiLE4NYyKqwddgzNTiNg40Bzo8czqIxiUkJDSoMvRY/h9ywbzAGYOaPTG3+vlCbiQGzxmimMQz6C4caSV4LAEGoyFSBd15O+RuRbKvZUrKoaTHsQ4lwrbcBEWtsIJF/GemOduKlMkDdY6YASfq1Ofgj/GySjjrGVHphByr6smwt88f21C0oSQ5AhQxc34rt6Y7XDOOMC7VptFIeC+QIHTq+4ln6iywj41NTyeeUBHRpoze90vpXZK4gcMyaOC5IHvqWYpPlQDxLsGabBWn/HvaVsj6h+8IR0Q+yqI5gdcTaS3LaH/cfDsGE8B0WWFaDwsDJB5d9HmC/1WiY8vbTO8WIKo8mfTC3aSUyIeSjDz3akGK2H88sU5oOGJViSYSxeluj1Phygn7mVOe7jT9yg6gZOvGMWBGzADH9vVxR2onm15Npp4x9bUkn+17K8Bi9svjo59QeVbOMvtxNRvtuRy52tmYoz2l1c01TERUV4eDkufpWeXTqqPRIQkq74KLE0T25QefkNr+vpLMvusqtCrcebydvbqpd/aOHENaIaB+Ee4aqq4PjndOiRxGtcrIq/B+6Bep3KeqqGMssx+tEyLPXibqoUGbiFcL2yYLswwQCo7T964xIWskeDEuHSN4cyV5eG4DhJLxna+519gxo2GJ4OyNPm2RAcyySXo60denBnGx2y7S6xddC9y5jvVnrJGPgjcVjkXmrUTvcJ2SDWmBTu0EfRQCRioQYjuvPGkMnN7qmrLkbTUmafrWDd5mLJDDh/EYI5BVPm6WiKo4aUlREf7+KZzo6nJ9Tdh6YQXBWgB/38hgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 36708,
+  "completion_tokens": 3394,
+  "total_tokens": 40102,
+  "cost": 0.0053678,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0053678,
+   "upstream_inference_prompt_cost": 0.0036708,
+   "upstream_inference_completions_cost": 0.001697
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 185,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

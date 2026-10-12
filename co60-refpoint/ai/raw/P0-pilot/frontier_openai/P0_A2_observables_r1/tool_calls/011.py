@@ -1,0 +1,1 @@
+print(np.trapezoid(kn*(T>1.4),mu)/np.trapezoid(kn,mu),np.trapezoid(kn*T,mu)/np.trapezoid(kn,mu))

@@ -1,0 +1,57 @@
+{
+ "id": "gen-1791816495-1SZachBUgUqnuIlz5ySN",
+ "object": "chat.completion",
+ "created": 1791816495,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_018VVwgA6VsR1tRNYm11YHpQ",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport os, sys\\nprint(os.getcwd(), os.listdir('.')[:20])\\nsys.path.insert(0, os.getcwd())\\nopen('xs.py','w').write(code)\\nimport xs\\nprint(xs.mu_tot(2.0), xs.mu_inc(2.0), xs.mu_tot(0.1), xs.mu_tot(0.5), xs.mu_tot(1.0))\\n\"}"
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 28802,
+  "completion_tokens": 178,
+  "total_tokens": 28980,
+  "cost": 0.0029692,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0029692,
+   "upstream_inference_prompt_cost": 0.0028802,
+   "upstream_inference_completions_cost": 8.9e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 0,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

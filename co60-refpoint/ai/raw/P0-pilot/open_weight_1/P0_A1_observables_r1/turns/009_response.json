@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791815983-f0cMaMiXRN6d2potbuuT",
+ "object": "chat.completion",
+ "created": 1791815983,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "GMICloud",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "The function sigma_compton_cm2 was defined in a previous cell. I need to redefine it. Let me create a clean script that has all the functions I need.\n\nLet me write a comprehensive script that computes all the necessary quantities. I'll structure it carefully.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_35ee14085ab5420fa8e2d491",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nimport scipy.integrate as integrate\\nimport math\\n\\n# ===== CONSTANTS =====\\nmec2 = 0.511  # MeV\\nr0 = 2.8179403262e-13  # cm\\nr0_sq = r0**2\\nNA = 6.02214076e23\\nM_H2O = 18.01528\\nrho = 1.0  # g/cm^3\\nelectrons_per_gram_H2O = 10 * NA / M_H2O\\nelectrons_per_cm3_H2O = electrons_per_gram_H2O * rho\\n\\n# ===== CROSS SECTIONS =====\\n\\n# Klein-Nishina total cross section per electron (cm^2)\\ndef sigma_kn(E):\\n    alpha = E / mec2\\n    return 2*np.pi*r0_sq * ((1+alpha)/alpha**2 * (2*(1+alpha)/(1+2*alpha) - np.log(1+2*alpha)/alpha) \\n                            + np.log(1+2*alpha)/(2*alpha) - (1+3*alpha)/(1+2*alpha)**2)\\n\\n# Klein-Nishina differential cross section d\u03c3/d\u03a9 per electron (cm^2/sr)\\n# Returns (dsigma, E_scattered_MeV)\\ndef dsigma_kn_dOmega(E, costheta):\\n    alpha = E / mec2\\n    k = 1.0 / (1.0 + alpha * (1.0 - costheta))\\n    Ep = E * k\\n    return (r0_sq/2.0) * k**2 * (k + 1.0/k - (1.0 - costheta**2)), Ep\\n\\n# Incoherent scattering function S(q,Z) for water (approximate)\\n# At 2 MeV, for most angles, S \u2248 Z (free electron limit)\\n# At small angles (long wavelengths), S is reduced\\n# For simplicity in this scope, we'll use a rough model or just S \u2248 Z for E >= 0.3 MeV\\n# at high energies.\\n\\n# Compton mass attenuation coefficient for water (cm^2/g)\\n# Calibrated to match NIST XCOM values\\n# XCOM values: E(MeV): mu_incoh/rho\\nxcom_comp_E = np.array([0.01, 0.02, 0.03, 0.05, 0.08, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.6, 0.8, 1.0, 1.5, 2.0, 3.0, 5.0, 8.0])\\nxcom_comp_mu = np.array([0.0225, 0.0410, 0.0585, 0.0900, 0.129, 0.149, 0.198, 0.234, 0.271, 0.278, 0.274, 0.264, 0.240, 0.218, 0.176, 0.04451, 0.0979, 0.0616, 0.0430])\\n\\n# Hmm, I clearly have wrong data in the table. Let me think.\\n\\n# The Compton( incoherent) mass attenuation coefficient in XCOM for water:\\n# E=0.1 MeV: 0.149 cm^2/g\\n# E=0.2 MeV: 0.219 cm^2/g? No, that can't be right.\\n\\n# Let me compute from KN:\\n# sigma_kn per electron: at low energy approaches 2*pi*r0^2 = 6.65e-25 cm^2\\n# electrons/g water = 3.343e23\\n# At 0.01 MeV (alpha = 0.0196), KN sigma ~ 6.65e-25 * (1 - ...) ~ 6.7e-25\\n# mu = 6.7e-25 * 3.343e23 = 0.224 cm^2/g\\n\\nprint(\\\"Let me recompute the proper cross sections.\\\")\\n\\n# Compute KN mu/rho over a grid\\nE_grid2 = np.array([0.01, 0.02, 0.03, 0.05, 0.08, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.6, 0.8, 1.0, 1.5, 2.0, 3.0, 5.0])\\nmu_kn_grid = np.array([sigma_kn(E) * electrons_per_gram_H2O for E in E_grid2])\\nfor E, m in zip(E_grid2, mu_kn_grid):\\n    print(f\\\"  E={E:.3f} MeV: KN mu_comp/rho = {m:.6f} cm^2/g\\\")\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The function sigma_compton_cm2 was defined in a previous cell. I need to redefine it. Let me create a clean script that has all the functions I need.\n\nLet me write a comprehensive script that computes all the necessary quantities. I'll structure it carefully.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 30283,
+  "completion_tokens": 1195,
+  "total_tokens": 31478,
+  "cost": 0.0012095902,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 24226,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0012095902,
+   "upstream_inference_prompt_cost": 0.0009921002,
+   "upstream_inference_completions_cost": 0.00021749
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 54,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

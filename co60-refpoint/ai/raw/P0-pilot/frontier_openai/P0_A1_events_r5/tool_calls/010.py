@@ -1,0 +1,6 @@
+s=open('/tmp/mc.cpp').read().replace('} else {if(score)evs.push_back({p,E,E,1,0,0,0}); double c=1-0.1*ur()*ur();rot(dx,dy,dz,c,2*PI*ur());}', '} else {double c=1-0.1*ur()*ur(); if(score)evs.push_back({p,E,E,c,0,0,0}); rot(dx,dy,dz,c,2*PI*ur());}')
+open('/tmp/mc.cpp','w').write(s)
+subprocess.run(['g++','-O3','-std=c++17','/tmp/mc.cpp','-o','/tmp/mc'],check=True)
+r=subprocess.run(['/tmp/mc'],capture_output=True,text=True,timeout=600)
+print(r.stderr)
+open('/tmp/e.csv','w').write(r.stdout)

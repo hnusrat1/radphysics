@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791816503-86Hk3LB4GQSFsiM8FhcP",
+ "object": "chat.completion",
+ "created": 1791816503,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "The file seems empty because the code from the earlier call wasn't saved properly, so I'll just rewrite it from scratch as one complete script in a single call.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_018aTDECr4Wu78MKXkvkAzaG",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nxs_code = '''\\nimport numpy as np\\nre2=7.9407877e-26; ne=6.02214e23*10/18.015\\ndef sKN(E):\\n    k=E/0.51099895; L=np.log(1+2*k)\\n    a=(1+k)/k**2*(2*(1+k)/(1+2*k)-L/k)+L/(2*k)-(1+3*k)/(1+2*k)**2\\n    return 2*np.pi*re2*a\\ndef fbind(E): return 1-0.046*np.clip(E/2.0,1e-3,None)**0.42\\ndef mu_pe(E): return 2.7e-3*(0.1/E)**3\\ndef mu_coh(E): return 1.0e-4*(2.0/E)**1.33\\ndef mu_inc(E): return sKN(E)*ne*fbind(E)\\ndef mu_pair(E):\\n    f=np.clip((E-1.022)/0.978,0,None); return 2.66e-3*f**1.5\\ndef mu_tot(E): return mu_inc(E)+mu_pe(E)+mu_coh(E)+mu_pair(E)\\nEgrid=np.logspace(np.log10(0.01),np.log10(2.0),600)\\nmugrid=np.log(mu_tot(Egrid))\\ndef mu_of(E): return np.exp(np.interp(np.log(E),np.log(Egrid),mugrid))\\n'''\\nwith open('/tmp/work/xs.py','w') as f: f.write(xs_code)\\nimport importlib, sys\\nsys.path.insert(0,'/tmp/work')\\nimport xs\\nprint(xs.mu_tot(2.0), xs.mu_inc(2.0), xs.mu_tot(0.1), xs.mu_tot(0.5), xs.mu_tot(1.0))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The file seems empty because the code from the earlier call wasn't saved properly, so I'll just rewrite it from scratch as one complete script in a single call.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSggcKEAgSGAI4AUIIdGhpbmtpbmcSDJl4Gyv9o+kWSFW/KRoM1Gf/JyRoLtQOEWeKIjCrEiDV6opTVXCM+5bdJi12wM+BB6ZO/StU6P2Tr4Y8RWa6p/Tcq9bXnvjps11FjzoqnwZLGLykx/j0aCX1vjfr2hoRI7CJXomqt+17OwPCbk0MHfJjwaH7y78hOdSXd0uIwwyLdprWXZ28jgHOba9ZbZ42lX3g5iZfsQSoSpWQZsYT90ljXPYzM9cBcTIqPYak4/c/yXgxLpDH+y9p60ZWGGf6cqnwa20iSwobMXPNy3eEBF2FPdb+sK2KHgCkbwinvj1i5C4hAK2SriFNLWO5j0DZLRuGkLN3JEIUOWsqjd8/C6VJ42bfGeMjpu/bWc1bYSGNJznlsQ8/uZNIAKJSPC6GV3pEZT/rHcFqm1CA/qVUgOIGog9UJKjCz1TYnr7HYkWSaANXv5oL75CeggMXmcJAsxzJZboXQXljhLeYFmTPRlfAqnU+wayllcetA3JzuCXKLGpey9asfAK8JIkEVOIul/Ph5wzXqAul4AxW33+DBVkK1ZPEmrl+hmkufXz4Y0/HFioe5kMdgxCKt243AYgoE8VBVzG84BeeAlp22Infz5rVmXcuDkkN6uR6km6MDGk/GYWd+8euT+Fc57q5OCWA68JUoWwQTYEH7OwHzyKpaGMvBqQTC6vJCAoWCCgche3ILjPwIXQIq1Oba3ZJd4Y0YDvbUclYMmdyDx+n4yVCq0BTSblx7CKUJmU3BtRWRl3P2xxa+adefutZ+p3R59AFeI9phf6IqDOEXwd5mi20y6irCtfmuUT5WJnrJVfOnT9hCHKx0Cpj4+PbfW6Smy6HqovhOO1ybu9H+kjZGZpdD2ncbc0SPsKZ5/1p2DV3f/JH/51my19999cTUTSzrn9y8q6bg1g8j0h4m2+SFyy4sc0wZUQqykwqZiJcF8gKBJTyOmiFZj/23ezZmttmkQe43dr+TEIrGlXPl2hK+pVAI7w/nkA3I94TYsV6fm+Ol5j6CiGLo99xZUcB1LQumBdqAOeHTcgxTeIVnka88qsLVl96RpJBjqzwe/9maa5AKMD549fb7Ej+g4LvslHlWTCm4Iv2/5cAcvR72n0ZXpT9AXnl77QVwu1zyCq/rLH4nStFi3xWtmeE16vhGcwPWNbpxOnoTCxX74uVYswITTtLGAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 29823,
+  "completion_tokens": 690,
+  "total_tokens": 30513,
+  "cost": 0.0033273,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0033273,
+   "upstream_inference_prompt_cost": 0.0029823,
+   "upstream_inference_completions_cost": 0.000345
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 51,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

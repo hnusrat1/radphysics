@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791813962-B3dkQmTkNuOMg091Ietg",
+ "object": "chat.completion",
+ "created": 1791813962,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_HaaXmbyvAyKbhXD9se3i6Rgp",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import numpy as np\\nE=2.; m=.51099895\\nmu=np.linspace(-1,1,1000001); ep=E/(1+E/m*(1-mu)); ratio=ep/E\\nw=ratio**2*(ratio+1/ratio-(1-mu**2)); t=E-ep\\npz=E-ep*mu; pperp=ep*np.sqrt(1-mu**2); ca=pz/np.sqrt(pz**2+pperp**2)\\needges=np.array([.01,.05,.1,.15,.2,.25,.3,.35,.4,.45,.5,.55,.6,.65,.7,.75,.8,.85,.9,.95,1,1.05,1.1,1.15,1.2,1.4]); cosedges=np.linspace(-1,1,11)\\nfor x in [np.histogram(t,eedges,weights=w)[0], np.histogram(ca,cosedges,weights=w)[0]]: print(np.round(x/x.sum(),4))\\nprint('meanT',np.trapz(w*t,mu)/np.trapz(w,mu), 'above1.4fraction',np.trapz(w*(t>1.4),mu)/np.trapz(w,mu))\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzOlMZowwPUgqHfdbDH77FtjbAhVaovyksrgG7DAlZb97TMJE1ynZpk7bdUiyPLEsP3E6Y6-5LMp2njNb41sKqjXNJUIEAhZHNqNzxz3wLiCYeATHzWbuekeJkB9znHQMoENwfHb5jR81t8L6YN-ygmYFO1ZmkmJhymdV4xsuxtaNRDM734bKcTdDKyTuE7V6vGonpkI6YcXym35yA7izxRvlez0-D3DQRfgWLCrqZPZxydAoRatI8D7lnHfNOT3ZfUg4SR21--uJScSCp-dYJdH2MgKPVxj19te_PgVYAY8aaLpO6QBWDZJNalHZkGF57mQFIhWJMc-CPaBUd7TGL95RlJZRwdrWXiqAiUEsS6xrlSXIjinY-hUnZ8-IJRUE5uXDIGL4tgc1a7TJDHSdHUdRqXZ5TFMud_9HIyoGarocbPiwg-Mfw8QD59cgUao-ELJwH9Phaz9U-FA5ohITbjexbdY1i6bN5lue8-qNguSRLZna5k4QiMCa6LqCyu9dCUGKfaTC3IPke7KbhcxHM9qIH5BJJgUAeaa8mbG7kRVpgAKBEv166-9p62pzD4hLKvV6HwfMK2jiQau-yMSAufV62Pf4x8I_J21AZ8I11uplVaCKKuv-sKQG9lbql8k3-FmaCzMX8-d8N4KljvAwn-zEnM3AAKyX_-xHoy4HXdUMzoNyv01xlVEjVG7gqrRWZxX-ei3uhsWeCbxx0x6OwBsSw9i7xXC4KvBMfqV1LcuFX2P2QsT4KdJEf1T1nIZjfIixZKzd3QZ1OkoiZ_NiYd1tYPzcUTz6yPBnAYApfAEwdiuMWs4Le0jiZqjB-yFJLlHHge8R9SuQO831Gf5TaA09LVyj1bpxZSHL6Hn8JywB21p0bqF0BKEYVtPN9RYi2awKZJaDRf29dEtEB_jDV0qtP6nXeohqKLdiSFYMmM6UNC6kQmACsH__Z21bRQI7KKJ0fgrgkFweHgCwjMY9rr_kwSIY7x7yMnLYCAInGP1m0U3qqWFZRwa3txo8j2L4r4-SxzGvLXUB2V7XtDWnXrJgh1FvL20IkLUDF8IpMYm4UGiEzpX6CridHIQVgtcKsmtrrSgoIJJI50b8L-t_0NBBkAsxcpDUDDMYwGJbM-YPPTTMd01w86MutXUqSuQov57b4183TLH-dqQmV515YXYp7dlVKaa9rH-pHphkxU6KNEoheSHTn-hLWWFKVJPCSLFG1GKdDmWcjJ3wk1xqcPwQ_j0ebegL_y8tBvxlHflw-CyqwZGXpT1LC5FUTJGpk2SZjl9-guK3GYzNutEMcpCkFm0rMzn1NVUg_WgWReA0HtPdf41-RtFbEkmcj3lRzUz_ZWVLPMKxvlOXHiMJmKDxjlpeemIPXjMhom1UUTR4CkUw7ruqLQNoX194rKjV2UYdSSyfbOx9lN5Jbv4V58E6bLi7TUvMfINAyclQMiyJTBdzA3vqLUbQ67R49KzWyXkAIT07c8PeeszdGmqDLiuE-tJoRVhNrUKk7K_nnzXmC8a2fPHqdQZTFkQZTl7c-9E3mHomr7cLkuAbp6hx7m2t-5P2s4odHUKtJdNeoSbBYitcTM7ojInlBAuUXOCOYrZU12LsyWvC37cIrMpaQ9DPb0H5OsrTfnhjz58rKpkp7mg=.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_01093ad1e47df242016acce94c9b9487d1bb458fc4f0832677",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 8873,
+  "completion_tokens": 305,
+  "total_tokens": 9178,
+  "cost": 0.000492775,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 6685,
+   "cache_write_tokens": 2185,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000492775,
+   "upstream_inference_prompt_cost": 0.000340275,
+   "upstream_inference_completions_cost": 0.0001525
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 6,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

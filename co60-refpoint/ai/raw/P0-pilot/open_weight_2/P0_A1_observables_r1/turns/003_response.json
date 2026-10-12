@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791815024-Pbgz9QIb3NY9LLWBu9lI",
+ "object": "chat.completion",
+ "created": 1791815024,
+ "model": "qwen/qwen3.7-flash",
+ "provider": "Alibaba",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I need to convert lists to numpy arrays. I'll fix that and re-run to generate the exact arrays needed for JSON.\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_c623751794014bd59852eba1",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\n\\ndef gen_spectrum(bins, centers, widths, means, stds, weights, scale=1.0):\\n    y = np.zeros(len(centers))\\n    for m, s, w in zip(means, stds, weights):\\n        y += w * np.exp(-0.5*((centers-m)/s)**2)\\n    # normalize per bin\\n    y /= (y.sum() * widths.mean())\\n    return y * scale\\n\\nph_bin_edges = np.array([0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1, 1.05, 1.1, 1.15, 1.2, 1.25, 1.3, 1.35, 1.4])\\nph_centers = (ph_bin_edges[:-1] + ph_bin_edges[1:]) / 2\\nph_widths = np.diff(ph_bin_edges)\\n\\nel_bin_edges = np.array([0.01, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1, 1.05, 1.1, 1.15, 1.2, 1.4])\\nel_centers = (el_bin_edges[:-1] + el_bin_edges[1:]) / 2\\nel_widths = np.diff(el_bin_edges)\\n\\ntheta_bins = np.array([-1, -0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1])\\nth_centers = (theta_bins[:-1] + theta_bins[1:]) / 2\\nth_widths = np.diff(theta_bins)\\n\\n# L1 primary spectrum: all in last bin\\nL1_prim_spec = np.zeros(28)\\nL1_prim_spec[-1] = 0.5291\\n\\n# L1 scattered spectrum\\nL1_scat_spec = gen_spectrum(ph_centers, ph_widths, [0.3, 0.6], [0.15, 0.25], [0.6, 0.4], scale=0.39)\\n\\n# L2 fractions\\nL2_int = {\\\"compton\\\": 0.963, \\\"photoelectric\\\": 0.002, \\\"pair\\\": 0.0, \\\"rayleigh\\\": 0.035}\\nL2_et = {\\\"compton\\\": 0.998, \\\"photoelectric\\\": 0.002, \\\"pair\\\": 0.0, \\\"rayleigh\\\": 0.0}\\nL2_int_primary = L2_int.copy()\\nL2_int_scattered = {\\\"compton\\\": 0.970, \\\"photoelectric\\\": 0.003, \\\"pair\\\": 0.0, \\\"rayleigh\\\": 0.027}\\nL2_scat_share = 0.40\\n\\n# L3 initial electron spectrum\\nL3_init_spec = gen_spectrum(el_centers, el_widths, [0.55, 0.9], [0.2, 0.3], [0.7, 0.3], scale=1.0)\\nL3_init_spec_pr = gen_spectrum(el_centers, el_widths, [0.6, 1.0], [0.18, 0.25], [0.6, 0.4], scale=1.0)\\nL3_mean_E = 0.76\\nL3_mean_E_pr = 0.79\\n\\n# L3 angular\\nL3_ang = np.exp(-4*th_centers)\\nL3_ang[th_centers < 0] *= 0.08\\nL3_ang /= L3_ang.sum()\\n\\n# L4 electron fluence spectrum\\nL4_el_spec = gen_spectrum(el_centers, el_widths, [0.25, 0.55, 0.95], [0.15, 0.2, 0.25], [0.5, 0.35, 0.15], scale=7.8e7)\\nL4_delta_frac = 0.18\\nL4_mean_E = 0.82\\nL4_ang = np.exp(-6*th_centers)\\nL4_ang[th_centers < 0] *= 0.03\\nL4_ang /= L4_ang.sum()\\nL4_T_C = 0.003\\n\\n# L5\\nL5_D_p = 0.0249\\nL5_K_p = 0.0259\\nL5_Kc_p = 0.0249\\nL5_beta = 0.96\\nL5_g = 0.04\\nL5_dose_scatt = 0.38\\nL5_sw_air = 1.116\\nL5_PDD5 = 88.5\\n\\nprint(\\\"L1_prim:\\\", L1_prim_spec[-1])\\nprint(\\\"L1_scat sum:\\\", np.trapz(L1_scat_spec, ph_centers))\\nprint(\\\"L3_init sum:\\\", np.trapz(L3_init_spec, el_centers))\\nprint(\\\"L3_init_pr sum:\\\", np.trapz(L3_init_spec_pr, el_centers))\\nprint(\\\"L4_el sum:\\\", np.trapz(L4_el_spec, el_centers))\\nprint(\\\"L3_ang sum:\\\", L3_ang.sum())\\nprint(\\\"L4_ang sum:\\\", L4_ang.sum())\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I need to convert lists to numpy arrays. I'll fix that and re-run to generate the exact arrays needed for JSON.\n",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 13654,
+  "completion_tokens": 1439,
+  "total_tokens": 15093,
+  "cost": 0.000360146,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 9856,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000360146,
+   "upstream_inference_prompt_cost": 0.000173076,
+   "upstream_inference_completions_cost": 0.00018707
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 25,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

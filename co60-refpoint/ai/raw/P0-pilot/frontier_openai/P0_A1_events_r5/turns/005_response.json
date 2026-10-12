@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791813751-QmzjtboA1VqMFX0oeoOe",
+ "object": "chat.completion",
+ "created": 1791813751,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Classifying events**\n\nI\u2019m considering the fact that there are only 1,222 events out of 10 million, which seems reasonable. It makes me think I need to classify these events properly to understand what's going on. I wonder how to approach the classification \u2014 maybe I should consider different criteria or categories? It's a bit daunting, but I\u2019m curious to see how it all fits together. Let's break it down step by step!",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_K375pVhhc9i6vz7lO3IaEb37",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import numpy as np, collections\\narr=np.loadtxt('/tmp/e.csv')\\nprint(arr.shape,collections.Counter(arr[:,0].astype(int)))\\nfor p in range(4):\\n a=arr[arr[:,0]==p]\\n print(p, len(a), np.quantile(a[:,1],[0,.1,.25,.5,.75,.9,1]) if len(a) else '')\\nprint('primary close2',np.mean(np.abs(arr[:,1]-2)<1e-6))\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Classifying events**\n\nI\u2019m considering the fact that there are only 1,222 events out of 10 million, which seems reasonable. It makes me think I need to classify these events properly to understand what's going on. I wonder how to approach the classification \u2014 maybe I should consider different criteria or categories? It's a bit daunting, but I\u2019m curious to see how it all fits together. Let's break it down step by step!",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzOh5P6RGGUhqT00z7biFk8ovBoIiaJC1dIcD0FJDgrX_wXzYIlBCTtPZQSkENWIfbBXpz1iMNdlENI9I1qsdFUtMXvFx6BFWue0wVheR8Pid_DjW2jv0Y-JuNyNDzRy7Peztr4nhxn3yWR_tx6dQjdmIp1rQ8-Wlp3mVdyMjVdDfnQ2rEGtBm0nuA0EpdT2SqJwbFCCNNOB748qbQ2zR1o7fUB3SCKucsHj4f2Mqq0NeU7cO71txI321-RfoLAH_Ik6mwUgGemU0vcAqBfHMzR_PS2tt3O0yXH3lk5wOOP7l1oUS1Lqkh_1fLG9h_zTuyvNUsmQH0LDQ-67BCm3ITUy5X87vsw8Bmyc6vV4iPQjTmVH5prOTzqouVhCwldPy0DxLWvpz_YkUXI-a06hjXD6YBg4-lvwcpzMH0JeO0hNe6HpK9vWFA-ipkYZWUUeMiYnDZGCRMXORaoeS_Gx-WZkTjlriAqLhE5JjOqess69zxsjVDqVNeCf82yh_OtDxuBf7xCAgYGe396kmNHgn5z1kbflXT8Jyg7x8M3HxcOcvL9UE_9U5JzfiMGXZaa8o-OOFGBH7ecBlyYNPlbA5yOaK3cxCIOqBY3EVrmCVzDzadQDg1qs7Uoq-q-P5_ik1tDq85Biw0oOjCvKtdF_DL3V3gASmxvQAdgCstszkqZ0f5TYmbWtR6sEYZSZSj95aBBoFmVKibNrUUSRkCGyC84hnapGhi5ro5dAQjYBlxYINjmyoMSSww7eWI7ANeMtEhXrbqfRLARvDtJ5ltJXUC0xx9ALOtOOd-UKhJm0FyLdHhjYSwECasazN5sn0vOyaHWWuw93vpWLut3_uKnIL9iRITcpz1TLmGSx3NAug6Bx3kz-vpDuJH7RoriIviqgXRVIVw0r4fVYckCKQwB5Z-jcROg0clcQaE5Q88Qs-XJDMcwq0vaOiOs_vg6CZ38izhz5-mUwQISXrphjLa6MrvYG-sy_wcrgkEkiWToJJBF3h2ck2OSj96S4gmaEy2f3ZZzj71Bs5awFTBEKrhCxVOwbV06cWXd1Tpy6ton46SJGzEc_mEhHqJPiOeBw372VAZsa2I2HlyVkizqeeVE0b_Xjq6vJRfMdG59iY9F63JpLg-hhoInoVcEH6yJhHdzN0C6dVysbm18cMjI_lL06ME6RMpsljHHNHLSv8YIiJKKMdhWKom2hFHCeN84bMnbJWxSdEMOIZXt8QRc31Y-wp132ik22ZbveYFEk4JUH-QSvFVtAa8PGxVi7SvYnpVFVqnu6B1VX5jHTYHfPX3b-iYPpUCabB43lFEcUMwEymtXnXeEkBaMCkommBQQRBQUcG2DoNyAybu7g4mo3mOFOQ5nRFAxEpz6QzUyfZs9y1QZSKHZEbXg1YCbjMGKyY4EWxWWPSr_q_EXqIhYqaiRw4vdHg50F-CBY2g-Ry5k8_4ZAbIJ2VBK80PiWUbSYlKVE9jdDsdU4mI_tY4jjvTwf5yI5nbJarMn9LdReu0Z4Lp5Hr1GDmHH0GxZ6BMIEVvLd5ZY3R4bYgsg4H5gTcskEo-fSNxaSM2-6tysmL6-Vq59_qrH0KpBwCCgGVMDr-v0pm5QpkewOcuemJUpki1l__lcFHLU4vJmGpN5idcCXaR66yRJuZCyxlpFQm3d2p4_4_1caxf_UHS6UMwMsb2HzOGTcsy7bAeTHrDFRbev76g96tJelpvncmgKh8jA8Hgj9NMg5SG7aTsO32gNohmnqrH97t5I-29d7VJna7FD7wVYji-I1su4YnJL1eMGqzVHK8ZBpX.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_007c8b4144af0c0c016acce878a14487d19f8eabb697841f76",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 10421,
+  "completion_tokens": 145,
+  "total_tokens": 10566,
+  "cost": 0.000233445,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 9927,
+   "cache_write_tokens": 491,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000233445,
+   "upstream_inference_prompt_cost": 0.000160945,
+   "upstream_inference_completions_cost": 7.25e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 19,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

@@ -1,0 +1,37 @@
+slot: frontier_google
+provider: Google via OpenRouter
+api: openai_compatible
+model_requested: google/gemini-2.5-flash-lite
+settings:
+  reasoning:
+    effort: high
+  usage:
+    include: true
+condition: A1
+task: observables
+config: P0
+prompt_version: v1
+prompt_sha256:
+  system_A1.txt: e06e9a5ea06c2f5ca29739818f324713f2dbbf775f019c11018d1aa7ef5416b8
+  task_observables_P0.txt: 82ca43297fc8cba782d2c4bc779390b111825c9625d68f2dc81110178428984a
+started_utc: '2026-10-12T14:10:07Z'
+turns:
+- n: 1
+  usage:
+    input_tokens: 4709
+    output_tokens: 16992
+    reasoning_tokens: 14830
+  stop: stop
+  wall_s: 51.23
+  http_attempts: 1
+  model_reported: google/gemini-2.5-flash-lite
+  tool_calls: 0
+tool_calls: 0
+retries: 0
+outcome: ok
+model_reported: google/gemini-2.5-flash-lite
+finished_utc: '2026-10-12T14:10:58Z'
+usage_total:
+  input_tokens: 4709
+  output_tokens: 16992
+  reasoning_tokens: 14830

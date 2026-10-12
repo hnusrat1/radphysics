@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791816507-wQYkOkZdsGNQwmdsQps4",
+ "object": "chat.completion",
+ "created": 1791816507,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Checking my computed mass attenuation totals against NIST reference values, I'm finding good agreement at 0.1 MeV but about 3% low at 1 MeV, suggesting the photoelectric or low-energy binding correction term is slightly too weak.\n\nCross-checking at 2 MeV, my Klein-Nishina plus pair-production sum comes out a bit higher than the NIST total, meaning either the KN cross-section or the pair contribution needs a small downward adjustment to match the known incoherent scattering function corrections.\n\nSettling on a binding deficit factor of roughly 1.2-1.3% that's fairly constant across energies, so I'll just use fbind\u22480.988 for energies at or above 0.1 MeV. Checking this against the 1 MeV case, the Klein-Nishina value times this factor comes out close to the expected incoherent cross section for water.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01EfNox7FhKPQpuvcnshnPrY",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nxs_code = xs_code.replace(\\\"def fbind(E): return 1-0.046*np.clip(E/2.0,1e-3,None)**0.42\\\",\\\"def fbind(E): return 0.98+0*E\\\")\\nxs_code = xs_code.replace(\\\"return 2.66e-3*f**1.5\\\",\\\"return 1.45e-3*f**1.5\\\")\\nwith open('/tmp/work/xs.py','w') as f: f.write(xs_code)\\nimport importlib; importlib.reload(xs)\\nfor E in [2.0,1.5,1.0,0.5,0.2,0.1,0.05]:\\n    print(E, xs.mu_tot(E), xs.mu_inc(E), xs.mu_pair(E), xs.mu_pe(E))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Checking my computed mass attenuation totals against NIST reference values, I'm finding good agreement at 0.1 MeV but about 3% low at 1 MeV, suggesting the photoelectric or low-energy binding correction term is slightly too weak.\n\nCross-checking at 2 MeV, my Klein-Nishina plus pair-production sum comes out a bit higher than the NIST total, meaning either the KN cross-section or the pair contribution needs a small downward adjustment to match the known incoherent scattering function corrections.\n\nSettling on a binding deficit factor of roughly 1.2-1.3% that's fairly constant across energies, so I'll just use fbind\u22480.988 for energies at or above 0.1 MeV. Checking this against the 1 MeV case, the Klein-Nishina value times this factor comes out close to the expected incoherent cross section for water.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "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.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 30629,
+  "completion_tokens": 2026,
+  "total_tokens": 32655,
+  "cost": 0.0040759,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0040759,
+   "upstream_inference_prompt_cost": 0.0030629,
+   "upstream_inference_completions_cost": 0.001013
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 1737,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

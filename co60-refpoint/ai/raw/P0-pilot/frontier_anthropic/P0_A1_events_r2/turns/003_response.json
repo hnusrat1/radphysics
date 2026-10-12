@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791815761-kPQbjcHz8sXKGJvJScNw",
+ "object": "chat.completion",
+ "created": 1791815761,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "The environment doesn't keep state between calls, so I'll put the full simulation in one script.",
+    "refusal": null,
+    "reasoning": "Since state doesn't persist between calls, I need to write the complete script and execute it all within a single call.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01KLPNTjcgtGAo5UQwgCS9hX",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\ncode = r'''\\nimport math, random, json, time\\nfrom collections import Counter\\nrandom.seed(12345)\\nM_E = 0.510998950\\nRE = 2.8179403e-13\\nNE = 3.3428e23\\nMU_PHOTO = 1.5e-5\\nMU_RAYL = 5e-5\\n\\ndef sgn(x): return 1.0 if x>=0 else -1.0\\n\\ndef sigma_KN_per_e(E):\\n    a = E / M_E\\n    t1 = (1+a)/a**2 * (2*(1+a)/(1+2*a) - math.log(1+2*a)/a)\\n    t2 = math.log(1+2*a)/(2*a)\\n    t3 = (1+3*a)/(1+2*a)**2\\n    return 2*math.pi*RE**2*(t1+t2-t3)\\n\\ndef mu_compton(E):\\n    return sigma_KN_per_e(E)*NE\\n\\ndef mu_pair(E):\\n    if E < 2*M_E: return 0.0\\n    return 0.0006*min(1.0,(E-2*M_E)/(2.0-2*M_E))\\n\\ndef kn_sample_eps(E):\\n    a = E / M_E\\n    eps0 = 1/(1+2*a); eps0sq = eps0*eps0\\n    alpha1 = -math.log(eps0)\\n    alpha2 = alpha1 + 0.5*(1-eps0sq)\\n    while True:\\n        if alpha1 > alpha2*random.random():\\n            eps = math.exp(-alpha1*random.random()); eps2 = eps*eps\\n        else:\\n            eps2 = eps0sq + (1-eps0sq)*random.random(); eps = math.sqrt(eps2)\\n        onecost = (1-eps)/(eps*a)\\n        sint2 = onecost*(2-onecost)\\n        greject = 1 - eps*sint2/(1+eps2)\\n        if greject <= random.random():\\n            return eps, 1-onecost\\n\\ndef rotate(d, cost, phi):\\n    ux,uy,uz = d\\n    sint = math.sqrt(max(0.0,1-cost*cost))\\n    if abs(uz) > 0.99999:\\n        nx = sint*math.cos(phi); ny = sint*math.sin(phi); nz = cost*sgn(uz)\\n    else:\\n        temp = math.sqrt(1-uz*uz)\\n        nx = sint*(ux*uz*math.cos(phi) - uy*math.sin(phi))/temp + ux*cost\\n        ny = sint*(uy*uz*math.cos(phi) + ux*math.sin(phi))/temp + uy*cost\\n        nz = -sint*math.cos(phi)*temp + uz*cost\\n    n = math.sqrt(nx*nx+ny*ny+nz*nz)\\n    return (nx/n, ny/n, nz/n)\\n\\ndef in_volume(p):\\n    x,y,z = p\\n    return (x*x+y*y <= 1.0) and (9.9 <= z <= 10.1)\\n\\ndef in_phantom(p):\\n    x,y,z = p\\n    return abs(x)<15 and abs(y)<15 and 0<z<30\\n\\ndef sample_entry_dir():\\n    while True:\\n        u = (2*random.random()-1)*0.05\\n        v = (2*random.random()-1)*0.05\\n        w = (1+u*u+v*v)**-1.5\\n        if random.random() < w:\\n            break\\n    n = math.sqrt(u*u+v*v+1)\\n    d = (u/n, v/n, 1/n)\\n    t = 100.0/d[2]\\n    p = (d[0]*t, d[1]*t, 0.0)\\n    return p, d\\n\\ndef sample_isotropic_dir():\\n    c = 2*random.random()-1; ph = 2*math.pi*random.random()\\n    s = math.sqrt(1-c*c)\\n    return (s*math.cos(ph), s*math.sin(ph), c)\\n\\ndef track_photon(E, p, d, events):\\n    stack = [(E,p,d)]\\n    while stack:\\n        E,p,d = stack.pop()\\n        while True:\\n            mc = mu_compton(E); mp = mu_pair(E)\\n            mt = mc + mp + MU_PHOTO + MU_RAYL\\n            s = -math.log(1-random.random())/mt\\n            q = (p[0]+d[0]*s, p[1]+d[1]*s, p[2]+d[2]*s)\\n            if not in_phantom(q):\\n                break\\n            p = q\\n            inside = in_volume(p)\\n            r = random.random()*mt\\n            if r < mc:\\n                eps, cost = kn_sample_eps(E)\\n                Eo = eps*E\\n                phi = 2*math.pi*random.random()\\n                pe_x = E - Eo*cost\\n                pe_mag = math.sqrt(E*E + Eo*Eo - 2*E*Eo*cost)\\n                cos_e = pe_x/pe_mag if pe_mag>0 else 1.0\\n                if inside:\\n                    events.append(dict(process=\\\"compton\\\", e_in_MeV=E, e_out_MeV=Eo, cos_scatter=cost,\\n                                       t_e_MeV=E-Eo, cos_electron=cos_e, t_positron_MeV=None))\\n                d = rotate(d, cost, phi)\\n                E = Eo\\n            elif r < mc+mp:\\n                Tt = E - 2*M_E\\n                fr = random.random()\\n                Te = Tt*fr; Tp = Tt*(1-fr)\\n                th = abs(random.gauss(0, M_E/(Te+M_E)))\\n                cos_e = math.cos(th)\\n                if inside:\\n                    events.append(dict(process=\\\"pair\\\", e_in_MeV=E, e_out_MeV=None, cos_scatter=None,\\n                                       t_e_MeV=Te, cos_electron=cos_e, t_positron_MeV=Tp))\\n                dd = sample_isotropic_dir()\\n                stack.append((M_E, p, dd))\\n                stack.append((M_E, p, (-dd[0],-dd[1],-dd[2])))\\n                break\\n            elif r < mc+mp+MU_PHOTO:\\n                if inside:\\n                    events.append(dict(process=\\\"photoelectric\\\", e_in_MeV=E, e_out_MeV=None, cos_scatter=None,\\n                                       t_e_MeV=E, cos_electron=0.9, t_positron_MeV=None))\\n                break\\n            else:\\n                while True:\\n                    c = 2*random.random()-1\\n                    if random.random()*2 <= 1+c*c: break\\n                phi = 2*math.pi*random.random()\\n                if inside:\\n                    events.append(dict(process=\\\"rayleigh\\\", e_in_MeV=E, e_out_MeV=E, cos_scatter=c,\\n                                       t_e_MeV=0.0, cos_electron=None, t_positron_MeV=None))\\n                d = rotate(d, c, phi)\\n\\nif __name__ == \\\"__main__\\\":\\n    import sys\\n    N = int(sys.argv[1])\\n    events = []\\n    t0 = time.time()\\n    nin = 0\\n    for i in range(N):\\n        p,d = sample_entry_dir()\\n        track_photon(2.0, p, d, events)\\n    print(\\\"histories\\\", N, \\\"events\\\", len(events), \\\"time\\\", round(time.time()-t0,1))\\n    print(Counter(e['process'] for e in events))\\n    print(\\\"sum mu:\\\", mu_compton(2.0)+mu_pair(2.0)+MU_PHOTO+MU_RAYL, \\\"compton\\\", mu_compton(2.0))\\n    json.dump(events, open(\\\"events_%d.json\\\"%N,\\\"w\\\"))\\n'''\\nopen('sim.py','w').write(code)\\nimport subprocess\\nr = subprocess.run(['python3','sim.py','300000'],capture_output=True,text=True,cwd='.')\\nprint(r.stdout, r.stderr[-2000:])\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Since state doesn't persist between calls, I need to write the complete script and execute it all within a single call.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS2AYKEAgSGAI4AUIIdGhpbmtpbmcSDBHn/I11we1bUGm+zxoM1rvfpITgYP5+dhUuIjDNdxqXA6TIwlw9848xNmEEh/09JJSQxCrhiyTknWspDuwtI6E1FzEYRlk2SaV7gA8q9QUh1tIEyh2try1TdIWPv7kpVOt0nQ0oGdRIGf/Uxf8+Qwp2UmFX4Y235zvze/KoKhHnKpiSXfNRhO8JrZpSSvvdlXVCZ6isxZCLd7W+T+fr6Aw+KWiDaKOnq+vQpEF2J8Wry119DhctYvYsRuqTiSXp8i3aA5VoWKYFulxpxQj/nFMK3T72ytetwqE4N/WqtI6w2QtpFN+pMG69XAT2Q0UewMYm1GMoVPn9vqxqxTI9fQvYxdWg4MD522Fhkzz9dhLUFtw04kQxijZG1VxGXt/HkkipJtZhwTzjlir0DtqRkFGm0C9oVU6eyWv44UC+vzIqwicVUCOu2LVZVuoxAqu/1Q1duBIfaOhjwco9L0wog0BV/7B4K4smx6MHFYUklEAEdR7AXIj4hxNtt4VFZj2GzRZsoO42Fjqc+GMlCGJN/73JQc5GwvhRtr5D1K+gQUWUSqz3mfFZX64aCIqNzbi+wLHcjqSOlwFu8HSaeC9z0jZO/jC4/eunPkI7KPcnM7F6wT0Dsc6fTixUAE6k/lXAnpBJdUDwH09UOBlkgHWqrvjFgI/I3vKplqt7TBc10fhYT4Mus8M9WKdL7/GDM2HTRwzUh8c4aDuocSQm/PHiIyK+IJkN6NX9AP8UXZICYJfvawK5BIZ9mmIhjhby8HudI1QXaNSDeBD0ahY+mDLXvEHrO9OE5YWhFPOCqZmpiML2oiN9OGhQ3mTcMlNeDPG/WViC287mPIP56b07/ICyPaLEN0ezBimydKY/wV3t8m72j3ZIt9xrBq6wfLLB32KKUCf5uJFpcPM6EE0lCrnKG/o1rMgWTsAOhtSMyOBhcDVU2szT3+lCY2xjcBXURSZ7L/fV/AEOU5MWbpTDb8b0QxOVz9YwhdZFtbqrh6U+IdjkVTb3nbXKFSE92MoR9hoELNjGm/RDt1mQAue8C1ROIDVgrzerzoBFC+RexIqG/y1E+DTlq6vzK5BH7Lv/iG3znnTcROx8HanM7TT5U84oeMGL5oUNGAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 23094,
+  "completion_tokens": 2716,
+  "total_tokens": 25810,
+  "cost": 0.0036674,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0036674,
+   "upstream_inference_prompt_cost": 0.0023094,
+   "upstream_inference_completions_cost": 0.001358
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 46,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

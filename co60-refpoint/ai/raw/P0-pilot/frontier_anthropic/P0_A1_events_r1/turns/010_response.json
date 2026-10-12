@@ -1,0 +1,57 @@
+{
+ "id": "gen-1791815521-rfHAMdg9wWvUGqCfd9bD",
+ "object": "chat.completion",
+ "created": 1791815521,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01S4HAYaNPSrwBK2JqkB5WVs",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport subprocess\\ncode=open('mc.py').read()\\ndbg = code.replace('    vol=in_volume(pos)\\\\n','    vol=in_volume(pos)\\\\n    print(\\\"it\\\",it,pos.shape[0],\\\"vol\\\",vol.sum(), \\\"zmean\\\",pos[:,2].mean(), \\\"E\\\",en.mean(), file=sys.stderr)\\\\n')\\nopen('mc_dbg.py','w').write(dbg)\\nr=subprocess.run(['python','mc_dbg.py','1','20000'],capture_output=True,text=True)\\nprint(r.stderr[:3000], r.stdout)\\n\"}"
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 39613,
+  "completion_tokens": 243,
+  "total_tokens": 39856,
+  "cost": 0.0040828,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0040828,
+   "upstream_inference_prompt_cost": 0.0039613,
+   "upstream_inference_completions_cost": 0.0001215
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 0,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

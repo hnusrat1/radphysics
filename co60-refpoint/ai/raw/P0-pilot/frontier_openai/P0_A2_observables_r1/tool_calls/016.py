@@ -1,0 +1,2 @@
+import numpy as np
+edges=np.array([.01,.05,.1,.15,.2,.25,.3,.35,.4,.45,.5,.55,.6,.65,.7,.75,.8,.85,.9,.95,1,1.05,1.1,1.15,1.2,1.4]); mid=(edges[:-1]+edges[1:])/2; a=np.loadtxt('/tmp/data/estar_water.txt'); sc=np.interp(mid,a[:,0],a[:,1]); sr=np.interp(mid,a[:,0],a[:,2]); wid=np.diff(edges); cum=np.maximum(1-mid/1.6,0); w=wid*cum/sc; w=w/w.sum(); print(np.round(w,6).tolist(),w.sum(),np.dot(w,mid),np.dot(w,sc),np.dot(w,sr)/np.dot(w,sc)); flu=0.0391463231592/np.dot(w,sc); print(flu, np.round(flu*w,8).tolist())

@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791814794-VeFBlMibANdk4cW7fgX2",
+ "object": "chat.completion",
+ "created": 1791814794,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "The transport runs. Before scaling up, I'll check the primary fluence against the analytic value exp(-\u03bc\u00b710) \u2248 0.610.",
+    "refusal": null,
+    "reasoning": "I'm double-checking the primary fluence calculation against the expected value, computing it via Omega times 110 squared divided by volume terms, but getting about 5% off from the target of 0.610 \u2014 trying to track down where the discrepancy is coming from.\n\nWorking through the expected track-length formula, I'm comparing fluence times volume against the simulated sum (302.7 vs an expected ~317), which comes out about 4.7% low. I'm checking if this is within statistical noise given the number of tracks crossing the volume, and confirming that primaries attenuate correctly before reaching the 10 cm mark \u2014 this looks consistent, so I want to rerun with a larger N to see if the discrepancy shrinks.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_016STXUiqQLGK7VWVcALc3SE",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport subprocess,time,pickle\\nt=time.time()\\nr=subprocess.run(['python','mc.py','2','2000000'],capture_output=True,text=True)\\nprint(r.stdout[-300:],r.stderr[-1000:],time.time()-t)\\no=pickle.load(open('out_2.pkl','rb'))\\nNORM=o['NORM']\\nprint(\\\"primary fluence/phi0\\\", NORM*o['Lsum']['P'], \\\"scattered\\\", NORM*o['Lsum']['S'])\\nprint(\\\"analytic primary\\\", np.exp(-0.04942*10))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I'm double-checking the primary fluence calculation against the expected value, computing it via Omega times 110 squared divided by volume terms, but getting about 5% off from the target of 0.610 \u2014 trying to track down where the discrepancy is coming from.\n\nWorking through the expected track-length formula, I'm comparing fluence times volume against the simulated sum (302.7 vs an expected ~317), which comes out about 4.7% low. I'm checking if this is within statistical noise given the number of tracks crossing the volume, and confirming that primaries attenuate correctly before reaching the 10 cm mark \u2014 this looks consistent, so I want to rerun with a larger N to see if the discrepancy shrinks.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "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.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 81981,
+  "completion_tokens": 1069,
+  "total_tokens": 83050,
+  "cost": 0.0087326,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0087326,
+   "upstream_inference_prompt_cost": 0.0081981,
+   "upstream_inference_completions_cost": 0.0005345
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 786,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

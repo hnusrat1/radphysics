@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791815487-PYZfhQnksfFZnJD0o3nY",
+ "object": "chat.completion",
+ "created": 1791815487,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "The earlier edit didn't actually go through, so I'm rewriting the whole file cleanly instead, using per-interaction arrays and mask-based recording for the events rather than slow np.where loops.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01GNWfXkfXARztc4X4MupQHQ",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\ncode = r'''\\nimport numpy as np, sys, json\\nseed=int(sys.argv[1]); N_hist=int(sys.argv[2])\\nrng=np.random.default_rng(seed)\\nre=2.8179403e-13; me=0.510998950\\nNA=6.02214076e23\\nNe=0.5551*NA            # electrons per cm3 of water (rho=1)\\n\\ndef sigKN(E):\\n    k=E/me\\n    t1=(1+k)/k**2*(2*(1+k)/(1+2*k)-np.log(1+2*k)/k)\\n    t2=np.log(1+2*k)/(2*k)-(1+3*k)/(1+2*k)**2\\n    return 2*np.pi*re**2*(t1+t2)\\n_pe_E=np.array([1.0,1.022,1.5,2.0,3.0,4.0,6.0,10.0,20.0,100.0])\\n_pe_s=np.array([0,0,0.00005,0.00035,0.0025,0.0055,0.0120,0.0200,0.0216,0.0216])\\ndef sig_pair(E): return np.interp(E,_pe_E,_pe_s)          # cm2/g (approx.)\\ndef sig_coh(E):  return 0.00014*(2.0/np.maximum(E,1e-3))**1.2\\ndef sig_pe(E):   return 0.0028*(0.1/np.maximum(E,1e-4))**3\\n\\ndef sample_compton(E):\\n    # proposal in eps ~ 1/eps (log-uniform); f/(1/eps)=1+eps^2-eps sin^2 <= 2\\n    n=E.size; k=E/me\\n    epsmin=1/(1+2*k); L=np.log(1/epsmin)\\n    out=np.empty(n); todo=np.arange(n)\\n    while todo.size:\\n        kk=k[todo]\\n        eps=np.exp(-L[todo]*rng.random(todo.size))\\n        c=1-(1/eps-1)/kk\\n        ratio=(1+eps*eps-eps*(1-c*c))/2.0\\n        acc=rng.random(todo.size)<ratio\\n        out[todo[acc]]=eps[acc]\\n        todo=todo[~acc]\\n    return out\\n\\ndef unit(d): return d/np.linalg.norm(d,axis=1,keepdims=True)\\ndef perp_basis(d):\\n    a=np.where(np.abs(d[:,[0]])<0.9,np.array([[1.0,0,0]]),np.array([[0,1.0,0]]))\\n    u=unit(np.cross(d,a)); v=np.cross(d,u)\\n    return u,v\\ndef rotate(d,cth,phi):\\n    u,v=perp_basis(d)\\n    s=np.sqrt(np.maximum(0,1-cth*cth))\\n    return unit(cth[:,None]*d+s[:,None]*(np.cos(phi)[:,None]*u+np.sin(phi)[:,None]*v))\\ndef iso_dir(n):\\n    c=2*rng.random(n)-1; ph=2*np.pi*rng.random(n); s=np.sqrt(1-c*c)\\n    return np.stack([s*np.cos(ph),s*np.sin(ph),c],axis=1)\\n\\ndef sample_rayleigh_c(E):\\n    # pdf(c) ~ (1+c^2) exp(-A(1-c)); A=2k^2/q0^2 (k in 1/A, q0=2.5/A) -- crude form-factor model\\n    kA=E*1000.0/12.398; A=2*kA**2/2.5**2\\n    n=E.size; out=np.empty(n); todo=np.arange(n)\\n    while todo.size:\\n        u=rng.exponential(1.0,todo.size)/A[todo]\\n        ok=u<=2.0\\n        acc=ok & (rng.random(todo.size)*2.0 < (1+(1-np.minimum(u,2))**2))\\n        out[todo[acc]]=1-u[acc]\\n        todo=todo[~acc]\\n    return out\\n\\ndef sample_pe_cos(E):\\n    # photoelectron direction, pdf ~ sin^2/(1-beta cos)^4 ; bound by sin^2 ... use rejection with bound 1/(1-beta)^2\\n    b=np.sqrt(1-(me/(E+me))**2)\\n    n=E.size; out=np.empty(n); todo=np.arange(n)\\n    while todo.size:\\n        c=2*rng.random(todo.size)-1; bb=b[todo]\\n        f=(1-c*c)/(1-bb*c)**4\\n        bound=1.0/(1-bb)**2*0.5+1e-300\\n        bound=np.maximum(bound, f.max())  # safe global bound per batch\\n        acc=rng.random(todo.size)*bound<f\\n        out[todo[acc]]=c[acc]\\n        todo=todo[~acc]\\n    return out\\n\\nLO=np.array([-15.0,-15.0,0.0]); HI=np.array([15.0,15.0,30.0])\\ndef in_volume(p): return (np.hypot(p[:,0],p[:,1])<=1.0)&(np.abs(p[:,2]-10.0)<=0.1)\\ndef dist_to_exit(p,d):\\n    with np.errstate(divide='ignore',invalid='ignore'):\\n        t1=(LO-p)/d; t2=(HI-p)/d\\n    tmax=np.where(d>0,t2,np.where(d<0,t1,np.inf))\\n    return np.min(tmax,axis=1)\\n\\n# ---- source ----\\nu=rng.uniform(-0.05,0.05,N_hist); v=rng.uniform(-0.05,0.05,N_hist)\\nacc=rng.random(N_hist)<(1+u*u+v*v)**(-1.5)      # uniform in solid angle\\nu=u[acc]; v=v[acc]\\ndr=unit(np.stack([u,v,np.ones_like(u)],axis=1))\\npos=np.stack([100*u,100*v,np.zeros_like(u)],axis=1)   # entrance face z=0 (source at z=-100)\\nen=np.full(pos.shape[0],2.0)\\n\\nrows=[]\\nit=0\\nwhile pos.shape[0]>0 and it<500:\\n    it+=1\\n    comp=sigKN(en)*Ne; pe=sig_pe(en); pair=sig_pair(en)*1.0; coh=sig_coh(en)\\n    tot=comp+pe+pair+coh\\n    s=-np.log(rng.random(pos.shape[0]))/tot\\n    tex=dist_to_exit(pos,dr)\\n    alive=s<tex\\n    pos,dr,en,comp,pe,pair,coh,tot,s=[x[alive] for x in (pos,dr,en,comp,pe,pair,coh,tot,s)]\\n    if pos.shape[0]==0: break\\n    pos=pos+s[:,None]*dr\\n    vol=in_volume(pos)\\n    r=rng.random(pos.shape[0])*tot\\n    pm=np.zeros(pos.shape[0],int)\\n    pm[r>=comp]=1; pm[r>=comp+pe]=2; pm[r>=comp+pe+pair]=3\\n    # pm: 0 compton, 1 photo, 2 pair, 3 coherent\\n    newE=en.copy(); newd=dr.copy(); keep=np.ones(pos.shape[0],bool)\\n    ann_pos=[]; ann_d=[]; ann_E=[]\\n    # --- Compton\\n    m=pm==0\\n    if m.any():\\n        Ei=en[m]; eps=sample_compton(Ei); Eo=Ei*eps; k=Ei/me\\n        cth=1-(1/eps-1)/k; phi=2*np.pi*rng.random(Ei.size)\\n        din=dr[m]\\n        newd_c=rotate(din,cth,phi)\\n        pvec=Ei[:,None]*din-Eo[:,None]*newd_c\\n        pmag=np.linalg.norm(pvec,axis=1)\\n        cos_e=np.clip((Ei-Eo*cth)/np.maximum(pmag,1e-12),-1,1)\\n        Te=Ei-Eo\\n        newd[m]=newd_c; newE[m]=Eo\\n        mi=np.where(vol&m)[0]\\n        for j in mi:\\n            q=np.searchsorted(np.where(m)[0],j)\\n            rows.append(dict(process=\\\"compton\\\",e_in_MeV=float(en[j]),e_out_MeV=float(Eo[q]),cos_scatter=float(cth[q]),\\n                             t_e_MeV=float(Te[q]),cos_electron=float(cos_e[q]),t_positron_MeV=None))\\n    # --- coherent\\n    m3=pm==3\\n    if m3.any():\\n        Ei=en[m3]; c3=sample_rayleigh_c(Ei); ph=2*np.pi*rng.random(Ei.size)\\n        newd[m3]=rotate(dr[m3],c3,ph)\\n        mi=np.where(vol&m3)[0]\\n        for j in mi:\\n            q=np.searchsorted(np.where(m3)[0],j)\\n            rows.append(dict(process=\\\"rayleigh\\\",e_in_MeV=float(en[j]),e_out_MeV=float(en[j]),cos_scatter=float(c3[q]),\\n                             t_e_MeV=0.0,cos_electron=None,t_positron_MeV=None))\\n    # --- photoelectric\\n    m1=pm==1\\n    if m1.any():\\n        Ei=en[m1]; cp=sample_pe_cos(Ei)\\n        mi=np.where(vol&m1)[0]\\n        for j in mi:\\n            q=np.searchsorted(np.where(m1)[0],j)\\n            rows.append(dict(process=\\\"photoelectric\\\",e_in_MeV=float(en[j]),e_out_MeV=None,cos_scatter=None,\\n                             t_e_MeV=float(en[j]),cos_electron=float(cp[q]),t_positron_MeV=None))\\n        keep[m1]=False\\n    # --- pair\\n    m2=pm==2\\n    if m2.any():\\n        Ei=en[m2]; Tm=Ei-2*me\\n        Tminus=Tm*rng.random(Ei.size); Tplus=Tm-Tminus\\n        cpair=1-0.1*rng.random(Ei.size)   # electron forward-peaked (approximate)\\n        mi=np.where(vol&m2)[0]\\n        for j in mi:\\n            q=np.searchsorted(np.where(m2)[0],j)\\n            rows.append(dict(process=\\\"pair\\\",e_in_MeV=float(en[j]),e_out_MeV=None,cos_scatter=None,\\n                             t_e_MeV=float(Tminus[q]),cos_electron=float(cpair[q]),t_positron_MeV=float(Tplus[q])))\\n        keep[m2]=False\\n        n2=m2.sum(); dA=iso_dir(n2)   # two 511 keV annihilation photons (positron annihilated at pair point)\\n        ann_pos.append(np.concatenate([pos[m2],pos[m2]])); ann_d.append(np.concatenate([dA,-dA])); ann_E.append(np.full(2*n2,me))\\n    keep &= newE>1e-3\\n    pos_new=[pos[keep]]; d_new=[newd[keep]]; E_new=[newE[keep]]\\n    for a,b,c in zip(ann_pos,ann_d,ann_E):\\n        pos_new.append(a); d_new.append(b); E_new.append(c)\\n    pos=np.concatenate(pos_new); dr=np.concatenate(d_new); en=np.concatenate(E_new)\\n    # Rayleigh/Compton events re-use position; no change\\nwith open(\\\"events_%d.json\\\"%seed,\\\"w\\\") as f: json.dump(rows,f)\\nprint(\\\"iterations\\\",it,\\\"events in volume\\\",len(rows))\\n'''\\nopen('mc.py','w').write(code)\\nimport subprocess,time\\nt=time.time()\\nr=subprocess.run(['python','mc.py','1','20000'],capture_output=True,text=True)\\nprint(r.stdout[-2000:], r.stderr[-3000:], time.time()-t)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The earlier edit didn't actually go through, so I'm rewriting the whole file cleanly instead, using per-interaction arrays and mask-based recording for the events rather than slow np.where loops.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS5QgKEAgSGAI4AUIIdGhpbmtpbmcSDMHYxgfD/j9Ni/K7RxoMUq+sWTX+tv+2SmOzIjCUNEFS9EppnoQ6PzxoeR/eWy454KG9b0yZ2C3wL1pIuo3b6yOn3LTYlWCxncCsc9oqggisKWBnOKQVuXVvVCrLo/PGIqp5uT6L6es6IsUcuSMD25p3rzWTjyLdgnuW9Zp1yoZeDewcQguyuqutSEfT/4FK6nNZy4+oepJQMjjWOtIVtCBQ56Q2UiAS5FhoCp205DuABiooh4rh8K6nzDkFWGaYxT2Irhjze1X8YhELZfcFYm+yvohY+QJ/55EBn4GqYM5nB/tXTUqgFnqUi1+sOtFnltMk+DF/BWf1NKEf759vkKI4TyfZmwme2k1iDSpvKVr27+5M4XYYdRsOmkEZq48gnNIUtj/PXp980xR0rFH4D8En8b+Gdd10Q8EHNYlJjhwZNfadx6iZ+C2gpIz2ptoL0v9T3RAzwOLFRRbeoN6XUUCEys/1wM4KVxO6qch9t26c63H9oPzOfjZKaTJZpd36k07vEW9Vy+KwxhSOHB/PF6maQmyL0FHb0JN9a/b3Hoe+NhdAkGt+NaVyKxvHx/VjgaZ3JUjOaFFrey1oeqF5k1hbKBNVTHEcFIdCSJa960BvpG+eDQGQ2SSJeS5lamFr4RMGeNB2XiZBYXbJ8PNECPqMutJeTSMBGdt5R9Ed6mwSLYbZFPiwfGnmGBUmbBqrK9K9nCrgQdVzfyreK/cWEY0aS1lyLwl6t4TYzb+H6aWmj2CbGsCKkU9Tt3eIiIq1XCRMpeYmhqSKWJal9DCOxcke8AcffApv1zD+XOM5HMWvcWcqGIVOEG8kXgOTgBmK3mepn4l2OEztuPudBlUBAKt1d6ZfhGJS/zImnb3//jqv24eLNZ9O0ypIYY0st2bB9yF4z+zXP+Hy2WGt8jeQ4q89D+z1/JvVNJksNB9slls+RpcRnwmMGnFvoEcY6ClWvi3bHi+WFzThIsu5/n6mwf5v4EaGuG4R690riC/lEmmPAxjitx2BP7nIMDMmgB201jzViNuk4ncUXGe9jEL/IXg53pdcPmorxAaoOXlquorvlQJG09aScIymaHLtHynSZKhGtafV9CAQWobf9r0mh90CzXJJgvzo/IxMm+Hut8abkt/D/vsHTgJyOzSQ8xrLLmCgRhlRwqx3ddxmJ/yCtVWs3Mv7CFqYhzv7AV/KbULCnz7/rfCzPzAtiSt10q9PFo1qdErAFrLwIeHSx4MxFeG3CMBt6dxgvaHqVwx0GPni1ykGa1VFQBoKX1zkk1tGwdl7fJAVZehZ6ROOwJPsRhbLUXFEaEEzu+Kq2qNw8n3s5l34wSN788iYvnunr8fYHWQf8VX/c027eBEvrljvDVmBM6R3ryAO51zChEmAHZGwoQp9Vfh4SEpBQtNknzFxP4WOdFPeZo8i4Kb0oxddeLxKjucSjaEXcoQUpE2CZ1n9+fSf+ky9UoK41pRkpNVPDd4YAQ==.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 32647,
+  "completion_tokens": 4293,
+  "total_tokens": 36940,
+  "cost": 0.0054112,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0054112,
+   "upstream_inference_prompt_cost": 0.0032647,
+   "upstream_inference_completions_cost": 0.0021465
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 129,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

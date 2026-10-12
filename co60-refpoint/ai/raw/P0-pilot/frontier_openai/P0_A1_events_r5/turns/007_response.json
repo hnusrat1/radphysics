@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791813767-prAvvzIdGEN6183cTJFV",
+ "object": "chat.completion",
+ "created": 1791813767,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_fZ84WzsCEc9MDSW2GezjNNmp",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import numpy as np, collections, random, json\\narr=np.loadtxt('/tmp/e.csv')\\nrandom.seed(930214)\\nidx=random.sample(range(len(arr)),200)\\nsamp=arr[idx]\\nprint(collections.Counter(samp[:,0].astype(int)))\\nnames={0:'compton',1:'photoelectric',2:'pair',3:'rayleigh'}\\nevents=[]\\nfor row in samp:\\n p=int(row[0]); Ein,Eout,cs,Te,ce,Tp=row[1:]\\n def rnd(x): return round(float(x),8)\\n events.append({'process':names[p], 'e_in_MeV':rnd(Ein), 'e_out_MeV':None if p in (1,2) else rnd(Eout), 'cos_scatter':None if p in (1,2) else rnd(cs), 't_e_MeV':rnd(Te), 'cos_electron':None if p==3 else rnd(ce), 't_positron_MeV':None if p!=2 else rnd(Tp)})\\nopen('/tmp/events.json','w').write(json.dumps(events,indent=2))\\nprint(open('/tmp/events.json').read())\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzOiIiwuvfOMAKv8rKxdXrqb1fr0yhz_wkYZNuW9UQEtWDk9JAg61zA2kZM5moBCoKNUiE-OAs8Kc4rGcB-TxKwC3F2U2RNJNRukY5vgX4Ukp95cm5KQ88Jp8DUnOV3tPCKzKiobq_HlDYpYZryCcLJwApK9Z0vFcHA7VaZKqPS-vMN5LEYWjtrWNaC7U2KZ8-l3RnWFft5rHwCWLj3jW0-SLrTP1lsY-O81tgtO8C4kMedU0HxKlSagdxIsLegO1rsfJaM2j0qWOEhbyfeyIE23Klgw8JkHTAZwOErLjqTyjYzMBeDTDcvTAIwzqFQ4LS22IJLUB4WWSBsJzgnkNAf_u4lHhNpPplLFrD1mPiWWcC-q4sAUt9fYrOKSo7u6TiWMG369LEefOPnXW0oN40F3U-Y6HzIHDpOgvGHcQAICa-kZm_dVkmFkuNXJtmg58jKPfH5sXlzx99Ca2E3-FKXi8AJWsum-QpOWRzJfVk6A7IhNtqeTZ5cHURGQWFEgcpzFEK9T7JPBdL3IKknhkmF8OMNJAcG8vZ8zPKD03zLQDzZDCB162WbxE_5WfWkxZbzildtoSgPkg5H9P0fiaPSuxSsZ0A5dUngy_7WO0g3YIfUtqXKO47HPs_da2caE0DMMKvW2YAyGUJtU7KpHAiB75RnD2d5xTXJ3QJz7PJdxPs44wKwUmfQXBTuFq5qhsTSokiLyw8u1kZE0J3Jrde5mtRr2DGj0xgXuHDFMx-DQT9vfzmY7OQpcsIvdTaBQf8kUaHGtqpuqbbWA-blHntpdXJ06zd-3JjPElYjF1oCtD9k4Upzijr07gS7Opdu8T3OZNjTT1yD3LEXWkgObWnKgHWoYa_D-ndkC__JbZ3fMy4x31Fx7xm1Tkaj5ZsLx73SPkOCnCwAHKWuBlYVz3hdD82vdYMXbnZ5Vx8bIZ8wO66paLFyPrC47P9QZIos2ydb3qqsPX7f3lnio7BbHay3EeifgflO1ZWAV8R66cBPHXTGuHBVjcciLYdyMEEa0PBEg6dPxElBKqSLZ7sy6I94NlbLH92Arvmil06mQapR3Z-Ql_EBIdYo5jpwtfZybq77QXdgoM8RmyYjXZyIZqln-oKhxLHBgT-BEaxILQYr619fThIL0AmqU0sYPyoYbSens4ZMB_-O-nT6-D10jWJfr26fLqUqzhOFvKYCsEyhS1pR4Ja0ca18AYvFJ4hPVdtXxaRoisSyJeiLZMNw-4W_5vCMgGZxlyiEVQ-sYI44v__g3-8UaJlrSggJDJi6k2ZZNE3ol0IXwRYEoBr133Y2sylP4zyvpXs4WbYrSrc-5LpIf1kQLv4Te0N1bl-9n-Ko9_o-vxDTWijr4qrGq6SuDTOoCbOFQaHJ4nS3KC3AAWxLg2XGhqU7ffBcvrunA9QFKvhzVtE2vBbHWUR0JRy2_4priRGOPAAK20NzURO6wuN1Rn9RTCeJI4rjQNEC9QL_8UMeBDvRDt5YhpetikH2I6EStnjKzJuqfCVxezWVjkdauA5cndZCqR84_7mIaW5p9WAldHFrrcxo5cVr-2Sm9sMjxs29BZvr4AH3L2WSpmTzQGKsdaPw-whfYDOEqLj0tgyDZoyfaCVSBoSR55409Ld2FYPexCD6qShsw4MyVTsX1Zq-AyVzm4TCvq0W533wE2VOGqE6YsxX0kIezfM4tL6BBy2xsKxFYvnZmQ8NenZkVFJn3y88VDf4hP--qVczGVXVDQP8y5KQbKPLI7fNE6S7CmCwxJcChDgcyNkSOg4ZMRHbEnROyKxf-fhql-OVsV.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_007c8b4144af0c0c016acce888290487d1998dfff66bd99911",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 12038,
+  "completion_tokens": 294,
+  "total_tokens": 12332,
+  "cost": 0.0004045,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 10845,
+   "cache_write_tokens": 1190,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0004045,
+   "upstream_inference_prompt_cost": 0.0002575,
+   "upstream_inference_completions_cost": 0.000147
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 15,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

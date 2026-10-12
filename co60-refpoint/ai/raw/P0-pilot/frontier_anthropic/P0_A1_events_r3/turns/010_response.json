@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791816232-mAXNl57xmHMF1kimjKZ0",
+ "object": "chat.completion",
+ "created": 1791816232,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "The output got truncated since there are 200 events to reproduce exactly, so I should print the JSON in smaller chunks of around 50 events at a time to make sure everything comes through intact.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_017Fxt8Z8BWZ5veFWh6x29mo",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport numpy as np, pickle, json\\nev=pickle.load(open('events_6000000.pkl','rb'))\\nrng2=np.random.default_rng(2024)\\nidx=rng2.choice(len(ev),200,replace=False)\\nrows=[]\\nfor i in idx:\\n    proc,ein,eout,cs,te,ce,tp=ev[i]\\n    f=lambda x: 'null' if x is None else f\\\"{x:.4g}\\\"\\n    rows.append(f'[\\\"{proc}\\\",{ein:.4g},{f(eout)},{f(cs)},{te:.4g},{f(ce)},{f(tp)}]')\\nprint(len(rows))\\nprint(\\\"\\\\n\\\".join(rows[:70]))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The output got truncated since there are 200 events to reproduce exactly, so I should print the JSON in smaller chunks of around 50 events at a time to make sure everything comes through intact.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "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.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 43890,
+  "completion_tokens": 565,
+  "total_tokens": 44455,
+  "cost": 0.0046715,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0046715,
+   "upstream_inference_prompt_cost": 0.004389,
+   "upstream_inference_completions_cost": 0.0002825
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 289,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

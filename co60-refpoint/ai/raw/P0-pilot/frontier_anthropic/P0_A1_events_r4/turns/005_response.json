@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791816497-lz2CPHJoQLEMPvgp06QC",
+ "object": "chat.completion",
+ "created": 1791816497,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Since xs.py was already created earlier, I just need to import it now.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01ECifm5RLzZio6aMJN5FBod",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport sys, os\\nsys.path.insert(0, '/tmp/work')\\nimport xs\\nprint(xs.mu_tot(2.0), xs.mu_inc(2.0), xs.mu_tot(0.1), xs.mu_tot(0.5), xs.mu_tot(1.0))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Since xs.py was already created earlier, I just need to import it now.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSiAYKEAgSGAI4AUIIdGhpbmtpbmcSDFpy2n76/KKt0XWMVhoMx5erPTxl9RDVAorUIjAb+8VEM70ViG4Wnfj1J0u8LTYLTgB8IqGErlI7oq7wHJqRPgxIvXVABiXKsNXU9CgqpQXHD3uPwRieTjprvEBpakL4emr9R9kp/H8/I5X4SNvbu0+mXklU+f0TbMmMYxNci9RhpqwziNwg8o2cI4LJATRukZ2ApEW9Ti92R1ekxvJZikCqbeNsy0802Z4TScsSySxALbOYXMNOa23KTv6MHgVN05ssTHzrb0UrnrXVZpYgIfau7LHjW2euQxV7DxuWeFfdVfBCsQv039ZynrDojTwdKEIucQMF4oBm6J9shKfMk/5X2bJEvwJ+fv470FhU+YJAg7AIxzlD1jHpSB2AqewMiXMU0BwPu2IZ5bc96EQIzpgrYNEWZ9u+TgGgygHXRg1YVo3GH3lp7C1XjHllIa0d4hQ5mhrnFMDhCD2vCvn3ILfVbtW8qLWGLmbPuN92sNk3EN47D13TZMomqoc8dZY17FAbFXimTkh8ltywrAPCeZSVfoc1ED3VSPZwRoBHBhDRdA9ZVuGq7gJGSM17XnlwMLsznlH544ZQHdCtTMSyKcqQAhPqdpjhZecNeXg/CJ/wf9YJNs2SJPiqaonAo6Zi0ftLMFZkDtg9uHP0WLdHPGJNOFrfNxPtMnzSQlMxFOIdsr7svCrFEQ6NaCm7UShvbM/SevmqFFcL1YlDGe+WvMGUkot0KbuTG1RDcRO1ufF+cIlXWkDNk4meEDcnyXNkkRMoaa7HQtrFdk0lCsywbSizF4ApP4NhUcpy/Mq/t3IiLP4V81+Ym5xao/PKsIK8wIVotHBz+s+gm4TcHN52XgzxkBVdwsRpmUKB2s33gD6JdjqAAkHLRtVgVXaGHYNk0A553v/wuVcvKTIyl7RVbEnfrpwYNsmMPS2n5hAntMSxh1rImud+Cf/rJgikfR4dk4Y/uy7uGkcNB3R+YP474zwc1g68SZWjASQTKFacZiI5F+A/KBgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 29193,
+  "completion_tokens": 162,
+  "total_tokens": 29355,
+  "cost": 0.0030003,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0030003,
+   "upstream_inference_prompt_cost": 0.0029193,
+   "upstream_inference_completions_cost": 8.1e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 19,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}
