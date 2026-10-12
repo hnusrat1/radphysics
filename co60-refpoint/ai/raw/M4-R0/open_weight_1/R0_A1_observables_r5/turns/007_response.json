@@ -1,0 +1,57 @@
+{
+ "id": "gen-1791835804-yu18EhxiAwgfZz2i79aW",
+ "object": "chat.completion",
+ "created": 1791835804,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "SiliconFlow",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "01a131bcd50a74c1abd9bd53690bda56",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np, math\\nmec2 = 0.51099895\\nr_e = 2.8179403262e-13\\nNa  = 6.02214076e23\\nmolW = 18.01528\\ne_per_g_water = 10.0/molW*Na\\nmol_per_g_water = Na/molW\\ne_per_g_air = (0.75524*14/28.0134 + 0.23199*16/31.998 + 0.01277*18/39.948)*Na\\nI_water = 78e-6\\nI_air   = 85.7e-6\\nZA_water = 10.0/18.01528\\nZA_air = 0.4992\\n\\ndef KN_barn(E):\\n    g = E/mec2\\n    a = 1+2*g\\n    return 2*np.pi*r_e**2*((1+g)/g**2*(2*(1+g)/a-np.log(a)/g)+np.log(a)/(2*g)-(1+3*g)/a**2)/1e-24\\n\\ndef mu_inc_water(E):\\n    E=np.asarray(E,float)\\n    return KN_barn(E)*e_per_g_water/1e24\\n\\ndef mu_coh_water(E):\\n    return 0.00085*(1.25/np.asarray(E,float))**0.65\\n\\ndef mu_photo_water(E):\\n    return 1.2e-5*np.asarray(E,float)**-3.0\\n\\ndef mu_pair_water(E):\\n    E=np.asarray(E,float)\\n    out=np.zeros_like(E)\\n    m=E>1.022\\n    x=(E[m]-1.022)/9.0\\n    out[m]=(0.114+2*0.0018)*x*x*1e-24*mol_per_g_water\\n    return out\\n\\ndef mu_tot_water(E):\\n    return mu_inc_water(E)+mu_coh_water(E)+mu_photo_water(E)+mu_pair_water(E)\\n\\nKc = 0.153536\\ndef s_col_formula(E_MeV, ZA, I_MeV):\\n    E=np.asarray(E_MeV,float)\\n    tau=E/mec2\\n    gam=tau+1.0\\n    beta2=1.0-1.0/gam**2\\n    Tmax = tau/2.0*mec2\\n    num = 2*mec2*beta2*gam**2*Tmax\\n    B = np.log(num/I_MeV**2) - beta2 - (2*gam-1)/gam**2*np.log(2.0) + (gam-1)**2/(8*gam**2)\\n    return Kc*ZA/beta2*B\\n\\nfor E in [0.01,0.02,0.05,0.1,0.2,0.5,1.0,1.25,2.0]:\\n    print(E, s_col_formula(E,ZA_water,I_water))\\n\"}"
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 72338,
+  "completion_tokens": 722,
+  "total_tokens": 73060,
+  "cost": 0.005715412,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 38144,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.005715412,
+   "upstream_inference_prompt_cost": 0.005513252,
+   "upstream_inference_completions_cost": 0.00020216
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 1,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

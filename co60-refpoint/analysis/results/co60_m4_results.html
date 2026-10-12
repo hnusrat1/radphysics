@@ -1,0 +1,275 @@
+
+<title>Co-60 M4 Results</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+:root {
+  /* Layout: one reading column, figures and tables full width inside it; tokens shared with the study pages. */
+  --bg: #f4f6f9; --surface: #ffffff; --ink: #142030; --muted: #586779; --rule: #d9e0e8;
+  --cobalt: #1f4fb8; --cobalt-soft: #e5ecfa; --amber: #a35a00; --amber-soft: #fbefdc; --green: #23704a;
+  --green-soft: #e1f2e8; --red: #a8322a; --red-soft: #f8e3e0;
+  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a;
+  --f-display: "IBM Plex Sans Condensed", "Arial Narrow", sans-serif;
+  --f-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-ui: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0d1219; --surface: #141c26; --ink: #e3e9f1; --muted: #93a2b4; --rule: #263241;
+  --cobalt: #7ea7ff; --cobalt-soft: #1b2a47; --amber: #f0b45b; --amber-soft: #3a2a12; --green: #6fd39a;
+  --green-soft: #15301f; --red: #ff8f84; --red-soft: #3a1714; --s1: #3987e5; --s2: #d95926; --s3: #199e70;
+  color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0d1219; --surface: #141c26; --ink: #e3e9f1; --muted: #93a2b4; --rule: #263241;
+  --cobalt: #7ea7ff; --cobalt-soft: #1b2a47; --amber: #f0b45b; --amber-soft: #3a2a12; --green: #6fd39a;
+  --green-soft: #15301f; --red: #ff8f84; --red-soft: #3a1714; --s1: #3987e5; --s2: #d95926; --s3: #199e70;
+  color-scheme: dark; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 17px; line-height: 1.6; }
+main { max-width: 1000px; margin: 0 auto; padding-inline: 20px; padding-block: 36px 64px; display: grid; gap: 40px; }
+section { display: grid; gap: 14px; min-width: 0; }
+h1, h2, h3 { font-family: var(--f-display); font-weight: 600; text-wrap: balance; margin: 0; line-height: 1.15; }
+h1 { font-size: clamp(30px, 5vw, 44px); letter-spacing: -0.01em; }
+h2 { font-size: 26px; }
+p { margin: 0; max-width: 68ch; }
+.eyebrow { font-family: var(--f-display); font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--cobalt); font-weight: 600; }
+.meta { font-family: var(--f-mono); font-size: 12.5px; color: var(--muted); display: flex; flex-wrap: wrap;
+  gap: 6px 18px; }
+header { display: grid; gap: 12px; }
+.lede { font-size: 19px; }
+.findings { display: grid; gap: 12px; padding: 0; margin: 0; list-style: none; max-width: 76ch; }
+.findings li { padding-left: 18px; border-left: 3px solid var(--rule); }
+.findings li b { font-family: var(--f-ui); font-weight: 600; font-size: 0.95em; }
+.panel { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 18px; min-width: 0; }
+.scroll { overflow-x: auto; }
+.chart { width: 100%; min-width: 640px; height: auto; display: block; font-family: var(--f-ui); }
+.chart .tick { font-size: 12px; fill: var(--muted); font-variant-numeric: tabular-nums; }
+.chart .tick.band { fill: var(--green); font-weight: 600; }
+.chart .axis { font-size: 12.5px; fill: var(--muted); }
+.chart .rowlab { font-size: 14px; fill: var(--ink); font-weight: 500; }
+.chart .offscale { font-size: 12px; fill: var(--ink); font-family: var(--f-mono); }
+.chart .note { font-size: 12px; fill: var(--muted); font-style: italic; }
+.chart [data-tip] { cursor: default; }
+.chart [data-tip]:focus { outline: none; stroke: var(--ink); }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 22px; font-family: var(--f-ui); font-size: 13.5px; color: var(--ink); }
+.legend span { display: inline-flex; align-items: center; gap: 7px; }
+.legend svg { width: 14px; height: 14px; }
+.caption { font-family: var(--f-ui); font-size: 13.5px; color: var(--muted); max-width: 80ch; }
+table { border-collapse: collapse; width: 100%; font-family: var(--f-ui); font-size: 14px; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--rule); vertical-align: middle; }
+thead th { font-weight: 600; font-size: 12.5px; color: var(--muted); border-bottom: 1.5px solid var(--ink);
+  vertical-align: bottom; }
+tbody th { font-weight: 500; white-space: nowrap; }
+.n { font-family: var(--f-mono); font-variant-numeric: tabular-nums; font-size: 0.92em; }
+td.n { white-space: nowrap; }
+td { white-space: nowrap; }
+.muted { color: var(--muted); }
+.mcrow th, .mcrow td { color: var(--muted); font-style: italic; }
+.chip { display: inline-block; font-family: var(--f-ui); font-size: 11px; font-weight: 600; letter-spacing: 0.03em;
+  padding: 1px 7px; border-radius: 10px; text-transform: uppercase; margin-left: 4px; }
+.chip.pass { background: var(--green-soft); color: var(--green); }
+.chip.fail { background: var(--red-soft); color: var(--red); }
+.chip.unresolved { background: var(--amber-soft); color: var(--amber); }
+.chip.missing { background: var(--cobalt-soft); color: var(--muted); }
+.layers .L { font-family: var(--f-mono); color: var(--cobalt); margin-right: 4px; }
+.layers thead th { white-space: normal; min-width: 92px; }
+.heat { background: color-mix(in srgb, var(--cobalt) calc(var(--h) * 55%), var(--surface)); text-align: center; }
+.costs { display: flex; flex-wrap: wrap; gap: 12px 40px; font-family: var(--f-ui); }
+.costs div { display: grid; gap: 2px; }
+.costs .v { font-family: var(--f-mono); font-size: 24px; font-variant-numeric: tabular-nums; }
+.costs .k { font-size: 13px; color: var(--muted); }
+.notes { display: grid; gap: 10px; padding-left: 20px; margin: 0; max-width: 78ch; font-size: 16px; }
+code { font-family: var(--f-mono); font-size: 0.86em; }
+#tip { position: fixed; pointer-events: none; z-index: 10; max-width: 320px; background: var(--ink); color: var(--bg);
+  font-family: var(--f-ui); font-size: 12.5px; line-height: 1.4; padding: 6px 9px; border-radius: 4px; }
+@media (max-width: 560px) { body { font-size: 16px; } main { padding-inline: 16px; } h2 { font-size: 22px; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+<main>
+<header>
+  <div class="eyebrow">Co-60 reference point · M4 AI runs · scored against Monte Carlo</div>
+  <h1>Five fast models at the Co-60 reference point</h1>
+  <div class="meta"><span>R0: central axis, 5 cm depth, water, 10 × 10 cm², SSD 100 cm</span>
+    <span>124 conversations</span><span>5 models × 3 conditions</span><span>run 2026-10-12</span>
+    <span>branch m4-ai-runs</span></div>
+  <p class="lede">Each model was asked for 33 quantities that follow the energy from the incident photon to the
+  absorbed dose, five times per condition, and for 1,000 sampled photon interactions. Answers are scored against the
+  study's Monte Carlo reference (Geant4 option4, boundary-free dose; D/Φ₀ = 5.3672e-12 Gy cm²).</p>
+</header>
+
+<section aria-labelledby="h-find">
+  <h2 id="h-find">What the runs show</h2>
+  <ul class="findings">
+    <li><b>Python makes the dose right for two models.</b> With a sandbox, Claude Haiku 5.5 and DeepSeek V4 Flash
+      put D/Φ₀, kerma, β, s<sub>w,air</sub> and PDD(5) within the 2% tolerance in both tool conditions.</li>
+    <li><b>Without tools, every model misses the dose.</b> The closest A0 answer is Claude Haiku 5.5 at -2.6%; the others are off by 5%
+      to 18%, and Gemini by a factor of about 3,000.</li>
+    <li><b>Tools do not help the other three.</b> GPT-6 Luna stays 7–11% low on D/Φ₀ and 20% high on the mean photon
+      energy. Qwen3.7 Flash moves further from the reference with tools. Gemini 2.5 Flash-Lite made no Python call on the
+      observables task, answered with zeros in two A1 runs and reported dose in the wrong unit in A2.</li>
+    <li><b>Every model breaks at Layer 1.</b> The
+      breakpoint is the first layer with a resolved failure. Spectral and angular shapes must match the Monte Carlo
+      within three times its own half-sample distance, and no answer does, even where the scalar quantities pass.</li>
+    <li><b>Sampled events.</b> Haiku and DeepSeek events are almost all physically valid under the bound-electron
+      rule; Gemini and Qwen produce 28–66% invalid events. GPT-6 Luna declined 9 of its 10 event calls, saying it
+      cannot sample without a transport code.</li>
+  </ul>
+</section>
+
+<section aria-labelledby="h-dose">
+  <h2 id="h-dose">Dose per unit fluence, D/Φ₀</h2>
+  <p>Median relative difference over the valid repeats, with the range of the repeats as a line. Hover or focus a
+  marker for the numbers.</p>
+  <div class="panel"><div class="legend"><span><svg viewBox="0 0 14 14" aria-hidden="true"><circle cx="7.0" cy="7.0" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2"/></svg>A0 recall, no tools</span><span><svg viewBox="0 0 14 14" aria-hidden="true"><rect x="2.5" y="2.5" width="9.0" height="9.0" rx="1.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="2"/></svg>A1 Python sandbox</span><span><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7.0,0.4 L13.1,11.9 L0.9,11.9 Z" fill="var(--s3)" stroke="var(--surface)" stroke-width="2"/></svg>A2 Python + XCOM/ESTAR tables</span></div><div class="scroll"><svg viewBox="0 0 760 414" role="img" aria-labelledby="dose-title dose-desc" class="chart">
+<title id="dose-title">D/Φ₀ relative to Monte Carlo, per model and condition</title>
+<desc id="dose-desc">Median of five repeats with the range over repeats. The shaded band is the ±2% pass tolerance. Values beyond ±35% are drawn at the edge with their value written next to them.</desc>
+<rect x="409.0" y="36" width="28.0" height="338" fill="var(--green-soft)"/>
+<line x1="213.0" x2="213.0" y1="36" y2="374" stroke="var(--rule)" stroke-width="1"/>
+<text x="213.0" y="392" class="tick" text-anchor="middle">-30%</text>
+<line x1="283.0" x2="283.0" y1="36" y2="374" stroke="var(--rule)" stroke-width="1"/>
+<text x="283.0" y="392" class="tick" text-anchor="middle">-20%</text>
+<line x1="353.0" x2="353.0" y1="36" y2="374" stroke="var(--rule)" stroke-width="1"/>
+<text x="353.0" y="392" class="tick" text-anchor="middle">-10%</text>
+<line x1="423.0" x2="423.0" y1="36" y2="374" stroke="var(--rule)" stroke-width="1.5"/>
+<text x="423.0" y="392" class="tick" text-anchor="middle">0</text>
+<line x1="493.0" x2="493.0" y1="36" y2="374" stroke="var(--rule)" stroke-width="1"/>
+<text x="493.0" y="392" class="tick" text-anchor="middle">+10%</text>
+<line x1="563.0" x2="563.0" y1="36" y2="374" stroke="var(--rule)" stroke-width="1"/>
+<text x="563.0" y="392" class="tick" text-anchor="middle">+20%</text>
+<line x1="633.0" x2="633.0" y1="36" y2="374" stroke="var(--rule)" stroke-width="1"/>
+<text x="633.0" y="392" class="tick" text-anchor="middle">+30%</text>
+<text x="423.0" y="30" class="tick band" text-anchor="middle">±2% pass</text>
+<text x="423.0" y="410" class="axis" text-anchor="middle">(AI − Monte Carlo) / Monte Carlo</text>
+<text x="164" y="77.0" class="rowlab" text-anchor="end">Claude Haiku 5.5</text>
+<line x1="324.2" x2="560.3" y1="56.0" y2="56.0" stroke="var(--s1)" stroke-width="2" stroke-linecap="round" opacity="0.55"/>
+<circle cx="405.1" cy="56.0" r="5.5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" data-tip="Claude Haiku 5.5 · A0 recall, no tools · median -2.6% (range -14.1% to +19.6%, n = 5) · fail" tabindex="0"/>
+<line x1="418.6" x2="423.4" y1="73.0" y2="73.0" stroke="var(--s2)" stroke-width="2" stroke-linecap="round" opacity="0.55"/>
+<rect x="415.8" y="68.0" width="9.9" height="9.9" rx="1.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="2" data-tip="Claude Haiku 5.5 · A1 Python sandbox · median -0.3% (range -0.6% to +0.1%, n = 5) · pass" tabindex="0"/>
+<line x1="414.5" x2="422.1" y1="90.0" y2="90.0" stroke="var(--s3)" stroke-width="2" stroke-linecap="round" opacity="0.55"/>
+<path d="M418.7,82.7 L425.3,95.4 L412.0,95.4 Z" fill="var(--s3)" stroke="var(--surface)" stroke-width="2" data-tip="Claude Haiku 5.5 · A2 Python + XCOM/ESTAR tables · median -0.6% (range -1.2% to -0.1%, n = 5) · pass" tabindex="0"/>
+<text x="164" y="143.0" class="rowlab" text-anchor="end">DeepSeek V4 Flash</text>
+<line x1="8" x2="752" y1="106" y2="106" stroke="var(--rule)" stroke-width="1" stroke-dasharray="2 3"/>
+<line x1="283.8" x2="332.1" y1="122.0" y2="122.0" stroke="var(--s1)" stroke-width="2" stroke-linecap="round" opacity="0.55"/>
+<circle cx="296.9" cy="122.0" r="5.5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" data-tip="DeepSeek V4 Flash · A0 recall, no tools · median -18.0% (range -19.9% to -13.0%, n = 3) · fail" tabindex="0"/>
+<line x1="420.8" x2="635.9" y1="139.0" y2="139.0" stroke="var(--s2)" stroke-width="2" stroke-linecap="round" opacity="0.55"/>
+<rect x="417.1" y="134.1" width="9.9" height="9.9" rx="1.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="2" data-tip="DeepSeek V4 Flash · A1 Python sandbox · median -0.1% (range -0.3% to +30.4%, n = 3) · pass" tabindex="0"/>
+<line x1="368.6" x2="444.2" y1="156.0" y2="156.0" stroke="var(--s3)" stroke-width="2" stroke-linecap="round" opacity="0.55"/>
+<path d="M429.9,148.7 L436.5,161.4 L423.2,161.4 Z" fill="var(--s3)" stroke="var(--surface)" stroke-width="2" data-tip="DeepSeek V4 Flash · A2 Python + XCOM/ESTAR tables · median +1.0% (range -7.8% to +3.0%, n = 5) · pass" tabindex="0"/>
+<text x="164" y="209.0" class="rowlab" text-anchor="end">GPT-6 Luna</text>
+<line x1="8" x2="752" y1="172" y2="172" stroke="var(--rule)" stroke-width="1" stroke-dasharray="2 3"/>
+<line x1="317.3" x2="603.3" y1="188.0" y2="188.0" stroke="var(--s1)" stroke-width="2" stroke-linecap="round" opacity="0.55"/>
+<circle cx="357.0" cy="188.0" r="5.5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" data-tip="GPT-6 Luna · A0 recall, no tools · median -9.4% (range -15.1% to +25.8%, n = 5) · fail" tabindex="0"/>
+<line x1="319.5" x2="435.7" y1="205.0" y2="205.0" stroke="var(--s2)" stroke-width="2" stroke-linecap="round" opacity="0.55"/>
+<rect x="371.5" y="200.1" width="9.9" height="9.9" rx="1.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="2" data-tip="GPT-6 Luna · A1 Python sandbox · median -6.7% (range -14.8% to +1.8%, n = 5) · fail" tabindex="0"/>
+<line x1="323.4" x2="486.0" y1="222.0" y2="222.0" stroke="var(--s3)" stroke-width="2" stroke-linecap="round" opacity="0.55"/>
+<path d="M349.0,214.7 L355.7,227.4 L342.4,227.4 Z" fill="var(--s3)" stroke="var(--surface)" stroke-width="2" data-tip="GPT-6 Luna · A2 Python + XCOM/ESTAR tables · median -10.6% (range -14.2% to +9.0%, n = 5) · fail" tabindex="0"/>
+<text x="164" y="275.0" class="rowlab" text-anchor="end">Qwen3.7 Flash</text>
+<line x1="8" x2="752" y1="238" y2="238" stroke="var(--rule)" stroke-width="1" stroke-dasharray="2 3"/>
+<line x1="429.9" x2="487.3" y1="254.0" y2="254.0" stroke="var(--s1)" stroke-width="2" stroke-linecap="round" opacity="0.55"/>
+<circle cx="458.6" cy="254.0" r="5.5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" data-tip="Qwen3.7 Flash · A0 recall, no tools · median +5.1% (range +1.0% to +9.2%, n = 2) · fail" tabindex="0"/>
+<line x1="178.0" x2="668.0" y1="271.0" y2="271.0" stroke="var(--s2)" stroke-width="2" stroke-linecap="round" opacity="0.55"/>
+<rect x="540.1" y="266.1" width="9.9" height="9.9" rx="1.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="2" data-tip="Qwen3.7 Flash · A1 Python sandbox · median +17.4% (range -88.8% to ×7,974, n = 5) · fail" tabindex="0"/>
+<line x1="200.1" x2="668.0" y1="288.0" y2="288.0" stroke="var(--s3)" stroke-width="2" stroke-linecap="round" opacity="0.55"/>
+<path d="M635.9,280.7 L642.6,293.4 L629.3,293.4 Z" fill="var(--s3)" stroke="var(--surface)" stroke-width="2" data-tip="Qwen3.7 Flash · A2 Python + XCOM/ESTAR tables · median +30.4% (range -31.8% to ×11,347, n = 5) · fail" tabindex="0"/>
+<text x="164" y="341.0" class="rowlab" text-anchor="end">Gemini 2.5 Flash-Lite</text>
+<line x1="8" x2="752" y1="304" y2="304" stroke="var(--rule)" stroke-width="1" stroke-dasharray="2 3"/>
+<line x1="668.0" x2="668.0" y1="320.0" y2="320.0" stroke="var(--s1)" stroke-width="2" stroke-linecap="round" opacity="0.55"/>
+<circle cx="668.0" cy="320.0" r="5.5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" data-tip="Gemini 2.5 Flash-Lite · A0 recall, no tools · median ×3,041 (range ×261 to ×15,836,836, n = 3) · fail" tabindex="0"/>
+<text x="658.0" y="324.0" class="offscale" text-anchor="end">×3,041 →</text>
+<line x1="178.0" x2="178.0" y1="337.0" y2="337.0" stroke="var(--s2)" stroke-width="2" stroke-linecap="round" opacity="0.55"/>
+<rect x="173.1" y="332.1" width="9.9" height="9.9" rx="1.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="2" data-tip="Gemini 2.5 Flash-Lite · A1 Python sandbox · median -100.0% (range -100.0% to -98.1%, n = 3) · fail" tabindex="0"/>
+<text x="188.0" y="341.0" class="offscale" text-anchor="start">← 0 (zeros)</text>
+<line x1="178.0" x2="668.0" y1="354.0" y2="354.0" stroke="var(--s3)" stroke-width="2" stroke-linecap="round" opacity="0.55"/>
+<path d="M668.0,346.7 L674.7,359.4 L661.3,359.4 Z" fill="var(--s3)" stroke="var(--surface)" stroke-width="2" data-tip="Gemini 2.5 Flash-Lite · A2 Python + XCOM/ESTAR tables · median ×1,863,157 (range -100.0% to ×93,157,859, n = 5) · fail" tabindex="0"/>
+<text x="658.0" y="358.0" class="offscale" text-anchor="end">×1,863,157 →</text>
+</svg></div></div>
+  <p class="caption">Shaded: the ±2% pass band for Layer 5 dose quantities (DECISIONS D028). Values outside ±35% are
+  drawn at the axis edge with their value. Gemini A2 reports about 1.9 × 10⁶ times the reference, and A0 about
+  3,000 times: dose in a different unit. Two Gemini A1 answers were all zeros.</p>
+</section>
+
+<section aria-labelledby="h-l5">
+  <h2 id="h-l5">Layer 5 quantities</h2>
+  <p>Median relative difference and the verdict of the median answer. Monte Carlo values in the first row
+  (D, K and K<sub>col</sub> per Φ₀ in Gy cm², PDD in percent).</p>
+  <div class="panel scroll"><table class="l5"><thead><tr><th scope="col">Model</th><th scope="col">Cond.</th><th scope="col">D/Φ₀</th><th scope="col">K/Φ₀</th><th scope="col">K<sub>col</sub>/Φ₀</th><th scope="col">β</th><th scope="col">s<sub>w,air</sub></th><th scope="col">PDD(5)</th></tr></thead><tbody><tr class="mcrow"><th scope="row">Monte Carlo</th><td></td><td class="n mc">5.367e-12</td><td class="n mc">5.353e-12</td><td class="n mc">5.339e-12</td><td class="n mc">1.005</td><td class="n mc">1.127</td><td class="n mc">81.79</td></tr><tr><th scope="row">Claude Haiku 5.5</th><td>A0</td><td><span class="n">-2.6%</span> <span class="chip fail">fail</span></td><td><span class="n">-1.9%</span> <span class="chip pass">pass</span></td><td><span class="n">-2.0%</span> <span class="chip fail">fail</span></td><td><span class="n">-0.5%</span> <span class="chip pass">pass</span></td><td><span class="n">-0.6%</span> <span class="chip pass">pass</span></td><td><span class="n">-2.8%</span> <span class="chip fail">fail</span></td></tr><tr><th scope="row">Claude Haiku 5.5</th><td>A1</td><td><span class="n">-0.3%</span> <span class="chip pass">pass</span></td><td><span class="n">+0.1%</span> <span class="chip pass">pass</span></td><td><span class="n">+0.1%</span> <span class="chip pass">pass</span></td><td><span class="n">-0.5%</span> <span class="chip pass">pass</span></td><td><span class="n">+0.6%</span> <span class="chip pass">pass</span></td><td><span class="n">-1.2%</span> <span class="chip pass">pass</span></td></tr><tr><th scope="row">Claude Haiku 5.5</th><td>A2</td><td><span class="n">-0.6%</span> <span class="chip pass">pass</span></td><td><span class="n">-0.1%</span> <span class="chip pass">pass</span></td><td><span class="n">-0.1%</span> <span class="chip pass">pass</span></td><td><span class="n">-0.5%</span> <span class="chip pass">pass</span></td><td><span class="n">+0.6%</span> <span class="chip pass">pass</span></td><td><span class="n">-0.7%</span> <span class="chip pass">pass</span></td></tr><tr><th scope="row">DeepSeek V4 Flash</th><td>A0</td><td><span class="n">-18.0%</span> <span class="chip fail">fail</span></td><td><span class="n">-15.9%</span> <span class="chip fail">fail</span></td><td><span class="n">-15.7%</span> <span class="chip fail">fail</span></td><td><span class="n">+0.5%</span> <span class="chip pass">pass</span></td><td><span class="n">+0.6%</span> <span class="chip pass">pass</span></td><td><span class="n">+5.2%</span> <span class="chip fail">fail</span></td></tr><tr><th scope="row">DeepSeek V4 Flash</th><td>A1</td><td><span class="n">-0.1%</span> <span class="chip pass">pass</span></td><td><span class="n">+0.7%</span> <span class="chip pass">pass</span></td><td><span class="n">+0.4%</span> <span class="chip pass">pass</span></td><td><span class="n">-0.5%</span> <span class="chip pass">pass</span></td><td><span class="n">-0.2%</span> <span class="chip pass">pass</span></td><td><span class="n">-1.5%</span> <span class="chip pass">pass</span></td></tr><tr><th scope="row">DeepSeek V4 Flash</th><td>A2</td><td><span class="n">+1.0%</span> <span class="chip pass">pass</span></td><td><span class="n">+0.6%</span> <span class="chip pass">pass</span></td><td><span class="n">+0.6%</span> <span class="chip pass">pass</span></td><td><span class="n">+0.5%</span> <span class="chip pass">pass</span></td><td><span class="n">-0.1%</span> <span class="chip pass">pass</span></td><td><span class="n">-0.4%</span> <span class="chip pass">pass</span></td></tr><tr><th scope="row">GPT-6 Luna</th><td>A0</td><td><span class="n">-9.4%</span> <span class="chip fail">fail</span></td><td><span class="n">-7.9%</span> <span class="chip fail">fail</span></td><td><span class="n">-8.0%</span> <span class="chip fail">fail</span></td><td><span class="n">-1.5%</span> <span class="chip pass">pass</span></td><td><span class="n">+0.5%</span> <span class="chip pass">pass</span></td><td><span class="n">-1.6%</span> <span class="chip pass">pass</span></td></tr><tr><th scope="row">GPT-6 Luna</th><td>A1</td><td><span class="n">-6.7%</span> <span class="chip fail">fail</span></td><td><span class="n">-5.3%</span> <span class="chip fail">fail</span></td><td><span class="n">-7.5%</span> <span class="chip fail">fail</span></td><td><span class="n">+0.5%</span> <span class="chip pass">pass</span></td><td><span class="n">+0.3%</span> <span class="chip pass">pass</span></td><td><span class="n">-3.4%</span> <span class="chip fail">fail</span></td></tr><tr><th scope="row">GPT-6 Luna</th><td>A2</td><td><span class="n">-10.6%</span> <span class="chip fail">fail</span></td><td><span class="n">-9.2%</span> <span class="chip fail">fail</span></td><td><span class="n">-9.2%</span> <span class="chip fail">fail</span></td><td><span class="n">-1.5%</span> <span class="chip pass">pass</span></td><td><span class="n">+0.3%</span> <span class="chip pass">pass</span></td><td><span class="n">-7.7%</span> <span class="chip fail">fail</span></td></tr><tr><th scope="row">Qwen3.7 Flash</th><td>A0</td><td><span class="n">+5.1%</span> <span class="chip fail">fail</span></td><td><span class="n">+8.3%</span> <span class="chip fail">fail</span></td><td><span class="n">+7.7%</span> <span class="chip fail">fail</span></td><td><span class="n">-2.6%</span> <span class="chip fail">fail</span></td><td><span class="n">-1.1%</span> <span class="chip pass">pass</span></td><td><span class="n">-16.6%</span> <span class="chip fail">fail</span></td></tr><tr><th scope="row">Qwen3.7 Flash</th><td>A1</td><td><span class="n">+17.4%</span> <span class="chip fail">fail</span></td><td><span class="n">+24.1%</span> <span class="chip fail">fail</span></td><td><span class="n">+23.0%</span> <span class="chip fail">fail</span></td><td><span class="n">-2.5%</span> <span class="chip fail">fail</span></td><td><span class="n">-0.6%</span> <span class="chip pass">pass</span></td><td><span class="n">-12.6%</span> <span class="chip fail">fail</span></td></tr><tr><th scope="row">Qwen3.7 Flash</th><td>A2</td><td><span class="n">+30.4%</span> <span class="chip fail">fail</span></td><td><span class="n">+37.7%</span> <span class="chip fail">fail</span></td><td><span class="n">+35.2%</span> <span class="chip fail">fail</span></td><td><span class="n">-1.5%</span> <span class="chip pass">pass</span></td><td><span class="n">-0.6%</span> <span class="chip pass">pass</span></td><td><span class="n">-14.4%</span> <span class="chip fail">fail</span></td></tr><tr><th scope="row">Gemini 2.5 Flash-Lite</th><td>A0</td><td><span class="n">×3,041</span> <span class="chip fail">fail</span></td><td><span class="n">×3,110</span> <span class="chip fail">fail</span></td><td><span class="n">×3,057</span> <span class="chip fail">fail</span></td><td><span class="n">-3.8%</span> <span class="chip fail">fail</span></td><td><span class="n">+15.4%</span> <span class="chip fail">fail</span></td><td><span class="n">-32.8%</span> <span class="chip fail">fail</span></td></tr><tr><th scope="row">Gemini 2.5 Flash-Lite</th><td>A1</td><td><span class="n">-100.0%</span> <span class="chip fail">fail</span></td><td><span class="n">-100.0%</span> <span class="chip fail">fail</span></td><td><span class="n">-100.0%</span> <span class="chip fail">fail</span></td><td><span class="n">-100.0%</span> <span class="chip fail">fail</span></td><td><span class="n">-100.0%</span> <span class="chip fail">fail</span></td><td><span class="n">-100.0%</span> <span class="chip fail">fail</span></td></tr><tr><th scope="row">Gemini 2.5 Flash-Lite</th><td>A2</td><td><span class="n">×1,863,157</span> <span class="chip fail">fail</span></td><td><span class="n">×2,054,888</span> <span class="chip fail">fail</span></td><td><span class="n">×1,872,968</span> <span class="chip fail">fail</span></td><td><span class="n">-2.5%</span> <span class="chip fail">fail</span></td><td><span class="n">-0.6%</span> <span class="chip pass">pass</span></td><td><span class="n">-69.4%</span> <span class="chip fail">fail</span></td></tr></tbody></table></div>
+</section>
+
+<section aria-labelledby="h-layers">
+  <h2 id="h-layers">Passes per layer</h2>
+  <p>Quantities that pass, out of those scored in each layer, for the median answer. Darker cells pass more.</p>
+  <div class="panel scroll"><table class="layers"><thead><tr><th scope="col">Model</th><th scope="col">Cond.</th><th scope="col">n</th><th scope="col"><span class="L">L1</span> Photons arriving</th><th scope="col"><span class="L">L2</span> Photon interactions</th><th scope="col"><span class="L">L3</span> Electrons set in motion</th><th scope="col"><span class="L">L4</span> Electrons slowing down</th><th scope="col"><span class="L">L5</span> Energy deposited</th></tr></thead><tbody><tr><th scope="row">Claude Haiku 5.5</th><td>A0</td><td class="n">5</td><td class="heat" style="--h:0.67" title="Layer 1: 6 of 9 pass"><span class="n">6/9</span></td><td class="heat" style="--h:0.40" title="Layer 2: 2 of 5 pass"><span class="n">2/5</span></td><td class="heat" style="--h:0.00" title="Layer 3: 0 of 5 pass"><span class="n">0/5</span></td><td class="heat" style="--h:0.33" title="Layer 4: 2 of 6 pass"><span class="n">2/6</span></td><td class="heat" style="--h:0.62" title="Layer 5: 5 of 8 pass"><span class="n">5/8</span></td></tr><tr><th scope="row">Claude Haiku 5.5</th><td>A1</td><td class="n">5</td><td class="heat" style="--h:0.78" title="Layer 1: 7 of 9 pass"><span class="n">7/9</span></td><td class="heat" style="--h:0.60" title="Layer 2: 3 of 5 pass"><span class="n">3/5</span></td><td class="heat" style="--h:0.60" title="Layer 3: 3 of 5 pass"><span class="n">3/5</span></td><td class="heat" style="--h:0.67" title="Layer 4: 4 of 6 pass"><span class="n">4/6</span></td><td class="heat" style="--h:1.00" title="Layer 5: 8 of 8 pass"><span class="n">8/8</span></td></tr><tr><th scope="row">Claude Haiku 5.5</th><td>A2</td><td class="n">5</td><td class="heat" style="--h:0.78" title="Layer 1: 7 of 9 pass"><span class="n">7/9</span></td><td class="heat" style="--h:0.60" title="Layer 2: 3 of 5 pass"><span class="n">3/5</span></td><td class="heat" style="--h:0.40" title="Layer 3: 2 of 5 pass"><span class="n">2/5</span></td><td class="heat" style="--h:0.67" title="Layer 4: 4 of 6 pass"><span class="n">4/6</span></td><td class="heat" style="--h:1.00" title="Layer 5: 8 of 8 pass"><span class="n">8/8</span></td></tr><tr><th scope="row">DeepSeek V4 Flash</th><td>A0</td><td class="n">3</td><td class="heat" style="--h:0.22" title="Layer 1: 2 of 9 pass"><span class="n">2/9</span></td><td class="heat" style="--h:0.00" title="Layer 2: 0 of 5 pass"><span class="n">0/5</span></td><td class="heat" style="--h:0.00" title="Layer 3: 0 of 5 pass"><span class="n">0/5</span></td><td class="heat" style="--h:0.50" title="Layer 4: 3 of 6 pass"><span class="n">3/6</span></td><td class="heat" style="--h:0.38" title="Layer 5: 3 of 8 pass"><span class="n">3/8</span></td></tr><tr><th scope="row">DeepSeek V4 Flash</th><td>A1</td><td class="n">3</td><td class="heat" style="--h:0.78" title="Layer 1: 7 of 9 pass"><span class="n">7/9</span></td><td class="heat" style="--h:0.40" title="Layer 2: 2 of 5 pass"><span class="n">2/5</span></td><td class="heat" style="--h:0.20" title="Layer 3: 1 of 5 pass"><span class="n">1/5</span></td><td class="heat" style="--h:0.67" title="Layer 4: 4 of 6 pass"><span class="n">4/6</span></td><td class="heat" style="--h:1.00" title="Layer 5: 8 of 8 pass"><span class="n">8/8</span></td></tr><tr><th scope="row">DeepSeek V4 Flash</th><td>A2</td><td class="n">5</td><td class="heat" style="--h:0.67" title="Layer 1: 6 of 9 pass"><span class="n">6/9</span></td><td class="heat" style="--h:0.60" title="Layer 2: 3 of 5 pass"><span class="n">3/5</span></td><td class="heat" style="--h:0.40" title="Layer 3: 2 of 5 pass"><span class="n">2/5</span></td><td class="heat" style="--h:0.50" title="Layer 4: 3 of 6 pass"><span class="n">3/6</span></td><td class="heat" style="--h:1.00" title="Layer 5: 8 of 8 pass"><span class="n">8/8</span></td></tr><tr><th scope="row">GPT-6 Luna</th><td>A0</td><td class="n">5</td><td class="heat" style="--h:0.22" title="Layer 1: 2 of 9 pass"><span class="n">2/9</span></td><td class="heat" style="--h:0.20" title="Layer 2: 1 of 5 pass"><span class="n">1/5</span></td><td class="heat" style="--h:0.00" title="Layer 3: 0 of 5 pass"><span class="n">0/5</span></td><td class="heat" style="--h:0.17" title="Layer 4: 1 of 6 pass"><span class="n">1/6</span></td><td class="heat" style="--h:0.50" title="Layer 5: 4 of 8 pass"><span class="n">4/8</span></td></tr><tr><th scope="row">GPT-6 Luna</th><td>A1</td><td class="n">5</td><td class="heat" style="--h:0.22" title="Layer 1: 2 of 9 pass"><span class="n">2/9</span></td><td class="heat" style="--h:0.40" title="Layer 2: 2 of 5 pass"><span class="n">2/5</span></td><td class="heat" style="--h:0.40" title="Layer 3: 2 of 5 pass"><span class="n">2/5</span></td><td class="heat" style="--h:0.33" title="Layer 4: 2 of 6 pass"><span class="n">2/6</span></td><td class="heat" style="--h:0.38" title="Layer 5: 3 of 8 pass"><span class="n">3/8</span></td></tr><tr><th scope="row">GPT-6 Luna</th><td>A2</td><td class="n">5</td><td class="heat" style="--h:0.33" title="Layer 1: 3 of 9 pass"><span class="n">3/9</span></td><td class="heat" style="--h:0.40" title="Layer 2: 2 of 5 pass"><span class="n">2/5</span></td><td class="heat" style="--h:0.20" title="Layer 3: 1 of 5 pass"><span class="n">1/5</span></td><td class="heat" style="--h:0.50" title="Layer 4: 3 of 6 pass"><span class="n">3/6</span></td><td class="heat" style="--h:0.50" title="Layer 5: 4 of 8 pass"><span class="n">4/8</span></td></tr><tr><th scope="row">Qwen3.7 Flash</th><td>A0</td><td class="n">2</td><td class="heat" style="--h:0.22" title="Layer 1: 2 of 9 pass"><span class="n">2/9</span></td><td class="heat" style="--h:0.00" title="Layer 2: 0 of 5 pass"><span class="n">0/5</span></td><td class="heat" style="--h:0.00" title="Layer 3: 0 of 5 pass"><span class="n">0/5</span></td><td class="heat" style="--h:0.00" title="Layer 4: 0 of 6 pass"><span class="n">0/6</span></td><td class="heat" style="--h:0.25" title="Layer 5: 2 of 8 pass"><span class="n">2/8</span></td></tr><tr><th scope="row">Qwen3.7 Flash</th><td>A1</td><td class="n">5</td><td class="heat" style="--h:0.22" title="Layer 1: 2 of 9 pass"><span class="n">2/9</span></td><td class="heat" style="--h:0.00" title="Layer 2: 0 of 5 pass"><span class="n">0/5</span></td><td class="heat" style="--h:0.00" title="Layer 3: 0 of 5 pass"><span class="n">0/5</span></td><td class="heat" style="--h:0.17" title="Layer 4: 1 of 6 pass"><span class="n">1/6</span></td><td class="heat" style="--h:0.25" title="Layer 5: 2 of 8 pass"><span class="n">2/8</span></td></tr><tr><th scope="row">Qwen3.7 Flash</th><td>A2</td><td class="n">5</td><td class="heat" style="--h:0.22" title="Layer 1: 2 of 9 pass"><span class="n">2/9</span></td><td class="heat" style="--h:0.40" title="Layer 2: 2 of 5 pass"><span class="n">2/5</span></td><td class="heat" style="--h:0.00" title="Layer 3: 0 of 5 pass"><span class="n">0/5</span></td><td class="heat" style="--h:0.17" title="Layer 4: 1 of 6 pass"><span class="n">1/6</span></td><td class="heat" style="--h:0.38" title="Layer 5: 3 of 8 pass"><span class="n">3/8</span></td></tr><tr><th scope="row">Gemini 2.5 Flash-Lite</th><td>A0</td><td class="n">3</td><td class="heat" style="--h:0.33" title="Layer 1: 3 of 9 pass"><span class="n">3/9</span></td><td class="heat" style="--h:0.00" title="Layer 2: 0 of 5 pass"><span class="n">0/5</span></td><td class="heat" style="--h:0.20" title="Layer 3: 1 of 5 pass"><span class="n">1/5</span></td><td class="heat" style="--h:0.00" title="Layer 4: 0 of 6 pass"><span class="n">0/6</span></td><td class="heat" style="--h:0.00" title="Layer 5: 0 of 8 pass"><span class="n">0/8</span></td></tr><tr><th scope="row">Gemini 2.5 Flash-Lite</th><td>A1</td><td class="n">3</td><td class="heat" style="--h:0.00" title="Layer 1: 0 of 9 pass"><span class="n">0/9</span></td><td class="heat" style="--h:0.00" title="Layer 2: 0 of 5 pass"><span class="n">0/5</span></td><td class="heat" style="--h:0.00" title="Layer 3: 0 of 5 pass"><span class="n">0/5</span></td><td class="heat" style="--h:0.17" title="Layer 4: 1 of 6 pass"><span class="n">1/6</span></td><td class="heat" style="--h:0.12" title="Layer 5: 1 of 8 pass"><span class="n">1/8</span></td></tr><tr><th scope="row">Gemini 2.5 Flash-Lite</th><td>A2</td><td class="n">5</td><td class="heat" style="--h:0.11" title="Layer 1: 1 of 9 pass"><span class="n">1/9</span></td><td class="heat" style="--h:0.00" title="Layer 2: 0 of 5 pass"><span class="n">0/5</span></td><td class="heat" style="--h:0.00" title="Layer 3: 0 of 5 pass"><span class="n">0/5</span></td><td class="heat" style="--h:0.17" title="Layer 4: 1 of 6 pass"><span class="n">1/6</span></td><td class="heat" style="--h:0.25" title="Layer 5: 2 of 8 pass"><span class="n">2/8</span></td></tr></tbody></table></div>
+  <p class="caption">Scalars pass within max(5%, 0.005 absolute) in Layers 1–4 and 2% for Layer 5 dose quantities.
+  Distributions pass when W1 and JSD are within 3 × the Monte Carlo half-sample distance. A failure inside the
+  spread of the three Geant4 physics lists counts as unresolved (D028 item 4).</p>
+</section>
+
+<section aria-labelledby="h-hyp">
+  <h2 id="h-hyp">Hypotheses</h2>
+  <p>Median absolute relative difference of the scalar quantities tagged H1 (primary photons) and H2 (transport),
+  and the two H3 quantities. H1 and H2 hold where the H1 column is smaller than H2; H3 holds where the PDD(5) error
+  is smaller than the D/Φ₀ error.</p>
+  <div class="panel scroll"><table class="hyp"><thead><tr><th scope="col">Model</th><th scope="col">Cond.</th><th scope="col">H1 primary photon</th><th scope="col">H2 transport</th><th scope="col">H3 PDD(5), recall</th><th scope="col">H3 D/Φ₀, computed</th></tr></thead><tbody><tr><th scope="row">Claude Haiku 5.5</th><td>A0</td><td class="n">3.3%</td><td class="n">5.7%</td><td class="n">2.8%</td><td class="n">2.6%</td></tr><tr><th scope="row">Claude Haiku 5.5</th><td>A1</td><td class="n">0.2%</td><td class="n">0.8%</td><td class="n">1.2%</td><td class="n">0.3%</td></tr><tr><th scope="row">Claude Haiku 5.5</th><td>A2</td><td class="n">0.0%</td><td class="n">0.6%</td><td class="n">0.7%</td><td class="n">0.6%</td></tr><tr><th scope="row">DeepSeek V4 Flash</th><td>A0</td><td class="n">3.5%</td><td class="n">16.8%</td><td class="n">5.2%</td><td class="n">18.0%</td></tr><tr><th scope="row">DeepSeek V4 Flash</th><td>A1</td><td class="n">0.2%</td><td class="n">0.6%</td><td class="n">1.5%</td><td class="n">0.1%</td></tr><tr><th scope="row">DeepSeek V4 Flash</th><td>A2</td><td class="n">0.2%</td><td class="n">0.6%</td><td class="n">0.4%</td><td class="n">1.0%</td></tr><tr><th scope="row">GPT-6 Luna</th><td>A0</td><td class="n">6.3%</td><td class="n">23.9%</td><td class="n">1.6%</td><td class="n">9.4%</td></tr><tr><th scope="row">GPT-6 Luna</th><td>A1</td><td class="n">0.8%</td><td class="n">26.0%</td><td class="n">3.4%</td><td class="n">6.7%</td></tr><tr><th scope="row">GPT-6 Luna</th><td>A2</td><td class="n">0.3%</td><td class="n">15.0%</td><td class="n">7.7%</td><td class="n">10.6%</td></tr><tr><th scope="row">Qwen3.7 Flash</th><td>A0</td><td class="n">11.7%</td><td class="n">23.3%</td><td class="n">16.6%</td><td class="n">5.1%</td></tr><tr><th scope="row">Qwen3.7 Flash</th><td>A1</td><td class="n">12.7%</td><td class="n">32.1%</td><td class="n">12.6%</td><td class="n">17.4%</td></tr><tr><th scope="row">Qwen3.7 Flash</th><td>A2</td><td class="n">23.4%</td><td class="n">34.7%</td><td class="n">14.4%</td><td class="n">30.4%</td></tr><tr><th scope="row">Gemini 2.5 Flash-Lite</th><td>A0</td><td class="n">19.5%</td><td class="n">53.3%</td><td class="n">32.8%</td><td class="n">×3,041</td></tr><tr><th scope="row">Gemini 2.5 Flash-Lite</th><td>A1</td><td class="n">100.0%</td><td class="n">100.0%</td><td class="n">100.0%</td><td class="n">100.0%</td></tr><tr><th scope="row">Gemini 2.5 Flash-Lite</th><td>A2</td><td class="n">43.1%</td><td class="n">61.3%</td><td class="n">69.4%</td><td class="n">×1,863,157</td></tr></tbody></table></div>
+</section>
+
+<section aria-labelledby="h-ev">
+  <h2 id="h-ev">Sampled interaction events</h2>
+  <p>Five calls of 200 events per model in A0 and A1, pooled. Validity uses the bound-electron rule of DECISIONS
+  D014 (energy conserved within the oxygen K-shell binding energy, Compton kinematics within δ<sub>C</sub>). The
+  energy distance compares the pooled events with the Monte Carlo sample; it passes below the 95th percentile of
+  Monte Carlo samples of the same size.</p>
+  <div class="panel scroll"><table class="ev"><thead><tr><th scope="col">Model</th><th scope="col">Cond.</th><th scope="col">Events</th><th scope="col">Calls (of 5)</th><th scope="col">Invalid, bound rule</th><th scope="col">Energy distance</th><th scope="col">MC 95th pct</th><th scope="col">Compton share</th></tr></thead><tbody><tr class="mcrow"><th scope="row">Monte Carlo resample</th><td></td><td class="n">1000</td><td></td><td class="n">0.0%</td><td class="n">0.0023</td><td class="n">–</td><td class="n">96%</td></tr><tr><th scope="row">Claude Haiku 5.5</th><td>A0</td><td class="n">1000</td><td>5 ok · 0 refused · 0 unreadable</td><td><span class="n">0.2%</span> <span class="chip pass">pass</span></td><td><span class="n">0.0473</span> <span class="chip fail">fail</span></td><td class="n">0.0036</td><td class="n">99%</td></tr><tr><th scope="row">Claude Haiku 5.5</th><td>A1</td><td class="n">1000</td><td>5 ok · 0 refused · 0 unreadable</td><td><span class="n">0.0%</span> <span class="chip pass">pass</span></td><td><span class="n">0.0034</span> <span class="chip pass">pass</span></td><td class="n">0.0036</td><td class="n">99%</td></tr><tr><th scope="row">DeepSeek V4 Flash</th><td>A0</td><td class="n">1036</td><td>5 ok · 0 refused · 0 unreadable</td><td><span class="n">0.0%</span> <span class="chip pass">pass</span></td><td><span class="n">0.1035</span> <span class="chip fail">fail</span></td><td class="n">0.0024</td><td class="n">92%</td></tr><tr><th scope="row">DeepSeek V4 Flash</th><td>A1</td><td class="n">177</td><td>1 ok · 0 refused · 4 unreadable</td><td><span class="n">13.0%</span> <span class="chip fail">fail</span></td><td><span class="n">0.4637</span> <span class="chip fail">fail</span></td><td class="n">0.0199</td><td class="n">93%</td></tr><tr><th scope="row">GPT-6 Luna</th><td>A0</td><td class="n">0</td><td>0 ok · 5 refused · 0 unreadable</td><td colspan="4" class="muted">no events to score</td></tr><tr><th scope="row">GPT-6 Luna</th><td>A1</td><td class="n">200</td><td>1 ok · 4 refused · 0 unreadable</td><td><span class="n">0.0%</span> <span class="chip pass">pass</span></td><td><span class="n">0.0045</span> <span class="chip pass">pass</span></td><td class="n">0.0116</td><td class="n">100%</td></tr><tr><th scope="row">Qwen3.7 Flash</th><td>A0</td><td class="n">0</td><td>0 ok · 0 refused · 5 unreadable</td><td colspan="4" class="muted">no events to score</td></tr><tr><th scope="row">Qwen3.7 Flash</th><td>A1</td><td class="n">352</td><td>2 ok · 0 refused · 3 unreadable</td><td><span class="n">51.1%</span> <span class="chip fail">fail</span></td><td><span class="n">0.2923</span> <span class="chip fail">fail</span></td><td class="n">0.0120</td><td class="n">72%</td></tr><tr><th scope="row">Gemini 2.5 Flash-Lite</th><td>A0</td><td class="n">331</td><td>2 ok · 0 refused · 3 unreadable</td><td><span class="n">65.6%</span> <span class="chip fail">fail</span></td><td><span class="n">0.4786</span> <span class="chip fail">fail</span></td><td class="n">0.0089</td><td class="n">74%</td></tr><tr><th scope="row">Gemini 2.5 Flash-Lite</th><td>A1</td><td class="n">490</td><td>3 ok · 1 refused · 1 unreadable</td><td><span class="n">27.8%</span> <span class="chip fail">fail</span></td><td><span class="n">0.2989</span> <span class="chip fail">fail</span></td><td class="n">0.0058</td><td class="n">78%</td></tr></tbody></table></div>
+  <p class="caption">Under the strict free-electron rule the Monte Carlo's own events fail
+  99% of the time (bound Compton scattering with Doppler broadening), so that
+  rule is reported in <code>M5_M4-R0.json</code> for context only.</p>
+</section>
+
+<section aria-labelledby="h-runs">
+  <h2 id="h-runs">Runs and cost</h2>
+  <div class="costs">
+    <div><span class="v">$7.75</span><span class="k">R0, measured OpenRouter charge</span></div>
+    <div><span class="v">$4.69</span><span class="k">P0 pilot and the cached-Haiku test</span></div>
+    <div><span class="v">$0.005</span><span class="k">void attempts (API errors, cut runs)</span></div>
+  </div>
+  <div class="panel scroll"><table class="out"><thead><tr><th scope="col">Model</th><th scope="col">Task</th><th scope="col">Conversations</th><th scope="col">Valid</th><th scope="col">Unreadable</th><th scope="col">Refused</th><th scope="col">API error</th><th scope="col">Python calls</th><th scope="col">R0 charge</th></tr></thead><tbody><tr><th scope="row" rowspan="2">Claude Haiku 5.5</th><td>observables</td><td class="n">15</td><td class="n">15</td><td class="n">0</td><td class="n">0</td><td class="n">0</td><td class="n">266</td><td class="n" rowspan="2">$4.89</td></tr><tr><td>events</td><td class="n">10</td><td class="n">10</td><td class="n">0</td><td class="n">0</td><td class="n">0</td><td class="n">83</td></tr><tr><th scope="row" rowspan="2">DeepSeek V4 Flash</th><td>observables</td><td class="n">13</td><td class="n">11</td><td class="n">2</td><td class="n">0</td><td class="n">0</td><td class="n">223</td><td class="n" rowspan="2">$1.80</td></tr><tr><td>events</td><td class="n">10</td><td class="n">6</td><td class="n">4</td><td class="n">0</td><td class="n">0</td><td class="n">157</td></tr><tr><th scope="row" rowspan="2">GPT-6 Luna</th><td>observables</td><td class="n">15</td><td class="n">15</td><td class="n">0</td><td class="n">0</td><td class="n">0</td><td class="n">168</td><td class="n" rowspan="2">$0.25</td></tr><tr><td>events</td><td class="n">10</td><td class="n">1</td><td class="n">0</td><td class="n">9</td><td class="n">0</td><td class="n">22</td></tr><tr><th scope="row" rowspan="2">Qwen3.7 Flash</th><td>observables</td><td class="n">15</td><td class="n">12</td><td class="n">3</td><td class="n">0</td><td class="n">0</td><td class="n">137</td><td class="n" rowspan="2">$0.47</td></tr><tr><td>events</td><td class="n">10</td><td class="n">2</td><td class="n">8</td><td class="n">0</td><td class="n">0</td><td class="n">37</td></tr><tr><th scope="row" rowspan="2">Gemini 2.5 Flash-Lite</th><td>observables</td><td class="n">15</td><td class="n">11</td><td class="n">4</td><td class="n">0</td><td class="n">0</td><td class="n">0</td><td class="n" rowspan="2">$0.35</td></tr><tr><td>events</td><td class="n">10</td><td class="n">5</td><td class="n">4</td><td class="n">1</td><td class="n">0</td><td class="n">7</td></tr></tbody></table></div>
+  <p class="caption">Unreadable: no answer matched the required JSON format after one retry. Refused: valid JSON with
+  no content. API error: none remain; Gemini's four were rerun (D035).</p>
+</section>
+
+<section aria-labelledby="h-notes">
+  <h2 id="h-notes">Read these results with</h2>
+  <ul class="notes">
+    <li>The models are each provider's fast, low-cost tier, not the most capable model (D030). Qwen3.7 Flash fills an
+      open-weight slot but has no published weights.</li>
+    <li>Haiku runs with prompt caching to stay inside the $10 budget; the model sees the same prompts (D032).</li>
+    <li>Event answers count with 150 to 250 events; the prompt asks for 200 (D031).</li>
+    <li>Gemini was rate-limited by its upstream throughout; its four API-error conversations were rerun (D033,
+      D035).</li>
+    <li>A malformed fenced JSON block gets a misleading retry message in this harness version (D034). It affects
+      which answers are readable, not how readable answers score.</li>
+    <li>The Monte Carlo reference is final (M2, not provisional). Raw conversations are in <code>ai/raw/M4-R0/</code>;
+      scores in <code>analysis/results/M5_M4-R0.json</code>.</li>
+  </ul>
+  <p class="meta">Claude Haiku 5.5 <code>anthropic/claude-haiku-5.5</code> · GPT-6 Luna <code>openai/gpt-6-luna</code> · Gemini 2.5 Flash-Lite <code>google/gemini-2.5-flash-lite</code> · DeepSeek V4 Flash <code>deepseek/deepseek-v4-flash</code> · Qwen3.7 Flash <code>qwen/qwen3.7-flash</code></p>
+</section>
+</main>
+<div id="tip" hidden></div>
+<script>
+(function () {
+  var tip = document.getElementById('tip');
+  function show(ev) {
+    var t = ev.target.closest('[data-tip]'); if (!t) return;
+    tip.textContent = t.getAttribute('data-tip'); tip.hidden = false;
+    var r = t.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top;
+    var w = tip.offsetWidth;
+    tip.style.left = Math.max(8, Math.min(window.innerWidth - w - 8, x - w / 2)) + 'px';
+    tip.style.top = Math.max(8, y - tip.offsetHeight - 10) + 'px';
+  }
+  function hide() { tip.hidden = true; }
+  document.querySelectorAll('.chart').forEach(function (c) {
+    c.addEventListener('mouseover', show); c.addEventListener('focusin', show);
+    c.addEventListener('mouseout', hide); c.addEventListener('focusout', hide);
+  });
+})();
+</script>

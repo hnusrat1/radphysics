@@ -1,0 +1,57 @@
+{
+ "id": "gen-1791836237-83RzvgEBBAsqL2gtPfDN",
+ "object": "chat.completion",
+ "created": 1791836237,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "SiliconFlow",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "01a131c3353dad9f9ab17ecb7da5dda7",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport sys, os, time, importlib\\nsys.path.insert(0,'/tmp/work'); os.chdir('/tmp/work')\\nimport numpy as np\\nimport mcbeam\\nimportlib.reload(mcbeam)\\nmcbeam.photon_mc.debug = None\\nr=mcbeam.photon_mc(300000, rng=np.random.default_rng(7))\\nd=mcbeam.photon_mc.debug\\nprint('s frac <5.1:', d['sfrac'], '/', d['sfracN'], '=', d['sfrac']/d['sfracN'], ' mean s:', d['ssum']/d['sfracN'])\\nprint('mu at 1.1732:', mcbeam.mu_tot_w(np.array([1.1732,1.3325])))\\nprint('expected P(s<5.1):', 1-np.exp(-mcbeam.mu_tot_w(1.1732)*5.1))\\nprint('L0',r['L0_sum'],'ph_p',r['ph_p_tot'],'ph_s',r['ph_s_tot'])\\n\"}"
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 108142,
+  "completion_tokens": 278,
+  "total_tokens": 108420,
+  "cost": 0.003482604,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 104448,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.003482604,
+   "upstream_inference_prompt_cost": 0.003404764,
+   "upstream_inference_completions_cost": 7.784e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 1,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

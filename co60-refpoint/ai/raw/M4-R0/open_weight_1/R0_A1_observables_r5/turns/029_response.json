@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791836258-6okbBaX5pHSX5CvmVkUM",
+ "object": "chat.completion",
+ "created": 1791836258,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "SiliconFlow",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "itrkp is empty {} while ntrkp=8558? That means the replace for adding itrkp didn't take effect in the executed file (maybe string mismatch - the actual line has `photon_mc.debug['ntrkp']+=...` followed by newline and spaces; my replace pattern may not have matched). But regardless ntrkp=8558.\n\nLet me look at the actual code around that area in mcbeam.py to see what's there.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "01a131c39117d9d58842e8cc2b1c9bc7",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import sys,os\\nsys.path.insert(0,'/tmp/work'); os.chdir('/tmp/work')\\ns=open('mcbeam.py').read()\\ni=s.find('has_trk=trk>0')\\nprint(s[i-200:i+800])\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "itrkp is empty {} while ntrkp=8558? That means the replace for adding itrkp didn't take effect in the executed file (maybe string mismatch - the actual line has `photon_mc.debug['ntrkp']+=...` followed by newline and spaces; my replace pattern may not have matched). But regardless ntrkp=8558.\n\nLet me look at the actual code around that area in mcbeam.py to see what's there.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 109964,
+  "completion_tokens": 193,
+  "total_tokens": 110157,
+  "cost": 0.004322352,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 98304,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.004322352,
+   "upstream_inference_prompt_cost": 0.004268312,
+   "upstream_inference_completions_cost": 5.404e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 98,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

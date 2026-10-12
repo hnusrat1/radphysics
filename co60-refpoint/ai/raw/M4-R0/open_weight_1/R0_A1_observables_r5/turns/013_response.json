@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791835993-QOkNwTGAAFJd5HjYI9fn",
+ "object": "chat.completion",
+ "created": 1791835993,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "SiliconFlow",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Module not found - working directory may differ between calls? The tool said files persist in working directory. But maybe each call runs in a fresh dir? It says \"Files you write in the working directory persist between calls.\" The previous call wrote mcbeam.py in cwd. The current call says module not found. Perhaps cwd differs (the code ran in /tmp/work earlier?). Let me check cwd and list files.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "01a131bfb594af921e57b6bbd19575c4",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import os\\nprint(os.getcwd())\\nprint(os.listdir('.'))\\nprint(os.path.exists('mcbeam.py'))\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Module not found - working directory may differ between calls? The tool said files persist in working directory. But maybe each call runs in a fresh dir? It says \"Files you write in the working directory persist between calls.\" The previous call wrote mcbeam.py in cwd. The current call says module not found. Perhaps cwd differs (the code ran in /tmp/work earlier?). Let me check cwd and list files.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 95790,
+  "completion_tokens": 153,
+  "total_tokens": 95943,
+  "cost": 0.003460788,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 88576,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.003460788,
+   "upstream_inference_prompt_cost": 0.003417948,
+   "upstream_inference_completions_cost": 4.284e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 87,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791837077-kaLG6PWhHvXZaUV3h3zC",
+ "object": "chat.completion",
+ "created": 1791837077,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "SiliconFlow",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Layer 1 numbers:\n- L1_primary_fluence_per_phi0 = 0.7231\n- L1_total_fluence_per_phi0 = 1.1575\n- scattered fraction fluence = 0.3753\n- scattered fraction energy fluence = 0.1871\n- mean photon energy (all) = 0.9610 MeV\n- L1_photon_fluence_spectrum_primary = sp_p (per Phi0 per bin)\n- L1_photon_fluence_spectrum_scattered = sp_s\n- L1_angular_primary = [0,...,0,1]\n- L1_angular_scattered = [0.0770,0.0708,0.0686,0.0647,0.0708,0.0714,0.0824,0.1028,0.1475,0.2440]\n\nNow Layer 2: interaction fractions at the point from photon spectrum. Compute with cross-section tables. Then energy transfer fractions. Then Layer 3 spectra. Let me write the code. I'll use the same cross-section functions. I'll also compute Kcol from the spectrum directly (check vs Run1 5.337e-12: sp-based calculation gave 5.337).\n\nFor L2: interaction fractions (all photons at point): \ninter_i = \u03a3_bins sp_tot[bin]\u00d7\u03bc_i(Ec_bin) (fluence per phi0 \u00d7 \u03bc per cm). Fractions = inter_i/\u03a3.\nUse sp_tot = sp_p + sp_s.\n\nL2_interaction_fractions_primary: use sp_p only. L2_scattered: sp_s only.\n\nL2_scattered_share_of_interactions = (\u03a3 sp_s \u03bc_tot)/(\u03a3 sp_tot \u03bc_tot).\n\nEnergy transfer: \n- Compton E_tr(E): compute mean energy transferred to electron per Compton event: integrate KN: T = E\u00d7\u03b7(1-\u03bc)/(1+\u03b7(1-\u03bc)); <T> = \u222bd\u03c3/d\u03bc T d\u03bc / \u222bd\u03c3/d\u03bc d\u03bc.\n- pair E_tr = E - 1.022.\n- photo E_tr = E (minus binding ~ negligible; use E).\n- rayleigh 0.\n\nenergy transfer fraction for process i = \u03a3_bins \u03a6(E) \u03bc_i(E) E_tr_i(E) / \u03a3_bins \u03a6(E) [\u03a3_j \u03bc_j E_tr_j].\n\nLet me code L2.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "01a131d0652cadd92d1b787418ec177e",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nfrom scipy import integrate\\n\\nme=0.51099895; re=2.8179403262e-13; NA=6.02214076e23; n_e_g=NA*10/18.01528\\ndef kn_total(E):\\n    eta=np.asarray(E,float)/me; a=1+2*eta\\n    return 2*np.pi*re**2*((1+eta)/eta**2*(2*(1+eta)/a-np.log(a)/eta)+np.log(a)/(2*eta)-(1+3*eta)/a**2)\\ndef kn_dsdmu(E,mu):\\n    eta=E/me; r=1.0/(1.0+eta*(1.0-mu)); return np.pi*re**2*r**2*(r+1.0/r-(1.0-mu*mu))\\nEgrid=np.array([0.01,0.02,0.03,0.05,0.08,0.1,0.15,0.2,0.3,0.4,0.5,0.6,0.8,1.0,1.1732,1.25,1.3325,1.5,2.0,3.0])\\nmuR=np.array([0.028,0.012,0.0085,0.006,0.0052,0.0045,0.0033,0.0028,0.0022,0.0019,0.0017,0.0015,0.0012,0.001,0.0009,0.00085,0.0008,0.00075,0.00055,0.0004])\\ntau=np.array([0.6,0.15,0.045,0.0093,0.0026,0.0019,0.0007,0.00042,0.00016,0.000085,0.000052,0.000036,0.000021,0.000013,0.00001,0.000009,0.000008,0.000007,0.000004,0.0000015])\\nkap=np.zeros_like(Egrid); sel=Egrid>1.022; kap[sel]=np.interp(np.clip(Egrid[sel],1.1732,3.0),[1.1732,1.3325,1.5,2.0,3.0],[0.00012,0.00075,0.0011,0.0026,0.0055])\\ndef interp1(x,xp,fp): return np.interp(np.clip(x,xp[0],xp[-1]),xp,fp)\\ndef mu_comp(E): return kn_total(np.clip(E,0.01,3.0))*n_e_g\\ndef mu_ray(E): return interp1(E,Egrid,muR)\\ndef mu_photo(E): return interp1(E,Egrid,tau)\\ndef mu_pair(E):\\n    E=np.asarray(E,float); return np.where(E>2*me, interp1(E,Egrid,kap),0.0)\\ndef mu_totX(E): return mu_comp(E)+mu_ray(E)+mu_photo(E)+mu_pair(E)\\n\\nd=np.load('l1_data.npz')\\nsp_p=d['sp_p']; sp_s=d['sp_s']\\nph=np.array([0,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1,1.05,1.1,1.15,1.2,1.25,1.3,1.35,1.4])\\nEc=0.5*(ph[1:]+ph[:-1])\\n\\n# mean Compton energy transfer per photon energy\\nmuq=np.linspace(-1,1,20001)\\ndef comp_etr(E):\\n    d=kn_dsdmu(E,muq)\\n    t=E*(E/me)*(1-muq)/(1+(E/me)*(1-muq))\\n    return np.trapz(d*t,muq)/np.trapz(d,muq)\\n\\ndef inter_fractions(sp):\\n    mc=(sp*mu_comp(Ec)).sum(); mr=(sp*mu_ray(Ec)).sum(); mp=(sp*mu_photo(Ec)).sum(); mpa=(sp*mu_pair(Ec)).sum()\\n    tot=mc+mr+mp+mpa\\n    return dict(compton=mc/tot, rayleigh=mr/tot, photoelectric=mp/tot, pair=mpa/tot), (mc,mr,mp,mpa,tot)\\n\\ndef etr_fractions(sp):\\n    mc=(sp*mu_comp(Ec)).sum(); mr=(sp*mu_ray(Ec)).sum(); mp=(sp*mu_photo(Ec)).sum(); mpa=(sp*mu_pair(Ec)).sum()\\n    # energy transfer sums\\n    ec=sum((sp[i]*mu_comp(Ecb)*comp_etr(Ecb) for i,Ecb in enumerate(Ec)))\\n    ep=sum((sp[i]*mu_photo(Ecb)*Ecb for i,Ecb in enumerate(Ec)))\\n    epa=sum((sp[i]*mu_pair(Ecb)*max(Ecb-1.022,0) for i,Ecb in enumerate(Ec)))\\n    er=0.0\\n    tot=ec+ep+epa+er\\n    return dict(compton=ec/tot, rayleigh=er/tot, photoelectric=ep/tot, pair=epa/tot)\\n\\nf_all,_=inter_fractions(sp_p+sp_s)\\nf_pri,_=inter_fractions(sp_p)\\nf_sca,_=inter_fractions(sp_s)\\nf_etr=etr_fractions(sp_p+sp_s)\\nprint('interaction fractions all:', {k:round(v,5) for k,v in f_all.items()})\\nprint('interaction fractions primary:', {k:round(v,5) for k,v in f_pri.items()})\\nprint('interaction fractions scattered:', {k:round(v,5) for k,v in f_sca.items()})\\nprint('energy transfer fractions all:', {k:round(v,5) for k,v in f_etr.items()})\\n# scattered share of interactions\\n_, a = inter_fractions(sp_p+sp_s)\\n_, b = inter_fractions(sp_p)\\n_, c = inter_fractions(sp_s)\\ntot_all=a[4]; tot_scat=c[4]\\nprint('scattered share of interactions:', tot_scat/tot_all)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Layer 1 numbers:\n- L1_primary_fluence_per_phi0 = 0.7231\n- L1_total_fluence_per_phi0 = 1.1575\n- scattered fraction fluence = 0.3753\n- scattered fraction energy fluence = 0.1871\n- mean photon energy (all) = 0.9610 MeV\n- L1_photon_fluence_spectrum_primary = sp_p (per Phi0 per bin)\n- L1_photon_fluence_spectrum_scattered = sp_s\n- L1_angular_primary = [0,...,0,1]\n- L1_angular_scattered = [0.0770,0.0708,0.0686,0.0647,0.0708,0.0714,0.0824,0.1028,0.1475,0.2440]\n\nNow Layer 2: interaction fractions at the point from photon spectrum. Compute with cross-section tables. Then energy transfer fractions. Then Layer 3 spectra. Let me write the code. I'll use the same cross-section functions. I'll also compute Kcol from the spectrum directly (check vs Run1 5.337e-12: sp-based calculation gave 5.337).\n\nFor L2: interaction fractions (all photons at point): \ninter_i = \u03a3_bins sp_tot[bin]\u00d7\u03bc_i(Ec_bin) (fluence per phi0 \u00d7 \u03bc per cm). Fractions = inter_i/\u03a3.\nUse sp_tot = sp_p + sp_s.\n\nL2_interaction_fractions_primary: use sp_p only. L2_scattered: sp_s only.\n\nL2_scattered_share_of_interactions = (\u03a3 sp_s \u03bc_tot)/(\u03a3 sp_tot \u03bc_tot).\n\nEnergy transfer: \n- Compton E_tr(E): compute mean energy transferred to electron per Compton event: integrate KN: T = E\u00d7\u03b7(1-\u03bc)/(1+\u03b7(1-\u03bc)); <T> = \u222bd\u03c3/d\u03bc T d\u03bc / \u222bd\u03c3/d\u03bc d\u03bc.\n- pair E_tr = E - 1.022.\n- photo E_tr = E (minus binding ~ negligible; use E).\n- rayleigh 0.\n\nenergy transfer fraction for process i = \u03a3_bins \u03a6(E) \u03bc_i(E) E_tr_i(E) / \u03a3_bins \u03a6(E) [\u03a3_j \u03bc_j E_tr_j].\n\nLet me code L2.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 171071,
+  "completion_tokens": 2051,
+  "total_tokens": 173122,
+  "cost": 0.01027975,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 122880,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.01027975,
+   "upstream_inference_prompt_cost": 0.00970547,
+   "upstream_inference_completions_cost": 0.00057428
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 523,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

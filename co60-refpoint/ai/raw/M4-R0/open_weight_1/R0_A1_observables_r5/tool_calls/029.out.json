@@ -1,0 +1,9 @@
+{
+ "stdout": "cN=0, ssum=0.0, itrkp={})\n        if niter==1:\n            photon_mc.debug['sfrac']+=int((s<5.1).sum()); photon_mc.debug['sfracN']+=n_alive\n            photon_mc.debug['ssum']+=float(s.sum())\n        has_trk=trk>0\n        if has_trk.any():\n            photon_mc.debug['ntrk']+=int(has_trk.sum())\n            photon_mc.debug['ntrkp']+=int((has_trk&(pra==1)).sum())\n            photon_mc.debug['ntrks']+=int((has_trk&(pra==0)).sum())\n            photon_mc.debug['sumtrk']+=float(trk[has_trk].sum())\n        if has_trk.any():\n            Eseg=Ea[has_trk]; cth=uza[has_trk]; pseg=pra[has_trk]; tseg=trk[has_trk]\n            ph_p_tot+=float((tseg*(pseg==1)).sum()); ph_s_tot+=float((tseg*(pseg==0)).sum())\n            ph_p_E+=float((tseg*Eseg*(pseg==1)).sum()); ph_s_E+=float((tseg*Eseg*(pseg==0)).sum())\n            bi=np.clip(np.searchsorted(phE_bins,Eseg,side='right')-1,0,27)\n            m1=pseg==1; m0=pseg==0\n            if m1.any(): np.add.at(spec_p,bi[m1],tseg[m1])\n            if m0.any(): np.add\n",
+ "stderr": "",
+ "exit_code": 0,
+ "timed_out": false,
+ "wall_s": 0.03,
+ "stdout_truncated": false,
+ "stderr_truncated": false
+}

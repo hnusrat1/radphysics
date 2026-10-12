@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791835977-xtKOidcrOPCsJARREL3Q",
+ "object": "chat.completion",
+ "created": 1791835977,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "SiliconFlow",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Now test with small N.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "01a131bf482d7d268c61c6c603177d20",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np, time\\nimport mcbeam as mb\\nt0=time.time()\\nr=mb.photon_mc(200000, rng=np.random.default_rng(42))\\nprint('time',time.time()-t0,'niter',r['niter'])\\nprint('L0_sum',r['L0_sum'])\\nprint('ph_p_tot',r['ph_p_tot'],'ph_s_tot',r['ph_s_tot'])\\nprint('prim ratio',r['ph_p_tot']/r['L0_sum'], 'total ratio',(r['ph_p_tot']+r['ph_s_tot'])/r['L0_sum'])\\nprint('L2p',r['L2p'],'L2s',r['L2s'])\\nprint('nL3',r['nL3'],'Kdep',r['Kdep'],'sumE_all',r['sumE_all'])\\nsrc=r.get('src')\\nif src is not None:\\n    print('src n',len(src['E']),'Emean',src['E'].mean(),'zmean',src['Z'].mean(),'frac_pos',src['pos'].mean())\\n    print('prim frac among src', src['prim'].mean())\\nprint('spec_p sum',r['spec_p'].sum(),'spec_s sum',r['spec_s'].sum())\\nprint('ang_p sum',r['ang_p'].sum(),'ang_s sum',r['ang_s'].sum())\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Now test with small N.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 95298,
+  "completion_tokens": 364,
+  "total_tokens": 95662,
+  "cost": 0.011028388,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 14336,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.011028388,
+   "upstream_inference_prompt_cost": 0.010926468,
+   "upstream_inference_completions_cost": 0.00010192
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 7,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}
