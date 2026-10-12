@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791828577-OEhGAzZNLLMbTxQhHisI",
+ "object": "chat.completion",
+ "created": 1791828577,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "GMICloud",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "\"after add: primary total 0.0, scattered total 663.64\" \u2014 so gen1 contributions went into the SCATTERED bin (pr=1), even though pra should be prim (all True \u2192 pr=0). But the final shows primary/Phi0 = 0.428 and scattered 0.732. So somehow primary contributions got added in later generations? But \"gen1 remaining alive: 84934, primary among alive: 0\" \u2014 after gen1, NO primary photons alive. So all primary contributions must have been added in gen1, but they went to the scattered bin!\n\nSo `pr = pra.astype(int)` is producing 1 instead of 0?? That means `pra` is all False in gen1?! But `prim = np.ones(n,bool)` and `pra = prim[idx]`. Unless... `idx = np.where(alive)[0]` and `pra = prim[idx]`. In gen1 all alive, prim all True \u2192 pra all True \u2192 pr=0.\n\nWait, the output says \"scattered total 663.64\" after add. So pr was 1. That means pra was False! How?\n\nOH. I see the bug!!! In the previous iteration of the loop... no, gen1 is first. Hmm.\n\nWait \u2014 `prim=np.ones(n,bool)`. `pra=prim[idx]`. `pr=pra.astype(int)`. If pra is all True, pr=0. The output says scattered. Something must have flipped prim before gen1 scoring. Let me check: is there any code before the while loop that modifies `prim`? No.\n\nUnless... `idx` \u2014 `alive` all True. `prim[alive]` \u2014 all True.\n\nHmm wait, maybe numpy broadcasting issue: `np.add.at(score, (Eb, pr, cb), contrib)` with pr an int array of ones... If pr were 0 it would go to primary. The observed: scattered total got it. So pr was 1.\n\nUnless the issue is that `score[:,0,:]` and `score[:,1,:]` printing... Let me verify: after add, printed \"primary total 0.0, scattered total 663.64\". So indeed added to scattered.\n\nIs it possible that `pra` is False because `prim` got set to False earlier in the SAME gen1 iteration before the add? No, add happens before transport.\n\nWait, actually, maybe the culprit: `prim=np.ones(n,bool)`, then `idx=np.where(alive)[0]`, `pra=prim[idx]` \u2014 but what if `alive` has dtype something weird... no.\n\nLet me just print pra[:10] in gen1.\n\nActually, hold on: maybe I've been careless \u2014 in the print, after add, I print `score[:,0,:].sum()` and `score[:,1,:].sum()`. If both were... it printed primary 0.0, scattered 663.64. Since contrib.sum()=663.64, ALL went to scatter bin. So pr=1 for all.\n\nIs it possible that `prim` array is being viewed/aliased and modified... no modifications before gen1 add.\n\nLet me just add a print of pra[:5] and pr[:5] inside gen1. Let me do that quickly.\n\nActually \u2014 WAIT. I bet I know what it is! `pra = prim[idx]` returns a COPY (boolean array indexing returns copy). `pr = pra.astype(int)`. `np.add.at(score, (Eb, pr, cb), contrib)`. Hmm that's fine.\n\nLet me just test with a tiny example in isolation to see if np.add.at with pr=0 works (it did earlier: score[23,0,9]=0.8). So np.add.at works with pr=0.\n\nSo pr must be 1. Let me print.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_cb08668653b64a66b14f3948",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\n\\ndef load_xcom():\\n    with open('/tmp/data/xcom_water.txt') as f:\\n        lines = [l for l in f if not l.startswith('#') and l.strip()]\\n    x = np.loadtxt(lines)\\n    return x[:,0], x[:,1], x[:,2], x[:,3], x[:,4], x[:,5], x[:,6]\\nE_x, mu_coh, mu_incoh, mu_pe, mu_pairn, mu_paire, mu_tot = load_xcom()\\ndef mu_interp(E, col):\\n    return np.exp(np.interp(np.log(E), np.log(E_x), np.log(col)))\\ndef mu_total(E): return mu_interp(E, mu_tot)\\n\\ndef cyl_intersect(xa, ua, z0, z1):\\n    aq=ua[:,0]**2+ua[:,1]**2; bq=2.0*(xa[:,0]*ua[:,0]+xa[:,1]*ua[:,1]); cq=xa[:,0]**2+xa[:,1]**2-1.0\\n    par=aq<1e-14; tin=np.full(aq.shape,-np.inf); tout=np.full(aq.shape,np.inf); ok=np.ones(aq.shape,bool)\\n    npar=~par; disc=bq[npar]**2-4*aq[npar]*cq[npar]; pos=disc>=0; sq=np.sqrt(np.maximum(disc,0))\\n    t1=(-bq[npar]-sq)/(2*aq[npar]); t2=(-bq[npar]+sq)/(2*aq[npar]); ti=np.minimum(t1,t2); to=np.maximum(t1,t2)\\n    tin_np=tin[npar]; tout_np=tout[npar]; tin_np[~pos]=np.inf; tout_np[~pos]=-np.inf\\n    tin_np[pos]=ti[pos]; tout_np[pos]=to[pos]; tin[npar]=tin_np; tout[npar]=tout_np\\n    parrad=(xa[par,0]**2+xa[par,1]**2)<=1.0; ok[par]=parrad\\n    with np.errstate(divide='ignore',invalid='ignore'):\\n        tza=np.where(ua[:,2]>0,(z0-xa[:,2])/ua[:,2],np.where(ua[:,2]<0,(z0-xa[:,2])/ua[:,2],np.inf))\\n        tzb=np.where(ua[:,2]>0,(z1-xa[:,2])/ua[:,2],np.where(ua[:,2]<0,(z1-xa[:,2])/ua[:,2],np.inf))\\n    tzlo=np.minimum(tza,tzb); tzhi=np.maximum(tza,tzb)\\n    tlo=np.maximum(tin,tzlo); thi=np.minimum(tout,tzhi)\\n    valid=ok&(thi>tlo)&(thi>0)\\n    return tlo,thi,valid\\n\\nrng=np.random.default_rng(3); n=100000\\nE=np.where(rng.random(n)<0.5,1.1732,1.3325)\\nxs=rng.uniform(-5,5,n); ys=rng.uniform(-5,5,n)\\nd=np.stack([xs,ys,np.full(n,100.0)],axis=1); nrm=np.linalg.norm(d,axis=1); u=d/nrm[:,None]\\nx=np.stack([xs,ys,np.zeros(n)],axis=1)\\nprim=np.ones(n,bool); alive=np.ones(n,bool); mu=mu_total(E)\\nidx=np.where(alive)[0]; m=idx.size\\nEa=E[idx]; ua=u[idx]; xa=x[idx]; mua=mu[idx]; pra=prim[idx]\\nprint(\\\"pra sum:\\\", pra.sum(), \\\"pra dtype\\\", pra.dtype)\\nprint(\\\"prim[alive] sum:\\\", prim[alive].sum(), \\\"alive sum:\\\", alive.sum())\\npr=pra.astype(int)\\nprint(\\\"pr unique:\\\", np.unique(pr))\\ntlo,thi,valid=cyl_intersect(xa,ua,4.9,5.1)\\nt_in=np.maximum(tlo,0.0); L=np.maximum(thi-t_in,0.0)\\ncontrib=np.where(valid,np.exp(-mua*t_in)*L/(np.pi*0.2),0.0)\\nscore=np.zeros((28,2,10))\\nph_edges=np.array([0,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1,1.05,1.1,1.15,1.2,1.25,1.3,1.35,1.4])\\nct_edges=np.array([-1,-0.8,-0.6,-0.4,-0.2,0,0.2,0.4,0.6,0.8,1])\\nEb=np.clip(np.searchsorted(ph_edges,Ea,side='right')-1,0,27)\\ncb=np.clip(np.searchsorted(ct_edges,ua[:,2],side='right')-1,0,9)\\nnp.add.at(score,(Eb,pr,cb),contrib)\\nprint(\\\"primary total:\\\",score[:,0,:].sum(),\\\"scattered total:\\\",score[:,1,:].sum())\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "\"after add: primary total 0.0, scattered total 663.64\" \u2014 so gen1 contributions went into the SCATTERED bin (pr=1), even though pra should be prim (all True \u2192 pr=0). But the final shows primary/Phi0 = 0.428 and scattered 0.732. So somehow primary contributions got added in later generations? But \"gen1 remaining alive: 84934, primary among alive: 0\" \u2014 after gen1, NO primary photons alive. So all primary contributions must have been added in gen1, but they went to the scattered bin!\n\nSo `pr = pra.astype(int)` is producing 1 instead of 0?? That means `pra` is all False in gen1?! But `prim = np.ones(n,bool)` and `pra = prim[idx]`. Unless... `idx = np.where(alive)[0]` and `pra = prim[idx]`. In gen1 all alive, prim all True \u2192 pra all True \u2192 pr=0.\n\nWait, the output says \"scattered total 663.64\" after add. So pr was 1. That means pra was False! How?\n\nOH. I see the bug!!! In the previous iteration of the loop... no, gen1 is first. Hmm.\n\nWait \u2014 `prim=np.ones(n,bool)`. `pra=prim[idx]`. `pr=pra.astype(int)`. If pra is all True, pr=0. The output says scattered. Something must have flipped prim before gen1 scoring. Let me check: is there any code before the while loop that modifies `prim`? No.\n\nUnless... `idx` \u2014 `alive` all True. `prim[alive]` \u2014 all True.\n\nHmm wait, maybe numpy broadcasting issue: `np.add.at(score, (Eb, pr, cb), contrib)` with pr an int array of ones... If pr were 0 it would go to primary. The observed: scattered total got it. So pr was 1.\n\nUnless the issue is that `score[:,0,:]` and `score[:,1,:]` printing... Let me verify: after add, printed \"primary total 0.0, scattered total 663.64\". So indeed added to scattered.\n\nIs it possible that `pra` is False because `prim` got set to False earlier in the SAME gen1 iteration before the add? No, add happens before transport.\n\nWait, actually, maybe the culprit: `prim=np.ones(n,bool)`, then `idx=np.where(alive)[0]`, `pra=prim[idx]` \u2014 but what if `alive` has dtype something weird... no.\n\nLet me just print pra[:10] in gen1.\n\nActually, hold on: maybe I've been careless \u2014 in the print, after add, I print `score[:,0,:].sum()` and `score[:,1,:].sum()`. If both were... it printed primary 0.0, scattered 663.64. Since contrib.sum()=663.64, ALL went to scatter bin. So pr=1 for all.\n\nIs it possible that `prim` array is being viewed/aliased and modified... no modifications before gen1 add.\n\nLet me just add a print of pra[:5] and pr[:5] inside gen1. Let me do that quickly.\n\nActually \u2014 WAIT. I bet I know what it is! `pra = prim[idx]` returns a COPY (boolean array indexing returns copy). `pr = pra.astype(int)`. `np.add.at(score, (Eb, pr, cb), contrib)`. Hmm that's fine.\n\nLet me just test with a tiny example in isolation to see if np.add.at with pr=0 works (it did earlier: score[23,0,9]=0.8). So np.add.at works with pr=0.\n\nSo pr must be 1. Let me print.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 102687,
+  "completion_tokens": 2095,
+  "total_tokens": 104782,
+  "cost": 0.0035958286,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 84203,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0035958286,
+   "upstream_inference_prompt_cost": 0.0032145386,
+   "upstream_inference_completions_cost": 0.00038129
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 829,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

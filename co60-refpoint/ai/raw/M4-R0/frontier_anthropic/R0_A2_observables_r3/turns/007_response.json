@@ -1,0 +1,57 @@
+{
+ "id": "gen-1791828707-znbUMt8nkDkUO5HiSoUe",
+ "object": "chat.completion",
+ "created": 1791828707,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01PFG2ejBdYKVCurTkSkbZad",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport sys, os\\nimport numpy as np\\nsys.path.insert(0,'/tmp/work')\\ncode=open('/tmp/work/phys.py').read().replace('np.trapz','np.trapezoid')\\nopen('/tmp/work/phys.py','w').write(code)\\nimport phys\\nE=np.array([1.1732,1.3325])\\nprint(phys.mu_tot(E), phys.mu_pair(E), phys.mu_coh(E)/phys.mu_tot(E))\\nprint(phys.eps_mean(E))\\nprint(phys.mu_inc(E)*(1-phys.eps_mean(E)) + phys.mu_pair(E)*(1-1.022/E)+ phys.mu_pe(E))\\n\"}"
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 85197,
+  "completion_tokens": 282,
+  "total_tokens": 85479,
+  "cost": 0.00105387,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 84667,
+   "cache_write_tokens": 528,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00105387,
+   "upstream_inference_prompt_cost": 0.00091287,
+   "upstream_inference_completions_cost": 0.000141
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 0,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

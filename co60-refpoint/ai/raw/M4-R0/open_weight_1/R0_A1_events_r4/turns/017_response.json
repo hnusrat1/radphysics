@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791828895-7falABJE4F09auOEz5hv",
+ "object": "chat.completion",
+ "created": 1791828895,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I have a typo: \"n.interp\" should be \"np.interp\". Let me fix that. Actually, let me rewrite the whole simulation properly from scratch in a single clean code block.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_113bc8be007443a181102e64",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nimport math\\nimport random\\n\\n# Constants\\nmec2 = 0.511\\nr0 = 2.8179403262e-13\\nnepm3 = 3.3456e23\\n\\n# Geometry\\nsource_z = -100.0\\npz_min = 0.0\\npz_max = 30.0\\nphalf = 15.0\\nsc_r = 1.0\\nsc_z0 = 5.0\\nsc_dz = 0.1\\nfield_half = 5.0\\n\\n# Cross sections\\ndef mu_inc(E):\\n    if E <= 0: return 0.0\\n    a = E/mec2\\n    a2 = a*a\\n    x = 1 + 2*a\\n    lx = math.log(x)\\n    t1 = (1+a)/a2 * (2*(1+a)/x - lx/a)\\n    t2 = lx/(2*a) - (1+3*a)/(x*x)\\n    return 2*math.pi*r0*r0*(t1+t2)*nepm3\\n\\ndef mu_pp(E):\\n    if E <= 2*mec2: return 0.0\\n    e_arr = np.array([1.1732, 1.3325, 2.0, 3.0, 5.0, 10.0])\\n    mu_arr = np.array([0.006205, 0.006286, 0.0082, 0.0109, 0.0126, 0.0120])\\n    if E <= 1.1732:\\n        t = E - 2*mec2\\n        if t <= 0: return 0.0\\n        t0 = 1.1732 - 1.022\\n        return 0.006205 * (t/t0)**2\\n    elif E >= 10.0:\\n        return 0.0120\\n    else:\\n        le = math.log(E)\\n        le_arr = np.log(e_arr)\\n        lmu_arr = np.log(mu_arr)\\n        return math.exp(np.interp(le, le_arr, lmu_arr))\\n\\ndef mu_pe(E):\\n    if E <= 0: return 0.0\\n    e_arr = np.array([0.01, 0.02, 0.05, 0.1, 0.2, 0.3, 0.5, 1.0, 1.1732, 1.3325, 2.0])\\n    mu_arr = np.array([5.33, 0.742, 0.0321, 0.0164, 0.0097, 0.0057, 0.0026, 0.0011, 0.001735, 0.001524, 0.00078])\\n    if E <= 0.01:\\n        return 5.33 * (E/0.01)**(-3.5)\\n    elif E >= 2.0:\\n        return 0.00078 * (E/2.0)**(-3.0)\\n    else:\\n        le = math.log(E)\\n        le_arr = np.log(e_arr)\\n        lmu_arr = np.log(mu_arr)\\n        return math.exp(np.interp(le, le_arr, lmu_arr))\\n\\ndef mu_ray(E):\\n    if E <= 0: return 0.0\\n    e_arr = np.array([0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1.0, 1.1732, 1.3325, 2.0, 5.0])\\n    mu_arr = np.array([0.0008, 0.0010, 0.0012, 0.0016, 0.0021, 0.0024, 0.0025, 0.00253, 0.00213, 0.0012, 0.0003])\\n    if E <= 0.01:\\n        return 0.0008 * (E/0.01)**0.3\\n    elif E >= 5.0:\\n        return 0.0003 * (E/5.0)**(-1.5)\\n    else:\\n        le = math.log(E)\\n        le_arr = np.log(e_arr)\\n        lmu_arr = np.log(mu_arr)\\n        return math.exp(np.interp(le, le_arr, lmu_arr))\\n\\ndef mu_tot(E):\\n    return mu_inc(E) + mu_pp(E) + mu_pe(E) + mu_ray(E)\\n\\n# Geometry checks\\ndef in_phantom(x, y, z):\\n    return (pz_min <= z <= pz_max and \\n            -phalf <= x <= phalf and \\n            -phalf <= y <= phalf)\\n\\ndef in_scoring(x, y, z):\\n    return (x*x + y*y <= sc_r*sc_r and \\n            abs(z - sc_z0) <= sc_dz)\\n\\ndef sample_dir():\\n    x0 = random.uniform(-field_half, field_half)\\n    y0 = random.uniform(-field_half, field_half)\\n    dx = x0\\n    dy = y0\\n    dz = 100.0\\n    norm = math.sqrt(dx*dx + dy*dy + dz*dz)\\n    return dx/norm, dy/norm, dz/norm\\n\\n# Sampling routines\\ndef sample_compton(E):\\n    a = E/mec2\\n    while True:\\n        mu = random.uniform(-1.0, 1.0)\\n        k = 1.0/(1.0 + a*(1.0 - mu))\\n        f = k*k*(k + 1.0/k + mu*mu - 1.0)\\n        if random.random() <= f/2.0:\\n            break\\n    Eout = k * E\\n    te = E - Eout\\n    theta = math.acos(mu)\\n    if abs(theta) < 1e-10:\\n        cose = 1.0\\n    else:\\n        tan_half = math.tan(theta/2.0)\\n        cot_phi = (1.0 + a) * tan_half\\n        phi = math.atan2(1.0, cot_phi)\\n        cose = math.cos(phi)\\n    return Eout, mu, te, cose\\n\\ndef sample_rayleigh(E):\\n    sigma = 0.008\\n    while True:\\n        theta = random.gauss(0, sigma)\\n        if 0 <= theta <= math.pi:\\n            break\\n    mu = math.cos(theta)\\n    return E, mu\\n\\ndef sample_pair(E):\\n    Eavail = E - 2*mec2\\n    te = random.uniform(0, Eavail)\\n    tp = Eavail - te\\n    sigma = mec2/E\\n    while True:\\n        theta = random.gauss(0, sigma)\\n        if 0 <= theta <= math.pi/2:\\n            break\\n    cose = math.cos(theta)\\n    cosp = cose  # approximate\\n    return te, cose, tp, cosp\\n\\ndef sample_pe(E):\\n    te = E  # binding energy negligible\\n    sigma = 0.3\\n    while True:\\n        theta = random.gauss(0, sigma)\\n        if 0 <= theta <= math.pi/2:\\n            break\\n    cose = math.cos(theta)\\n    return te, cose\\n\\ndef rotate_dir(dx, dy, dz, cos_theta, phi):\\n    sin_theta = math.sqrt(1 - cos_theta*cos_theta)\\n    # Find perpendicular\\n    if abs(dx) < 0.9:\\n        px, py, pz = 1.0, 0.0, 0.0\\n    else:\\n        px, py, pz = 0.0, 1.0, 0.0\\n    dot = px*dx + py*dy + pz*dz\\n    px -= dot*dx\\n    py -= dot*dy\\n    pz -= dot*dz\\n    n = math.sqrt(px*px + py*py + pz*pz)\\n    if n > 0:\\n        px /= n; py /= n; pz /= n\\n    # Second perpendicular\\n    qx = dy*pz - dz*py\\n    qy = dz*px - dx*pz\\n    qz = dx*py - dy*px\\n    # New direction\\n    dxn = cos_theta*dx + sin_theta*(math.cos(phi)*px + math.sin(phi)*qx)\\n    dyn = cos_theta*dy + sin_theta*(math.cos(phi)*py + math.sin(phi)*qy)\\n    dzn = cos_theta*dz + sin_theta*(math.cos(phi)*pz + math.sin(phi)*qz)\\n    nn = math.sqrt(dxn*dxn + dyn*dyn + dzn*dzn)\\n    if nn > 0:\\n        return dxn/nn, dyn/nn, dzn/nn\\n    return dx, dy, dz\\n\\n# Main simulation\\ndef simulate_history():\\n    events = []\\n    \\n    # Sample source photon\\n    if random.random() < 0.5:\\n        E = 1.1732\\n    else:\\n        E = 1.3325\\n    dx, dy, dz = sample_dir()\\n    \\n    # Transport to phantom surface\\n    dist_to_surface = (pz_min - source_z) / dz  # dz > 0 for forward direction\\n    x = dx * dist_to_surface\\n    y = dy * dist_to_surface\\n    z = pz_min\\n    \\n    # Now track through phantom\\n    max_steps = 200\\n    for _ in range(max_steps):\\n        mu_t = mu_tot(E)\\n        if mu_t <= 0:\\n            break\\n        \\n        # Sample free path\\n        s = -math.log(random.random()) / mu_t\\n        \\n        # New position\\n        xn = x + s*dx\\n        yn = y + s*dy\\n        zn = z + s*dz\\n        \\n        # Check if interaction is inside phantom\\n        if not in_phantom(xn, yn, zn):\\n            # Photon exits phantom\\n            break\\n        \\n        # Interaction occurs\\n        x, y, z = xn, yn, zn\\n        \\n        # Determine process\\n        mu_c = mu_inc(E)\\n        mu_p = mu_pp(E)\\n        mu_pe = mu_pe(E)\\n        mu_r = mu_ray(E)\\n        mu_t = mu_c + mu_p + mu_pe + mu_r\\n        \\n        r = random.random() * mu_t\\n        \\n        if r < mu_c:\\n            # Compton\\n            Eout, cos_scat, te, cose = sample_compton(E)\\n            in_sv = in_scoring(x, y, z)\\n            \\n            if in_sv:\\n                events.append({\\n                    \\\"process\\\": \\\"compton\\\",\\n                    \\\"e_in_MeV\\\": E,\\n                    \\\"e_out_MeV\\\": Eout,\\n                    \\\"cos_scatter\\\": cos_scat,\\n                    \\\"t_e_MeV\\\": te,\\n                    \\\"cos_electron\\\": cose,\\n                    \\\"t_positron_MeV\\\": None\\n                })\\n            \\n            # Continue with scattered photon\\n            E = Eout\\n            phi = random.uniform(0, 2*math.pi)\\n            dx, dy, dz = rotate_dir(dx, dy, dz, cos_scat, phi)\\n            \\n        elif r < mu_c + mu_p:\\n            # Pair production\\n            te, cose, tp, cosp = sample_pair(E)\\n            in_sv = in_scoring(x, y, z)\\n            \\n            if in_sv:\\n                events.append({\\n                    \\\"process\\\": \\\"pair\\\",\\n                    \\\"e_in_MeV\\\": E,\\n                    \\\"e_out_MeV\\\": None,\\n                    \\\"cos_scatter\\\": None,\\n                    \\\"t_e_MeV\\\": te,\\n                    \\\"cos_electron\\\": cose,\\n                    \\\"t_positron_MeV\\\": tp\\n                })\\n            # Photon absorbed\\n            break\\n            \\n        elif r < mu_c + mu_p + mu_pe:\\n            # Photoelectric\\n            te, cose = sample_pe(E)\\n            in_sv = in_scoring(x, y, z)\\n            \\n            if in_sv:\\n                events.append({\\n                    \\\"process\\\": \\\"photoelectric\\\",\\n                    \\\"e_in_MeV\\\": E,\\n                    \\\"e_out_MeV\\\": None,\\n                    \\\"cos_scatter\\\": None,\\n                    \\\"t_e_MeV\\\": te,\\n                    \\\"cos_electron\\\": cose,\\n                    \\\"t_positron_MeV\\\": None\\n                })\\n            # Photon absorbed\\n            break\\n            \\n        else:\\n            # Rayleigh\\n            Eout, cos_scat = sample_rayleigh(E)\\n            in_sv = in_scoring(x, y, z)\\n            \\n            if in_sv:\\n                events.append({\\n                    \\\"process\\\": \\\"rayleigh\\\",\\n                    \\\"e_in_MeV\\\": E,\\n                    \\\"e_out_MeV\\\": Eout,\\n                    \\\"cos_scatter\\\": cos_scat,\\n                    \\\"t_e_MeV\\\": 0.0,\\n                    \\\"cos_electron\\\": None,\\n                    \\\"t_positron_MeV\\\": None\\n                })\\n            \\n            # Continue (same energy)\\n            phi = random.uniform(0, 2*math.pi)\\n            dx, dy, dz = rotate_dir(dx, dy, dz, cos_scat, phi)\\n    \\n    return events\\n\\n# Run simulation\\nprint(\\\"Starting simulation...\\\")\\nrandom.seed(12345)\\nall_events = []\\nn_hist = 0\\ntarget = 200\\nmax_hist = 2000000\\n\\nwhile len(all_events) < target and n_hist < max_hist:\\n    n_hist+= 1\\n    if nhist % 100000 == 0:\\n        print(f\\\"  History {nhist}, events collected {len(all_events)}\\\")\\n    evts = simulate_history()\\n    all_events.extend(evts)\\n\\nprint(f\\\"Done. Total histories: {nhist}, events: {len(all_events)}\\\")\\nevents_final = all_events[:200]\\nprint(f\\\"Events: {len(events_final)}\\\")\\n\\n# Summary\\nfrom collections import Counter\\nprint(Counter([e[\\\"process\\\"] for e in events_final]))\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I have a typo: \"n.interp\" should be \"np.interp\". Let me fix that. Actually, let me rewrite the whole simulation properly from scratch in a single clean code block.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 34714,
+  "completion_tokens": 3200,
+  "total_tokens": 37914,
+  "cost": 0.001949237752,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 24576,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001949237752,
+   "upstream_inference_prompt_cost": 0.001367733752,
+   "upstream_inference_completions_cost": 0.000581504
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 41,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

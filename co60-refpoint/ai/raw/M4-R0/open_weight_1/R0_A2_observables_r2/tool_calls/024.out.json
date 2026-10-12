@@ -1,0 +1,9 @@
+{
+ "stdout": "q total integral: 0.08541496951320601 (expect ~0.085 per cm3)\nelectron fluence per Phi0 (with delta): 3.2551099030290214\nelectron fluence per Phi0 (no delta): 0.012050909896174895\ndelta fraction of fluence: 0.9962978485350185\nmean electron energy (fluence-weighted): 0.03179297546212412\n",
+ "stderr": "/tmp/work/_call_024.py:12: RuntimeWarning: divide by zero encountered in log\n  def mu_interp(E,col): return np.exp(np.interp(np.log(E),np.log(E_x),np.log(col)))\nTraceback (most recent call last):\n  File \"/tmp/work/_call_024.py\", line 133, in <module>\n    den2=np.trapezoid(Phi*Scol,Tg)\n                      ~~~^~~~~\nValueError: operands could not be broadcast together with shapes (700,) (53,) \n",
+ "exit_code": 1,
+ "timed_out": false,
+ "wall_s": 1.09,
+ "stdout_truncated": false,
+ "stderr_truncated": false
+}

@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791828838-5oNskG38RjRo0BiceARy",
+ "object": "chat.completion",
+ "created": 1791828838,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "GMICloud",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "L2 results:\n- Interaction fractions (all photons at the point): Compton 0.983, PE 0.0075, pair 0.00013, Rayleigh 0.0089.\n  Hmm, PE fraction 0.75% seems high for 1.2 MeV in water. Wait: the scattered photon spectrum includes many low-energy photons (scattered down to 0.01-0.4 MeV) where PE is more significant. At 0.05 MeV, \u03bc_pe/\u03c1 ~ 0.08 cm\u00b2/g vs \u03bc_incoh ~ 0.22? Actually at low energies PE becomes comparable. The scattered fluence includes low-E photons; PE 0.75% of interactions. Plausible.\n- Primary interactions: Compton 0.9989, PE 3.7e-5, pair 2.6e-4, Rayleigh 5.75e-4. Good.\n- Scattered interactions: Compton 0.9677, PE 0.0145, Rayleigh 0.0167.\n- Scattered share of interactions: 0.517 \u2014 over half of interactions are by scattered photons (because scattered fluence 0.4276 vs primary 0.7337, but scattered photons have higher \u03bc_tot due to lower energies, boosting their interaction share). Interesting: fluence share of scattered is 0.368, but interaction share 0.517. Makes sense.\n\n- Energy transfer fractions: Compton 0.9984, PE 0.00148, small.\n\nL3:\n- Total particles per unit volume per \u03a60: 0.0849 cm\u207b\u00b3 (this is production per volume; will use for L4 with /\u03c1).\n- Primary particles 0.0456.\n- Mean initial energy all: 0.394 MeV; primary: 0.594 MeV.\n- Initial spectrum nonzero in all 25 bins.\n\nLet me sanity check the total particle production: primary electrons from primary photons: \u03a6_prim\u00d7\u03bc_c(E)\u00d7(mostly) ~ 0.733\u00d70.065 ~ 0.048/cm. Times... yes 0.0456. Plus scattered photon-induced ~0.039. OK.\n\nNow L3_initial_direction. Let me compute.\n\nFor primary lines: each photon line weight w_i, interaction \u03bc_c(E_i); the electron angular distribution from Compton. Also PE (forward) and pair (forward) negligible.\n\nFor scattered photons: use fine5 joint (E_fine \u00d7 cos\u03b8 bins) scattered fluence. For each (E_j, \u03bc\u03b3_k) and Compton interaction: electron direction distribution over the range method. Accumulate into L3_initial_direction bins.\n\nLet me implement.\n\nThen L4 electron fluence via CSDA+delta, and L5.\n\nLet me continue with L3_initial_direction and then L4/L5 in the next script.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_559955aa7e1446a39d54fa2a",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np, pickle\\n\\nwith open('mc_results.pkl','rb') as f:\\n    d=pickle.load(f)\\nfine5=d['fine5']; score28_at5=d['score28_at5']\\n\\ndef load_xcom():\\n    with open('/tmp/data/xcom_water.txt') as f:\\n        lines=[l for l in f if not l.startswith('#') and l.strip()]\\n    x=np.loadtxt(lines); return x[:,0],x[:,1],x[:,2],x[:,3],x[:,4],x[:,5],x[:,6]\\nE_x,mu_coh,mu_incoh,mu_pe,mu_pairn,mu_paire,mu_tot=load_xcom()\\ndef mu_interp(E,col): return np.exp(np.interp(np.log(E),np.log(E_x),np.log(col)))\\ndef mup(E): return dict(compton=mu_interp(E,mu_incoh), pe=mu_interp(E,mu_pe), pair=mu_interp(E,mu_pairn+mu_paire), rayleigh=mu_interp(E,mu_coh), total=mu_interp(E,mu_tot))\\n\\nmc2=0.51099895; re2=7.9408e-26\\ndef kn_dsig(E0,cosT):\\n    a=E0/mc2; Ep=E0/(1.0+a*(1.0-cosT)); r=Ep/E0\\n    return 0.5*re2*r**2*(r+1.0/r-(1.0-cosT**2))\\ndef kn_total(E0):\\n    th=np.linspace(1e-6,np.pi,20000); return np.trapezoid(kn_dsig(E0,np.cos(th))*2*np.pi*np.sin(th),th)\\ndef compton_Ep(E0,cosT):\\n    a=E0/mc2; return E0/(1.0+a*(1.0-cosT))\\n\\nct_edges=np.array([-1,-0.8,-0.6,-0.4,-0.2,0,0.2,0.4,0.6,0.8,1])\\nel_edges=np.array([0.01,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1,1.05,1.1,1.15,1.2,1.4])\\nnel=len(el_edges)-1\\nw1=score28_at5[23,0,:].sum(); w2=score28_at5[26,0,:].sum(); wlines=np.array([w1,w2]); Elines=np.array([1.1732,1.3325])\\n\\n# --- L3 initial direction (fraction in cos theta bins)\\ndir_hist=np.zeros(10)\\n# primary photons: direction +z; electron recoil from Compton\\ndef add_electron_dir_primary(E, w, dirarr):\\n    d=mup(E)\\n    th=np.linspace(1e-5,np.pi,10000); c=np.cos(th)\\n    dsdo=kn_dsig(E,c)*2*np.pi*np.sin(th)\\n    a=E/mc2\\n    cotp=(1.0+a)*np.tan(th/2.0)\\n    phi=np.arctan2(1.0,cotp)\\n    cose=np.cos(phi)   # electron cos relative to incoming photon (+z); azimuth averages -> use mean cos\\n    # weight by dsigma\\n    wgt=dsdo/sum(dsdo)  # normalized\\n    # distribute: for each theta, electron cos = cose (mean over azimuth is exact for photon along z because symmetric)\\n    for i in range(10):\\n        lo,hi=ct_edges[i],ct_edges[i+1]\\n        sel=(cose>=lo)&(cose<hi)\\n        dirarr[i]+= w*d['compton']*wgt[sel].sum()\\n    # PE: electron forward (cos~1), negligible but add\\n    dirarr[9]+=w*d['pe']\\n    # pair: two particles forward\\n    dirarr[9]+=2*w*d['pair']\\n\\nfor E,w in zip(Elines,wlines):\\n    add_electron_dir_primary(E,w,dir_hist)\\n\\n# scattered photons as parents: joint distribution fine5[:, k_cos, scattered]\\nfine_edges=np.arange(0.01,1.405,0.005); nf=len(fine_edges)-1\\nfine_mid=(fine_edges[:-1]+fine_edges[1:])/2\\nsc_2d = fine5[:,:,1]  # (nf,10) fluence per bin\\nfor jk in range(10):\\n    mug = (ct_edges[jk]+ct_edges[jk+1])/2\\n    spec = sc_2d[:,jk]   # fluence per fine bin\\n    for j,E in enumerate(fine_mid):\\n        w=spec[j]\\n        if w<=0: continue\\n        d=mup(E)\\n        th=np.linspace(1e-5,np.pi,5000); c=np.cos(th)\\n        dsdo=kn_dsig(E,c)*2*np.pi*np.sin(th)\\n        a=E/mc2\\n        cotp=(1.0+a)*np.tan(th/2.0)\\n        phi=np.arctan2(1.0,cotp)\\n        co= np.cos(phi); so=np.sin(phi); sg=np.sqrt(max(0,1-mug**2))\\n        c0=mug*co; s0=so*sg\\n        wgt=dsdo/dsdo.sum()\\n        for i in range(10):\\n            lo,hi=ct_edges[i],ct_edges[i+1]\\n            lo_=max(lo,c0-s0); hi_=min(hi,c0+s0)\\n            frac=0.0\\n            if hi_>lo_:\\n                frac=(hi_-lo_)/(2*s0)\\n            dir_hist[i]+= w*d['compton']*(wgt*frac).sum()\\n\\ntot_dir=dir_hist.sum()\\nL3_dir=dir_hist/tot_dir\\nprint(\\\"L3 initial direction (fraction):\\\", L3_dir)\\nprint(\\\"sum:\\\", L3_dir.sum())\\n# also add efficiency check: photons with E below 1.022: pair not possible; handled fine\\n# Note: pair/PE contributions from scattered photons omitted (tiny) - fine.\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "L2 results:\n- Interaction fractions (all photons at the point): Compton 0.983, PE 0.0075, pair 0.00013, Rayleigh 0.0089.\n  Hmm, PE fraction 0.75% seems high for 1.2 MeV in water. Wait: the scattered photon spectrum includes many low-energy photons (scattered down to 0.01-0.4 MeV) where PE is more significant. At 0.05 MeV, \u03bc_pe/\u03c1 ~ 0.08 cm\u00b2/g vs \u03bc_incoh ~ 0.22? Actually at low energies PE becomes comparable. The scattered fluence includes low-E photons; PE 0.75% of interactions. Plausible.\n- Primary interactions: Compton 0.9989, PE 3.7e-5, pair 2.6e-4, Rayleigh 5.75e-4. Good.\n- Scattered interactions: Compton 0.9677, PE 0.0145, Rayleigh 0.0167.\n- Scattered share of interactions: 0.517 \u2014 over half of interactions are by scattered photons (because scattered fluence 0.4276 vs primary 0.7337, but scattered photons have higher \u03bc_tot due to lower energies, boosting their interaction share). Interesting: fluence share of scattered is 0.368, but interaction share 0.517. Makes sense.\n\n- Energy transfer fractions: Compton 0.9984, PE 0.00148, small.\n\nL3:\n- Total particles per unit volume per \u03a60: 0.0849 cm\u207b\u00b3 (this is production per volume; will use for L4 with /\u03c1).\n- Primary particles 0.0456.\n- Mean initial energy all: 0.394 MeV; primary: 0.594 MeV.\n- Initial spectrum nonzero in all 25 bins.\n\nLet me sanity check the total particle production: primary electrons from primary photons: \u03a6_prim\u00d7\u03bc_c(E)\u00d7(mostly) ~ 0.733\u00d70.065 ~ 0.048/cm. Times... yes 0.0456. Plus scattered photon-induced ~0.039. OK.\n\nNow L3_initial_direction. Let me compute.\n\nFor primary lines: each photon line weight w_i, interaction \u03bc_c(E_i); the electron angular distribution from Compton. Also PE (forward) and pair (forward) negligible.\n\nFor scattered photons: use fine5 joint (E_fine \u00d7 cos\u03b8 bins) scattered fluence. For each (E_j, \u03bc\u03b3_k) and Compton interaction: electron direction distribution over the range method. Accumulate into L3_initial_direction bins.\n\nLet me implement.\n\nThen L4 electron fluence via CSDA+delta, and L5.\n\nLet me continue with L3_initial_direction and then L4/L5 in the next script.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 135845,
+  "completion_tokens": 2108,
+  "total_tokens": 137953,
+  "cost": 0.003845023,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 122260,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.003845023,
+   "upstream_inference_prompt_cost": 0.003461367,
+   "upstream_inference_completions_cost": 0.000383656
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 600,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

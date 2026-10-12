@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791828463-kn6WTJbZfD3h9Jw2BHJP",
+ "object": "chat.completion",
+ "created": 1791828463,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I keep making syntax errors because I'm being too hasty. Let me write a complete, clean file and be very careful. I'll write it line by line without rushing.\n\nLet me step back and write a simpler approach: I'll generate the events using a direct sampling method rather than a full Monte Carlo transport.\n\nActually, let me think about a simpler but still correct approach.\n\nFor the 200 photon interactions in the scoring volume, I can directly sample:\n\n1. Primary photons (first interaction in the scoring volume)\n2. Single-scattered photons (one Compton scatter elsewhere, then interaction in scoring volume)\n\nThe main contributions to the scoring volume are:\na) Primary photons that have their first interaction in the scoring volume\nb) Primary photons that Compton-scatter once before reaching the scoring volume\nc) Primary photons that Rayleigh-scatter once before reaching the scoring volume\n\nFor this problem, I can use a variance reduction / direct sampling approach:\n\n1. Sample whether it's a primary or scattered interaction\n2. For primary: sample the interaction type based on cross sections at the primary energy\n3. For scattered: sample the scattering history that leads to the scoring volume\n\nThe ratio of scattered to primary fluence at the scoring volume can be estimated.\n\nActually, let me take a step back and use a more defensible approach. I'll write a proper but simplified Monte Carlo with a stack-based photon tracking system. Let me be very careful with the syntax this time.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_4595daae668c4a2dbd55e113",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\n\\n# Constants\\nm_e = 0.510998950\\nr_e = 2.8179403262e-13\\nNA = 6.02214076e23\\ne_per_cm3 = 10.0 * NA / 18.01528\\n\\n# ------- Cross sections -------\\ndef mu_compton(E):\\n    a = E / m_e\\n    t1 = (1+a)/a**2 * (2*(1+a)/(1+2*a) - np.log(1+2*a)/a)\\n    t2 = np.log(1+2*a)/(2*a)\\n    t3 = (1+3*a)/(1+2*a)**2\\n    return 2*np.pi*r_e**2 * (t1 + t2 - t3) * e_per_cm3\\n\\ndef mu_photo(E):\\n    xs = np.array([0.01, 0.015, 0.02, 0.03, 0.04, 0.05, 0.06, 0.08, 0.1,\\n                   0.15, 0.2, 0.3, 0.4, 0.5, 0.6, 0.8, 1.0, 1.1732, 1.25,\\n                   1.3325, 1.5, 2.0])\\n    ys = np.array([4.91, 1.67, 0.755, 0.216, 0.0881, 0.0442, 0.0255,\\n                   0.0113, 0.00642, 0.00254, 0.00152, 0.00154, 0.00228,\\n                   0.00406, 0.00555, 0.00450, 0.00377, 0.00300, 0.00258,\\n                   0.00230, 0.00179, 0.00100])\\n    return np.interp(E, xs, ys) * 1.0\\n\\ndef mu_pair(E):\\n    if E < 2*m_e: return 0.0\\n    xs = np.array([1.022, 1.1, 1.1732, 1.25, 1.3325, 1.5, 2.0, 3.0, 5.0])\\n    ys = np.array([0.0, 0.0002, 0.00035, 0.00071, 0.00100, 0.00146,\\n                   0.00383, 0.0085, 0.0175])\\n    return np.interp(E, xs, ys) * 1.0\\n\\ndef mu_rayleigh(E):\\n    xs = np.array([0.01, 0.015, 0.02, 0.03, 0.04, 0.05, 0.06, 0.08, 0.1,\\n                   0.15, 0.2, 0.3, 0.4, 0.5, 0.6, 0.8, 1.0, 1.1732, 1.25,\\n                   1.3325, 1.5, 2.0])\\n    ys = np.array([0.037, 0.034, 0.032, 0.028, 0.025, 0.022, 0.019,\\n                   0.015, 0.012, 0.0085, 0.0065, 0.0050, 0.0040, 0.0055,\\n                   0.0045, 0.0035, 0.00303, 0.00250, 0.00242, 0.00210,\\n                   0.00186, 0.00114])\\n    return np.interp(E, xs, ys) * 1.0\\n\\ndef mu_total(E):\\n    return mu_compton(E) + mu_photo(E) + mu_pair(E) + mu_rayleigh(E)\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I keep making syntax errors because I'm being too hasty. Let me write a complete, clean file and be very careful. I'll write it line by line without rushing.\n\nLet me step back and write a simpler approach: I'll generate the events using a direct sampling method rather than a full Monte Carlo transport.\n\nActually, let me think about a simpler but still correct approach.\n\nFor the 200 photon interactions in the scoring volume, I can directly sample:\n\n1. Primary photons (first interaction in the scoring volume)\n2. Single-scattered photons (one Compton scatter elsewhere, then interaction in scoring volume)\n\nThe main contributions to the scoring volume are:\na) Primary photons that have their first interaction in the scoring volume\nb) Primary photons that Compton-scatter once before reaching the scoring volume\nc) Primary photons that Rayleigh-scatter once before reaching the scoring volume\n\nFor this problem, I can use a variance reduction / direct sampling approach:\n\n1. Sample whether it's a primary or scattered interaction\n2. For primary: sample the interaction type based on cross sections at the primary energy\n3. For scattered: sample the scattering history that leads to the scoring volume\n\nThe ratio of scattered to primary fluence at the scoring volume can be estimated.\n\nActually, let me take a step back and use a more defensible approach. I'll write a proper but simplified Monte Carlo with a stack-based photon tracking system. Let me be very careful with the syntax this time.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 52310,
+  "completion_tokens": 1237,
+  "total_tokens": 53547,
+  "cost": 0.001404913664,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 49152,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001404913664,
+   "upstream_inference_prompt_cost": 0.001180126024,
+   "upstream_inference_completions_cost": 0.00022478764
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 297,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}
