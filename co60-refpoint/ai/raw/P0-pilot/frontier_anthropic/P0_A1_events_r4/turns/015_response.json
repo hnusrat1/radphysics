@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791816733-kaTVM8FG3497gJUIyLT7",
+ "object": "chat.completion",
+ "created": 1791816733,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "The display truncated my output, but the full data is saved at /tmp/work/answer.json. I need to get all 200 events into my reply somehow\u2014that's a lot of text, so I should switch to compact JSON without indentation to save space and print it in manageable pieces.\n\nI'll round the values to fewer decimal places to shrink the output, then print the compact JSON in a few chunks of roughly 70 events each so I can verify everything's correct before giving the final answer. The breakdown checks out: 194 compton, 3 rayleigh, 2 pair, 1 photoelectric events.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01MavFk63biAsKuSFx2uqH7e",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport json\\nev=json.load(open('/tmp/work/answer.json'))['events']\\ndef f(x,nd=4): return 'null' if x is None else (repr(round(x,nd)))\\nlines=[]\\nfor e in ev:\\n    lines.append('{\\\"process\\\":\\\"%s\\\",\\\"e_in_MeV\\\":%s,\\\"e_out_MeV\\\":%s,\\\"cos_scatter\\\":%s,\\\"t_e_MeV\\\":%s,\\\"cos_electron\\\":%s,\\\"t_positron_MeV\\\":%s}'%(e['process'],f(e['e_in_MeV'],4),f(e['e_out_MeV'],4),f(e['cos_scatter'],4),f(e['t_e_MeV'],4),f(e['cos_electron'],4),f(e['t_positron_MeV'],4)))\\nprint(len(lines), sum(len(l) for l in lines))\\nprint(\\\"\\\\n\\\".join(lines[:100]))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The display truncated my output, but the full data is saved at /tmp/work/answer.json. I need to get all 200 events into my reply somehow\u2014that's a lot of text, so I should switch to compact JSON without indentation to save space and print it in manageable pieces.\n\nI'll round the values to fewer decimal places to shrink the output, then print the compact JSON in a few chunks of roughly 70 events each so I can verify everything's correct before giving the final answer. The breakdown checks out: 194 compton, 3 rayleigh, 2 pair, 1 photoelectric events.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "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.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 57755,
+  "completion_tokens": 678,
+  "total_tokens": 58433,
+  "cost": 0.0061145,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0061145,
+   "upstream_inference_prompt_cost": 0.0057755,
+   "upstream_inference_completions_cost": 0.000339
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 340,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

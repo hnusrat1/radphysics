@@ -355,3 +355,20 @@ This departs from D028 item 5 in two ways:
 
 Reasoning stays at `effort: high` for every slot (D028 item 5). Each request also sets `usage: {include: true}`, so
 every response carries OpenRouter's charge. `ai/harness/cost.py` sums the charges and projects them to R0.
+
+## D031. Fixes from the P0 pilot (2026-10-12)
+
+The pilot (`ai/raw/P0-pilot/`, excluded from analysis) found the following. The prompt files are unchanged, and
+their hashes still match `MANIFEST.yaml`.
+
+| Found in P0 | Fix for R0 |
+|---|---|
+| Asked for exactly 200 events, models returned 140 to 243 (14 answers) | The harness accepts 150 to 250 events (`EVENT_COUNT_ACCEPTED`). The prompt still asks for 200. The scorer pools events, so the count does not enter any statistic except the sample size |
+| Haiku spent its whole default output (65,536 tokens) on reasoning and wrote no answer | `max_tokens: 128000` for Haiku, the model's maximum |
+| Qwen answered a retry with the JSON schema itself | The retry text asks for "your answer, not the schema itself" |
+| Haiku was served by "Claude Platform on AWS", not Anthropic (D029 check) | `provider: {order: [anthropic]}`, with fallbacks allowed and recorded per call |
+| DeepSeek was served by a mix of fp4 and fp8 hosts | `provider: {quantizations: [fp8]}`, the release's native precision |
+| GPT-6 Luna returned `"events": []` with a statement that it cannot sample without a transport code (all 10 events calls in A0 and A1) | None. This is a result. `analysis/m5.py` counts a parse failure whose last reply is valid JSON with no content as a refusal (STUDY_PLAN 5.2) |
+| Gemini and Qwen sometimes ran past 200 events until the output limit (80,000 to 116,000 characters) | None. Both are already at their maximum output; such answers stay parse failures |
+
+A1 and A2 tool use worked for every model. Every frontier slot is now served by its own provider.

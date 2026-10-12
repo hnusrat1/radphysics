@@ -33,6 +33,7 @@ RAW = ROOT / "ai" / "raw"
 MAX_TOOL_CALLS = 30
 EVENT_CALLS_PER_CONDITION = 5          # STUDY_PLAN 5.2: 5 calls of 200 events per model and condition
 EVENT_CONDITIONS = ("A0", "A1")        # STUDY_PLAN 5.2: sampled events in A0 and A1
+EVENT_COUNT_ACCEPTED = (150, 250)      # the prompt asks for 200; a miscount is a format slip, not physics (D031)
 RETRY_TEXT = ("Your reply could not be read against the required format: {err}. Reply again with your complete "
               "answer as one JSON object that follows the schema (your answer, not the schema itself), in a ```json "
               "fenced code block, with every key and unit as specified.")
@@ -84,6 +85,8 @@ def run_conversation(slot, condition, task, config, prompts, version, outdir):
     system = prompts[f"system_{condition}.txt"]
     user = prompts[f"task_{task}_{config}.txt"]
     schema = json.loads(prompts[f"schema_{task}.json"])
+    if task == "events":
+        schema["properties"]["events"]["minItems"], schema["properties"]["events"]["maxItems"] = EVENT_COUNT_ACCEPTED
     tools = [] if condition == "A0" else [providers.PYTHON_TOOL]
     outdir.mkdir(parents=True)
     (outdir / "turns").mkdir()

@@ -12,12 +12,14 @@ defaults: &openrouter
   base_url: https://openrouter.ai/api/v1
 slots:
   - {slot: frontier_anthropic, provider: Anthropic via OpenRouter, <<: *openrouter, model_id: anthropic/claude-haiku-5.5,
-     settings: {reasoning: {effort: high}, usage: {include: true}}}
+     settings: {reasoning: {effort: high}, usage: {include: true}, max_tokens: 128000,
+                provider: {order: [anthropic], allow_fallbacks: true}}}
   - {slot: frontier_openai, provider: OpenAI via OpenRouter, <<: *openrouter, model_id: openai/gpt-6-luna,
      settings: {reasoning: {effort: high}, usage: {include: true}}}
   - {slot: frontier_google, provider: Google via OpenRouter, <<: *openrouter, model_id: google/gemini-2.5-flash-lite,
      settings: {reasoning: {effort: high}, usage: {include: true}}}
   - {slot: open_weight_1, provider: open-weight via OpenRouter (pinned weights), <<: *openrouter, model_id: deepseek/deepseek-v4-flash,
-     settings: {reasoning: {effort: high}, usage: {include: true}}}
+     settings: {reasoning: {effort: high}, usage: {include: true},
+                provider: {quantizations: [fp8]}}}
   - {slot: open_weight_2, provider: open-weight via OpenRouter (pinned weights), <<: *openrouter, model_id: qwen/qwen3.7-flash,
      settings: {reasoning: {effort: high}, usage: {include: true}}}
