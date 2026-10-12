@@ -27,6 +27,10 @@ Humza delegated every open choice on 2026-10-11: "pick your best recommended cho
     - Livermore's scattered share of interactions is +0.48% (+3.9σ) and its mean initial electron energy −0.36% (−2.7σ). Both point to its Compton model (binding and Doppler).
   - The largest list difference in any scalar is 0.8%. The scoring tolerances are 2% and 5%, so the AI comparison can resolve every quantity at those levels.
   - **Distributions.** List-to-option4 distances are of the same order as the option4 half-sample distances. The largest is Penelope's electron angular distribution, with W1 = 0.0014 against 0.0004 for the half sample.
+- **EGSnrc dose benchmark in B0: done.**
+  - DOSRZnrc (16 jobs × 8 × 10⁷, analog, EXACT boundary crossing, matched media): D/Φ₀ = 5.3723 × 10⁻¹² Gy cm² ± 0.13%. This is the dose per surface fluence × (105/100)².
+  - Geant4 option4, boundary-free in B0 (`M2-B0-option4-bf`): 5.3829 × 10⁻¹² ± 0.11%.
+  - EGSnrc / Geant4 = 0.99803 ± 0.00169 (−0.20%, −1.2σ). That is inside the plan's 0.5% investigation threshold (Section 4.2), and no investigation is needed.
 - **Scorer positive controls.** The Livermore and Penelope results, scored as if they were model answers, show no breakpoint. Livermore passes everywhere. Penelope passes everywhere except one unresolved distribution (outside 3 × half-sample, inside the code spread).
 - **Queue** (`mc/queues/M2.yaml`, run by `mc/tools/run_queue.py` in chunks under 2 h):
   - option4 layers, then the dose extension;
