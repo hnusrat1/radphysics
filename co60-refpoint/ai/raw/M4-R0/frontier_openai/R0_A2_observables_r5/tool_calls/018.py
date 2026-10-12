@@ -1,0 +1,1 @@
+s=open('/tmp/mc.cpp').read();i=s.rfind('cout<<"EDIR');print(repr(s[i:i+130]))

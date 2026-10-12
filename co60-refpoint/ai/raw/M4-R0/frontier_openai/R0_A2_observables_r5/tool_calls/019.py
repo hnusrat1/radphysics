@@ -1,0 +1,1 @@
+print(open('/tmp/mc.cpp').read()[-550:])

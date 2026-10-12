@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791824758-hIcCuXZk9n19ApmsbH0u",
+ "object": "chat.completion",
+ "created": 1791824758,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Figuring out line issues**\n\nI'm considering whether the line had operator spacing and if that's causing a problem. It seems like the replacement failed because it was trying to match exact strings only, instead of those that simply include what I'm looking for. Maybe I just need to add a simple adjustment. It\u2019s important to check these details to ensure everything runs smoothly! I'll look into implementing that change.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_Qu1B3I6U5RIPPkB4pXFrejvZ",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"s=open('/tmp/mc.cpp').read();s=s.replace('V operator*(V a,double s)', 'V operator-(V a,V b){return {a.x-b.x,a.y-b.y,a.z-b.z};} V operator*(V a,double s)');open('/tmp/mc.cpp','w').write(s)\\nimport subprocess\\nr=subprocess.run(['g++','-O3','-std=c++17','/tmp/mc.cpp','-o','/tmp/mc'],capture_output=True,text=True);print(r.stderr,r.returncode)\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Figuring out line issues**\n\nI'm considering whether the line had operator spacing and if that's causing a problem. It seems like the replacement failed because it was trying to match exact strings only, instead of those that simply include what I'm looking for. Maybe I just need to add a simple adjustment. It\u2019s important to check these details to ensure everything runs smoothly! I'll look into implementing that change.",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzRN477982aEVY1sUueyQ11v6acQG5CaIEHVPfz8dHiDkB_tjJEi5EBl2Jh0s2d7fKu2dIv78g_6k4Qt4q9PUsbSZeEPdmgj0OyQfm8RvAub3Oijs8xXxj96BQETS-7b0Ezj4v_0cD6HNihvGq7jinKZ4jI9ibLQFWFy0ZFWNpbrsVTPLw_TX8gieMlalb2odw4roV6U9jrkBw95la8RDaZm88ABt5gGUsFomlGepkiN86jdQTB3nfsuvy5vAVhUQvIEtcQy7PcNo32GeC0V46nLbik8tAtoaoDWEUBZW-nMRe7ltEJTuEixuxGg3DBY7jCD_HjzHwEvol2p55XlBx3E6F5hb-dtfhJSEOn03TDmKhqhWcO--lZdoLPHZ31lvZ_E9jqH4eJLL2UAl_KZHtuEVBNFjIb-P6wUFYO4artwUp3_x0zepHAHFKNHkeuFTiId4cvzoP4L8SB8Wfu2EKkldH-vpfHlotbiFBrk3_iPPNEipIxRHNXyVCOkE17lKLo6ZiKIQM4jI_ACYXbDw1pW2vUNP9SVA92VEDkISbNgMQO1vTCdiaZ6yCozmK2UT2IW_6nL7l_ZLHTwyXqgrIrnCPN6vNVWlXnI4XapjNfvaW_h2DuyI5Tvan5QaSxZQ2R16Yk3CnRhFsw_FAS_8DNvYUkMsErNno9EkaPnDJnKbtaS3jqA8JjdW1JueX6kKk7tkcwIcS3Aq3fKjSJO4Ei06fYT-Z_FM4qXkZA_rzt1yFreJSPpUN-2Flw_Ir3kzGtQY6e5PXc4vUm10hKrUeIQf4rxC1qPxO1f4tjAKshk_MAbotsWqS7nEv0iZQKymWnsVdY9GDFAS_wUly7fQlNHn3jZyxTdOFS2OuB9Ye4YclIXEVGucVERWS-JiIEzTpOcOgyTN_iFVohZfY611dgxEAZuTu7TPspwrWp8m53JiTEhXeFXm_AJq9smzpUssY06RzyAeNJVjgN_Y_EG7dbrPJ-3ZwpbqjKArOfnJyt8B0ppgBhwX2XllSQvfOhgcYTkzSKSwEGFrNOTUk6Kpmks-CkCu30RU9eamZtCT5vTqWXq3HYxQf_B5X5mHx_TbuCX9FjPXfaA8WiuIN1fEeVjx4fzsS6pAYbCg-EMCfxF98jbWUZhuqgz8wkklVmSO3uwisCRABb8QalbC8tW4dacG0pX8VvPMhXHUV5zQtwSsgbULdTg3HTGgT0cNJen3nVZI6k-D0RSF6Ho09liofMgtMbIH8b8-39RcpYbkkVgVKvbUuQBAo8B0vG-NBxNk4_k9n0MenLvV7qMh--nPjwj3NQat5tEvy0XhShq_QxyfTNRAoul0rNagz6fue54krz5Vo03_rYlNeWzSVv8F656WhNawnCJLeugdC2dQIggKKkkLpOODDfBZkArsg6ltRvGNCXL9D5S9FxXtdvQ-UH2gz0CuJooBSBt4VvRZ-757NE3z9PRf-9T26gCE1w00zUebpK-3wKFHm8X_laYPcSl0POiThuOvucWLFXdKZIDmNtMZIMSYSTyzMMOR-CqZd9Uz5mb67huhgbdgZIoGgPvwYtMiO6gvBCVFmpp1Bt2T6_a7V6h0FTVEnvlDleR2CRQTq5e_yjOl40ZlF-A2zZkQenFIJldFGPlJTc-87p85yC2_AUjgwafEw-2UNsTGjAPOXAeoob0Y1eAiZMh20PlkIHVzvOzum8ikKVZLnj9TxTrJh8vZvy23PiGAbpWCY4ukIOryaR1UVXK9Kz7ILVi-8YP7Ub5W1UpXDfJxi9V9B09Zv-1n-AEjcvVAIqYPRcV8LKOFrLoh-Qfz8SSby2WU5VrYEtYBZeixD6L3wyOsua4opneOr8p9b7IrPiVTDwuC.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_0e30cfb0b80b823e016acd1376ec3087d18e372e4bbbf09e19",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 23290,
+  "completion_tokens": 155,
+  "total_tokens": 23445,
+  "cost": 0.000337695,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 23052,
+   "cache_write_tokens": 235,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000337695,
+   "upstream_inference_prompt_cost": 0.000260195,
+   "upstream_inference_completions_cost": 7.75e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 21,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

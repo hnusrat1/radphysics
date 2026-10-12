@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791824935-bU58aJubZK7lZInzMtla",
+ "object": "chat.completion",
+ "created": 1791824935,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_C23sNk5UMkxgVKFwfE26o2dx",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"s=open('/tmp/mc.cpp').read();old='for(int i=0;i<10;i++)cout<<edir[i][0]<<\\\",\\\";cout<<\\\"\\\\\\\\n\\\";';print(old, old in s)\\nnew='for(int i=0;i<10;i++)cout<<edir[i][0]+edir[i][1]<<\\\",\\\";cout<<\\\"\\\\\\\\nEDIRP \\\";for(int i=0;i<10;i++)cout<<edir[i][0]<<\\\",\\\";cout<<\\\"\\\\\\\\nEDIRS \\\";for(int i=0;i<10;i++)cout<<edir[i][1]<<\\\",\\\";cout<<\\\"\\\\\\\\n\\\";'\\ns=s.replace(old,new);open('/tmp/mc.cpp','w').write(s)\\nimport subprocess\\nr=subprocess.run(['g++','-O3','-std=c++17','/tmp/mc.cpp','-o','/tmp/mc'],capture_output=True,text=True);print(r.stderr,r.returncode)\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzRQpM_IcCZ2sJD0_awSNYafdwwEVTY7mbq7QB3fdTyNVa0lxOv-g7AjRLTU3hBzTeEIhraF-frPdxPnBk035bwlxb-gvdEewRVlTIaYM094VzSZagc-7cu7ZWWaD_Hh1rPJzDcvDFziLdeHb2EfnPrVVBZjFjgYoFghv8mK5bmRhlj0rioTQtwmjTVKOkVd-tx9yX91bdzvEp78dsb9T0XWng98UJYao8IPdjXH_37ZSivBkDUWQ1FIAKxj5lct9J-4XPg-zGrXZnL2wPz0vYQ9d2S7iL-XV8RAMXTzQqH11JDBAqiI9C_FFaESMt5vy9REDh7qxTBqIJxqBM75uNwLDn4q72PQhXdC8mGFvb4VA7W3bDvZEYe5LbjrR8mNLJDWkBeGUIzX_BpJtd9K7LgdFZbLnhBNTFd23KWqD2aQDm3myK7HIJ3z7iUv2RFFGrQsh64F6b_nx6lUOkGAAye83gNnqJBEursijiUU4vA2U04zllpDlfP7YdgZny892puu1PnUzovaePHfIO71EgaIP1onYa7K13lamaLZEWSGbQ5hvgoHq22IflDz48sBjwaonDqcqVgqoKCJdA-qtJBV1VW5T8FseOqigD9fThHsSFx6tfV8sgCX8GPtjzs0FH74p_eJOb831tD8BzhZnYlfwBHtGZrINV8_EuQCEd3UZFCXgiROEg_yeLQMf2hVO4x7xwggJYMQGnlEcjUe12in9dL_8YdQjJYxcyQ0NMfEA0b1e9tmRbWvUp-GYtFZjPcJmeUMeGAmzY1ofP1F-ZDfYORuh9SRsAyTugQIL9TEQrgIaxRheRuBdFG8Ad0LcK-38gHgt05hsceTw-7d5YPRLdFZQbiFY7PVJOIeVTCmqBX27EC2oGbXQzxyYrV9SLPv_uKLWJjvZmLhnUHvJ6lcO4wZDDKmVgtzZZnYP2KjjafpqNG0KpuPXFg2Gn8jAMb0Jvmd-XpFoT21nEb_E77w4c63_iv5Z9iYtUccjfZelHWcfM9hTBWH0Fn6BoMOU_pvzsd1-FJjNoOqzyDodjl6AdVHF2nbG7Wez0VU0Olo-7Y8tZjfIreKNZaRCWy6CFCoj0kG0XHRrcI2Lg6DpBQaumHM50YVLNaUbn9cQprzs6cfW55udggg8AJcTIQTLJ5aGSO8Rs1twL0uuqob-jo2LrlckxxQS5WoOUxeYLJ3UUFjaap3LkIbfBY9b2NFiVPcb-6GHz5nAVogjWGitOCYQll3RvT0LfSmryuzVECXQ_EjFUIB8b8vf5PV1ovcMsp13oiT3TUQFPkhE4fkIfxWvzHd_C6dC17qAR98DIFUnx-HZu3LiE_wgwTZjdrihGQuZn2hRStv8SPzLmU7gYmWUBYioyWyZ5GaofujLjyueHf1Ig1H0t0z0MoaWESVdBl9qqH60hVXpfQKeJ1NgQBxE3gr7yRnBoNK0r6bqxIbJ15W3yj157SMOUbvZSfhNCmA-GBhyxaW3AzUD-I9W1z_Ja6P944ciOI2mbJULB-SMc5sh0NYlgVms7S0kaX6sf6QUNlo1fXO85NmOPio8WrTklUrmgZK54QRt9vg0L_m26u5yQs4xctzWLYkszlTE4gAOXERH_8t-BrPjhVlUgrl2-3UyzBSmHerao6O39rHgK3Wu23Hh1Qphj-lFD-IZTitnINyAeNSEHqyWLCbvgmxgazAyuGp933gz_pmQufhwfmCjSj3f4QAEAyL9TH3e-UtlG3Hu99xWUriGkzyZ5ac_02m0jspipkgjI2jZXTQ_hBC4RFYoFF5J7dWSpYe7A2Kj1o8spQrN_IYakww_-TzgWYrrCX07Kqtab2BcQDlnRmD6HrmklId04YlYUyt9JCTYVf6AX08u6opRY7BOrRPwAU8ED2Uvb-_brWHF_gY4d3uedVT0smF1prRvJB2zhVLu2bWLw04ukmPZLT_yASJqtHoINzcfzAnR_jB2lMciqY0MhcuHYS1JZTGyrcHNyTZHvBliabpf-pd3PotfCj-96GH4XcuyCnQm5PPGY_8s9hq8m8lyup2r0pVEuEVOSjqoC6O7KtvV84NYMYvi-cXvUCE8LUb-r68vteoNT5sYcz0tNHdGteOi7ZwhhlvDQUF-WPo2A8NxFP162F9TfeAGhv1Dq22Q2L0elmuJGfqGyy2tFz-0a2RtHS7rS1AC8dXDi2nDEUCGxGUd2915Dj3eExbZ7Zc6Mg-jiEPKVopUTlKBcLe7QZeSwFwU0BWCLg5Y05S4uRDpypoPiZwnwhP4mw==.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_0e30cfb0b80b823e016acd1428015087d187ad90fa5c85768f",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 35501,
+  "completion_tokens": 279,
+  "total_tokens": 35780,
+  "cost": 0.00053756,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 35126,
+   "cache_write_tokens": 372,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00053756,
+   "upstream_inference_prompt_cost": 0.00039806,
+   "upstream_inference_completions_cost": 0.0001395
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 57,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

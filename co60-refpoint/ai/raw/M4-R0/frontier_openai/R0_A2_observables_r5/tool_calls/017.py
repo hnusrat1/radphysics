@@ -1,0 +1,1 @@
+s=open('/tmp/mc.cpp').read();print(repr(s[s.index('EDIR \\"')-10:]))

@@ -1,0 +1,2 @@
+import numpy as np
+a=np.loadtxt('/tmp/data/estar_water.txt',comments='#');print(a[(a[:,0]>.1)&(a[:,0]<1.4)][::5][:,:6])

@@ -1,0 +1,79 @@
+{
+ "id": "gen-1791825055-UpxhHNy7xBtrIn5WRf7K",
+ "object": "chat.completion",
+ "created": 1791825055,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Calculating energy transfer fractions**\n\nI'm calculating different energy transfer fractions in interactions. I find Compton interactions are dominant, estimating the energy transfer fractions to be around Compton at .9998, photo at .0002, and pair processes at less than 1e-4. I\u2019m looking at things like electron energy transfer coefficients and average losses, so the fraction transferred from Compton is significant. Though other processes like the photo and pair interactions contribute very little, their effects are almost negligible in comparison.**Analyzing pair process contributions**\n\nI\u2019m examining the data for the pair process, noting that the event count is around 6, with a charge kinetic energy of about .2. That leads to a calculated energy of about 1.5 MeV for pairs and a share of .00024. The Compton sum is much larger at 6320, while the photo energy transfer fraction is around .00019. I'm computing energy transfer using interaction components, energy transfer coefficients, and numerical integration to better understand contributions across different processes.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_UmoX3dVdmQVB52Ljpwfp7UfB",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import numpy as np\\nfrom scipy.integrate import quad\\nx=np.loadtxt('/tmp/data/xcom_water.txt',comments='#')\\ndef coeff(E,col):\\n k=np.searchsorted(x[:,0],E);k=np.clip(k,1,len(x)-1);a,b=x[k-1,col],x[k,col];e0,e1=x[k-1,0],x[k,0]\\n if a>0 and b>0:return np.exp(np.log(a)+np.log(E/e0)/np.log(e1/e0)*np.log(b/a))\\n return a+(b-a)*(E-e0)/(e1-e0)\\ndef Tfrac(E):\\n eps=E/.51099895\\n def f(mu):\\n  q=1/(1+eps*(1-mu));return q*q*(q+1/q-(1-mu*mu))\\n norm=quad(f,-1,1)[0]; remain=quad(lambda mu:f(mu)/(1+eps*(1-mu)),-1,1)[0]\\n return 1-remain/norm\\n# weighted energies from p/s spectra\\nlines=[(1.1732,.3607301346),(1.3325,.368286654)]\\nbinenergies=np.arange(28)*.05+.025\\nspecs=[lines,[(e,w) for e,w in zip(binenergies,sh) if w>0]]\\nprocTot=np.zeros(4)\\nfor spec in specs:\\n for E,w in spec:\\n  ic=coeff(E,2); photo=coeff(E,3);pair=coeff(E,4)+coeff(E,5)\\n  procTot[0]+=w*ic*E*Tfrac(E)\\n  procTot[1]+=w*photo*E\\n  procTot[2]+=w*pair*max(0,E-1.021998)\\nprint(procTot,procTot/procTot.sum(),Tfrac(1.25))\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Calculating energy transfer fractions**\n\nI'm calculating different energy transfer fractions in interactions. I find Compton interactions are dominant, estimating the energy transfer fractions to be around Compton at .9998, photo at .0002, and pair processes at less than 1e-4. I\u2019m looking at things like electron energy transfer coefficients and average losses, so the fraction transferred from Compton is significant. Though other processes like the photo and pair interactions contribute very little, their effects are almost negligible in comparison.**Analyzing pair process contributions**\n\nI\u2019m examining the data for the pair process, noting that the event count is around 6, with a charge kinetic energy of about .2. That leads to a calculated energy of about 1.5 MeV for pairs and a share of .00024. The Compton sum is much larger at 6320, while the photo energy transfer fraction is around .00019. I'm computing energy transfer using interaction components, energy transfer coefficients, and numerical integration to better understand contributions across different processes.",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzRSnOE2XiTIqcmu6W0Lddj-mTBhAglsH928pLIlrHPbov9wxpiSQ-gbCO1WpEVY6DW0cnz_bJgZgeXwrEfnSnQRSeCEl_ehDEDA3N3vA0TmIzKdrkG5BPMyyI3-h3SY260ec5VCnEPEqlF7JRmLL04ndrjDoZYAPiswxvOCS5UvMgibS1nuwG0XR8GDVWBvUFNmLP0qbcVYvl8a-PJE2q90mTK2ORKH-C8o8j1l45g-ZKz2QqAjvG1WQ09O9ppiuCf_rsoCNe_XKuy98lTBFB45lzBWaONBXCWkevwqjj-bI4QPQQ2MSmxJm9s5oPYUz78sspL7uPM70e9tDxMzSqBrRzaB_6OYF6x1NSPiz5JRNfCpsxwtZJcBW-h54FV87uWFaksFK7iNl4pY5CPeKQbULK9GhI2O3pVmmZVYKFEYGhkESyrte1sSd1X3qHW-1ft3XT1n7y60wRSfyO8mIV_rTf1M3KROC3IdKxEz_YBlZpK_8jhlMtiEMX-IUXpPCO2FtWcCKkXiO6ZKLC52zShcbaTUylOHPugepD-OJn-97C5FHQUwzeHU6m6rZ6wLKmKh0tXNMEPD6Jt7HxkqM-vuHY9G1H5Er1yWsyEqtYu3rRBUvqnFskqKEpxoWYykjPO_G1rOMvso38vIwAkR7jUdFcGU7HHrPl4OYSniHpVXvCRqzZEN4kyUNMsLBl1NL43wAQPeHvOs8xiA-dsNMDb9ha2YWZ_Em5DT2XcUpOQYy3ZvdccXzZ0PxrpInXytwNX_knWF9SnUoF1FtQxWK8mMusJief-Hb7j7Bx7k0L5ra9PYms7-o8G3dZH-7j8W6hop2rqPhyFWwyqbbXNY45sPEZhmXL6c3-7MXjVF-jZ0GwLYctOFVNnocBlXsiMd6RZy6qMGNBn29-iRgrYanI_kOOf_SwNc60iJqWWc8eIyZhDcu_em3dmoHHSCcPb51mxGb9qOybiPgJsJt3RTO65Fauj47o-OXzaYQOvYldeSA54dL5sDQqS0gYXjXhHuvBN9RD1X7Jp5vOw4qdUaJ9D7fu5edFhiXisUP5Wc42fxsxxtRUEDdLEs0L5QNNnNT15NBsYualYsfmjFtdCBih5uhi6_mcBkre3Lovqd0JfVcYIbnedlQlSB76u-0X9jD4HeljCQnpjbkCVP1B3OeAyqxJSeHuRWyBcFxswmuPToiAvx0iFoTDS8-42hKtcuY4DiyADKTX019UHr15cymCRXErdn9W2iDiwlbditnYOoaMn3iuPHiW8XlFOq-esfX97LTmd2Dn7XeoYPdxlaoi2wzXDmnThXuuEyllPp6NlvngpFhIErW-zqfu1kZ1PzzGO51fPr9N2oQK_Z3GVh4g8umgNNzkinXdkneGjSlDt-J0ZscS-bwj5L5pX6c689TBEtZ0_szkA7nevLeKQVvIeLf4M88_GieDgirdJt70QWFDJqb5V9FqbHQsIjSTS9tEWQoXbfHkl0-M720178bGoJfiocKyTi0A_vE5lvx7vOOqgDBM8dHfpsPN6UFV-Smnxi-1JlWz33C8gYuOSd1dCdN2AuuicPDpQAgH-jwbFmo4F_PD99kvsCnkhxjWTNdnlzZExjIjGM36EXZ4M5_bSTjlkkt0HwczBZxMz8WEQp-G-57BzhSz2D18L_ro6T4gWTMypG_99ofXMSR5hB6ZAa1vuBjzb3Wr9u7djCIOWiFC9DyCPw-GH8doVmf4qbEy1Xo2dsDlk-M0_fUz0-7eKaTHER9ypGlRymuZLmVyjNpF8LPBrW5vghv6RRSG8CeU-R5AW6gE8wJ9cTANDijTmqcx0RIyUZyTJyN_qDjC-HqU4G-sKzs4NHfIzmT4TKKKA0tbsnWNz8s4MHXKa67ia9-FXuf8Dde3FPbFqzJS8Dgch-vQ7fQynwMdxzJiNadmgh1yJRP5ReSVsZMG0sBVOjZUTpJFhwuOj0GurNCiY6LiFngeiUkHwhCUJc2Y5ZC_kZ6aaiGmBDe27Bqhxd6YBRGpHi1hfeT5S-hTJd0cJTyrBkoq0cx7pri-xuSgQ5Zv07TROsuyCHfq9hUpx-DfHIXSrhJGorCCmAACAznSt3Oo9I2RDFGZ5V2W8iS1SJ1V6sFwtzSI5fph-EwJvDy83inoc7NloGkc7y5rPpDrvB-7BsgEoWaQ9X9VDUtHNJjNyNlz8KvngXy6XT_ulBWZauVakmDqkYORPspfjgzd1LJ42BOS7Ii90n2DCMhq6n2Skc_ho7Kre-5DnIVoK2NmApxN6Bul2MtVk4dF9QGXbTzsSAnEjzsh-S4oYO1Bv73vLMGeiCGsjegnsIs-tbcu2HksI2ePeD2Qk8dpfYesNHIc8Nq1BFcxePBfXMwn_LzCAWSm2S7Tigh1PVEZmgPsnBYCZZP_vBjSR8tbr6QHKCObJBA_Lm-_yI4cdoqxVpBMnrQEOvknLheJpIjvfm-B51liCVcdSdz66fyBUB2MGsQYg2dNlAUtuNhTeCLws2gZpzMBqwxqOa_DYXEmh0m49dMPMEC_2KM_w5IfhYUcwtXMcdIi8fMmaHAG6ZWBMlmGbaSVt7bxzUwleEnD_VUcWBeJznvJq-dSaC-HpUwh35hHYoPe8d7PeFtYJAI0HwCY6bfORHnNG8R07CHU6VxLQNV8CuvdEp22U-hYjR2aiHRTPpDVd663dKa0yyb-jwyH5xNwojBX3gwL3cpYRAxjGBEUOC9K3u-5mWQ__MBp1LkblR9GejwmfDpraEktPvQz3siGvUZy47R-sY1oNShWsFh145BMXgI7lgVzV6xMVTfmsb8w-8T_RLMP4x3h-WgSahkGbcQwtQi3MMc5wyfblcwqtihEOl1N8uPhu80BwcI_AVwOGdaQTVIbIeoseWteYhu2Ew3bKuGsTSg0lmw_lstmNlewX5I_Z7UqSAfZolmdvOjMJhlQUOB6a_-pc4kgNfqROaO4hXpwGJekCO7DQvPEVDrydbOKx4J8ST76YAraFUPs_qAJoymbCOjiYrikrIhUOnBm9VDx2lVPJ07q7y2KkqjSgqWhC-MASgWgSctIdBAau8kI_zRSWr4ip2oYgqccZWRb55wE2ytfU1MyXqndMYE8oNDxLFiVz9onVpdHfKJBAS9d57SePU17P8pa_FMMfiUhn9jEI0txWTHIk0McOQQIHHCP2QiOG2WPF6MWElBdoDAbMyX9RRcC8IX_VnScbpAXLKQkCwF35W3WYPcQH_NtPW_qOaZ7kEOeBbwg2U-DnnyiQFPMAihsMCaj7pOSqRGEKFy6pr-9FzI4Dn-Fpi3X6XVZmad45mpw--tAX5cr1Nr2C0sApc5GAdwd03U_5B1-aOiFq1R6yJk_2qKCtiBTsQstU4wtqZ3aGBxtv_QAfpsDPOjhqLhs681BGZV45nwKktW7rrpZZKnLpPN_rIR7Znrnbl6Ehd-2l80790Pt_OUfXqfBh1hXpY2d3wmQ2Q1mQCDFFG5biaZNgEKqVqGxDI7pRE_cVgqEH91lhjd8-ujMe_WRIrxdxD1goXIirX1RFFF0qfcHaC8OUt7mZ29Be_BawojzP8HrsqFvdGA19MQkPdE3g4XOV7AKErct0z6QcN82qGIfijcfAbiN2SIloovTpNUh0iC4keJ4tijB8q0tyxL-04fCujomrS-zFknrDPGNIjawPK2ClLsZpo6dN6jBZfnEsmqrLOkeEUhJlX7NH-EEwxUo6H14oCl42AWKexCB2wAH21CiitO0n-Jtq_gytjuIQEJbfMFo3XotwWXa9JKpMKkw3WArik6GsdLWreozFm5zhEwVZnYqFWNV-bkAckrsrmY2Fs5fERFQSGNtijOM_EibgtX_D6rrjmj-VomrPB6_p6D0x8M5KJCh1zCDrOxyCA0SzuC-Xzp329r9JVLuypKhJHG7IayFwjDMZ_uIYgTsYWOCOKEUimIvXC_qvzV8eZITDf7rVExTW-GZZcNTGtH1iLz4kuSaVF2x-tTZ6u1zmijOrLMM6JROhHydHZ0r16hK7PcNQ-CG9GaeSf91b8tWrfWhGj9z2z7FmP_b4BbZFeRs8vabvBiJ3VoVT4QpBxB4K1irS67jiTvq4TaZ9c6pRkj9JYRTXaTHN3zCcJhMm6Hf52dqWfD0uFZ53k_ZzemNa-6YSdpduiDNkJMauDAmL9dRfLXP5GAUugvtdMq0SsO3_Mk-U3yLP81q_efgwOqCC22UycbWzlCZtkXJWquFcv57AbGHbZaOG5CwjEWT2YiJI6p5EtAtl5P1oNyakd6kaJV1BXVZ6apMGeb7EIbSD-gHuDjqRWFVoyHcju-od3C6ok1Y0ELDJKEqeIfxyb5XyiDpPvLWm4PxEE6OnEnQdyddcIhNcRvAKupZDC6oUHVTzgvCqZ9ittDs3-CrY3l9QUQ5fiI4Z0qg7BAmH3N7x_3TRtXjaXzw__g_trx-NvyNNDgXh9DBUZnHAwgjIQKyCbsifLgsQZdxzduF2PRbuwcI_vB3_3Tef1ZbFfjUx8ecvJJEMJ6teycLM_Wh0gQ7q7FvDk54eTmQ66lO5Pyh8GW9eEkRPXNRL_oWCoE_nd5ffI20xJtDUJhMUt3nGaqkHPKVW4OcepDjy0tWyOc-n1aUCT0nlt7GmDQ6Dy1XgdsmagdN5s2kIlRFDOvvu6r15eJNL0DBBYQ8s_ST8xGyoDMlu5Na-YTjJpkjHi26d168VBlWhpg4Qb_E-qgaMqXbHTcie_nAg_E_HOraQmkUJhWV7_yjGw7QjWydB4Eb4Ms4V9DkvTeDkbBrKOeZRGQCcJqJ3Ut5lGl7EYbVeVzKiTO8X5P8693xxgJX7LmQEulbe8lmszldabBdrp01RUJHoaymnHSRzS3q_J9XlYrD8S3Qce-qEmej_DJWhmzOmDfWzrPW336sP8J5wNIt1Ov8ZinM8Z5Cp2PqSjYRhSAHd2BmMMjY7yMMw1UyRrhEUHqG2NWzzXAqyODwjm8IRGHwR44JKrvOpGuq3OkjW8oEhDp4XXyvDJlhEw0zrx7ljg_18_sISnVtCLfCdrQdKK3uZeC6jpl10gsq2ye48HM_FgBA-ZVjowk_e1nvd6XxjT5_5oZjp0YBzkSItit7JHaABg5F8YzL7-tUtA5uZSIuauETyFZcr6Dzky-spLM_x4btAc8qXWT8C5kK4Hx13pzK-ee3ZFjA-GAejaPvcQ2tlDHWlfoEcO2ZUbUCsuw-eDP_cuaI6eNdnTzKx32M60beJFgX1F563hCkuIZBQLVrWjrusSKawiB9XT3Me0GGtEjzSQlATJiAcYLc9SE6ldGHc4nJBS4cuZmLz9lyK6R5ssuRgsU4xz2TVZP0wWto2LXNO98GhcDYjOwVmXtTQ-mRxvVPoxQRUqDz7oHNUNTDu2DlX4i3TMHbUkGNpY97MQBHoU0ST79AqauZD_G73G5qnHV_3lFOJywc6_UAmM0JONGPlCSFE_cY7Pam5JK1YeXj-ekR1EFQiO8azwbkzYCEfpvShvFDQN27vmj6VAZec9a8NCFM7kOQfdjJdk_ClDZL3_Npfu-3_A4One5dCtl301qErXQ58EyBTkXhY6F9HdGm4PbM0pBObPxmFaIL_l5TyC8Z9ZlsBWXTXM5Q27ZIUqyakX-Mp0L_XOnbNAWceT-SX6MYNkNzHIr8EiTnmGdzb9dP-KhUFDBCPrcFQwaz3eH0tvC-4ZOxviVsOsiE1OR1U3jNS6i2ov-dD0U7RK2a2dcHFF_74HZWJXGEYdHAwwkCVmJ6HLeCMGOpYBEh5oifW33RNYCbLipRNfAw1Cs4BhVCzkq0jSItNU0vTxhcv6bPyA2twbrXHyyNkAX3IC6lykYlwitONb2Q3sddWa3abGWwxPITMrr9A6vHsY3He4Ke4HkkgVjrn-q9Rh53u0Wj3sjdi_0LFjGTzSoHl2lwAXH62_rNlgGOCa2tpJcp60amIn2dGFPut_fxjW5AvFq1-4UsB_5CSYRYVuVuMYMzRQfNOzKbYokxfdDNMURlTC_Y4L5CQeh7r86mYN3LLN6xP4LtT_vgKtZNXDjx5sCUQxwn9gGkxY4oLGn1yzvyEOSAW3KF80De5GFbHg9gBNKnbNNv2tkqDD3HaieGHoLKdqCNCJEi8zfw8Lnar_lAa3MdQnyYE30-fakM0rOJDwIu480fqMFmqHoDT3WoZhEWhAmwA07c_SZ3QvEGEZt11rgT-NTMkqcmcwBWZay_emiioGgF6FNDUwN4zq3MAEIIFZIFnn_ga9BY2eVflLY5gXK_DTVblBE1YOZhgJFPboeMQZs8KdeWB8E-6ghXIuW2LprxsjSYpdBHyilwvJOcWKOzjKIkmORkMS8nNZ-jSSGR7ZRZ5i_vNm6FzLCPQCxJ9jKCb-OzdayznMDvM7tZo4lDDbqzxb7XKAmciSWzcvK2qB7v5VGq1aj66jfQRY30kKltvNY-QeL23a4eom5Vf0Y05TrZv6njybu9GMvHNZekPkPUT0qhp36J2Czb5F3HrWqdPCIOtg67FCV2QrTuy6q65T3OdEFM9IVY-acKY_xCri7chrazoPfSdCp22y8pZoQlv96sEHnj6hdd9vyr5bJaDKfaBNdmLGxFhTHZ5osTQ2HN6tT2ZLDnP5eGnGcDFo0QV8Y3L4V9bxU36ZJJQwuoJlLrUUm-WgzDn_koBVj08xrCWwB02CAQI7FTEISFJ-afbCWjzu1Wxts4JF-zRrlhRkLxP-lqlC76lVbBD0zgafxmD2wAOT0stULFi3L9ZUIyGfXCF57fU4rnd25g2QwmEI9C3jhlJvErPwOlqLb3N4CHQwhGkkibNS51mEOsppsxMTxDLjkIsZREzPIE4Q5Hw1CvX5p7TMYwZ4V4aCS-2De3CCco7hmljCmNNQO0vrMx9XtzAdh4Gkw5RzyUApWQP0oCyuJXLnmKCa4yWpqDbEZzKCOJBPWjaDZhGr_J09_aaaaubpnX2vSbfrBh56gJNJ_XhFRRHYRdf4yI0HeZbcE3hS428W4xYFVV_2r0IwPGeDjRyUHMuz3hk28lth-iMS-A6xsYgqMJOlFLLKrCxhmxSsSkkHDQtvnXFtQ2VAY7jKIBSitFgFsyz-brc8CFP18SCI8N9EHGEcXaeB2UC2DInCwHeFnkpZbtwD6z29JdKJAmadUpMUj4kLBuInNBHnQ1f9SojM0Slsuu-G9qPhOxhBHK5jrhLm1BB7eoFGrNmFWv1fvNDylm7m76w_mmlR38kJCDPQYD4ySIEiROjjMwP6SNCcn3xW3XTGR4dV6H-T6ahLxaE_PT0YDReSLbYmZzR-g41C53xvAeQoTGH0ua6qRRaQDYu5qY6PuH5tlfv8Yl7sEz8Qrtgil9BdbNIxkIFc_KxYPCNxiPaCbRi97WF_GE6Jr3nffgy_SISr9ZpjqUMndwYvJ4a1-dCh029mkDH8aQSf8PPdqGe3d3M_3.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_0e30cfb0b80b823e016acd14a0ebf487d180cdf7c1ee1cdf05",
+      "index": 1
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzRSnCQTd7RhWUziof89vMZzioLfyeotx2DhSqlTDHcbUBHOmK5m381uDBY-O-82J7epsUo7R-2BTUXcjBUXZ0zoOdWauDDQ_qm0GIPTV7-3Q4-sH6G6_eOsTsHT3awsBzHqEXfM-tKylpKjRxh9C250R7jtQWF9C9haJrxqC_Kgbg3_U6Ag4JVitpnabUtd1zS8SjxIy4QCD32hXrZN429vk3Z41BOPdxFd13lMBaFX8orie4PvskrUbzeOAm0fps256IsD_BC-2rtNXcoL2SY54qKrThTDO0NeiTOJ-qOdRMOMTBov0smu4unAbGPtU7HyTBS1NAFKBhn1lHiVvc15XXMalJPehZCjg78YTvgKiWNDNnZK__Lg07Mf8_d6AdFpXLnjguKrPZ_9pBIdx5ifNnNofr4_CRUxdMEZ5t9XLzjs4P0uGPnX_2Z5YwemXExcqnkxVmMTDoODaIGYhKt-MVSR31EoOwCr5ZRPJDI4D6z94NaIvSMiQqFTvfClsqHlbub8ZPiqUl5E2B3BjkJ3qk9WpXAmF2uSrulEUp20G_X3jBiO7Y7sC1IarF7XYUkMzNjLNJyRVya-b5B6giuUfcU325p0falQqkeJerCsS2zclzGnzbGMY7LQVIwx7sb8a8Sz6dUYcAT3njiAR84A0-PKOLlfN-rgP0iaIs5nqrGlVm19LeOHyg90RRVwEd-AKqn0VoPR52fnNItm4E2KFEr9UNaFe2CorihxUWkpMFcJBHs9z_uAhyLHnVm50HpCj-OApTVcIRVI5qYBkDUoWW3zufrgj9Alzt6un3cXyBcNBHhxD84xT0cBcr2itl6YeXpxdtF2qsRuhDcQkWop8-cs3--rly2c0TbxL919aZo_Awwo87HHcBC4QfkjYpg3GN6A4RYWBHhcBKI_c37BvTc8Z1tSFyJ69hup3KCFGLy0_um9tk3FAk2SP4pjqlovwsTruL-ruu4pcteiIRRkxqxNRA0yuCSAKZsdNcJ2tI3_J62Js3nRcMwScj7YAd86YVOliGSvOa7uZN4GqaLS7LEapQ8ymIfO2b_icbMMXBSKoXf0L3WWikztd1GVdR9Pl-sWFU2kEpjftLVhrwz0zS6Z-FLKQxdEZMHWYFGxiON_CRvghLQ50cWhUN97kIq2YQqCEC1BPQ_u4lfx-RMwS1nVPVCW3oXE5tN7ET5L89KEDx2K1avxksBXWhblVYx0IgqgoD87TVo4LfR5eNeJKiqsxSjee3FxIasOKPQCukVPekiN6prwQFnd0PnS-lwbXZ6NFLt32TYKAzbl_HlujWlWYMI1M8zvJqu_rbYNrxd9VFfKQURFBhbT6jtxBOqaRmgsNfI62JUZD1kVt2Mi-L6QipAfwPH65UD739HV5G9_IBJry-NOI2hnYLKF4scOf4TCXbmFx4c6n0pdPKH-WB1PrREjOGQZIoaLJws0mtSjsCsvj_Pt-fmlhaOWkThOz-mvYLMSNqIVnkzdLSF6DuK24dWjSVcD4w4ARwRtbufvy01vG7gnOUZv2giwUyv82JXHznoGJs5mWwcpkoJbZVvxIsR-eEoWNZ25DneAbq0rJqAu7EIzQpFA7uHX0Q1oHw0wvdZk-hN50BDR5fR1577XhpkZgEKSgV6z4esJ8bNwD68-A80cstgC_KbS8xJ9YD1ZZbfNRPqV69ve3nw3IT5xntdQxMkLwUZ3ZH6xI1HdzQtMI_picTWIVxt36mZpbm4w-9buIbR9qGDEdnFA4cLPaqygfFfy1Y7pAGF73ceRmwzjAr4A1ASnUAj8ZWBMw.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_0e30cfb0b80b823e016acd14a701ac87d1833e1e7bf601b3b1",
+      "index": 2
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 45888,
+  "completion_tokens": 969,
+  "total_tokens": 46857,
+  "cost": 0.00098919,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 45489,
+   "cache_write_tokens": 396,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00098919,
+   "upstream_inference_prompt_cost": 0.00050469,
+   "upstream_inference_completions_cost": 0.0004845
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 534,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

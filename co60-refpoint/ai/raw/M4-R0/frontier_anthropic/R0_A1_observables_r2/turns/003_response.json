@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791824914-z56qS1Ur33cE9VMespos",
+ "object": "chat.completion",
+ "created": 1791824914,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "The session doesn't keep state between calls, so I'll write the code to a module file and import it.",
+    "refusal": null,
+    "reasoning": "It seems state isn't persisting between calls since each call runs as a separate file, so variables defined earlier are lost. I should instead write everything needed into a single module file and import it, rather than relying on cross-call memory.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01F75veRRbyZch2NvsafDRPP",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\ncode = r'''\\nimport numpy as np\\nre=2.8179403e-13; mc2=0.51099895; ne=3.3428e23\\ndef sigKN(E):\\n    k=E/mc2\\n    t1=(1+k)/k**2*(2*(1+k)/(1+2*k)-np.log(1+2*k)/k)\\n    t2=np.log(1+2*k)/(2*k)\\n    t3=(1+3*k)/(1+2*k)**2\\n    return 2*np.pi*re**2*(t1+t2-t3)\\ndef muKN(E): return ne*sigKN(E)\\ndef mu_pe(E): return 0.00345*(0.05/E)**3\\ndef mu_coh(E): return 0.0019*(0.1/E)**2\\ndef mu_pair(E):\\n    x=np.clip(E-1.022,0,None)/0.31\\n    return 0.0004*x**2\\ndef sample_compton(E,rng):\\n    # E: array\\n    E=np.asarray(E,float); n=E.size\\n    k=E/mc2\\n    out_eps=np.empty(n); out_mu=np.empty(n)\\n    todo=np.arange(n)\\n    while todo.size>0:\\n        m=todo.size\\n        kk=k[todo]\\n        mu=rng.uniform(-1,1,m)\\n        eps=1/(1+kk*(1-mu))\\n        f=eps**2*(eps+1/eps-1+mu**2)\\n        acc=rng.uniform(0,2,m)<f\\n        idx=todo[acc]\\n        out_eps[idx]=eps[acc]; out_mu[idx]=mu[acc]\\n        todo=todo[~acc]\\n    return out_eps,out_mu\\n'''\\nopen('mc.py','w').write(code)\\nimport importlib, sys\\nsys.path.insert(0,'.')\\nimport mc, numpy as np\\nrng=np.random.default_rng(1)\\nE=np.full(400000,1.25)\\ne,m=mc.sample_compton(E,rng)\\nprint(\\\"mean T/E\\\",np.mean(1-e), \\\"muKN*meanT/E / muKN check\\\")\\n# analytic energy transfer fraction: sigma_tr/sigma (Compton); compare\\nprint(np.mean(1-e))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "It seems state isn't persisting between calls since each call runs as a separate file, so variables defined earlier are lost. I should instead write everything needed into a single module file and import it, rather than relying on cross-call memory.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS3AgKEAgSGAI4AUIIdGhpbmtpbmcSDEutqJsCbiQv7mIzPBoMeBN4lfWpkhGGc2KCIjBOw2ZLVuIyn6q+zZFQ+Y0s72Ekvf3lcdk1eYAitNrhWjnP8ogLDerRff6Y70piwekq+QfpU+BT2W1jfStcs/WLlQiDcXBLFJuS8bqc0T/ZNsWl5win6B8WDi8XARvH9CXjxtkzA1Es5hVoOWzNOVTLy5ufPKXSLrDw3kUe0TxATLBgnzKzl1vgkdZJd6ubsGbsFy350cp8Lb7M0ALHDoAqyHG7AvbByDmorcg9VR8nVwg3OXJSkixJMmh+G6IHnfEYsVGwLLt9ElSFz3KW59pxeFElf5zv4jEj3Hobj4f2QHgPmj6ZA+npcPSbtPi19B3IvcepPp2iTc635olJxyz5alraECC1rLnrOYU6vNMvv+JkewMaqMCuSHVstLjeakgQ7ZKzxjsoVxYmuiZMib6r1MqE+OGt/10XmXW4cgrrFPmTY4MjFyhdlP/Rsy9XaJBRQVqE4bBFn+kvmB6sPvzOZtZsCSgV+65Wg3+sTjIcJlVf09YWlJ2gkjFi/k+Ji4k8/i1o5gpR/v8g3QdKuaRzPsu7Q7MjvRlZM0x7mInvdhJyJfIWSXeSdtDeFnjB2ewLBS3i5MrSljuDFks257wC7Uca+7mHAaGDSyZOHvfwaTrxm7buuAi60IG1hJPbk97OY6Zsr0TzuUi+P2GS5joOSmUl9C69Suu6b1GKLEwyMv1jBWM16dCh5wGjH0qWNKukeDgyhTzzvUcjSNwYvKXhbv31kdB8BzRVbFRSObCggR1+EOZWqVKd6xGBe/Sn0Wl9vLMjJK5eudTTrSWkL4goZruE9ecSnOyJJ0ksHF28QcEvauwt3B3p/pE3xPyRBRJPfmgrBOmkdnBW6DAxXDoUGgbXdWj2ceb3ualCwJ8D3NTsnOavWdAJ/FvQRbgrdR9URyiTut/rI/MtEq8pZIUqvjq5C5UNJ3pcsaDhkfKgG3LrlFvROb4bk5MOK5oixAaSsSrXFBK1tPIMhEEW+nRjuetVVY2os8+f3kXK/fPYV1y0Qmuk2UMxkyaFYWX59EgCFgRmw4jHTy7Ju2SQh+C3UNyTK7Dp/1Z+CGRAgI0MmryDi4LnWqplh8SLghE0ANWF0dHw5FzvMU/l6fjOIngCyc70GEIvV/3K5C0a/7CyDwD6A6kXAcQbfwJEUGX0g/tXRq/IujvkHgGikZ834uOj8cGUngZKmhQOewkiougm4ZfC7VlDLtmYlhhEMNX0XAtQ4KIwMz5/aOhgRTZiG/4Eo2obgO5aFdXJ6MumCr8YEIEIp9hGRwiGdDBsAnbnqI4QpMXPdoY0iqwvPJOhDaKQyornO18SQ5zCjTr8sSB5JIvlpNCY8gO1n6GhrJmA8iUy/YSlehepRFSSCrmjUHMu0WxoupLKJGDCm1gsrs1Pwnw+bMMYsqdNknh1F1XZXqncmqcX7WVE+YPjheIYAQ==.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 44097,
+  "completion_tokens": 914,
+  "total_tokens": 45011,
+  "cost": 0.00118542,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 41597,
+   "cache_write_tokens": 2498,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00118542,
+   "upstream_inference_prompt_cost": 0.00072842,
+   "upstream_inference_completions_cost": 0.000457
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 111,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}
