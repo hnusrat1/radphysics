@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791824155-WEWulrLF87jecLGQsz0o",
+ "object": "chat.completion",
+ "created": 1791824155,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Calculating corrections and totals**\n\nI\u2019m making a correction that adds .00075 (which is about 6.4%) to a base of .01174. I\u2019m considering how source electrons relate to their bins and how I need to add this to the spectrum. This adjustment seems plausible for more accuracy. I notice that the source distribution at the bins might be skewed. So, with a total of .012488 after adding the delta fraction of .10, the total becomes .013876. I\u2019ll compute the full results and the mean next.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_GWcOw88TZ9nbfI8OCqaBigEK",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"base=np.array([2.76207947e-04,5.81063727e-04,7.27587734e-04,8.01882005e-04,8.34810967e-04,8.42680572e-04,8.34392414e-04,8.09766338e-04,7.74126844e-04,7.35726138e-04,6.92417878e-04,6.51409860e-04,6.05090221e-04,5.47918393e-04,4.96573813e-04,4.34431692e-04,3.67020566e-04,2.94398844e-04,1.92989341e-04,1.29550863e-04,8.24316951e-05,2.46931706e-05,0,0,0])\\n# add previous own bin correction using compute again\\nimport numpy as np\\nestar=np.loadtxt('/tmp/data/estar_water.txt',comments='#');edges=np.array([.01,.05,.1,.15,.2,.25,.3,.35,.4,.45,.5,.55,.6,.65,.7,.75,.8,.85,.9,.95,1,1.05,1.1,1.15,1.2,1.4]);mid=(edges[:-1]+edges[1:])/2\\nbp=np.array([272,356,322,342,301,306,288,314,321,308,303,287,288,355,324,383,417,456,636,395,293,363,156,0,0],float);bs=np.array([2473,1313,652,430,331,242,195,164,146,113,107,75,84,71,48,47,37,23,20,13,8,3,0,0,0],float)\\nstop=np.exp(np.interp(np.log(mid),np.log(estar[:,0]),np.log(estar[:,1])))\\nadj=(bp+bs)/171441.905976*((edges[1:]-edges[:-1])*.5)/stop\\nbase+=adj\\n# delta = 10% total; add low bins 75/25\\nDt=base.sum()*.1/.9\\nfull=base.copy();full[0]+=.75*Dt;full[1]+=.25*Dt\\nprint(base.sum(),Dt,full.sum(),np.dot(full,mid)/full.sum());print([float(x) for x in full])\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Calculating corrections and totals**\n\nI\u2019m making a correction that adds .00075 (which is about 6.4%) to a base of .01174. I\u2019m considering how source electrons relate to their bins and how I need to add this to the spectrum. This adjustment seems plausible for more accuracy. I notice that the source distribution at the bins might be skewed. So, with a total of .012488 after adding the delta fraction of .10, the total becomes .013876. I\u2019ll compute the full results and the mean next.",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzREeIzG1L1r5uqOV2rcMiG-nC7bd1be79eblgGAo5yBlozfSVr5hS0dLcrTA-Rl2U5OODs2DzE1T1pYgRpaIRgUJNDBTGIbnxypMOdFdMWbxo7eU5_KycquhCP5Xxh6pItJJwFmJbfqMrreF4gT8-oEtza9IiBWtVXIwI-qb-lhF49_QqwNxR16AY8Sz4CsV288HBJwydoMXKMLWfeIVpeXtH-I-GDzUS0MKdkA2s7VtALFsjB6X7pWxwdpcr1p3uG6TgwSXEmGSZgMoUwm_W2XM92Xj9n2t-MfaLSFlKGZqtKlmNduHHnqvQ6nP3nz_gEIql87GcgXuJSEIFsQlGFEC1NwUHoqdTWDqCi6lSBN1Cx7JQrQOBABsde2mov4rrRsfhApRN0xLgmBg4hk0euOW_qJYcwWWVlEwbsWnrw78qAYspcQ8HqYVgwL0eGrA23juMmFkdyZdd3HURT_utp-oG2wm5ILWean9xzgfSt6X6jwYQPYwWbVFJwDvcgFDEmbjqzhsUaArPfBvdxH2Ev4aDQpCXyWdxHpUMffKAuo145kc8oFtlyS-Bw5UVtrjD5ofOlNv3iJd2ygLGTmzaySPndwunfPUCE-A5J67m8Hw9cpSnlqUtMj8dm4mdfFsYbqBhbXJtUJ7AQXvkERIqTd2XBt3cVKwnJwADoSXVbZqv6O-il2HxGhOBa4b7ogf1-Z_X6bggRPzyxG0lAfcnlA4f3u1ECg0l2joCstWACI3mwgwCUJDi2vHTwvCllZJsfHJVVn35fat6DaDqAv5tpbBPuY6vBhayzuuMsujS1eEm2L-LEjKFZV6ilA2RjZSV50RTgYdtMpwAAiRvEajlUTqYO1a4_UeE-RIqvW48uH6qY1dqetElUNvec-LlAgpEn3vPVhzMWOLnFUODS_NABybauCwgiA39fAXvxLeyIxt4j6dV-GO2cu3RYX0bNSYziS2zbaWPyQFrDqccEfxjkB3mNbjeuOrDitMtW2Q3bBbe1PeMbSSBsrgJgGpnjXLGgvg-uz-hBNCaF2YCHUGHa_2OR0xQlnKYN88_Z-mfRDF2qk29b11cU7BZiRJh5AeAX_LXZzXckqmYxeOTm-lQOEhBGNHcXm8RWgre6XxubjwLbjgNFQi-OtprpNwrfOE41YoAxUr4SxEPbinS6qkOLxFAgGb-ktpEbjI8vFWr9lXPWb4mUTV9Ngrn-9gm0zjapYidqy2wosTcT0bWH3NxstPCloBjRy_VhM4iDys4YWRb2g0ZHzzEijD6e7tgBHg-H5AHvpl2jETsjCF7TeUwKhhijcvVo6hjJlbcS1Jz7hEHNb1S195qSg6XlCAJzhHOg9qLB7Ne38VLXdIs4mBOlHIb1sbTmWxiKdyRVw2HnfOTTgOE6tPyxkENLvS1jRZSCmokg_wAnHyxY-NHQF9H9lVmv4PNGun81a4bXoSWr2ww2_7VXOTsa7zvlrtOnBHHnkIoXi6EAcW59rfAPsigjC4nc3p2AkW2m84jZtgzTgtbfKM38kb5bWll5sukydS5bqwGAcPYmPnqdF_tcu-G5UCSWjHo_Jt_jQ6xIFVJv9GTGHwaeCiBFLTq5H-fXhShXob_kFOMUPrqDf3YzR2O-PMPCseD4xnD9o0wWVh1VtromBw1IuB9nHTrLAKf-Pqahxat0nggiZhUHUQmtwnASoEOkkUtWzBRL3up193YQPvn9SBKZKrp2nMeIqB9XV_Dw11jnWk_R-ph_nOs9h4fBENgdpLEgnmYjpkclyzeDtvGrE_zFzR0GNiNm0bHChfRQfzZpiReKSQ93-Xjhbocj8dTS7HBd4E42p8jEhyDogeQ9p26jQmt3JMzGXm9aq-_rO2OBAbRydDMwmgkThXaXBeuS2rWvotnlzgl72mC4cCtq13auG0hxzdLS_w9iOqduuZrZQDcY81uJk5k_Aj95goGLdEozeSBrby16oP6xJUwFQ-zDVsgCoS7x-CMPvsGf020nzLNQhMcFFCAoWHvV0Fj_7FXkFkntSsUA88a-6V9U2cAZz7DVRgsLGVIDfnU6ROXt7ZVrYHFmEw1Dt7FBqXquWlxiy6f3DYkIMGNsvjfodoe31PKRURdU5MDaK5eaGB3QS8egLCcxWRri7o0UkLqXVTVKl-Fhmz8EqXDPlslitavdp5KrlIvOyBoOtU_PLwKhTqp9uPbeASe98lc_3b4rGNfZ_bLv1J1KKpTQZWCil9v8Pd1LBNEonC8CzpeJC4jLF1r4-DKgFfrB0nZCvxY20J5u0bYbXum2cjta4RSCg10vfPmg70SezsqnbAh-K_yDU8BE91m9zurDzf950-JrfTKx4cIqQq6LHzE9QpvGo2yjI0jxpelNn9XM0uFX-IuG4xnmHFC47aQlR9l2Ie3cMx9DqINkMPD1S8kn3EzPt8xxKZ_ib1_w6XoQY_mN1dFYZPvuyIKesNnJmPXrHitXv0X6-acODL_PK16fD6kCNanecqRXoW0ZsFsFjWgR1Inv6Vhmgz8eUZhQpODthVvg9Fp6GjFnOE6XZVsw4X8dQ=.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_042c9b3ec933c71f016acd111d082487d193c36aacb730d840",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 42384,
+  "completion_tokens": 665,
+  "total_tokens": 43049,
+  "cost": 0.001156925,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 38900,
+   "cache_write_tokens": 3481,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001156925,
+   "upstream_inference_prompt_cost": 0.000824425,
+   "upstream_inference_completions_cost": 0.0003325
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 79,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

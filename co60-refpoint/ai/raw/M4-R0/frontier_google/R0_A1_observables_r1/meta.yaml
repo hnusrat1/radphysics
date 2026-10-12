@@ -1,0 +1,89 @@
+slot: frontier_google
+provider: Google via OpenRouter
+api: openai_compatible
+model_requested: google/gemini-2.5-flash-lite
+settings:
+  reasoning:
+    effort: high
+  usage:
+    include: true
+condition: A1
+task: observables
+config: R0
+prompt_version: v1
+prompt_sha256:
+  system_A1.txt: e06e9a5ea06c2f5ca29739818f324713f2dbbf775f019c11018d1aa7ef5416b8
+  task_observables_R0.txt: 57d3c391f7d6e1e76358e1b31939b48e00fb008344fd731011f63a2acf79e07e
+started_utc: '2026-10-12T16:58:21Z'
+turns:
+- n: 1
+  usage:
+    input_tokens: 4728
+    output_tokens: 7920
+    reasoning_tokens: 6697
+  stop: stop
+  wall_s: 27.32
+  http_attempts: 1
+  model_reported: google/gemini-2.5-flash-lite
+  tool_calls: 0
+- n: 2
+  usage:
+    input_tokens: 6055
+    output_tokens: 3025
+    reasoning_tokens: 1977
+  stop: stop
+  wall_s: 7.17
+  http_attempts: 1
+  model_reported: google/gemini-2.5-flash-lite
+  tool_calls: 0
+tool_calls: 0
+retries: 1
+outcome: parse_failure
+model_reported: google/gemini-2.5-flash-lite
+first_parse_errors:
+- '$.method: missing'
+- '$.data_sources: missing'
+- '$.L1_primary_fluence_per_phi0: missing'
+- '$.L1_total_fluence_per_phi0: missing'
+- '$.L1_scattered_fraction_fluence: missing'
+- '$.L1_scattered_fraction_energy_fluence: missing'
+- '$.L1_mean_photon_energy_MeV: missing'
+- '$.L1_photon_fluence_spectrum_primary: missing'
+- '$.L1_photon_fluence_spectrum_scattered: missing'
+- '$.L1_angular_primary: missing'
+- '$.L1_angular_scattered: missing'
+- '$.L2_interaction_fractions: missing'
+- '$.L2_energy_transfer_fractions: missing'
+- '$.L2_interaction_fractions_primary: missing'
+- '$.L2_interaction_fractions_scattered: missing'
+- '$.L2_scattered_share_of_interactions: missing'
+- '$.L3_initial_spectrum: missing'
+- '$.L3_initial_spectrum_parent_primary: missing'
+- '$.L3_mean_initial_energy_MeV: missing'
+- '$.L3_mean_initial_energy_parent_primary_MeV: missing'
+parse_errors:
+- '$.method: missing'
+- '$.data_sources: missing'
+- '$.L1_primary_fluence_per_phi0: missing'
+- '$.L1_total_fluence_per_phi0: missing'
+- '$.L1_scattered_fraction_fluence: missing'
+- '$.L1_scattered_fraction_energy_fluence: missing'
+- '$.L1_mean_photon_energy_MeV: missing'
+- '$.L1_photon_fluence_spectrum_primary: missing'
+- '$.L1_photon_fluence_spectrum_scattered: missing'
+- '$.L1_angular_primary: missing'
+- '$.L1_angular_scattered: missing'
+- '$.L2_interaction_fractions: missing'
+- '$.L2_energy_transfer_fractions: missing'
+- '$.L2_interaction_fractions_primary: missing'
+- '$.L2_interaction_fractions_scattered: missing'
+- '$.L2_scattered_share_of_interactions: missing'
+- '$.L3_initial_spectrum: missing'
+- '$.L3_initial_spectrum_parent_primary: missing'
+- '$.L3_mean_initial_energy_MeV: missing'
+- '$.L3_mean_initial_energy_parent_primary_MeV: missing'
+finished_utc: '2026-10-12T16:58:55Z'
+usage_total:
+  input_tokens: 10783
+  output_tokens: 10945
+  reasoning_tokens: 8674

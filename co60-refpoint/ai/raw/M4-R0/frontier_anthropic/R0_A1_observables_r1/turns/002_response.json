@@ -1,0 +1,57 @@
+{
+ "id": "gen-1791824337-KXbl8bqZRMHgJnOPrHgV",
+ "object": "chat.completion",
+ "created": 1791824337,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_012J1KJiiYZjYTi7vFaVUvTb",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport numpy as np\\nre=2.8179403e-13; mc2=0.51099895; ne=3.3428e23\\ndef sigKN(E):\\n    e=E/mc2; L=np.log(1+2*e)\\n    return 2*np.pi*re**2*((1+e)/e**2*(2*(1+e)/(1+2*e)-L/e)+L/(2*e)-(1+3*e)/(1+2*e)**2)\\ndef fKN(E,c):\\n    Ep=1/(1+E/mc2*(1-c)); s2=1-c*c\\n    return re**2/2*Ep**2*(Ep+1/Ep-s2)\\nc=np.linspace(-1,1,200001)\\nfor E in [0.1,0.5,1.1732,1.3325]:\\n    num=2*np.pi*np.trapezoid(fKN(E,c),c)\\n    print(E, num, sigKN(E), ne*sigKN(E))\\nprint(np.max(fKN(1.0,c)/(re**2/2)), np.max(fKN(0.1,c)/(re**2/2)))\\n\"}"
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 80438,
+  "completion_tokens": 401,
+  "total_tokens": 80839,
+  "cost": 0.0102552,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 80436,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0102552,
+   "upstream_inference_prompt_cost": 0.0100547,
+   "upstream_inference_completions_cost": 0.0002005
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 0,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}
