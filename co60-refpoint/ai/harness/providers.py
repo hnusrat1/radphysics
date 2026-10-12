@@ -93,17 +93,17 @@ class Conversation:
         self.messages = []
         self.init(user)
 
-    def step(self, retries=6):
+    def step(self, retries=8):
         url, headers, payload = self.request()
         t0 = time.time()
-        attempts, delay = 0, 10.0
+        attempts, delay = 0, 20.0
         for k in range(1, retries + 1):
             resp, n = post_json(url, payload, headers)
             attempts += n
             err = in_band_error(resp)
             if err is None:
                 break
-            if err.get("code") in RETRY_CODES and k < retries:
+            if (err.get("code") is None or err.get("code") in RETRY_CODES) and k < retries:
                 time.sleep(delay)
                 delay *= 2
                 continue

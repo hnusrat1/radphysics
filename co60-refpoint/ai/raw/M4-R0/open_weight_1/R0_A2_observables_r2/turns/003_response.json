@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791828173-ePgHWxwQNTpIRtNgGenK",
+ "object": "chat.completion",
+ "created": 1791828173,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "GMICloud",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "numpy version doesn't have trapz; use np.trapezoid or manual. Let me fix.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_665b803e9b6f429abdc27d10",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\n\\ndef load_xcom():\\n    with open('/tmp/data/xcom_water.txt') as f:\\n        lines = [l for l in f if not l.startswith('#') and l.strip()]\\n    x = np.loadtxt(lines)\\n    return x[:,0], x[:,1], x[:,2], x[:,3], x[:,4], x[:,5], x[:,6]\\nE_x, mu_coh, mu_incoh, mu_pe, mu_pairn, mu_paire, mu_tot = load_xcom()\\ndef mu_interp(E, col):\\n    return np.exp(np.interp(np.log(E), np.log(E_x), np.log(col)))\\ndef mu_total(E): return mu_interp(E, mu_tot)\\ndef mu_incoh_E(E): return mu_interp(E, mu_incoh)\\ndef mu_coh_E(E): return mu_interp(E, mu_coh)\\ndef mu_pe_E(E): return mu_interp(E, mu_pe)\\ndef mu_pair_E(E): return mu_interp(E, mu_pairn+mu_paire)\\n\\nrho=1.0; mc2=0.51099895; re2=7.9408e-26\\n\\ndef kn_dsig(E0, cosT):\\n    a = E0/mc2\\n    Ep = E0/(1.0 + a*(1.0 - cosT))\\n    r = Ep/E0\\n    return 0.5*re2 * r**2 * (r + 1.0/r - (1.0-cosT**2))\\ndef kn_total(E0):\\n    th = np.linspace(1e-6, np.pi, 20000)\\n    c = np.cos(th)\\n    return np.trapezoid(kn_dsig(E0, c)*2*np.pi*np.sin(th), th)\\ndef compton_Eprime(E0, cosT):\\n    a = E0/mc2\\n    return E0/(1.0 + a*(1.0 - cosT))\\ndef compton_phi_e(E0, cosT):\\n    a = E0/mc2\\n    th = np.arccos(np.clip(cosT,-1,1))\\n    cotp = (1.0+a)*np.tan(th/2.0)\\n    return np.arctan2(1.0, cotp)\\n\\nfor E0 in [1.1732, 1.3325]:\\n    print(E0, \\\"KN total per electron cm2:\\\", kn_total(E0))\\n    # per electron from XCOM: mu_incoh [cm2/g] * rho / (electrons per g)\\n    Ne_g = 3.343e23\\n    print(\\\"  xcom incoh per electron:\\\", mu_incoh_E(E0)/Ne_g)\\n\\n# mean Compton scattered energy and energy transfer at E0\\nfor E0 in [1.1732,1.3325]:\\n    th=np.linspace(1e-6,np.pi,20000); c=np.cos(th)\\n    w = kn_dsig(E0,c)*2*np.pi*np.sin(th)\\n    Ep = compton_Eprime(E0,c)\\n    meanEp = np.trapezoid(w*Ep,th)/np.trapezoid(w,th)\\n    meanTr = E0-meanEp\\n    print(f\\\"E0={E0}: <Ep>={meanEp:.4f}, <T>={meanTr:.4f}, Tmax={compton_T_e(E0,-1):.4f}\\\")\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "numpy version doesn't have trapz; use np.trapezoid or manual. Let me fix.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 40648,
+  "completion_tokens": 820,
+  "total_tokens": 41468,
+  "cost": 0.0013921544,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 33737,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0013921544,
+   "upstream_inference_prompt_cost": 0.0012429144,
+   "upstream_inference_completions_cost": 0.00014924
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 21,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}
