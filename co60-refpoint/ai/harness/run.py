@@ -33,8 +33,9 @@ RAW = ROOT / "ai" / "raw"
 MAX_TOOL_CALLS = 30
 EVENT_CALLS_PER_CONDITION = 5          # STUDY_PLAN 5.2: 5 calls of 200 events per model and condition
 EVENT_CONDITIONS = ("A0", "A1")        # STUDY_PLAN 5.2: sampled events in A0 and A1
-RETRY_TEXT = ("Your reply could not be read against the required format: {err}. Reply again with only the JSON "
-              "object, in a ```json fenced code block, with every key and unit as specified.")
+RETRY_TEXT = ("Your reply could not be read against the required format: {err}. Reply again with your complete "
+              "answer as one JSON object that follows the schema (your answer, not the schema itself), in a ```json "
+              "fenced code block, with every key and unit as specified.")
 BUDGET_TEXT = "The tool-call budget for this question is used up. Give your final answer now, in the required format."
 
 
