@@ -244,6 +244,18 @@ batches:
   D_rel_sem_history_by_history: 0.013206996520190107
   energy_balance_max_abs_MeV: 1.0825758692267762e-16
   untagged_tracks: 0
+- batch: 10
+  seeds:
+  - 7111021
+  - 7111022
+  exit_code: 0
+  wall_s: 165.9
+  command: /opt/build/co60app/co60app.production run.mac livermore 4 --importance
+  histories: 3000000
+  D_over_phi0_Gy_cm2: 4.838094011821771e-12
+  D_rel_sem_history_by_history: 0.013040895366904453
+  energy_balance_max_abs_MeV: 1.0825758692267762e-16
+  untagged_tracks: 0
 started_utc: '2026-10-12T02:00:15Z'
 geant4_physics_printout:
   em_models:
@@ -286,3 +298,5 @@ geant4_physics_printout:
   g4_water_range_cuts: gamma 1 mm e- 8.24701 um e+ 8.33478 um proton 8.24701 um
   g4_water_energy_thresholds: gamma 2.93547 keV e- 10 keV e+ 10 keV proton 824.701 eV
   roi_check: buffer needed 7.42165 mm (1.2 x CSDA range 6.18471 mm of 1.3325 MeV e- in G4_WATER)
+resumed_utc:
+- '2026-10-12T02:26:57Z'

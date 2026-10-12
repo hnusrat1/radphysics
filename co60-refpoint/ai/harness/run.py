@@ -38,6 +38,22 @@ RETRY_TEXT = ("Your reply could not be read against the required format: {err}. 
 BUDGET_TEXT = "The tool-call budget for this question is used up. Give your final answer now, in the required format."
 
 
+def load_secrets(path=ROOT / ".secrets"):
+    """KEY=VALUE lines from the gitignored .secrets file (STUDY_PLAN Section 10.8) into the environment.
+    Variables already set in the environment (for example cloud environment secrets) take precedence."""
+    if not path.exists():
+        return []
+    loaded = []
+    for line in path.read_text().splitlines():
+        line = line.strip()
+        if line and not line.startswith("#") and "=" in line:
+            k, v = line.split("=", 1)
+            if k.strip() and not os.environ.get(k.strip()):
+                os.environ[k.strip()] = v.strip()
+                loaded.append(k.strip())
+    return loaded
+
+
 def utc():
     return datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
@@ -172,6 +188,9 @@ def main():
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--raw-root", default=str(RAW))
     a = ap.parse_args()
+    loaded = load_secrets()
+    if loaded:
+        print(f"keys from .secrets: {', '.join(loaded)}")
     models = yaml.safe_load(open(a.models))
     slots = [s for s in models["slots"] if not a.slots or s["slot"] in a.slots]
     plan = list(matrix(slots, a.conditions, a.tasks, a.k, a.config))
