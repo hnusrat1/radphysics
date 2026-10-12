@@ -246,13 +246,124 @@ def best(models, cond):
     return sorted(out)
 
 
+FIELD_TEXT = {"simulated": "Simulated photon transport", "simulated_with_major_bug": "Simulated, with a major bug",
+              "assumed": "Scatter typed or assumed", "no_code": "No code"}
+
+
+def method_point(field, x, y, tip):
+    t = f' data-tip="{e(tip)}" tabindex="0"'
+    if field == "simulated":
+        return f'<circle cx="{x:.1f}" cy="{y:.1f}" r="6" fill="var(--m-sim)" stroke="var(--surface)" stroke-width="2"{t}/>'
+    if field == "simulated_with_major_bug":
+        return (f'<rect x="{x - 5.5:.1f}" y="{y - 5.5:.1f}" width="11" height="11" rx="1.5" fill="var(--m-bug)" '
+                f'stroke="var(--surface)" stroke-width="2"{t}/>')
+    return f'<circle cx="{x:.1f}" cy="{y:.1f}" r="5.5" fill="var(--surface)" stroke="var(--ink)" stroke-width="2"{t}/>'
+
+
+def method_plot(rows, dose_share):
+    """Each A1/A2 answer with code: scattered-fluence error against D/Phi0 error, by photon field."""
+    W, H, ml, mr, mt, mb = 760, 420, 70, 24, 20, 56
+    pw, ph = W - ml - mr, H - mt - mb
+    x0, x1, y0, y1 = -0.85, 0.15, -0.30, 0.15
+    X = lambda v: ml + (min(max(v, x0), x1) - x0) / (x1 - x0) * pw  # noqa: E731
+    Y = lambda v: mt + (y1 - min(max(v, y0), y1)) / (y1 - y0) * ph  # noqa: E731
+    out = [f'<svg viewBox="0 0 {W} {H}" role="img" aria-labelledby="meth-title meth-desc" class="chart">',
+           '<title id="meth-title">Scatter error against dose error for every answer with code</title>',
+           '<desc id="meth-desc">Each point is one A1 or A2 answer. Simulated answers cluster at zero error. Answers '
+           'with an assumed scatter field lie along the line expected when only the scatter is wrong.</desc>']
+    for t in (-0.8, -0.6, -0.4, -0.2, 0.0):
+        out.append(f'<line x1="{X(t):.1f}" x2="{X(t):.1f}" y1="{mt}" y2="{mt + ph}" stroke="var(--rule)" '
+                   f'stroke-width="{1.5 if t == 0 else 1}"/>')
+        out.append(f'<text x="{X(t):.1f}" y="{mt + ph + 18}" class="tick" text-anchor="middle">'
+                   f'{"0" if t == 0 else f"{t * 100:+.0f}%"}</text>')
+    for t in (-0.3, -0.2, -0.1, 0.0, 0.1):
+        out.append(f'<line x1="{ml}" x2="{ml + pw}" y1="{Y(t):.1f}" y2="{Y(t):.1f}" stroke="var(--rule)" '
+                   f'stroke-width="{1.5 if t == 0 else 1}"/>')
+        out.append(f'<text x="{ml - 8}" y="{Y(t) + 4:.1f}" class="tick" text-anchor="end">'
+                   f'{"0" if t == 0 else f"{t * 100:+.0f}%"}</text>')
+    out.append(f'<rect x="{ml}" y="{Y(0.02):.1f}" width="{pw}" height="{Y(-0.02) - Y(0.02):.1f}" '
+               f'fill="var(--green-soft)" opacity="0.8"/>')
+    out.append(f'<line x1="{X(x0):.1f}" y1="{Y(dose_share * x0):.1f}" x2="{X(x1):.1f}" y2="{Y(dose_share * x1):.1f}" '
+               f'stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="5 4"/>')
+    out.append(f'<text x="{X(-0.84):.1f}" y="{Y(dose_share * -0.84) + 18:.1f}" class="tick">'
+               f'expected from the scatter error alone (slope {dose_share:.3f})</text>')
+    out.append(f'<text x="{ml + pw / 2:.1f}" y="{H - 8}" class="axis" text-anchor="middle">'
+               f'Scattered photon fluence at the point, relative to Monte Carlo</text>')
+    out.append(f'<text transform="translate(16 {mt + ph / 2:.1f}) rotate(-90)" class="axis" text-anchor="middle">'
+               f'D/Φ₀ relative to Monte Carlo</text>')
+    order = {"assumed": 0, "simulated_with_major_bug": 1, "simulated": 2}
+    for r in sorted(rows, key=lambda r: order.get(r["photon_field"], 3)):
+        sc = r.get("scores")
+        if not sc or r["photon_field"] == "no_code":
+            continue
+        xs, yd = sc["scalars"]["L1_scattered_fraction_fluence"], sc["scalars"]["L5_D_over_phi0_Gy_cm2"]
+        if xs is None or yd is None:
+            continue
+        name = r["conversation"].rsplit("/", 1)[1].replace("R0_", "").replace("_observables_", " ")
+        clip = " (off scale)" if not (x0 <= xs <= x1 and y0 <= yd <= y1) else ""
+        tip = f"{NAMES[r['slot']]} · {name} · {FIELD_TEXT[r['photon_field']]} · scatter {pct(xs)}, D/Φ₀ {pct(yd)}{clip}"
+        out.append(method_point(r["photon_field"], X(xs), Y(yd), tip))
+    out.append("</svg>")
+    return "\n".join(out)
+
+
+def method_legend():
+    items = []
+    for f in ("simulated", "simulated_with_major_bug", "assumed"):
+        mk = method_point(f, 7, 7, "").replace(' data-tip="" tabindex="0"', "").replace('r="6"', 'r="5"')
+        items.append(f'<span><svg viewBox="0 0 14 14" aria-hidden="true">{mk}</svg>{e(FIELD_TEXT[f])}</span>')
+    return f'<div class="legend">{"".join(items)}</div>'
+
+
+def method_count_table(methods, audit):
+    rows = []
+    for slot in ORDER:
+        c = methods["method_counts_by_model"].get(slot, {})
+        mine = [a for a in audit if a["conversation"].split("/")[3] == slot]
+        full = sum(a.get("answer_from_code") == "yes" for a in mine)
+        over = sum(bool(a.get("stated_method_overstates_code")) for a in mine)
+        rows.append(f'<tr><th scope="row">{e(NAMES[slot])}</th>'
+                    + "".join(f'<td class="n">{c.get(k, 0)}</td>' for k in ("simulated", "simulated_with_major_bug",
+                                                                           "assumed", "no_code"))
+                    + f'<td class="n">{full}</td><td class="n">{over}</td></tr>')
+    return ('<table class="mc"><thead><tr><th scope="col">Model (10 A1/A2 answers each)</th>'
+            '<th scope="col">Simulated</th><th scope="col">Simulated, major bug</th><th scope="col">Scatter assumed</th>'
+            '<th scope="col">No code</th><th scope="col">Answer entirely from code</th>'
+            '<th scope="col">Stated method not in the code</th></tr></thead>'
+            f'<tbody>{"".join(rows)}</tbody></table>')
+
+
+def by_field_table(methods):
+    keys = [("L1_scattered_fraction_fluence", "Scattered fluence"), ("L1_mean_photon_energy_MeV", "Mean photon E"),
+            ("L2_scattered_share_of_interactions", "Scattered share of interactions"),
+            ("L3_mean_initial_energy_MeV", "Mean initial electron E"), ("L5_D_over_phi0_Gy_cm2", "D/Φ₀")]
+    head = "".join(f'<th scope="col">{lab}</th>' for _, lab in keys)
+    rows = []
+    pe_mc = methods["reference"]["photoelectric_fraction"]
+    for f in ("simulated", "simulated_with_major_bug", "assumed", "no_code"):
+        v = methods["by_photon_field"].get(f)
+        if not v or not v.get("n"):
+            continue
+        m = v["median_abs_rel_diff"]
+        w = v["median_w1"]["L1_photon_fluence_spectrum_scattered"]
+        pe = v["median_photoelectric_fraction"]
+        l5 = v["pass_share_by_layer"].get("5") or v["pass_share_by_layer"].get(5)
+        rows.append(f'<tr><th scope="row">{e(FIELD_TEXT[f])}</th><td class="n">{v["n"]}</td>'
+                    + "".join(f'<td class="n">{m[k] * 100:.1f}%</td>' if m[k] is not None else "<td>–</td>" for k, _ in keys)
+                    + f'<td class="n">{w * 1000:.0f} keV</td><td class="n">{pe * 100:.2f}%</td>'
+                    + f'<td class="n">{l5 * 100:.0f}%</td></tr>')
+    return ('<table class="byf"><thead><tr><th scope="col">Photon field behind the answer</th><th scope="col">Answers</th>'
+            f'{head}<th scope="col">W1, scattered spectrum</th><th scope="col">Photoelectric share (MC {pe_mc * 100:.2f}%)</th>'
+            '<th scope="col">Layer 5 passes</th></tr></thead>'
+            f'<tbody>{"".join(rows)}</tbody></table>')
+
 CSS = """
 :root {
   /* Layout: one reading column, figures and tables full width inside it; tokens shared with the study pages. */
   --bg: #f4f6f9; --surface: #ffffff; --ink: #142030; --muted: #586779; --rule: #d9e0e8;
   --cobalt: #1f4fb8; --cobalt-soft: #e5ecfa; --amber: #a35a00; --amber-soft: #fbefdc; --green: #23704a;
   --green-soft: #e1f2e8; --red: #a8322a; --red-soft: #f8e3e0;
-  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a;
+  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --m-sim: #1f4fb8; --m-bug: #eb6834;
   --f-display: "IBM Plex Sans Condensed", "Arial Narrow", sans-serif;
   --f-body: "Source Serif 4", Georgia, "Times New Roman", serif;
   --f-ui: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
@@ -262,12 +373,12 @@ CSS = """
   --bg: #0d1219; --surface: #141c26; --ink: #e3e9f1; --muted: #93a2b4; --rule: #263241;
   --cobalt: #7ea7ff; --cobalt-soft: #1b2a47; --amber: #f0b45b; --amber-soft: #3a2a12; --green: #6fd39a;
   --green-soft: #15301f; --red: #ff8f84; --red-soft: #3a1714; --s1: #3987e5; --s2: #d95926; --s3: #199e70;
-  color-scheme: dark; } }
+  --m-sim: #5f8eef; --m-bug: #d95926; color-scheme: dark; } }
 :root[data-theme="dark"] {
   --bg: #0d1219; --surface: #141c26; --ink: #e3e9f1; --muted: #93a2b4; --rule: #263241;
   --cobalt: #7ea7ff; --cobalt-soft: #1b2a47; --amber: #f0b45b; --amber-soft: #3a2a12; --green: #6fd39a;
   --green-soft: #15301f; --red: #ff8f84; --red-soft: #3a1714; --s1: #3987e5; --s2: #d95926; --s3: #199e70;
-  color-scheme: dark; }
+  --m-sim: #5f8eef; --m-bug: #d95926; color-scheme: dark; }
 body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 17px; line-height: 1.6; }
 main { max-width: 1000px; margin: 0 auto; padding-inline: 20px; padding-block: 36px 64px; display: grid; gap: 40px; }
 section { display: grid; gap: 14px; min-width: 0; }
@@ -370,6 +481,18 @@ def build():
     mod = yaml.safe_load(open(ROOT / "ai" / "models.yaml"))
     ids = " · ".join(f'{NAMES[s["slot"]]} <code>{e(s["model_id"])}</code>' for s in mod["slots"])
     ref_d = ref["observables"]["L5_D_over_phi0_Gy_cm2"]
+    methods = json.load(open(RES / "M4_methods.json"))
+    audit = json.load(open(RES / "M4_method_audit.json"))
+    dose_share = ref["observables"]["L5_dose_fraction_parent_scattered"]["mc"]
+    bf = methods["by_photon_field"]
+    sim, asm = bf["simulated"], bf["assumed"]
+    sim_runs = [a for a in audit if a["photon_field"] in ("simulated", "simulated_with_major_bug")]
+    n_full = sum(a.get("answer_from_code") == "yes" for a in audit if a["method_class"] != "no_code")
+    n_code = sum(a["method_class"] != "no_code" for a in audit)
+    n_over = sum(bool(a.get("stated_method_overstates_code")) for a in audit)
+    n_etrans = sum(a.get("electron_treatment") == "condensed_history_transport" for a in sim_runs)
+    n_binding = sum(a.get("binding_or_doppler") == "yes" for a in sim_runs)
+    n_pdd_rec = sum(a.get("pdd_method") == "recalled_or_assumed" for a in sim_runs)
 
     tools_pass = [NAMES[s] for s in ORDER if all(
         models.get(s, {}).get(c, {}).get("observables", {}).get("L5_D_over_phi0_Gy_cm2", {}).get("verdict") == "pass"
@@ -399,20 +522,79 @@ def build():
 <section aria-labelledby="h-find">
   <h2 id="h-find">What the runs show</h2>
   <ul class="findings">
-    <li><b>Python makes the dose right for two models.</b> With a sandbox, {e(" and ".join(tools_pass) or "no model")}
-      put D/Φ₀, kerma, β, s<sub>w,air</sub> and PDD(5) within the 2% tolerance in both tool conditions.</li>
-    <li><b>Without tools, every model misses the dose.</b> The closest A0 answer is {e(a0_best)}; the others are off by 5%
-      to 18%, and Gemini by a factor of about 3,000.</li>
-    <li><b>Tools do not help the other three.</b> GPT-6 Luna stays 7–11% low on D/Φ₀ and 20% high on the mean photon
-      energy. Qwen3.7 Flash moves further from the reference with tools. Gemini 2.5 Flash-Lite made no Python call on the
-      observables task, answered with zeros in two A1 runs and reported dose in the wrong unit in A2.</li>
-    <li><b>Every model breaks at Layer {", ".join(str(b) for b in sorted(x for x in breaks if x)) or "–"}.</b> The
-      breakpoint is the first layer with a resolved failure. Spectral and angular shapes must match the Monte Carlo
-      within three times its own half-sample distance, and no answer does, even where the scalar quantities pass.</li>
+    <li><b>The method decides the answer.</b> The {sim["n"]} tool answers built on a photon-transport simulation the model
+      wrote have a median error of {sim["median_abs_rel_diff"]["L1_scattered_fraction_fluence"] * 100:.1f}% in the
+      scattered photon fluence and {sim["median_abs_rel_diff"]["L5_D_over_phi0_Gy_cm2"] * 100:.1f}% in D/Φ₀. The
+      {asm["n"]} whose scatter was typed or assumed are off by
+      {asm["median_abs_rel_diff"]["L1_scattered_fraction_fluence"] * 100:.0f}% and
+      {asm["median_abs_rel_diff"]["L5_D_over_phi0_Gy_cm2"] * 100:.0f}%.</li>
+    <li><b>Which models simulated.</b> Haiku in 10 of 10 tool runs, DeepSeek in 8 (two with major bugs), GPT-6 Luna in
+      2 (one compiled C++ run as accurate as Haiku, one with a major bug), Qwen in none. Gemini wrote no code.</li>
+    <li><b>Without tools, every model misses the dose.</b> The closest A0 answer is {e(a0_best)}. The common error is
+      the same one the analytic tool answers make: too few multiply scattered, low-energy photons at the point.</li>
+    <li><b>What even the simulations get wrong.</b> {len(sim_runs) - n_etrans} of the {len(sim_runs)} simulations never
+      transport electrons, so electron directions fail everywhere. None models electron binding, and the
+      photoelectric share comes out at about a third of the Monte Carlo value. {n_pdd_rec} of {len(sim_runs)} typed
+      PDD(5) from memory instead of computing it.</li>
+    <li><b>Answers are not always what the code computed.</b> Only {n_full} of {n_code} tool answers come entirely from
+      the code's output, and {n_over} stated methods describe calculations the code did not do.</li>
     <li><b>Sampled events.</b> Under the bound-electron rule, Haiku's events (A0 and A1) and DeepSeek's A0 events are
       almost all physically valid; DeepSeek's A1 events are 13% invalid, Qwen's 51% and Gemini's 28–66%. Two
       samples match the Monte Carlo distribution: Haiku's A1 events and the one A1 call GPT-6 Luna answered. It
       declined the other 9 event calls, saying it cannot sample without a transport code.</li>
+    <li><b>Every model breaks at Layer {", ".join(str(b) for b in sorted(x for x in breaks if x)) or "–"} under the
+      pre-set criterion.</b> Shapes must match within three times the Monte Carlo's own half-sample distance (0.7 keV
+      in W1 for the scattered spectrum). A simulated answer misses by about 5 keV and an assumed one by about 220 keV,
+      and both count as a failure.</li>
+  </ul>
+</section>
+
+<section aria-labelledby="h-meth">
+  <h2 id="h-meth">How each model worked</h2>
+  <p>Every A1 and A2 answer was traced to the code behind it (DECISIONS D036): whether the scattered photons came
+  from a simulation the model ran, and which physics the code included. This audit was added after the runs and is
+  exploratory.</p>
+  <div class="panel scroll">{method_count_table(methods, audit)}</div>
+  <div class="panel">{method_legend()}<div class="scroll">{method_plot(methods["conversations"], dose_share)}</div></div>
+  <p class="caption">One point per A1/A2 answer with code. Shaded: the ±2% dose tolerance. Dashed: the dose error expected
+  if only the scattered fluence is wrong, since scattered photons deliver {dose_share * 100:.1f}% of the dose in the
+  Monte Carlo. Points at the top and bottom edges are off scale: Qwen answers with unit errors (up to ×11,000 in
+  D/Φ₀) and one DeepSeek run built on a buggy simulation; hover for values. Gemini's answers (no code) are not
+  shown.</p>
+  <div class="panel scroll">{by_field_table(methods)}</div>
+  <p class="caption">Median absolute relative difference over the answers in each group. W1 is in physical units; the
+  pre-set pass threshold is 0.7 keV.</p>
+  <h3>What the simulations included</h3>
+  <ul class="notes">
+    <li>All {len(sim_runs)} set up the finite water cube, the diverging 10 × 10 cm² field and both Co-60 lines, and
+      kept the Φ₀ normalization consistent.</li>
+    <li>Klein–Nishina Compton sampling in {sum(a.get("compton") == "klein_nishina_sampled" for a in sim_runs)};
+      Rayleigh with an angular distribution in {sum(a.get("rayleigh") == "sampled_with_angle" for a in sim_runs)};
+      annihilation photons after pair production in
+      {sum(a.get("pair") == "modelled_with_annihilation" for a in sim_runs)}; electron binding or Doppler broadening
+      in {n_binding}.</li>
+    <li>Photon cutoff: none in {sum(a.get("photon_cutoff_keV") in (None, 0) for a in sim_runs)}, between 1 and 20 keV
+      in the rest. Cross sections from the XCOM file in
+      {sum(a.get("cross_section_source") == "xcom_file" for a in sim_runs)}, from formulas or typed tables otherwise.</li>
+    <li>Electrons: a continuous-slowing-down spectrum built from stopping powers in
+      {sum(a.get("electron_treatment") == "csda_slowing_down_spectrum" for a in sim_runs)}, transported in
+      {n_etrans}. Dose as K<sub>col</sub> × β under charged-particle equilibrium in
+      {sum(a.get("dose_method") == "kcol_times_beta_cpe" for a in sim_runs)}.</li>
+  </ul>
+  <h3>What the audit found</h3>
+  <ul class="notes">
+    <li>Three simulations had major bugs that the models did not notice: GPT-6 Luna processed interactions only inside
+      the scoring cylinder (A2 r5); DeepSeek sampled Compton angles from a wrong rejection envelope, giving isotropic
+      scatter (A2 r4), and built one answer on a 10,000-history run with a broken cylinder intersection (A1 r2).</li>
+    <li>GPT-6 Luna's and Qwen's analytic answers do not compute a buildup factor or a single-scatter integral: the
+      scattered fluence is a constant the model chose (0.075 to 0.30 per Φ₀ for GPT-6 Luna; buildup factors from
+      1.04 to 1.45 for Qwen) and the spectrum is a typed shape.</li>
+    <li>Two answers claim a Monte Carlo that did not run (Qwen A1 r4; DeepSeek A1 r5, whose reply says it was
+      "implemented and validated").</li>
+    <li>Unit and normalization errors explain the largest misses: a 1.602e-13 for 1.602e-10 in Qwen's electron
+      fluence (×1,000), MeV/g to Gy conversions off by 10³ in its dose.</li>
+    <li>GPT-6 Luna compiled C++ with the system compiler in three R0 conversations. The sandbox was meant to be Python
+      only; isolation held (D036).</li>
   </ul>
 </section>
 

@@ -31,8 +31,20 @@ Humza delegated every open choice on 2026-10-11: "pick your best recommended cho
 - **Environment.** `/opt/venv` is rebuilt from `env/requirements.txt`. `test_a2_sandbox_sees_data_and_not_the_repository`
   fails here only because `/opt/geant4` does not exist in this container. The other 19 AI and scoring tests pass.
 
+- **Code audit (D036, exploratory).** All 50 A1/A2 observables conversations were traced to their code.
+  - The photon field decides the answer. The 17 answers built on a simulation the model wrote have median errors of
+    0.8% in the scattered fluence and 0.5% in D/Φ₀. The 20 with an assumed scatter field are off by 57% and 16%, and
+    sit on the line expected when only the scatter is wrong (scattered photons give 18.8% of the dose).
+  - Simulated runs per model: Haiku 10 of 10, DeepSeek 8 (2 with major bugs), GPT-6 Luna 2 (a C++ run as accurate
+    as Haiku, and one with a bug), Qwen 0. Gemini wrote no code.
+  - 19 of 20 simulations do not transport electrons, none models electron binding, and their photoelectric share
+    is about a third of the Monte Carlo's.
+  - 11 of 40 answers come entirely from the code's output, and 11 stated methods describe calculations that are
+    not in the code.
+  - The sandbox exposed `g++` and `clang`; GPT-6 Luna compiled C++ in three R0 conversations.
+
 ### Next
-- Humza's review of the results page and D030 to D035.
+- Humza's review of the results page and D030 to D036.
 - Optional: a frontier-tier run (D028 item 5) for comparison; the same harness and budget machinery apply.
 
 ## M2. Monte Carlo validation (2026-10-11). Running.
