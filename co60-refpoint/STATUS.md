@@ -13,7 +13,11 @@ Humza delegated every open choice on 2026-10-11: "pick your best recommended cho
   charge per slot, condition and task to R0. Tested end to end on a mock run.
 - **Blocker.** `openrouter.ai` is reachable: the public models endpoint answers. Chat completions return HTTP 401
   "No cookie auth credentials found" with or without an authorization header. The session's OpenRouter credential
-  is therefore not reaching the API, and no paid call has been made. No `.secrets` file exists in this container.
+  is therefore not reaching the API, and no paid call has been made. A key Humza supplied in `.secrets` and sent as
+  a bearer token gets the same 401 and the same message, which OpenRouter gives when no credential arrives. The
+  environment's network secret for `openrouter.ai` evidently replaces the request's authorization header with an
+  empty or invalid value. Fix: put a valid key in that network secret, or delete the secret, then start a new session.
+  With the injected route, the harness still needs `OPENROUTER_API_KEY` set to some value to pass its start check.
 - **Environment.** The container had no study venv. `/opt/venv` is rebuilt from `env/requirements.txt`. Geant4 and
   EGSnrc are absent, so `test_a2_sandbox_sees_data_and_not_the_repository` fails on `os.listdir('/opt/geant4')`. The
   path does not exist here, which hides it more completely than the empty mount the test expects. The other 19
