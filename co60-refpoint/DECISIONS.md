@@ -329,3 +329,29 @@ secret. Only `openrouter.ai` needs to be reachable.
 - Trade-off: one route is simpler and gives one bill. The cost is that OpenRouter, not the provider, decides some
   request handling, such as fallbacks and caching. The pilot checks that each frontier slot is served by its own
   provider.
+
+## D030. M4 model list: the fast, low-cost tier of each provider (2026-10-12)
+
+Humza, 2026-10-12, named the five OpenRouter models for M4 and set a budget rule: run the P0 pilot, report the
+measured cost, and run the full R0 matrix only if it fits under $10.
+
+| Slot | OpenRouter model | Pinned release (OpenRouter canonical slug) | Listed price, $/Mtok in / out |
+|---|---|---|---|
+| frontier_anthropic | `anthropic/claude-haiku-5.5` | `anthropic/claude-haiku-5.5-20261007` | 0.10 / 0.50 |
+| frontier_openai | `openai/gpt-6-luna` | `openai/gpt-6-luna-20260922` | 0.10 / 0.50 |
+| frontier_google | `google/gemini-2.5-flash-lite` | `google/gemini-2.5-flash-lite` | 0.10 / 0.40 |
+| open_weight_1 | `deepseek/deepseek-v4-flash` | `deepseek/deepseek-v4-flash-20260423` | 0.0173 / 1.28 |
+| open_weight_2 | `qwen/qwen3.7-flash` | `qwen/qwen3.7-flash-20260727` | 0.03 / 0.13 |
+
+Prices are from OpenRouter's public models endpoint on 2026-10-12 (`ai/prices.yaml`).
+
+This departs from D028 item 5 in two ways:
+- **Not the most capable models.** Each is its provider's small, fast tier: Haiku below Sonnet and Opus, GPT-6 Luna
+  below Sol, Gemini 2.5 Flash-Lite below the 3.x Flash and Pro models. The study then measures where this tier
+  breaks, not where the frontier breaks. Results must be reported under that name.
+- **open_weight_2 is not open-weight.** OpenRouter lists DeepSeek V4 Flash with published weights
+  (`deepseek-ai/DeepSeek-V4-Flash`) but gives no weights for Qwen3.7 Flash. The slot keeps its name because the
+  scorer keys on it; the model is reported as API-only.
+
+Reasoning stays at `effort: high` for every slot (D028 item 5). Each request also sets `usage: {include: true}`, so
+every response carries OpenRouter's charge. `ai/harness/cost.py` sums the charges and projects them to R0.

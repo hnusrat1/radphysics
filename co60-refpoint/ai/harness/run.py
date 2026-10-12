@@ -196,7 +196,8 @@ def main():
     plan = list(matrix(slots, a.conditions, a.tasks, a.k, a.config))
     prices = yaml.safe_load(open(ROOT / "ai" / "prices.yaml"))
     total, _ = estimate_cost(plan, prices["prices"], prices["tokens_per_conversation"])
-    print(f"{len(plan)} conversations; estimated cost ${total:,.0f} (ai/prices.yaml, unverified list prices)")
+    print(f"{len(plan)} conversations; estimated cost ${total:,.2f} (ai/prices.yaml prices and assumed token "
+          f"counts; prices verified: {prices.get('verified')})")
     if a.dry_run:
         return
     if a.config == "R0" and not models.get("frozen"):

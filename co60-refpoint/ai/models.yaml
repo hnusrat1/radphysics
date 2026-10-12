@@ -1,8 +1,9 @@
-# Model slots for M4 (STUDY_PLAN Section 5.1; DECISIONS D028 item 5, D029).
+# Model slots for M4 (STUDY_PLAN Section 5.1; DECISIONS D028 item 5, D029, D030).
 # Access route: every slot goes through OpenRouter's OpenAI-compatible API with one key (OPENROUTER_API_KEY;
-# Humza's choice, D029). model_id is the OpenRouter model name, filled in at launch: each provider's most capable
-# generally available model (frontier slots) and two pinned open-weight releases from different labs. The model
-# and upstream provider OpenRouter reports are recorded per call in ai/raw/. Set frozen: true once Humza has
+# Humza's choice, D029). model_id is the OpenRouter model name. The list is Humza's of 2026-10-12 (D030): the fast,
+# low-cost tier of each provider, not the most capable model D028 item 5 called for. Slot names are kept for the
+# scorer; open_weight_2 holds a model without published weights. The model and upstream provider OpenRouter reports,
+# and its charge (usage: {include: true}), are recorded per call in ai/raw/. Set frozen: true once Humza has
 # approved the list and the budget; the runner refuses R0 runs before that.
 frozen: false
 defaults: &openrouter
@@ -10,13 +11,13 @@ defaults: &openrouter
   api_key_env: OPENROUTER_API_KEY
   base_url: https://openrouter.ai/api/v1
 slots:
-  - {slot: frontier_anthropic, provider: Anthropic via OpenRouter, <<: *openrouter, model_id: null,
-     settings: {reasoning: {effort: high}}}
-  - {slot: frontier_openai, provider: OpenAI via OpenRouter, <<: *openrouter, model_id: null,
-     settings: {reasoning: {effort: high}}}
-  - {slot: frontier_google, provider: Google via OpenRouter, <<: *openrouter, model_id: null,
-     settings: {reasoning: {effort: high}}}
-  - {slot: open_weight_1, provider: open-weight via OpenRouter (pinned weights), <<: *openrouter, model_id: null,
-     settings: {reasoning: {effort: high}}}
-  - {slot: open_weight_2, provider: open-weight via OpenRouter (pinned weights), <<: *openrouter, model_id: null,
-     settings: {reasoning: {effort: high}}}
+  - {slot: frontier_anthropic, provider: Anthropic via OpenRouter, <<: *openrouter, model_id: anthropic/claude-haiku-5.5,
+     settings: {reasoning: {effort: high}, usage: {include: true}}}
+  - {slot: frontier_openai, provider: OpenAI via OpenRouter, <<: *openrouter, model_id: openai/gpt-6-luna,
+     settings: {reasoning: {effort: high}, usage: {include: true}}}
+  - {slot: frontier_google, provider: Google via OpenRouter, <<: *openrouter, model_id: google/gemini-2.5-flash-lite,
+     settings: {reasoning: {effort: high}, usage: {include: true}}}
+  - {slot: open_weight_1, provider: open-weight via OpenRouter (pinned weights), <<: *openrouter, model_id: deepseek/deepseek-v4-flash,
+     settings: {reasoning: {effort: high}, usage: {include: true}}}
+  - {slot: open_weight_2, provider: open-weight via OpenRouter (pinned weights), <<: *openrouter, model_id: qwen/qwen3.7-flash,
+     settings: {reasoning: {effort: high}, usage: {include: true}}}

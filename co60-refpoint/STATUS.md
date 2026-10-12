@@ -2,6 +2,23 @@
 
 Humza delegated every open choice on 2026-10-11: "pick your best recommended choices, continue and dont stop until you have the full study ready for me to review" (DECISIONS D028). Under that delegation M2 and M3 run back to back, without a gate stop between them. Two things stay with Humza under Section 10: verifying `refs.yaml`, and approving paid API spend. M4 also needs API keys and network access that this environment does not have.
 
+## M4. AI runs (2026-10-12). Blocked before the pilot: OpenRouter rejects the calls as unauthenticated.
+
+- **Models set (D030).** Humza's five OpenRouter models are in `ai/models.yaml`, with OpenRouter's listed prices in
+  `ai/prices.yaml`. They are the fast, low-cost tier of each provider. Each request sets `usage: {include: true}` so
+  every response carries its charge.
+- **Budget rule (Humza).** Run P0, report the measured cost, then run R0 only if it fits under $10. The pre-pilot
+  estimate is $2.03 for P0 (65 conversations) and $4.25 for R0 (125), with the M3 token assumptions.
+- **Measured cost.** `ai/harness/cost.py` sums OpenRouter's charge per response and projects the pilot's mean
+  charge per slot, condition and task to R0. Tested end to end on a mock run.
+- **Blocker.** `openrouter.ai` is reachable: the public models endpoint answers. Chat completions return HTTP 401
+  "No cookie auth credentials found" with or without an authorization header. The session's OpenRouter credential
+  is therefore not reaching the API, and no paid call has been made. No `.secrets` file exists in this container.
+- **Environment.** The container had no study venv. `/opt/venv` is rebuilt from `env/requirements.txt`. Geant4 and
+  EGSnrc are absent, so `test_a2_sandbox_sees_data_and_not_the_repository` fails on `os.listdir('/opt/geant4')`. The
+  path does not exist here, which hides it more completely than the empty mount the test expects. The other 19
+  harness, prompt and scoring tests pass.
+
 ## M2. Monte Carlo validation (2026-10-11). Running.
 
 ### Progress
