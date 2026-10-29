@@ -1,6 +1,6 @@
 # Status
 
-Humza delegated every open choice on 2026-10-11: "pick your best recommended choices, continue and dont stop until you have the full study ready for me to review" (DECISIONS D028). Under that delegation M2 and M3 run back to back, without a gate stop between them. Two things stay with Humza under Section 10: verifying `refs.yaml`, and approving paid API spend. M4 also needs API keys and network access that this environment does not have.
+Humza delegated every open choice on 2026-10-11: "pick your best recommended choices, continue and dont stop until you have the full study ready for me to review" (DECISIONS D028). Under that delegation M2 and M3 run back to back, without a gate stop between them. Two things stay with Humza under Section 10: verifying `refs.yaml`, and approving paid API spend. M4 ran on 2026-10-12 through one OpenRouter key (D029, D030); everything since has cost nothing.
 
 ## M4. AI runs (2026-10-12). R0 complete and scored.
 
@@ -29,7 +29,7 @@ Humza delegated every open choice on 2026-10-11: "pick your best recommended cho
   - the parser fallback on malformed fenced JSON was fixed after R0. Re-scoring with the fix gives identical
     results.
 - **Environment.** `/opt/venv` is rebuilt from `env/requirements.txt`. `test_a2_sandbox_sees_data_and_not_the_repository`
-  fails here only because `/opt/geant4` does not exist in this container. The other 19 AI and scoring tests pass.
+  failed in the M4 container only because `/opt/geant4` did not exist there; it no longer assumes the path exists.
 
 - **Code audit (D036, exploratory).** All 50 A1/A2 observables conversations were traced to their code.
   - The photon field decides the answer. The 17 answers built on a simulation the model wrote have median errors of
@@ -43,9 +43,51 @@ Humza delegated every open choice on 2026-10-11: "pick your best recommended cho
     not in the code.
   - The sandbox exposed `g++` and `clang`; GPT-6 Luna compiled C++ in three R0 conversations.
 
+### After the runs (2026-10-29)
+
+Done without any API call; nothing was spent.
+
+- **Merge.** The M4 branch is merged into the M2-final branch.
+  - Re-scoring M4-R0 against the final reference gives identical verdicts.
+  - The two floors added after the M4 branch forked (β and PDD(5)) change no verdict.
+- **Compilers removed from the sandbox (D037).**
+  - Hidden: the GCC and LLVM back ends, the assembler and linkers, Go, Java, Node and the browsers. A test checks
+    that every compiler fails and that scipy runs.
+  - The three compiled conversations are found from the code the model ran. Without them, no breakpoint changes.
+  - GPT-6 Luna A2's median dose error goes from −10.6% to −13.2% without them. Its best dose answer (A2 r2, +0.1%)
+    and its only answered events call are both compiled ones.
+- **Revised shape criterion (D038, exploratory for M4-R0).** A distribution passes when W1 is within 5% of the
+  Monte Carlo mean energy, or within 0.1 in cos θ. JSD is reported only.
+  - The controls behave as under the pre-set criterion:
+    - Livermore and Penelope show no breakpoint (Penelope's one unresolved shape now passes);
+    - the +5% dose control breaks at Layer 5;
+    - the uniform answer breaks at Layer 1.
+  - Haiku A1 and A2 break at Layer 2.
+    - Layer 2 fails on the photoelectric share of interactions, 0.7% against 2.4%.
+    - Layer 4 fails on the electron angular distribution.
+    - Every Layer 1 and Layer 3 quantity and D/Φ₀ pass.
+  - Every other model and condition stays at Layer 1, mostly on the scattered-photon spectrum.
+  - By photon field (D036), the median W1 of the scattered spectrum is 5 keV for simulated answers and 218 keV for
+    assumed ones. The tolerance is 24 keV.
+- **H3 caveat (D040).** The PDD(5) reference is for model A, which has no head scatter. A measured table can differ
+  from it by an amount not known until a published PDD(5) is in refs.yaml, so H3 is exploratory until then.
+  - A0 answers against the reference: GPT-6 Luna −1.6%, Haiku −2.8%, DeepSeek +5.2%, Qwen −17%, Gemini −33%.
+- **What failed or was anomalous.**
+  - **The pre-set shape criterion cannot be met by an answer that is not itself a Monte Carlo** of the reference's
+    precision (D028 item 4).
+    - This is a design error, found only after the data.
+    - D038 is the fix for later runs. M4-R0 keeps the pre-set criterion as its primary analysis.
+  - **The first compiler regex missed `'g++'` inside a Python list,** because `\b` finds no word boundary after `+`.
+    - It was fixed before any result was written.
+    - Detection now matches D036's audit exactly: three R0 conversations and one pilot conversation.
+
 ### Next
-- Humza's review of the results page and D030 to D036.
-- Optional: a frontier-tier run (D028 item 5) for comparison; the same harness and budget machinery apply.
+- Humza's review of the results page and D030 to D040.
+- Paid options, each only with Humza's approval (Section 10.5):
+  - rerun the three compiled conversations without compilers, about $0.10;
+  - a second configuration with no tabulated answer to recall (R1), about $8 for the AI side; its Monte Carlo is
+    free;
+  - a higher tier of the same providers, about $65; the top tier about $160 to $240.
 
 ## M2. Monte Carlo validation (2026-10-11 to 12). Complete.
 
@@ -77,7 +119,7 @@ The Monte Carlo reference for the AI comparison is final. It is option4 at msc r
 
 ### Gate (M2, STUDY_PLAN Section 9)
 
-The plan's M2 gate is: Humza verifies every reference value in `refs.yaml` and accepts the Monte Carlo as the reference. The verification is his (Section 10.1), so it stays open. Under D028 I treat the Monte Carlo as accepted for building and testing M3/M5. No AI result depends on it until M4 runs.
+The plan's M2 gate is: Humza verifies every reference value in `refs.yaml` and accepts the Monte Carlo as the reference. The verification is his (Section 10.1), so it stays open. Under D028 I treated the Monte Carlo as accepted for building and testing M3/M5, and M4-R0 is now scored against it.
 
 ### Progress
 - **Fano step-size diagnostics: done.** Range factor 0.04 gives 1.00001 ± 0.00088 and step function 0.05 / 1 µm gives 0.99921 ± 0.00073, against 1.00157 ± 0.00058 at production stepping. M2 runs at range factor 0.04 (D026, D028). The batch-0 physics printout of every M2 run is checked for `Rfact=0.04`.

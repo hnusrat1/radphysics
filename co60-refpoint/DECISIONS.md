@@ -527,6 +527,11 @@ within 3 × the Monte Carlo's half-sample distances. Those distances measure the
   - initial electron spectrum 0.020 MeV (0.030 MeV for electrons set in motion by primary photons);
   - electron fluence spectrum 0.022 MeV;
   - all angular distributions 0.1.
+- **Controls** (`controls_revised` in `M5_controls.json`) behave as under the pre-specified criterion:
+  - both other Geant4 lists show no breakpoint;
+  - the +5% dose control breaks at Layer 5;
+  - the uniform answer breaks at Layer 1;
+  - the identity control passes everything.
 - **Status.** The criterion was chosen after seeing the M4-R0 results.
   - For M4-R0 it is exploratory and is reported beside the pre-specified criterion, which remains the primary
     analysis.
