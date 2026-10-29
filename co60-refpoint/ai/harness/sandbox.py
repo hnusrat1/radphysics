@@ -10,8 +10,13 @@ and with fixed limits: 4 cores (taskset), CPU time and wall time per call, addre
 empty environment (no keys, no proxy settings). The working directory persists across the calls of one
 conversation so the model can keep files; for A2 it holds read-only copies of the data tables.
 
+A1 and A2 are Python conditions, so the container's compilers and other language runtimes are hidden too
+(DECISIONS D037): the GCC and LLVM back ends, the assembler and linkers, Go, Java, Node and the browsers.
+The shell and its utilities stay.
+
 Requires root (unshare -m). The Python is the study venv (numpy, scipy); nothing else is installed for it.
 """
+import glob
 import os
 import shutil
 import subprocess
@@ -22,8 +27,31 @@ from pathlib import Path
 PYTHON = os.environ.get("SANDBOX_PYTHON", "/opt/venv/bin/python")
 HIDDEN = ["/home", "/root", "/opt/EGSnrc", "/opt/geant4", "/opt/build", "/opt/src", "/opt/queue",
           "/opt/claude-code", "/opt/env-runner", "/tmp"]
+TOOLCHAIN_DIRS = ["/usr/lib/gcc", "/usr/libexec/gcc", "/usr/lib/gcc-cross", "/usr/lib/llvm-*", "/usr/local/go*",
+                  "/usr/lib/jvm", "/opt/node*", "/opt/pw-browsers"]
+TOOLCHAIN_TOOLS = ["as", "ld", "ld.bfd", "ld.gold", "tcc", "nasm", "yasm"]   # files in /usr/bin, covered by /dev/null
 LIMITS = {"cores": 4, "cpu_s": 4 * 600, "wall_s": 600, "address_space_bytes": 16 * 2**30,
           "file_size_bytes": 512 * 2**20, "output_chars": 20000}
+
+
+def hidden_dirs():
+    """Existing directories to cover with an empty tmpfs (symlinks are skipped; their targets match a pattern)."""
+    out = []
+    for pat in HIDDEN + TOOLCHAIN_DIRS:
+        out += [d for d in sorted(glob.glob(pat)) if os.path.isdir(d) and not os.path.islink(d)]
+    return out
+
+
+def hidden_files(dirs):
+    """The real files of the assembler and linkers that live outside the hidden directories."""
+    out = set()
+    for t in TOOLCHAIN_TOOLS:
+        p = shutil.which(t, path="/usr/local/bin:/usr/bin:/bin")
+        if p:
+            r = os.path.realpath(p)
+            if os.path.isfile(r) and not any(r.startswith(d + "/") for d in dirs):
+                out.add(r)
+    return sorted(out)
 
 
 class Sandbox:
@@ -48,7 +76,9 @@ class Sandbox:
         self.calls += 1
         script = self.work / f"_call_{self.calls:03d}.py"
         script.write_text(code)
-        mounts = " && ".join(f"mount -t tmpfs -o size=64m none {d}" for d in HIDDEN if Path(d).exists())
+        dirs = hidden_dirs()
+        mounts = " && ".join([f"mount -t tmpfs -o size=64m none {d}" for d in dirs] +
+                             [f"mount --bind /dev/null {f}" for f in hidden_files(dirs)])
         # Bind this conversation's directory onto /tmp first, then hide /var/tmp (other conversations).
         inner = (f"mount --bind {self.dir} /var/lib/co60-sandbox-mnt && {mounts} && "
                  f"mount --bind /var/lib/co60-sandbox-mnt /tmp && umount /var/lib/co60-sandbox-mnt && "

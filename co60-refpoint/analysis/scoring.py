@@ -87,6 +87,33 @@ def distribution_verdict(ai, mc, edges, half_w1, half_jsd, floor_w1=0.0, floor_j
             "floor_w1": floor_w1, "floor_jsd": floor_jsd, "ai_norm": p.tolist(), "mc_norm": q.tolist()}
 
 
+# Revised shape criterion (DECISIONS D038). Chosen after M4-R0 was scored, so it is exploratory for M4-R0 and
+# pre-registered for any later run; the half-sample criterion above stays the pre-specified one.
+DIST_W1_REL_MEAN = 0.05  # energy distributions: W1 <= 5% of the Monte Carlo mean energy (the scalar tolerance)
+DIST_W1_COS = 0.1        # angular distributions: W1 <= 0.1 in cos(theta), 5% of its range
+
+
+def w1_tolerance(grid, mc, edges):
+    """The D038 W1 tolerance for one Monte Carlo distribution, in the units of its grid."""
+    if grid == "cos_theta":
+        return DIST_W1_COS
+    c = 0.5 * (np.asarray(edges[:-1]) + np.asarray(edges[1:]))
+    return DIST_W1_REL_MEAN * float(np.sum(normalize(mc) * c))
+
+
+def distribution_verdict_w1(ai, mc, edges, tol_w1, floor_w1=0.0):
+    """D038 shape comparison: W1 against a physical tolerance; JSD is reported but does not enter the verdict."""
+    n = len(edges) - 1
+    if ai is None or len(ai) != n or not all(finite(x) for x in ai):
+        return {"verdict": "missing"}
+    p, q = normalize(ai), normalize(mc)
+    if p is None:
+        return {"verdict": "missing"}
+    w = wasserstein1(p, q, edges)
+    v = "pass" if w <= tol_w1 else "unresolved" if w <= floor_w1 else "fail"
+    return {"verdict": v, "w1": w, "jsd": jsd(p, q), "tolerance_w1": tol_w1, "floor_w1": floor_w1}
+
+
 def fractions_verdict(ai, mc, categories, floors=None):
     """Per-category scalar verdicts (tolerance class 'scalar'); the quantity passes when every category passes."""
     if not isinstance(ai, dict):

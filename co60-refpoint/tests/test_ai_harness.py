@@ -73,7 +73,31 @@ def test_a2_sandbox_sees_data_and_not_the_repository(tmp_path):
     sb = Sandbox(a2_files())
     try:
         r = sb.run("import os\nprint(sorted(os.listdir('/tmp/data')))\nprint(os.path.exists('/home/user/radphysics'))"
-                   "\nprint(os.listdir('/opt/geant4'))")
+                   "\nprint(os.listdir('/opt/geant4') if os.path.exists('/opt/geant4') else [])")
         assert r["stdout"].split("\n")[:3] == ["['estar_water.txt', 'xcom_water.txt']", "False", "[]"]
+    finally:
+        sb.close()
+
+
+@needs_root
+def test_sandbox_runs_python_but_no_compiler():
+    """A1/A2 are Python conditions (D037): no C, C++ or Fortran build, no assembler or linker, no other runtime."""
+    from ai.harness.sandbox import Sandbox
+    sb = Sandbox()
+    try:
+        r = sb.run(
+            "import os, subprocess, numpy, scipy.special\n"
+            "open('t.c', 'w').write('int main(void){return 0;}')\n"
+            "built = []\n"
+            "for cmd in (['gcc', 't.c'], ['g++', '-x', 'c++', 't.c'], ['clang', 't.c'], ['gfortran', 't.c'],\n"
+            "            ['as', '--version'], ['ld', '--version'], ['node', '-v'], ['java', '-version'], ['go', 'version']):\n"
+            "    try:\n"
+            "        ok = subprocess.run(cmd, capture_output=True).returncode == 0\n"
+            "    except OSError:\n"
+            "        ok = False\n"
+            "    built += [cmd[0]] if ok else []\n"
+            "print(built, os.path.exists('a.out'), round(float(scipy.special.expi(1.0)), 6))")
+        assert r["exit_code"] == 0, r["stderr"]
+        assert r["stdout"].strip() == "[] False 1.895118"
     finally:
         sb.close()

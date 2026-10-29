@@ -135,7 +135,7 @@ def layer_table(models):
             s = models.get(slot, {}).get(c)
             if not s:
                 rows.append(f'<tr><th scope="row">{e(NAMES[slot])}</th><td>{c}</td>'
-                            f'<td colspan="6" class="muted">no valid answer</td></tr>')
+                            f'<td colspan="7" class="muted">no valid answer</td></tr>')
                 continue
             cells = []
             for L in range(1, 6):
@@ -144,11 +144,13 @@ def layer_table(models):
                 share = p / n if n else 0
                 cells.append(f'<td class="heat" style="--h:{share:.2f}" title="Layer {L}: {p} of {n} pass">'
                              f'<span class="n">{p}/{n}</span></td>')
+            bp = s.get("breakpoint_layer")
             rows.append(f'<tr><th scope="row">{e(NAMES[slot])}</th><td>{c}</td><td class="n">{s["n"]}</td>'
-                        + "".join(cells) + "</tr>")
-    head = "".join(f'<th scope="col"><span class="L">L{L}</span> {e(LAYERS[L])}</th>' for L in range(1, 6))
+                        + "".join(cells) + f'<td class="n">{"L" + str(bp) if bp else "none"}</td></tr>')
+    head = "".join(f'<th scope="col" class="lay"><span class="L">L{L}</span> {e(LAYERS[L])}</th>' for L in range(1, 6))
     return (f'<table class="layers"><thead><tr><th scope="col">Model</th><th scope="col">Cond.</th>'
-            f'<th scope="col">n</th>{head}</tr></thead><tbody>{"".join(rows)}</tbody></table>')
+            f'<th scope="col">n</th>{head}<th scope="col">Breaks at</th></tr></thead>'
+            f'<tbody>{"".join(rows)}</tbody></table>')
 
 
 def l5_table(models, ref):
@@ -215,6 +217,30 @@ def events_table(events, counts, mc_ctl):
             '<th scope="col">Events</th><th scope="col">Calls (of 5)</th><th scope="col">Invalid, bound rule</th>'
             '<th scope="col">Energy distance</th><th scope="col">MC 95th pct</th><th scope="col">Compton share</th>'
             f'</tr></thead><tbody>{"".join(rows)}</tbody></table>')
+
+
+def sensitivity_table(r):
+    """The model-condition cells that hold a conversation whose code called a compiler, with and without it (D037)."""
+    sens, rows = r["sensitivity_no_compiler"], []
+    for slot, conds in sens["models"].items():
+        for c, without in conds.items():
+            for label, crit in (("pre-set", "models"), ("revised", "models_revised")):
+                full, wo = r[crit][slot][c], sens[crit][slot][c]
+                d, dw = (x["observables"]["L5_D_over_phi0_Gy_cm2"] for x in (full, wo))
+                rows.append(f'<tr><th scope="row">{e(NAMES[slot])}</th><td>{c} observables</td><td>{label}</td>'
+                            f'<td class="n">{full["n"]} → {wo["n"]}</td>'
+                            f'<td class="n">{pct(d["rel_diff_median"])} → {pct(dw["rel_diff_median"])}</td>'
+                            f'<td class="n">L{full["breakpoint_layer"]} → L{wo["breakpoint_layer"]}</td></tr>')
+    for slot, conds in sens["events"].items():
+        for c, without in conds.items():
+            ev = r["events"].get(slot, {}).get(c, {})
+            after = f'{without["n_events"]} events' if without else "no events left"
+            rows.append(f'<tr><th scope="row">{e(NAMES[slot])}</th><td>{c} events</td><td>–</td>'
+                        f'<td class="n">{ev.get("n_events", 0)} events → {after}</td><td colspan="2" class="muted">'
+                        f'its only answered call is a compiled one</td></tr>')
+    return ('<table class="sens"><thead><tr><th scope="col">Model</th><th scope="col">Cell</th>'
+            '<th scope="col">Shape criterion</th><th scope="col">Answers</th><th scope="col">D/Φ₀ median</th>'
+            f'<th scope="col">Breaks at</th></tr></thead><tbody>{"".join(rows)}</tbody></table>')
 
 
 def outcome_table(counts, costs):
@@ -427,7 +453,8 @@ td { white-space: nowrap; }
 .chip.unresolved { background: var(--amber-soft); color: var(--amber); }
 .chip.missing { background: var(--cobalt-soft); color: var(--muted); }
 .layers .L { font-family: var(--f-mono); color: var(--cobalt); margin-right: 4px; }
-.layers thead th { white-space: normal; min-width: 92px; }
+.layers thead th { white-space: normal; }
+.layers thead th.lay { min-width: 84px; }
 .heat { background: color-mix(in srgb, var(--cobalt) calc(var(--h) * 55%), var(--surface)); text-align: center; }
 .costs { display: flex; flex-wrap: wrap; gap: 12px 40px; font-family: var(--f-ui); }
 .costs div { display: grid; gap: 2px; }
@@ -474,6 +501,14 @@ def build():
     ref = json.load(open(RES / "reference_R0.json"))
     ctl = json.load(open(RES / "M5_controls.json"))["event_controls"]["positive_mc_resample"]
     models, counts, events = r["models"], r["counts"], r["events"]
+    revised, tol = r["models_revised"], r["distribution_w1_tolerance_D038"]
+    rev_breaks = {(s, c): v.get("breakpoint_layer") for s, conds in revised.items() for c, v in conds.items()}
+    moved = {}
+    for (s, c), b in sorted(rev_breaks.items(), key=lambda x: (ORDER.index(x[0][0]), x[0][1])):
+        if b != models[s][c].get("breakpoint_layer"):
+            moved.setdefault(NAMES[s], []).append((c, b))
+    moved_text = " and ".join(f"{n} with tools ({', '.join(c for c, _ in cs)})" for n, cs in moved.items())
+    moved_layers = sorted({b for cs in moved.values() for _, b in cs})
     costs = conv_costs(TAG)
     r0_total, void = spent(ROOT / "ai" / "raw" / TAG), spent(ROOT / "ai" / "raw" / f"{TAG}-void")
     p0_total = sum(spent(ROOT / "ai" / "raw" / t) for t in ("P0-pilot", "P0-pilot-cache", "P0-pilot-killed"))
@@ -513,7 +548,7 @@ def build():
   <h1>Five fast models at the Co-60 reference point</h1>
   <div class="meta"><span>R0: central axis, 5 cm depth, water, 10 × 10 cm², SSD 100 cm</span>
     <span>{n_conv} conversations</span><span>5 models × 3 conditions</span><span>run 2026-10-12</span>
-    <span>branch m4-ai-runs</span></div>
+    <span>re-scored 2026-10-29</span></div>
   <p class="lede">Each model was asked for 33 quantities that follow the energy from the incident photon to the
   absorbed dose, five times per condition, and for 1,000 sampled photon interactions. Answers are scored against the
   study's Monte Carlo reference (Geant4 option4, boundary-free dose; D/Φ₀ = {ref_d["mc"]:.4e} Gy cm²).</p>
@@ -544,8 +579,16 @@ def build():
       declined the other 9 event calls, saying it cannot sample without a transport code.</li>
     <li><b>Every model breaks at Layer {", ".join(str(b) for b in sorted(x for x in breaks if x)) or "–"} under the
       pre-set criterion.</b> Shapes must match within three times the Monte Carlo's own half-sample distance (0.7 keV
-      in W1 for the scattered spectrum). A simulated answer misses by about 5 keV and an assumed one by about 220 keV,
-      and both count as a failure.</li>
+      in W1 for the scattered spectrum). A simulated answer misses by about
+      {sim["median_w1"]["L1_photon_fluence_spectrum_scattered"] * 1000:.0f} keV and an assumed one by about
+      {asm["median_w1"]["L1_photon_fluence_spectrum_scattered"] * 1000:.0f} keV, and both count as a failure.</li>
+    <li><b>With physical shape tolerances, the tool answers separate.</b> Under a revised criterion chosen after these
+      runs (D038, exploratory here): W1 within 5% of the Monte Carlo mean energy
+      ({tol["L1_photon_fluence_spectrum_scattered"] * 1000:.0f} keV for the scattered spectrum), or 0.1 in cos θ.
+      {e(moved_text) or "No model"} then break{"s" if len(moved) == 1 else ""} at Layer
+      {", ".join(str(b) for b in moved_layers)}, on the photoelectric share of interactions, with every Layer 1 and
+      Layer 3 shape passing and D/Φ₀ within 2%. Every other model and condition still breaks at Layer 1, mostly on the
+      scattered-photon spectrum.</li>
   </ul>
 </section>
 
@@ -594,7 +637,8 @@ def build():
     <li>Unit and normalization errors explain the largest misses: a 1.602e-13 for 1.602e-10 in Qwen's electron
       fluence (×1,000), MeV/g to Gy conversions off by 10³ in its dose.</li>
     <li>GPT-6 Luna compiled C++ with the system compiler in three R0 conversations. The sandbox was meant to be Python
-      only; isolation held (D036).</li>
+      only; isolation held (D036). The compilers are now removed for later runs (D037), and the results below are
+      shown with and without these conversations.</li>
   </ul>
 </section>
 
@@ -621,7 +665,22 @@ def build():
   <div class="panel scroll">{layer_table(models)}</div>
   <p class="caption">Scalars pass within max(5%, 0.005 absolute) in Layers 1–4 and 2% for Layer 5 dose quantities.
   Distributions pass when W1 and JSD are within 3 × the Monte Carlo half-sample distance. A failure inside the
-  spread of the three Geant4 physics lists counts as unresolved (D028 item 4).</p>
+  spread of the three Geant4 physics lists counts as unresolved (D028 item 4). The breakpoint is the first layer with
+  a resolved failure.</p>
+  <h3>The same answers under the revised shape criterion (D038, exploratory)</h3>
+  <p>Scalars as above. A distribution passes when W1 is within 5% of the Monte Carlo mean energy for energy spectra
+  and within 0.1 for cos θ distributions; JSD is reported but not judged. The criterion was chosen after these
+  results, so it is shown beside the pre-set one and does not replace it. For later runs it is pre-registered.</p>
+  <div class="panel scroll">{layer_table(revised)}</div>
+</section>
+
+<section aria-labelledby="h-cc">
+  <h2 id="h-cc">Without the compiled conversations</h2>
+  <p>GPT-6 Luna compiled C++ in three R0 conversations: A1 events r3, A2 observables r2 and r5 (D036). Each affected
+  cell, scored with and without them (D037).</p>
+  <div class="panel scroll">{sensitivity_table(r)}</div>
+  <p class="caption">No breakpoint changes. GPT-6 Luna's best dose answer, A2 r2 (+0.1%), is one of the compiled runs, and
+  so is its only answered events call, which matched the Monte Carlo distribution.</p>
 </section>
 
 <section aria-labelledby="h-hyp">
@@ -630,6 +689,10 @@ def build():
   and the two H3 quantities. H1 and H2 hold where the H1 column is smaller than H2; H3 holds where the PDD(5) error
   is smaller than the D/Φ₀ error.</p>
   <div class="panel scroll">{hyp_table(models)}</div>
+  <p class="caption">H3 compares a recalled value with an idealized source. The reference PDD(5) is for the
+  point source in the prompt, with no head scatter. A measured table includes softer head-scattered photons and gives
+  a lower PDD at depth. A correctly recalled table value can therefore differ from the reference; the size of that
+  difference waits on a verified published PDD(5) in refs.yaml (D040). H3 is exploratory until then.</p>
 </section>
 
 <section aria-labelledby="h-ev">
@@ -667,8 +730,9 @@ def build():
       D035).</li>
     <li>A malformed fenced JSON block gets a misleading retry message in this harness version (D034). It affects
       which answers are readable, not how readable answers score.</li>
-    <li>The Monte Carlo reference is final (M2, not provisional). Raw conversations are in <code>ai/raw/M4-R0/</code>;
-      scores in <code>analysis/results/M5_M4-R0.json</code>.</li>
+    <li>The Monte Carlo reference is final (M2, not provisional). Re-scoring against it after the merge with the M2
+      branch gave identical verdicts. Raw conversations are in <code>ai/raw/M4-R0/</code>; scores in
+      <code>analysis/results/M5_M4-R0.json</code>.</li>
   </ul>
   <p class="meta">{ids}</p>
 </section>

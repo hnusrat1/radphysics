@@ -471,3 +471,71 @@ physics checklist (`analysis/m4_audit_spec.md`).
   either remove the compilers from the sandbox or state that they are available.
 - **Status.** This analysis was added after seeing the data. It is reported as exploratory and does not change
   any verdict in `M5_M4-R0.json`.
+
+## D037. Compilers removed from the A1 and A2 sandbox (2026-10-29)
+
+D036 found that the sandbox exposed the container's compilers. GPT-6 Luna compiled and ran C++ in three R0
+conversations (`frontier_openai/R0_A1_events_r3`, `R0_A2_observables_r2`, `R0_A2_observables_r5`) and in one
+pilot conversation (`P0_A1_events_r5`). STUDY_PLAN Section 5.2 defines A1 and A2 as Python conditions, so a
+compiled simulation falls outside the condition.
+
+- **Change, for every run after M4-R0.** `ai/harness/sandbox.py` now also hides:
+  - the GCC and LLVM back ends (`/usr/lib/gcc`, `/usr/libexec/gcc`, `/usr/lib/llvm-*`);
+  - the assembler and linkers (`as`, `ld.bfd`, `ld.gold`, `nasm`), each covered by `/dev/null`;
+  - Go, Java, Node and the Playwright browsers.
+
+  The compiler drivers stay on disk but cannot build anything. The shell, its utilities, and the venv Python with
+  numpy, scipy and multiprocessing are unchanged.
+- **Test.** `tests/test_ai_harness.py::test_sandbox_runs_python_but_no_compiler` checks the sandbox:
+  - `gcc`, `g++`, `clang`, `gfortran`, `as`, `ld`, `node`, `java` and `go` all fail inside it;
+  - scipy runs.
+- **M4-R0.** The three conversations stay in the data as run (Section 10.4).
+  - `analysis/m5.py` finds them from the code each model ran (`compiled_conversations`). It reports every affected
+    model–condition cell with and without them (`sensitivity_no_compiler` in `M5_M4-R0.json`).
+  - **No breakpoint changes,** under either shape criterion (D038).
+  - **GPT-6 Luna A2.** The median D/Φ₀ error moves from −10.6% to −13.2%. Its best answer (r2: dose +0.1%,
+    scattered fraction −0.7%) came from compiled C++.
+  - **GPT-6 Luna events.** Its only answered events call, A1 r3, is a C++ conversation. Without it, GPT-6 Luna
+    has no scored events answer.
+- **Not rerun.** Rerunning the three conversations under the new sandbox would cost about $0.10; their measured
+  charge was $0.08. That needs Humza's approval (Section 10.5). A rerun is a new sample, so it would be reported
+  beside the original, not replace it.
+
+## D038. A second shape criterion with physical tolerances (2026-10-29; exploratory for M4-R0)
+
+The pre-specified shape criterion (D028 item 4) passes a distribution when its W1 and JSD to the Monte Carlo are
+within 3 × the Monte Carlo's half-sample distances. Those distances measure the reference's own statistical noise,
+10⁻⁴ to 10⁻³ in W1 (MeV or cos θ).
+- An answer passes only if it is statistically indistinguishable from a 10⁸-history reference, so an answer
+  must itself be a Monte Carlo of that precision.
+- Every model and condition broke at Layer 1, including answers whose spectra match the reference within a few
+  percent.
+- The criterion therefore measures the reference's precision, not whether an answer is physically right. That is
+  a design error in D028 item 4, and it was found only after M4 was scored.
+
+- **Revised criterion.** A distribution passes when its W1 to the Monte Carlo is within a tolerance on the scale of
+  the scalar tolerances:
+  - **Energy spectra:** W1 ≤ 5% of the Monte Carlo mean energy of that distribution. For a pure shift, W1 equals
+    the shift of the mean, so this is the 5% scalar tolerance applied to the spectrum.
+  - **cos θ distributions:** W1 ≤ 0.1, which is 5% of the range of cos θ.
+
+  The resolution floors (the largest W1 between option4 and the other Geant4 lists, all below 0.0014) stay.
+  JSD is reported but does not enter the verdict: on fine bins it penalizes noise in a model's histogram and has
+  no physical unit.
+- **Tolerances at R0** (`distribution_w1_tolerance_D038` in `M5_M4-R0.json`):
+  - primary photon spectrum 0.063 MeV; scattered photon spectrum 0.024 MeV;
+  - initial electron spectrum 0.020 MeV (0.030 MeV for electrons set in motion by primary photons);
+  - electron fluence spectrum 0.022 MeV;
+  - all angular distributions 0.1.
+- **Status.** The criterion was chosen after seeing the M4-R0 results.
+  - For M4-R0 it is exploratory and is reported beside the pre-specified criterion, which remains the primary
+    analysis.
+  - For any later run it is the pre-registered primary shape criterion, with the constants fixed in this entry
+    and in `analysis/scoring.py`.
+- **Effect on M4-R0** (`models_revised`):
+  - **Haiku A1 and A2** break at Layer 2 instead of Layer 1, and every Layer 1 and Layer 3 distribution passes.
+    What fails is the photoelectric share of interactions (0.7% against 2.4%) and, in Layer 4, the electron
+    angular distribution (W1 0.22 and 0.24). D/Φ₀ passes.
+  - **Every other model and condition** still breaks at Layer 1, mostly on the scattered-photon spectrum:
+    - DeepSeek A1 and A2: W1 0.032 and 0.034 MeV, against 0.024;
+    - GPT-6 Luna, Qwen and Gemini are further off.

@@ -8,6 +8,9 @@ Per conversation: a verdict per quantity (pass / fail / unresolved / missing; an
 Per model and condition: the median and range over the k repeats of each scalar's relative difference and of
 each distribution's W1 and JSD; the verdict of the median answer; the breakpoint layer (first layer with a
 resolved failure); H1/H2 (primary-photon against transport quantities) and H3 (PDD(5) against D/Phi0).
+Distributions are judged twice: by the pre-specified half-sample criterion (`models`) and by the D038 physical W1
+tolerance (`models_revised`, exploratory for M4-R0). `sensitivity_no_compiler` repeats both without the
+conversations whose code called a compiler (D037).
 Sampled events: weighted KS per feature and energy distance against the Monte Carlo event sample, and the
 fraction of physically invalid events under the strict and bound rules (DECISIONS D014), with the Monte Carlo's
 own rate alongside. Counts of refusals, parse failures, API errors and tool calls.
@@ -19,6 +22,7 @@ Controls, scored like a model (they validate the scorer before any AI answer exi
 """
 import argparse
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -34,7 +38,8 @@ OBS = {o["id"]: o for o in yaml.safe_load(open(ROOT / "ai" / "observables.yaml")
 BINS = yaml.safe_load(open(ROOT / "config" / "bins.yaml"))["comparison"]
 
 
-def score_answer(ans, ref):
+def score_answer(ans, ref, criterion="prespecified"):
+    """criterion: "prespecified" (half-sample thresholds, STUDY_PLAN Section 6) or "revised" (D038)."""
     out = {}
     for oid, r in ref["observables"].items():
         o = OBS[oid]
@@ -45,14 +50,18 @@ def score_answer(ans, ref):
             out[oid] = S.fractions_verdict(a, r["mc"], o["categories"], r.get("floor_abs"))
         else:
             edges = BINS[o["grid"]]["edges"]
-            out[oid] = S.distribution_verdict(a, r["mc"], edges, r.get("half_w1", 0.0), r.get("half_jsd", 0.0),
-                                              r.get("floor_w1", 0.0), r.get("floor_jsd", 0.0))
+            if criterion == "revised":
+                out[oid] = S.distribution_verdict_w1(a, r["mc"], edges, S.w1_tolerance(o["grid"], r["mc"], edges),
+                                                     r.get("floor_w1", 0.0))
+            else:
+                out[oid] = S.distribution_verdict(a, r["mc"], edges, r.get("half_w1", 0.0), r.get("half_jsd", 0.0),
+                                                  r.get("floor_w1", 0.0), r.get("floor_jsd", 0.0))
     return out
 
 
-def summarize(answers, ref):
+def summarize(answers, ref, criterion="prespecified"):
     """answers: list of parsed answers (k repeats) for one model x condition."""
-    scored = [score_answer(a, ref) for a in answers]
+    scored = [score_answer(a, ref, criterion) for a in answers]
     summary = {"n": len(answers), "observables": {}}
     by_layer = {}
     for oid, r in ref["observables"].items():
@@ -205,23 +214,32 @@ def count_outcomes(tag, config="R0"):
     return counts
 
 
-def load_events_answers(tag, config="R0"):
+COMPILER = re.compile(r"(?<![\w+.-])(g\+\+|gcc|clang\+\+|clang|gfortran|cc1plus)(?![\w+-])")
+
+
+def compiled_conversations(tag, config="R0"):
+    """Conversations (slot/name) in which code the model ran called a compiler (D036, D037)."""
+    return sorted(f"{d.parent.name}/{d.name}" for d in (ROOT / "ai" / "raw" / tag).glob(f"*/{config}_*_r*")
+                  if any(COMPILER.search(f.read_text()) for f in (d / "tool_calls").glob("*.py")))
+
+
+def load_events_answers(tag, config="R0", exclude=()):
     base = ROOT / "ai" / "raw" / tag
     out = {}
     for d in sorted(base.glob(f"*/{config}_*_events_r*")):
-        if (d / "parsed.json").exists():
+        if (d / "parsed.json").exists() and f"{d.parent.name}/{d.name}" not in exclude:
             slot, cond = d.parent.name, d.name.split("_")[1]
             out.setdefault(slot, {}).setdefault(cond, []).extend(json.load(open(d / "parsed.json"))["events"])
     return out
 
 
-def load_answers(tag, config="R0"):
-    """{slot: {condition: [parsed answers]}} and outcome counts, from ai/raw/<tag>/."""
+def load_answers(tag, config="R0", exclude=()):
+    """{slot: {condition: [parsed answers]}} and outcome counts, from ai/raw/<tag>/; `exclude` lists slot/name."""
     base = ROOT / "ai" / "raw" / tag
     answers = {}
     for d in sorted(base.glob(f"*/{config}_*_observables_r*")):
         slot, cond = d.parent.name, d.name.split("_")[1]
-        if (d / "parsed.json").exists():
+        if (d / "parsed.json").exists() and f"{slot}/{d.name}" not in exclude:
             answers.setdefault(slot, {}).setdefault(cond, []).append(json.load(open(d / "parsed.json")))
     return answers, count_outcomes(tag, config)
 
@@ -302,10 +320,29 @@ def main():
         result["counts"] = counts
         result["models"] = {slot: {cond: summarize(v, ref) for cond, v in conds.items()}
                             for slot, conds in answers.items()}
+        result["models_revised"] = {slot: {cond: summarize(v, ref, "revised") for cond, v in conds.items()}
+                                    for slot, conds in answers.items()}
+        result["distribution_w1_tolerance_D038"] = {
+            oid: S.w1_tolerance(OBS[oid]["grid"], r["mc"], BINS[OBS[oid]["grid"]]["edges"])
+            for oid, r in ref["observables"].items() if OBS[oid]["kind"] in ("spectrum", "distribution")}
         mc = mc_event_view()
         dc = ref.get("events", {}).get("delta_c")
         result["events"] = {slot: {cond: score_events(ev, mc, dc) for cond, ev in conds.items()}
                             for slot, conds in load_events_answers(a.tag).items()} if mc is not None else {}
+        # Sensitivity (D037): the model-condition cells that contain a compiler conversation, rescored without it
+        cc = compiled_conversations(a.tag)
+        cells = {(n.split("/")[0], n.split("/")[1].split("_")[1], n.split("/")[1].split("_")[2]) for n in cc}
+        sub, _ = load_answers(a.tag, exclude=cc)
+        sens = {"excluded": cc, "models": {}, "models_revised": {}, "events": {}}
+        for slot, cond, task in sorted(cells):
+            if task == "observables":
+                v = sub.get(slot, {}).get(cond, [])
+                sens["models"].setdefault(slot, {})[cond] = summarize(v, ref) if v else None
+                sens["models_revised"].setdefault(slot, {})[cond] = summarize(v, ref, "revised") if v else None
+            elif mc is not None:
+                ev = load_events_answers(a.tag, exclude=cc).get(slot, {}).get(cond, [])
+                sens["events"].setdefault(slot, {})[cond] = score_events(ev, mc, dc) if ev else None
+        result["sensitivity_no_compiler"] = sens
         out = RES / f"M5_{a.tag}.json"
     json.dump(result, open(out, "w"), indent=1, default=float)
     print(f"wrote {out}")

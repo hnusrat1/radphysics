@@ -40,6 +40,21 @@ def test_distribution_verdict_normalizes_and_thresholds():
     assert S.distribution_verdict([1.0], [0.5, 0.5], edges, 0, 0)["verdict"] == "missing"
 
 
+def test_revised_shape_criterion_d038():
+    # A pure shift by one bin moves the mean by the bin width, and W1 equals that shift.
+    edges = np.linspace(0.0, 2.0, 201)                          # 10 keV bins
+    mc = np.zeros(200)
+    mc[99] = 1.0                                                 # all at 0.995 MeV
+    tol = S.w1_tolerance("photon_energy", mc, edges)
+    assert abs(tol - 0.05 * 0.995) < 1e-12
+    near, far = np.roll(mc, 4), np.roll(mc, 5)                   # shifted by 40 and 50 keV
+    assert S.distribution_verdict_w1(near, mc, edges, tol)["verdict"] == "pass"
+    assert S.distribution_verdict_w1(far, mc, edges, tol)["verdict"] == "fail"
+    assert S.distribution_verdict_w1(far, mc, edges, tol, floor_w1=0.06)["verdict"] == "unresolved"
+    assert S.w1_tolerance("cos_theta", mc, edges) == 0.1
+    assert S.distribution_verdict_w1([1.0], mc, edges, tol)["verdict"] == "missing"
+
+
 def test_breakpoint_is_first_resolved_failure():
     assert S.breakpoint({1: ["pass"], 2: ["unresolved"], 3: ["fail"], 5: ["fail"]})[0] == 3
     assert S.breakpoint({1: ["pass", "missing"], 5: ["pass"]})[0] is None
