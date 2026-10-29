@@ -1,0 +1,50 @@
+slot: frontier_google
+provider: Google via OpenRouter
+api: openai_compatible
+model_requested: google/gemini-2.5-flash-lite
+settings:
+  reasoning:
+    effort: high
+  usage:
+    include: true
+condition: A1
+task: observables
+config: R0
+prompt_version: v1
+prompt_sha256:
+  system_A1.txt: e06e9a5ea06c2f5ca29739818f324713f2dbbf775f019c11018d1aa7ef5416b8
+  task_observables_R0.txt: 57d3c391f7d6e1e76358e1b31939b48e00fb008344fd731011f63a2acf79e07e
+started_utc: '2026-10-12T17:00:37Z'
+turns:
+- n: 1
+  usage:
+    input_tokens: 4728
+    output_tokens: 12935
+    reasoning_tokens: 10879
+  stop: stop
+  wall_s: 41.92
+  http_attempts: 1
+  model_reported: google/gemini-2.5-flash-lite
+  tool_calls: 0
+- n: 2
+  usage:
+    input_tokens: 6885
+    output_tokens: 14338
+    reasoning_tokens: 12074
+  stop: stop
+  wall_s: 33.51
+  http_attempts: 1
+  model_reported: google/gemini-2.5-flash-lite
+  tool_calls: 0
+tool_calls: 0
+retries: 1
+outcome: ok
+model_reported: google/gemini-2.5-flash-lite
+first_parse_errors:
+- '$.L1_photon_fluence_spectrum_primary: 29 items, expected 28-28'
+- '$.L1_photon_fluence_spectrum_scattered: 29 items, expected 28-28'
+finished_utc: '2026-10-12T17:01:53Z'
+usage_total:
+  input_tokens: 11613
+  output_tokens: 27273
+  reasoning_tokens: 22953

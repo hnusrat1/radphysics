@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791824531-T5psulLoHknYrlQ0lHUo",
+ "object": "chat.completion",
+ "created": 1791824531,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Now let me test with 50000 primaries.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_827cf5e53c1549c180966a83",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"events = []\\nt0 = time.time()\\nrun_batch(50000, events)\\nt1 = time.time()\\nprint(f\\\"50000 primaries: {len(events)} events in {t1-t0:.1f}s\\\")\\nif events:\\n    cnt = Counter(e['process'] for e in events)\\n    print(cnt)\\n    print(events[0])\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Now let me test with 50000 primaries.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 65018,
+  "completion_tokens": 130,
+  "total_tokens": 65148,
+  "cost": 0.001762938408,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 57344,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001762938408,
+   "upstream_inference_prompt_cost": 0.001739314808,
+   "upstream_inference_completions_cost": 2.36236e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 11,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

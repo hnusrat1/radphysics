@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791824635-MDoFt6mvghzBH6KWErm1",
+ "object": "chat.completion",
+ "created": 1791824635,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I'm noticing the scatter fraction varies more than expected between seeds\u20140.363 versus 0.388 earlier\u2014suggesting seed-to-seed fluctuation around \u00b10.03, while the total fluence std stays small at about 1%. I'm checking whether K also shows similar variability across seeds.\n\nThe scatter-to-primary dose ratio checks out at roughly 0.23, matching the earlier estimate of 0.231 at 5 cm, so I want to dig into per-seed variation of these key fractions to see if the spread is reasonable or signals something off.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_019nPw2snN6EVhNfKF1BdXjU",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nfor key in ['L1_scattered_fraction_fluence','L1_scattered_fraction_energy_fluence','L5_dose_fraction_parent_scattered','L5_K_over_phi0_Gy_cm2','L5_s_w_air','L4_delta_fraction','L2_scattered_share_of_interactions','L4_electron_fluence_per_phi0']:\\n    v=np.array([o[key] for o in outs]); print(key, np.round(v,5), 'mean',v.mean().round(5),'sem',(v.std(ddof=1)/np.sqrt(len(v))).round(5))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I'm noticing the scatter fraction varies more than expected between seeds\u20140.363 versus 0.388 earlier\u2014suggesting seed-to-seed fluctuation around \u00b10.03, while the total fluence std stays small at about 1%. I'm checking whether K also shows similar variability across seeds.\n\nThe scatter-to-primary dose ratio checks out at roughly 0.23, matching the earlier estimate of 0.231 at 5 cm, so I want to dig into per-seed variation of these key fractions to see if the spread is reasonable or signals something off.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "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.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 139913,
+  "completion_tokens": 734,
+  "total_tokens": 140647,
+  "cost": 0.012468425,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 133586,
+   "cache_write_tokens": 6325,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.012468425,
+   "upstream_inference_prompt_cost": 0.010633425,
+   "upstream_inference_completions_cost": 0.001835
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 485,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791827152-G5Ei8IdtGEcLt2oAhVMZ",
+ "object": "chat.completion",
+ "created": 1791827152,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Since state doesn't persist between calls, I should write everything into a single script file instead.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_019VZ5aSVKy6gJga7uBKg2we",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\ncode = r'''\\nimport numpy as np\\nme=0.51099895; re=2.8179403e-13; NA=6.02214076e23\\nne=NA*10/18.015\\nnmol=NA/18.015\\nX0=0.4\\ndef sig_KN(E):\\n    a=E/me; t=np.log(1+2*a)\\n    return 2*np.pi*re**2*((1+a)/a**2*(2*(1+a)/(1+2*a)-t/a)+t/(2*a)-(1+3*a)/(1+2*a)**2)\\ndef sig_R(E,x0=None):\\n    x0 = X0 if x0 is None else x0\\n    th=np.linspace(0,np.pi,20001)\\n    lam=0.012398/E\\n    x=np.sin(th/2)/lam\\n    f=0.5*re**2*(1+np.cos(th)**2)*100*np.exp(-(x/x0)**2)*2*np.pi*np.sin(th)\\n    return np.trapezoid(f,th)\\ndef mu_c(E): return ne*sig_KN(E)\\ndef mu_R(E): return nmol*sig_R(E)\\ndef mu_pe(E): return 0.0025*(0.1/E)**3\\ndef mu_pair(E):\\n    E=np.asarray(E,float); return np.where(E>1.022,0.0215*np.clip(1-1.022/E,0,None)**2.5,0.0)\\ndef mu_tot(E): return mu_c(E)+mu_R(E)+mu_pe(E)+mu_pair(E)\\n'''\\nopen('phys.py','w').write(code)\\nimport subprocess\\ntest = r'''\\nimport phys\\nfrom phys import *\\nfor X in [0.4,0.5,0.8]:\\n    phys.X0=X\\n    print(X, [round(float(mu_R(E)),6) for E in [0.1,0.5,1.25]])\\n'''\\nopen('t.py','w').write(test)\\nprint(subprocess.run(['python','t.py'],capture_output=True,text=True).stdout)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Since state doesn't persist between calls, I should write everything into a single script file instead.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSzgYKEAgSGAI4AUIIdGhpbmtpbmcSDKWsMU25T7Cv3zPyrBoMa29XzexlylihESauIjDSyHEELhlBuh9yAV91pVBtc00+fxhJP49mk9CIxLc7I21eOgJEVLxcYolPZk3HzJEq6wXp5C/ywOcsqGiVCVOKdNEu1Ajom7Nn0/D96qrEDVOuU9GrszJojXZk4SR5tHGdkvNJbtQBndTIPKrww9T3po9Xcu/asiajgyPB8wdTeX/axO4VH5twccuwe/evaR4OBT6YXI7Odg46ecKeKzw2cDeu5AEY4eQLhffWTgSf+4cW/VWpes4I2kUKvA/gNrACdKkWBEZ8UFFSYlLBfW5Y+dgIA2bMix5VCPbFrjnB0uLfODnyP8RqU7E2yjc/OlqIIpKqvIduhNX3ZuOTnm45mZMpwletadpUUTk0vVPESnKmxX7Nd8rVYkwOWBpPHiXAsdH9KzdSy5HrZcNNfPEUgDRIOwNsKTY35XSL8bILGeWDIcZTq2jzTZ/EuBJBPcCVSlpmkhmoMf87KSvSpVdlTS50ZkFggZB2BM3SFf4nsey7mMHevaqTF5YAqcgh8HBg7OEdo5yygiMdqIyex1lLikz5zDPzhy4FUq0tMA92OBW8aKf74xDD6qxbEbn2vsgt3wAH/dQ+apUlNG/yxKkyu4EbB24ThGTVPzv3IVq13RID0mvBIWk3tS5trV4w/5WiSitUNk0+2kDsoBjNu59ypKHwlxjZE3Ls4405DZboOZLRwbvERAnnEJYy/xHZKRRbe5nHT7VuYaByxUwqJjWGHOpEmM/KzLyKoryYdY0SFvBqf9Z/Q7fYotg8TQDZUye/ntCKany/dXSiCKPrvNQeINQ80rk+ShNWhv3m27w/AE+Z79ZcHSE3pvoMLeeWFsjN+G9Ta7c6FwzniBdnoyR6XpfOqRpz2/WlHxuYbOu01j9JvtlPyUoLBUhnUqR3bL5pO/cABL4bap8moLHwISyNjIHbpN6hJCRxvYB1wNRgEFzv3ab7wZ4nDs8Qr05DSlMl3rWwdqmd1MqA+r1e6qviRPZ3tspyYtvB9BWG+1PzdCXndaUKelUjqvd/4G/hqhwQPxMVktE0b6F9xPsDMhYWgZDv6VJVLkUn4V2chaMYAQ==.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 57569,
+  "completion_tokens": 738,
+  "total_tokens": 58307,
+  "cost": 0.001134735,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 55916,
+   "cache_write_tokens": 1651,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001134735,
+   "upstream_inference_prompt_cost": 0.000765735,
+   "upstream_inference_completions_cost": 0.000369
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 33,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

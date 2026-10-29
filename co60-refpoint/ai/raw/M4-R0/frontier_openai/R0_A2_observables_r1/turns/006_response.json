@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791823614-tJHbsWvvscY3RYVeGmD4",
+ "object": "chat.completion",
+ "created": 1791823614,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Evaluating Python calls**\n\nI\u2019m considering whether I need a fresh Python call each time. It seems unnecessary. I want to focus on values that are above average within manually created arrays. I'll calculate the primary histogram from those average list values. Maybe I could provide a rounded, normalized result as part of that. It's time to run through these calculations!",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_APzg7W6SllUFs7Hu4JhMlPg4",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import numpy as np\\nedges=np.array([.01,.05,.1,.15,.2,.25,.3,.35,.4,.45,.5,.55,.6,.65,.7,.75,.8,.85,.9,.95,1,1.05,1.1,1.15,1.2,1.4])\\na=np.array([.038,.047,.046,.045,.044,.044,.043,.043,.042,.042,.043,.043,.045,.047,.050,.055,.064,.079,.105,.035,0,0,0,0,0])\\nb=np.array([.031,.039,.038,.038,.037,.037,.037,.036,.036,.036,.036,.036,.037,.037,.039,.040,.043,.046,.051,.060,.072,.094,.043,0,0])\\np=(a+b)/2;p=p/p.sum()\\nprint(p, p.sum(), np.dot(p,(edges[:-1]+edges[1:])/2))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Evaluating Python calls**\n\nI\u2019m considering whether I need a fresh Python call each time. It seems unnecessary. I want to focus on values that are above average within manually created arrays. I'll calculate the primary histogram from those average list values. Maybe I could provide a rounded, normalized result as part of that. It's time to run through these calculations!",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzQ8AehFH0ijEkKwU6G-kJ5IB_qKD3JwVtM7LUxe-aD2mXQ_Z5sM3dd4GRl485KuLnJc8VvdXGb87JUG6EPcPtM0OMz471kaAhEOnj1T0GH3QyhD03QRZmyCd_BYgVwHGbzk9UTESH0K83k0DncKkSaw5QMQLqt9QVVEsI2gZmhkJ5G1lN0qTF2t_B0-OO8EUMCHSnc6VzStLlIozHgIBT-BSR0kz79uktaPtxbmsyT1qw2UYsdM3sp6YFaugD6uGDkZ4tLk_LxRCezkR3L5rQ5zR87vHyOcQZrEZVJ9XqURwfc1-ERJbkWY8FDQjPsFb4P7XvqWtTbWZ4Ls8Yhwj3I7yrB9Cdn-0V2e2ywtQ8nJSGz2I6w9EQqALxmvOCNoHpXmNcnOOi3czNjxAZEmEKKEUbBcU1Yn8t7FewAKfi4sM0cELEE0WE4cSUIFUaBBtfDN0NJP87BGwBe1nIjaFoir6zZY2wNo3i2V6kcPddS5s6ZS5zNQhQ7CLwEeDH51j0Spfr6rfa5bAa8FTCO2-z1tLKNLPRcWLKif6w3X--O6bapj2Jz0fvUkjrmDh4JZSd_VWNZYU8hHWh4g1vRAmW5QHdzmojUWwnwQDNffs4aeGJzXZcd8WXkobl-wJ6h8YCGdRQ8JuLk7BmWrR0eGDxU4dEou-FsYsEInIxDGIGsSDQs8Jj1nOzTMWXRUhdD9s8FlAq6xYYwtTyFm2OzUIjNW5V6cUzxHvsXd7l6eeB4Lkf4UkrHPfNpRfVC6LHFObixuUNFlpBt5ylBOFXv4csUSCUohl5o7WPMlVRfKv9xm0axqdy3CDdGw7nNMIrtM_U4xTyDdpJ7t_7qZSvId46db28G--0C8ZP1Sd-Cm9yP56raVl-K8ZiOJKeyuMa_LSXz5_Db9GTt7SYfNMh4KLW5PAkrnQ-5OMUtP4Y1ukNR7Xc6SP3kyxA5ue60LGO-BchQIrwdHY_EdQ39vRC-uTEy0clE5onDf4MRkhYzHy05r7EI4RjYBH_FSgea4k6YhInqu4t1koZZXJ__RD2GHZ2owV2-zlzc_gXSsFmjdap-qcunzjmWIMKEn4Ppn1vAb3lx4_IjphEuuhHaBrZ9ivZXIuA4_43-iqwmRaIOW_dzVm2bam7GwQZoyIAZpnRSvfPUP_4LYNl1NLCy1hBVFQtZpurKiiyLlusLz9Co9M_sKijXvUXDXO6dVJdT0jQIjLXvTWkUOxhzWSmtQxAqyojoSqk2U11h0A_VoWHPHL4ar6_hABHWrGXjcgn-xcw0bDV4idQgAqOX1KuQESZvudC6_bQaX4TUXMDFJ7i_ei5nUft5PSUvSkDWQ0IGpZpZAQlMJBcEEiIwitvMw1JiWt4hEmDU8RTtpV9Xd3OkrTQRREYKJAbVHcXZ-DaSaLUrHHSscRZB8vO8yz0y6EEM5ahxbGVjLr0PRwrUNGj190TaHC0xsirskA0t5sf5XPB-xJPf0Gx9e0WMcvqGQ8ZI6YZ0nFyNy4GOPgQjWjWFGbJQFiv7uT49SIU6fzjLTJDKV53VJfItR4yLzWBVHKRYfgbu9_H9L1jOA0MWo9JgqmCGyZAScEwyMMOwYUfWJidktP2QQn5q06hnan-_Q6UwHMgbSV9ycMjTTmP3BiwXNZAw7L4WmX0JUdCcys72CTP0z9x2kyRYTanJafPM248K9ZML_TBc1UjS7VQbbIdjBJhhnslDJO_4b4FO14BjVF9tLp6UrdX3Fw9ip2_Hfw0mzuGsUCU1rhPZMP52GbQDHTg-_w-l19IcPbyi-HsUXnHBceQABJYDQs35NjMsOyyCLXUu1hmLzZpzVcS4wUw_l7BbBeHZq5PD-iOHvFB13--6b_ComLzNOWSKXTWlzSF44zu3N66h0mon24vJJ70l5rSlzxUCpbAmLRndr6r_eXra27CwSi9LpyUdSe6hSm12byGcR3HfnQXzP8LZDqZq1MvROHXiNP5yVhMEx5bMYVfefElY42K-10jY44bTQploKPtwEt-S9gWkXudRlLzPdjO__wW3G_Hz9fOOd5sgIt04RJccWXDo0NR3gcFyvg-909y3C86w==.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_08b25cd38fe34654016acd0eff790c87d1bc2c50f2299bbd33",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 15164,
+  "completion_tokens": 275,
+  "total_tokens": 15439,
+  "cost": 0.000547585,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 12916,
+   "cache_write_tokens": 2245,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000547585,
+   "upstream_inference_prompt_cost": 0.000410085,
+   "upstream_inference_completions_cost": 0.0001375
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 37,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

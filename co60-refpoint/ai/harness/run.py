@@ -33,8 +33,10 @@ RAW = ROOT / "ai" / "raw"
 MAX_TOOL_CALLS = 30
 EVENT_CALLS_PER_CONDITION = 5          # STUDY_PLAN 5.2: 5 calls of 200 events per model and condition
 EVENT_CONDITIONS = ("A0", "A1")        # STUDY_PLAN 5.2: sampled events in A0 and A1
-RETRY_TEXT = ("Your reply could not be read against the required format: {err}. Reply again with only the JSON "
-              "object, in a ```json fenced code block, with every key and unit as specified.")
+EVENT_COUNT_ACCEPTED = (150, 250)      # the prompt asks for 200; a miscount is a format slip, not physics (D031)
+RETRY_TEXT = ("Your reply could not be read against the required format: {err}. Reply again with your complete "
+              "answer as one JSON object that follows the schema (your answer, not the schema itself), in a ```json "
+              "fenced code block, with every key and unit as specified.")
 BUDGET_TEXT = "The tool-call budget for this question is used up. Give your final answer now, in the required format."
 
 
@@ -79,10 +81,18 @@ def freeze(path):
             p.chmod(stat.S_IRUSR | stat.S_IRGRP | stat.S_IROTH)
 
 
+def spent(tag_dir):
+    """OpenRouter's charge so far for every conversation under ai/raw/<tag>/ (all slots, finished or running)."""
+    return sum((json.loads(f.read_text()).get("usage") or {}).get("cost") or 0.0
+               for f in Path(tag_dir).glob("*/*/turns/*_response.json"))
+
+
 def run_conversation(slot, condition, task, config, prompts, version, outdir):
     system = prompts[f"system_{condition}.txt"]
     user = prompts[f"task_{task}_{config}.txt"]
     schema = json.loads(prompts[f"schema_{task}.json"])
+    if task == "events":
+        schema["properties"]["events"]["minItems"], schema["properties"]["events"]["maxItems"] = EVENT_COUNT_ACCEPTED
     tools = [] if condition == "A0" else [providers.PYTHON_TOOL]
     outdir.mkdir(parents=True)
     (outdir / "turns").mkdir()
@@ -187,6 +197,8 @@ def main():
     ap.add_argument("--prompt-version", default="v1")
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--raw-root", default=str(RAW))
+    ap.add_argument("--budget", type=float, help="stop starting conversations once the tag's measured charge (USD, "
+                                                   "all slots) reaches this")
     a = ap.parse_args()
     loaded = load_secrets()
     if loaded:
@@ -196,7 +208,8 @@ def main():
     plan = list(matrix(slots, a.conditions, a.tasks, a.k, a.config))
     prices = yaml.safe_load(open(ROOT / "ai" / "prices.yaml"))
     total, _ = estimate_cost(plan, prices["prices"], prices["tokens_per_conversation"])
-    print(f"{len(plan)} conversations; estimated cost ${total:,.0f} (ai/prices.yaml, unverified list prices)")
+    print(f"{len(plan)} conversations; estimated cost ${total:,.2f} (ai/prices.yaml prices and assumed token "
+          f"counts; prices verified: {prices.get('verified')})")
     if a.dry_run:
         return
     if a.config == "R0" and not models.get("frozen"):
@@ -212,6 +225,8 @@ def main():
         out = Path(a.raw_root) / a.tag / s["slot"] / f"{a.config}_{c}_{t}_r{r}"
         if out.exists():
             continue
+        if a.budget is not None and spent(Path(a.raw_root) / a.tag) >= a.budget:
+            sys.exit(f"budget reached: ${spent(Path(a.raw_root) / a.tag):.2f} >= ${a.budget:.2f}; stopped before {out.name}")
         m = run_conversation(s, c, t, a.config, prompts, a.prompt_version, out)
         print(f"{s['slot']} {c} {t} r{r}: {m['outcome']} ({m['tool_calls']} tool calls, {m['retries']} retries)",
               flush=True)

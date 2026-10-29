@@ -1,0 +1,9 @@
+{
+ "stdout": "",
+ "stderr": "Traceback (most recent call last):\n  File \"/tmp/work/_call_004.py\", line 117, in <module>\n    import importlib, phys\n  File \"/tmp/work/phys.py\", line 64, in <module>\n    _EPS_MEAN = kn_mean_eps_table(_EG)\n  File \"/tmp/work/phys.py\", line 60, in kn_mean_eps_table\n    out.append(np.trapz(e*f,e)/np.trapz(f,e))\n               ^^^^^^^^\n  File \"/opt/venv/lib/python3.13/site-packages/numpy/__init__.py\", line 769, in __getattr__\n    raise AttributeError(f\"module {__name__!r} has no attribute {attr!r}\")\nAttributeError: module 'numpy' has no attribute 'trapz'. Did you mean: 'trace'?\n",
+ "exit_code": 1,
+ "timed_out": false,
+ "wall_s": 0.3,
+ "stdout_truncated": false,
+ "stderr_truncated": false
+}

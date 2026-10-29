@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791833038-4ZlbwCPGuS3j7lWjCriH",
+ "object": "chat.completion",
+ "created": 1791833038,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "SiliconFlow",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "L2 results:\n- interaction fractions (all photons at the point): compton 0.950, photoelectric 0.0373, pair 0.00024, rayleigh 0.0124.\n- energy transfer: compton 0.9865, photoelectric 0.0133, pair 0.00019, rayleigh 0.\n- primary: compton 0.9906, pe 0.0059, pair 0.00049, rayleigh 0.0030.\n- scattered: compton 0.9138, pe 0.0655, pair 1.1e-5, rayleigh 0.0208.\n- scattered share of interactions = 0.528.\n\nInteresting: photoelectric fraction 3.7% (all) \u2014 that seems high-ish but driven by the low-energy scattered spectrum (0.05-0.2 MeV where photoelectric in water is a few %... wait at 0.1 MeV we computed \u03bc_pe\u22480, at 0.05 pe=0.019 vs Compton 0.188: pe fraction 9%; the scattered spectrum has significant fluence at 0.1-0.2 where pe is small... at 0.15: total 0.1505, KN at 0.15: \u03b1=0.2935: \u03c3? \u03bc_C \u2248 0.147? pe\u22480.1505-0.147-0.0047\u22480.0? Hmm. At 0.2: pe ~0. So photoelectric mostly at <0.1 MeV. The scattered spectrum has fluence bins 0.05-0.1: 0.0035+0.0354+0.0398 = 0.079 (fluence) with \u03bc_tot ~0.18-0.22 cm\u207b\u00b9. The pe fraction weighted... It gives 3.7% overall. Plausible.\n\nHmm wait: but the pe at 0.1 was computed as negative\u21920 by my formula (mu_tot - KN - coh: at 0.1 KN=0.1646, coh=0.0084 \u2192 sum 0.173 > total 0.1706 \u2192 pe=0). At 0.05: mu_tot=0.2269, KN=0.1876, coh=0.0205 \u2192 pe=0.0188 (9% of total). At 0.075 (interp): compute? The low-energy bins 0.05-0.1 have pe contributions. OK.\n\nThese numbers are consistent with a low-energy-heavy scattered spectrum.\n\nNow L3. Let me write it.\n\nElectron bins: edges: 0.01,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1,1.05,1.1,1.15,1.2,1.4 (25 bins).\nelectron centers for mean.\n\nFor each photon bin center Ec (28), weight \u03a6 (prim or scat or total), processes:\n- Compton: sample N samples of T_e at Ec (via KN rejection): get counts per electron bin.\n- PE: T_e = Ec - 0.0005.\n- Pair: two particles with T split uniform: for each pair, electron f\u00d7T and positron (1-f)\u00d7T, f~U(0,1).\n\nL3 initial spectrum (fraction per bin summing 1): weights = (\u03a6_tot_bin \u00d7 \u03bc_C) for Compton etc. V cancels.\n\nAlso L3_initial_direction: for each electron created, cos\u03b80:\n- Compton electron: cos\u03c6 from kinematics (compute during sampling).\n- PE: 1.\n- Pair: both 1.\n\nLet me write and run.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "01a13192973f8aba78f6c7785d521c70",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport numpy as np\\n\\nmec2=0.5110\\nN_e_per_g = 6.02214076e23*10/18.01528\\nE_tab = np.array([0.01,0.02,0.03,0.04,0.05,0.06,0.08,0.1,0.15,0.2,0.3,0.4,0.5,0.6,0.8,1.0,1.25,1.5,2.0])\\nmu_tab = np.array([4.951,1.374,0.7031,0.4470,0.2269,0.2059,0.1837,0.1706,0.1505,0.1370,0.1186,0.1061,0.0969,0.0896,0.0786,0.0707,0.0636,0.0576,0.0494])\\ncoh_tab = np.array([0.0,0.0,0.0,0.03,0.0205,0.0148,0.0102,0.0084,0.0047,0.0030,0.0014,0.0009,0.0006,0.00045,0.00030,0.00024,0.00019,0.00016,0.00010])\\ndef interp(x,xe,ye): return np.interp(x,xe,ye)\\ndef sig_KN(E):\\n    al=E/mec2; a2=al*al\\n    f=(1+al)/a2*(2*(1+al)/(1+2*al)-np.log(1+2*al)/al)+np.log(1+2*al)/(2*al)-(1+3*al)/(1+2*al)**2\\n    return 0.4987*f\\ndef mu_C(E): return sig_KN(E)*1e-24*N_e_per_g\\ndef mu_coh(E): return interp(E,E_tab,coh_tab)\\ndef mu_pair(E): return np.where(E>1.022, 0.00052*((E-1.022)/0.978)**2.0, 0.0)\\ndef mu_pe(E): return np.maximum(0, mu_tot(E)-mu_C(E)-mu_coh(E)-mu_pair(E))\\ndef mu_tot(E): return interp(E,E_tab,mu_tab)\\n\\ndef kn_diff(cosT,E):\\n    al=E/mec2; x=1+al*(1-cosT)\\n    return (1.0/x)**2*(0.5*(1+cosT*cosT)+(al*al*(1-cosT)**2)/(2*x))\\n\\ndef compton_electrons(E, n, rng):\\n    # sample KN photon scatter angles, return electron kinetic energies and cosphi\\n    x = rng.uniform(-1,1,size=n)\\n    acc = rng.uniform(0,1,size=n) < kn_diff(x,E)\\n    while not acc.all():\\n        rem=~acc\\n        nx=rng.uniform(-1,1,size=rem.sum())\\n        nacc = rng.uniform(0,1,size=rem.sum())<kn_diff(nx,E)\\n        x[rem]=nx; acc[rem]=nacc\\n    al=E/mec2\\n    Ep = E/(1+al*(1-x))\\n    Ee = E-Ep\\n    pe = np.sqrt(np.maximum(Ee*(Ee+2*mec2),0))\\n    cosphi = np.clip((E-Ep*x)/pe,-1,1)\\n    return Ee, cosphi\\n\\nph_bins = np.array([0,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1,1.05,1.1,1.15,1.2,1.25,1.3,1.35,1.4])\\nph_c = (ph_bins[:-1]+ph_bins[1:])/2\\nel_bins = np.array([0.01,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1,1.05,1.1,1.15,1.2,1.4])\\nel_c = (el_bins[:-1]+el_bins[1:])/2\\nct_bins = np.array([-1,-0.8,-0.6,-0.4,-0.2,0,0.2,0.4,0.6,0.8,1])\\n\\nprim_spec = np.load('prim_spec.npy')\\nscat_spec = np.load('scat_spec.npy')\\ntot_spec = prim_spec+scat_spec\\n\\nrng = np.random.default_rng(123)\\ndef initial_spectra(spec):\\n    # returns histogram (25), mean energy, angular (10)  for electrons+positrons set in motion\\n    hist = np.zeros(25); ang = np.zeros(10); wsum = 0.0; esum=0.0\\n    for i,Ec in enumerate(ph_c):\\n        wf = spec[i]\\n        if wf<=0: continue\\n        nC = wf*mu_C(Ec)\\n        if nC>0:\\n            n_samp = 20000\\n            Ee, cp = compton_electrons(Ec, n_samp, rng)\\n            w = nC/n_samp\\n            h = np.histogram(Ee, bins=el_bins, weights=np.full(n_samp,w))[0]\\n            hist += h\\n            a = np.histogram(cp, bins=ct_bins, weights=np.full(n_samp,w))[0]\\n            ang += a\\n            esum += w*Ee.sum()\\n            wsum += w*n_samp\\n        nPE = wf*mu_pe(Ec)\\n        if nPE>0:\\n            T = Ec-0.0005\\n            if T>=0.01:\\n                # bin\\n                bi = np.searchsorted(el_bins,T,side='right')-1\\n                if bi<0: bi=0\\n                if bi>=25: bi=24\\n                hist[bi]+=nPE\\n                ang[9]+=nPE\\n                esum += nPE*T\\n                wsum += nPE\\n        nPA = wf*mu_pair(Ec)\\n        if nPA>0:\\n            T = Ec-1.022\\n            if T>0:\\n                for _ in range(2):  # electron and positron\\n                    f = rng.uniform(0,1)\\n                    Te = f*T\\n                    if Te>=0.01:\\n                        bi = np.searchsorted(el_bins,Te,side='right')-1\\n                        if bi<0: bi=0\\n                        if bi>=25: bi=24\\n                        hist[bi]+=nPA\\n                        ang[9]+=nPA\\n                        esum += nPA*Te\\n                        wsum += nPA\\n    return hist, esum/wsum, ang, wsum\\n\\nhist_tot, mean_tot, ang_tot, w_tot = initial_spectra(tot_spec)\\nhist_prim, mean_prim, ang_prim, w_prim = initial_spectra(prim_spec)\\n\\nprint(\\\"L3 initial spectrum (all):\\\", np.round(hist_tot/hist_tot.sum(),5))\\nprint(\\\"sum:\\\", hist_tot.sum())\\nprint(\\\"L3 mean initial energy (all):\\\", mean_tot)\\nprint(\\\"L3 initial spectrum (parent primary):\\\", np.round(hist_prim/hist_prim.sum(),5))\\nprint(\\\"L3 mean initial energy (parent primary):\\\", mean_prim)\\nprint(\\\"L3 initial direction (all):\\\", np.round(ang_tot/ang_tot.sum(),5))\\nprint(\\\"L3 initial direction (should sum 1):\\\", (ang_tot/ang_tot.sum()).sum())\\nnp.save('L3_data.npy', {'hist_tot':hist_tot,'mean_tot':mean_tot,'ang_tot':ang_tot,'hist_prim':hist_prim,'mean_prim':mean_prim,'ang_prim':ang_prim,'w_tot':w_tot,'w_prim':w_prim})\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "L2 results:\n- interaction fractions (all photons at the point): compton 0.950, photoelectric 0.0373, pair 0.00024, rayleigh 0.0124.\n- energy transfer: compton 0.9865, photoelectric 0.0133, pair 0.00019, rayleigh 0.\n- primary: compton 0.9906, pe 0.0059, pair 0.00049, rayleigh 0.0030.\n- scattered: compton 0.9138, pe 0.0655, pair 1.1e-5, rayleigh 0.0208.\n- scattered share of interactions = 0.528.\n\nInteresting: photoelectric fraction 3.7% (all) \u2014 that seems high-ish but driven by the low-energy scattered spectrum (0.05-0.2 MeV where photoelectric in water is a few %... wait at 0.1 MeV we computed \u03bc_pe\u22480, at 0.05 pe=0.019 vs Compton 0.188: pe fraction 9%; the scattered spectrum has significant fluence at 0.1-0.2 where pe is small... at 0.15: total 0.1505, KN at 0.15: \u03b1=0.2935: \u03c3? \u03bc_C \u2248 0.147? pe\u22480.1505-0.147-0.0047\u22480.0? Hmm. At 0.2: pe ~0. So photoelectric mostly at <0.1 MeV. The scattered spectrum has fluence bins 0.05-0.1: 0.0035+0.0354+0.0398 = 0.079 (fluence) with \u03bc_tot ~0.18-0.22 cm\u207b\u00b9. The pe fraction weighted... It gives 3.7% overall. Plausible.\n\nHmm wait: but the pe at 0.1 was computed as negative\u21920 by my formula (mu_tot - KN - coh: at 0.1 KN=0.1646, coh=0.0084 \u2192 sum 0.173 > total 0.1706 \u2192 pe=0). At 0.05: mu_tot=0.2269, KN=0.1876, coh=0.0205 \u2192 pe=0.0188 (9% of total). At 0.075 (interp): compute? The low-energy bins 0.05-0.1 have pe contributions. OK.\n\nThese numbers are consistent with a low-energy-heavy scattered spectrum.\n\nNow L3. Let me write it.\n\nElectron bins: edges: 0.01,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1,1.05,1.1,1.15,1.2,1.4 (25 bins).\nelectron centers for mean.\n\nFor each photon bin center Ec (28), weight \u03a6 (prim or scat or total), processes:\n- Compton: sample N samples of T_e at Ec (via KN rejection): get counts per electron bin.\n- PE: T_e = Ec - 0.0005.\n- Pair: two particles with T split uniform: for each pair, electron f\u00d7T and positron (1-f)\u00d7T, f~U(0,1).\n\nL3 initial spectrum (fraction per bin summing 1): weights = (\u03a6_tot_bin \u00d7 \u03bc_C) for Compton etc. V cancels.\n\nAlso L3_initial_direction: for each electron created, cos\u03b80:\n- Compton electron: cos\u03c6 from kinematics (compute during sampling).\n- PE: 1.\n- Pair: both 1.\n\nLet me write and run.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 147545,
+  "completion_tokens": 2865,
+  "total_tokens": 150410,
+  "cost": 0.005151434,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 145408,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.005151434,
+   "upstream_inference_prompt_cost": 0.004349234,
+   "upstream_inference_completions_cost": 0.0008022
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 868,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

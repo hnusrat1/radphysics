@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791833889-9fgudgkGmEcoUytWxywn",
+ "object": "chat.completion",
+ "created": 1791833889,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "SiliconFlow",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "The array management is buggy. Let me restructure cleanly: maintain lists of arrays and process with a proper stack: use Python list `pending` of (E array, D array, tag array); process in batches with the vectorized step; append delta arrays to pending; when a batch is exhausted remove it. But arrays shrink; simpler: process a \"job queue\":\n\n```\njobs = [(E0s, D0, tag0)]\nwhile jobs:\n   E,D,tag = jobs.pop(0)\n   while len(E)>0:\n      step vectorized (as above but operating on E,D,tag directly)\n      keep alive; append deltas to a new list; after step, E,D,tag = alive subsets\n      if deltas created: jobs.append((E0,dd,ones))\n```\nThe step function should handle E,D,tag arrays in-place and return updated. Let me write it as a function with arrays, returning updated arrays and a list of electron arrays appended.\n\nTo avoid repeated large allocations, fine for 200k.\n\nLet me rewrite.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "01a1319f856170fbefdcade9c10a05d4",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport numpy as np, time\\n\\nmec2 = 0.5110\\nN_e_per_g = 6.02214076e23*10/18.01528\\nn_e = N_e_per_g\\nC = 0.4987e-24*0.511\\nX0_water = 36.08\\nDELTA = 0.010\\n\\ndef Scol_w(E):\\n    return np.interp(E, [0.01,0.02,0.03,0.05,0.07,0.1,0.2,0.3,0.5,0.7,1.0,1.25,1.4],\\n                     [22.7,11.3,7.97,6.36,5.14,4.098,2.63,2.16,1.94,1.89,1.847,1.847,1.85])\\ndef moler_dsde(T, E0):\\n    if T<=0.011 or E0<=0.010 or E0>=T/2: return 0.0\\n    beta2 = 1.0-1.0/(1+T/mec2)**2\\n    if beta2<=0: return 0.0\\n    return C*n_e/beta2*(1/E0**2 - 1/(E0*(T-E0)) + 1/(T-E0)**2)\\nEg_all = np.arange(0.010,1.401,0.002)\\nSrest_grid = np.array([Scol_w(np.array([e]))[0] - (np.sum(np.arange(0.0105, e/2-1e-9, 0.00025)*np.array([moler_dsde(e,x) for x in np.arange(0.0105, e/2-1e-9, 0.00025)])*0.00025) if e>0.011 else 0.0) for e in Eg_all])\\nScol_grid = np.array([Scol_w(e) for e in Eg_all])\\ndef Srest_fast(E): return np.interp(E, Eg_all, Srest_grid)\\ndef Scol_fast(E): return np.interp(E, Eg_all, Scol_grid)\\ndef pbeta(E): return np.maximum(E*(E+2*mec2)/(E+mec2), 1e-6)\\n\\nd = np.load('L4_data.npz')\\nEg = d['Eg']; q = d['q']\\nL3 = np.load('L3_data.npy', allow_pickle=True).item()\\nang_tot_n = L3['ang_tot']/L3['ang_tot'].sum()\\nct_bins = np.array([-1,-0.8,-0.6,-0.4,-0.2,0,0.2,0.4,0.6,0.8,1])\\n\\nrng = np.random.default_rng(11)\\nN_elec = 200000\\nprob = np.maximum(q,0); prob = prob/prob.sum()\\nE0s = rng.choice(Eg, size=N_elec, p=prob)\\ncos0 = rng.choice((ct_bins[:-1]+ct_bins[1:])/2, size=N_elec, p=ang_tot_n)\\naz0 = rng.uniform(0,2*np.pi,size=N_elec)\\ns0 = np.sqrt(np.maximum(1-cos0**2,0))\\nD0 = np.stack([s0*np.cos(az0), s0*np.sin(az0), cos0],axis=1)\\n\\ntrack_all = np.zeros(10); track_delta = np.zeros(10)\\nds = 0.02\\nt0=time.time()\\n\\ndef tally(Di, tag_i, w):\\n    ctz = np.clip(Di[:,2],-1,1)\\n    bi = np.clip(np.searchsorted(ct_bins,ctz,side='right')-1,0,9)\\n    np.add.at(track_all, bi, w)\\n    np.add.at(track_delta, bi, w*tag_i)\\n\\njobs = [(E0s, D0, np.zeros(N_elec))]\\nn_jobs_processed = 0\\ntotal_steps = 0\\nwhile jobs:\\n    E, D, tag = jobs.pop(0)\\n    m = len(E)\\n    while m > 0:\\n        # one step\\n        Sres = Srest_fast(E)\\n        E = E - Sres*ds\\n        pv = pbeta(np.maximum(E,0.0112))\\n        sig = (14.1/pv)*np.sqrt(ds/X0_water)*(1+0.038*np.log(ds/X0_water))\\n        th = np.abs(rng.normal(0,sig,size=m))\\n        az = rng.uniform(0,2*np.pi,size=m)\\n        cosT = np.cos(th); sinT = np.sin(th)\\n        rv = rng.normal(size=(m,3))\\n        ndot = np.sum(rv*D,axis=1,keepdims=True)\\n        nvec = (rv - ndot*D)/(np.linalg.norm(rv-ndot*D,axis=1,keepdims=True)+1e-12)\\n        mvec = np.cross(D,nvec)\\n        caz = np.cos(az); saz = np.sin(az)\\n        D = cosT[:,None]*D + sinT[:,None]*(caz[:,None]*mvec + saz[:,None]*nvec)\\n        D = D/np.linalg.norm(D,axis=1,keepdims=True)\\n        tally(D, tag, ds)\\n        # delta production\\n        beta2 = 1.0 - 1.0/(1+E/mec2)**2\\n        okE = E > 0.022\\n        pdel = np.zeros(m)\\n        T = E[okE]; bet2 = beta2[okE]\\n        pdel[okE] = ds*(C*n_e/bet2)*(1.0/DELTA + np.log((T-DELTA)/DELTA)/T - 1.0/(T-DELTA))\\n        pdel = np.minimum(pdel, 1.0)\\n        creates = rng.uniform(size=m) < pdel\\n        if creates.any():\\n            Tc = E[creates]\\n            nc = creates.sum()\\n            U = rng.uniform(1e-9,1-1e-9,size=nc)\\n            E0 = 1.0/(1.0/DELTA - U*(1.0/DELTA - 2.0/Tc))\\n            r = E0/(Tc-E0)\\n            acc = rng.uniform(size=nc) < (1 - r + r*r)\\n            while not acc.all():\\n                rem = ~acc\\n                U2 = rng.uniform(1e-9,1-1e-9,size=rem.sum())\\n                E0[rem] = 1.0/(1.0/DELTA - U2*(1.0/DELTA - 2.0/Tc[rem]))\\n                r2 = E0[rem]/(Tc[rem]-E0[rem])\\n                acc[rem] = rng.uniform(size=rem.sum()) < (1-r2+r2*r2)\\n            E[creates] -= E0\\n            cosd = np.sqrt(np.maximum(E0/(E0+2*mec2),1e-9))\\n            ad = np.arccos(np.clip(cosd,-1,1))\\n            azd = rng.uniform(0,2*np.pi,size=nc)\\n            dirp = D[creates]\\n            rv2 = rng.normal(size=(nc,3))\\n            nd2 = np.sum(rv2*dirp,axis=1,keepdims=True)\\n            nv2 = (rv2 - nd2*dirp)/(np.linalg.norm(rv2-nd2*dirp,axis=1,keepdims=True)+1e-12)\\n            mv2 = np.cross(dirp,nv2)\\n            c2v = np.cos(azd); s2v = np.sin(azd)\\n            dd = np.cos(ad)[:,None]*dirp + np.sin(ad)[:,None]*(c2v[:,None]*mv2 + s2v[:,None]*nv2)\\n            dd = dd/np.linalg.norm(dd,axis=1,keepdims=True)\\n            jobs.append((E0, dd, np.ones(nc)))\\n        alive = E > 0.0105\\n        E = E[alive]; D = D[alive]; tag = tag[alive]\\n        m = len(E)\\n        total_steps += 1\\n        if total_steps % 5000 == 0:\\n            print(f\\\"  steps {total_steps}, alive {m}, jobs {len(jobs)}, elapsed {time.time()-t0:.0f}s\\\", flush=True)\\n        if total_steps > 200000: break\\n    if total_steps > 200000: break\\n\\nprint(\\\"finished, total steps\\\", total_steps)\\ntrack_all_n = track_all/np.sum(track_all)\\nprint(\\\"L4 angular fractions:\\\", np.round(track_all_n,5))\\nprint(\\\"sum:\\\", track_all_n.sum())\\nprint(\\\"delta track fraction MC:\\\", track_delta.sum()/(track_all.sum()))\\nnp.save('L4_ang.npy', track_all_n)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The array management is buggy. Let me restructure cleanly: maintain lists of arrays and process with a proper stack: use Python list `pending` of (E array, D array, tag array); process in batches with the vectorized step; append delta arrays to pending; when a batch is exhausted remove it. But arrays shrink; simpler: process a \"job queue\":\n\n```\njobs = [(E0s, D0, tag0)]\nwhile jobs:\n   E,D,tag = jobs.pop(0)\n   while len(E)>0:\n      step vectorized (as above but operating on E,D,tag directly)\n      keep alive; append deltas to a new list; after step, E,D,tag = alive subsets\n      if deltas created: jobs.append((E0,dd,ones))\n```\nThe step function should handle E,D,tag arrays in-place and return updated. Let me write it as a function with arrays, returning updated arrays and a list of electron arrays appended.\n\nTo avoid repeated large allocations, fine for 200k.\n\nLet me rewrite.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 174710,
+  "completion_tokens": 2362,
+  "total_tokens": 177072,
+  "cost": 0.006035292,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 169984,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.006035292,
+   "upstream_inference_prompt_cost": 0.005373932,
+   "upstream_inference_completions_cost": 0.00066136
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 222,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

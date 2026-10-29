@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791822600-MKewWhbmUQwyfLjzsJXl",
+ "object": "chat.completion",
+ "created": 1791822600,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Evaluating tool process for scattering**\n\nI'm resetting the independent tool process variables. Earlier, I had the equation `ep=1/(1+alpha*(1-mu))` with mu calculated as (x+1)/2, which maps x from -1 to 1. However, there\u2019s a bug since the integration only accounts for cos from 0 to 1 and misses backward scattering. The scattering angle's cosine needs to be in the range [-1, 1]. I realize my weights and normalization are off and I need to adjust mu. I'll need to redo some calculations for efficiency!",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_CY4yaQK3VhtXo7RqwwkH0Yxw",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import numpy as np\\nfrom numpy.polynomial.legendre import leggauss\\nedges=np.array([.01,.05,.1,.15,.2,.25,.3,.35,.4,.45,.5,.55,.6,.65,.7,.75,.8,.85,.9,.95,1,1.05,1.1,1.15,1.2,1.4])\\ns=np.array([.00005,.00015,.00035,.0007,.0012,.002,.003,.004,.0055,.007,.0085,.0095,.010,.0105,.0105,.010,.009,.008,.0065,.005,.0038,.0028,.002,.0015,.0008,.0005,.0003,.0001]); Ecent=np.arange(28)*.05+.025\\nmur=np.clip(1.25/Ecent,1,10)**0.45\\nph_es=[1.1732,1.3325]+[e for e,w in zip(Ecent,s) if w>0]; weights=[.5*.729,.5*.740]+[w*m for w,m in zip(s,mur) if w>0]\\ncs=np.array([-1,-.8,-.6,-.4,-.2,0,.2,.4,.6,.8,1]); x,gw=leggauss(1000);mu=x; gw=gw\\n\\ndef intg(e,w):\\n    alpha=e/.51099895; ep=1/(1+alpha*(1-mu)); T=e*(1-ep); kn=ep**2*(ep+1/ep-(1-mu**2)); ww=gw*kn*w\\n    hist=np.histogram(T,bins=edges,weights=ww)[0]\\n    p=np.sqrt(T*(T+2*.51099895)); pz=e-e*ep*mu; c=pz/p\\n    histd=np.histogram(c,bins=cs,weights=ww)[0]\\n    return hist,histd,ww.sum()\\nha=np.zeros(25);hd=np.zeros(10);hp=np.zeros(25);hdp=np.zeros(10)\\nfor e,w in zip(ph_es,weights):\\n    a,b,c=intg(e,w);ha+=a;hd+=b\\nfor e,w in zip([1.1732,1.3325],[.5*.729,.5*.740]):\\n    a,b,c=intg(e,w);hp+=a;hdp+=b\\nprint('all',ha/ha.sum());print('p',hp/hp.sum());print('d',hd/hd.sum());print('dp',hdp/hdp.sum())\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Evaluating tool process for scattering**\n\nI'm resetting the independent tool process variables. Earlier, I had the equation `ep=1/(1+alpha*(1-mu))` with mu calculated as (x+1)/2, which maps x from -1 to 1. However, there\u2019s a bug since the integration only accounts for cos from 0 to 1 and misses backward scattering. The scattering angle's cosine needs to be in the range [-1, 1]. I realize my weights and normalization are off and I need to adjust mu. I'll need to redo some calculations for efficiency!",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzQsLf7OaLzVC9kGBg1tSH3MC1b6u30_jSQVapCteNoZIkDp0acY07SJ8asDk66CtYb_ZPXrvZwI2lFrUoH2VjXD5QMlOctdZOH1xgMOOI6z-lJuuP3b9gLuVM2FdPsS7Sa-wJxwlZM7g6aDuiDnxLaix4ms59Uem3Uh-cTV8kFRlrMGnErXhbheMAbeBarWYdR8C7mj6vXkxk6B0T5sXk2rp42DuHPFdHXTzqXhXK4KuV2QOvENajocRoWD1cPhtagkDEjZ3fqFRR6pRks9rtYYiAopgNotzo8DDxdT3qi-9pHRsADjPqN3eqfA2nwi6xeL7_xICdLi_eN8MJoOcYlT0X3vLynICx7SsboXxRXteaJXx0u5EX6x6oM7OATtgbNTtF8IFXXM_SpzTncvcH3h3Wqdgs4KxsRFVXH_a1ZmSq7Gnyq9yoqzSjrGEH8WxlcJ-Dp8C3YnVstf2XyAbebBBBCLtWRcX5SgdOPiCpiZllBu-ik0IMg2ov-TzTt9LGBLVSF9W9mXKSuEa_PjLpUGZI1Ug0UA--PwGqDV8BopEW4V08OCpQhL-SeiHVmKy6ayEh4C2EUy1fJzsEi1rZNi3-KDLgRmG3RxpLDnorxnyt3Mlo31aXbsJChXUxxY6A75EkU0O60zelq_HuSLcdV5VoufMVITsJeaz5Bk6fF2ZEa-4YE64SsucGFoijHRF5g4Agq126kiuyyKVhipxgq23b9Ucy2ERH-2Osoke3zfjPfdekZ9-a3BuiXr-Wo7OhYEnovvQOja2PE6Dau-5OrvXmR5-vzcjnIdni48xOvlhucnFtSADL1KFXq4ALdNk7IJ3HWM07ShQKeF03PdKrkTW82R_gm5Oah-foS6SI4vz3BoocXtqtq-zeJO859E5lpA7lu4HxMfsFUTAjMzPBwdRWXvDj4YBBLukXa4BQwrj-EDDV6g7P_cmuIglPwvV1UtkchaBnbb-ScJeDl1Rhrt3Drx6igbXA2sPRx-HLRHIuxkeomdpHLLX-zpajBshGFAoFh_A-CPonuQfzx-bqtaQvlu3i-GnkjdiCMq6_c3DQYR223asFUp1433mUZrtgfpHXbGKtZXGADn5I2_GEwjMJmGtQJ5GoCVPXHeAWKIIpLix2w8Z9_R_Y-1QuX08hHfljOCjgHPeUtmDQ6ACOLfKuqLIHnMZUnhSmUOtULyzBUIoP0KJBO0UoTUR-7vfSc7PfQRDjQVhQwfeQyeNCgGbvNraIfNtW3bsP2qBpugjACUDZjFTmSZeDAprpsQs5RN6UN_n-eo21Gqv0mCuPOxU7JH5OtMita5ibnBeoj0DsUn1wMHzo5zQTAWa2a40zaB-CNmW-sdDPrVjkE9w_DBNkl204bgPFHUs33REDANOS6gSkB4Ez-By98pgCCViiFB6Xr5cCt75cKrCqZzY9Ptx096Yv_-OlHFAXpuCfqtS0yg6-L-83gv9xJVx8S3Mbb6LUv8N4H69_yJX7KKhCq9iD92TPAHwWhAO3bXsZGJCQLeT9ZokNqs4Hq1faZ8O7FnkLdLK3A3XIDH2GIXBgIyFvxuShgQdavg4NHFarOIPWY2VRWB507ofj1h-3nGNrS2U3hyAElMeF7WCq0q53U5u50bThr7nCkCFscCpLBbkm_Jh0EkgJ9pPMKar91UQ0X-P-4_qbSLO1D2oqAOxEA3cdiy3lNzbiy7EpnvOgtcOXGqV7jmMz6De8hsL0kxElqecZNoYHOHlNx2TscK_RMBVXegyBKP8eR0HErUMZbNkZj45QmDLdsLFK2ufPmk1VpzaZPP3S4GNvIy9Ef2D0pYqENk7POKhDufkWZ88i6yFBAxVtUlgRiATsWMYxb3pzkrneSXZ7VseKTReky7tSrQkXbKIMbqtjb1HJClOMeWxc4xgJ_Ib0sTWxSLSeq-G-F7gs9JS40c3VanJMaFfMt06HtfRMpU6rz9VFvAZwPA0jLGWgqSWxMl-UciwXNU7WX1btFUEx1C83evEnGdisdI8pmvZLAtilmXel2HBO7ClcYUv8jOMPtauRHD1i91tnmFaivO6hRuKSWM42WhvI-bsN1B54pHbxtBIJgHTU4TClXPlW1EgcSY40e4WsoSSulr5el9et5IbHg6QPJivXvOy_JeU2nznWY0uBmgLcyrixGJk-zITDyVgen-utpggORii5oxdTFxtmJL0EALyjS1IHPHuyysCiVGRB4_jKi6zWbre-34Q_IKm34QqydYG-kwzegONDVtPhB9gWvsF6PtT7W_CJiMWW1V7TYO97V8McrAAzZDR12tzboRAod7EOzUSuJWtgmOj7FWGsUmIEiS-4_3tNtn3uqv636YvR0_dkBbxA_AfQVgqZww36tAqlU68XpOiWHUrL3CUci6T4zMx9xqrxZGuRd-cniBYOjpvXhhD4Oih44vHY-Ebvs5krauZ4fifBZCeJMC8NtWQvmTMyOu3ChgoZKRaS5zO6KwWEc18ZagKgJgmC6MmCSNZ5fRlmRI99ISooQTx-W5dEVQtG1JPdAEpbdsXHL5m47P3K7zU006rn3hz62oq_TZy6RXhVVXdEn09e0qHWRXjhPDTJH1JDrkSCiY7VgHCJLsDcMuXxPow_EtZWx1yM_ugfGOmN5kAlOQJ5KKqfHCH1ndEq1_vsYSpAtCyM4haNcvsOH0IeWXCgFnEZWkRVMCoOVJ0SJvz-cyj7RVKIuKnIpEZG-7A4waiVC9oDloGgZdN6Z-Wu6-ohybUZPZGw5yhmeaIVSJSl42axgDwYSIjYy8jPcPv6HCnAK38bNjosssF2H-O-wuX2GL587Wv1J_wVDRUx_0tVHVhAZcqe2NSQcCeMat4f7FeqKD3A_zi3Mqp5d_G0ea8QMzSaubKL0Pxq8JiuaxXS256Smbcn-OJwzkMuZJs30CM4L9cFlbTKbQY9eA=.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_0489e75b4db6a3f8016acd0b0942c087d1b263538619858471",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 12545,
+  "completion_tokens": 710,
+  "total_tokens": 13255,
+  "cost": 0.00055317,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 11912,
+   "cache_write_tokens": 630,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00055317,
+   "upstream_inference_prompt_cost": 0.00019817,
+   "upstream_inference_completions_cost": 0.000355
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 117,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

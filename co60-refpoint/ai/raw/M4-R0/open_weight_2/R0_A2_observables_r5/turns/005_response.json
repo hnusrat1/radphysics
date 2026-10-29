@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791827742-U33lBdVpcfZiG5h2RZQ8",
+ "object": "chat.completion",
+ "created": 1791827742,
+ "model": "qwen/qwen3.7-flash",
+ "provider": "Alibaba",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Let me check the actual format of the ESTAR file more carefully.\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_9d1ea9d57756407e9786fa5d",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\n\\nwith open('/tmp/data/estar_water.txt', 'r') as f:\\n    estar_lines = f.readlines()\\n\\nprint(f\\\"Total lines: {len(estar_lines)}\\\")\\nprint(\\\"\\\\nFirst 10 lines:\\\")\\nfor i, line in enumerate(estar_lines[:10]):\\n    print(f\\\"{i}: {repr(line[:80])}\\\")\\n\\n# Try parsing differently - maybe comma separated?\\ndata = []\\nfor i, line in enumerate(estar_lines):\\n    if i < 4:  # Skip header\\n        continue\\n    parts = line.strip().split()\\n    if len(parts) >= 8:\\n        try:\\n            vals = [float(p) for p in parts]\\n            data.append(vals)\\n        except:\\n            pass\\n            \\nprint(f\\\"\\\\nParsed {len(data)} rows\\\")\\nif len(data) > 0:\\n    print(\\\"First row:\\\", data[0])\\n    print(\\\"Last row:\\\", data[-1])\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Let me check the actual format of the ESTAR file more carefully.\n",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 9035,
+  "completion_tokens": 255,
+  "total_tokens": 9290,
+  "cost": 0.0003042,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0003042,
+   "upstream_inference_prompt_cost": 0.00027105,
+   "upstream_inference_completions_cost": 3.315e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 14,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

@@ -1,0 +1,57 @@
+{
+ "id": "gen-1791828286-cIPPHG4WpWQVGRI8ocOW",
+ "object": "chat.completion",
+ "created": 1791828286,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01QnEcZ2cDX1SP1NqE4WN63K",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport numpy as np, json\\nd=np.load('sample_99.npz')\\nnames=['compton','rayleigh','photoelectric','pair']\\nlines=[]\\nfor i in range(len(d['proc'])):\\n    p=names[int(d['proc'][i])]\\n    eo=float(d['Eout'][i]); cs=float(d['cosS'][i]); te=float(d['te'][i]); ce=float(d['cose'][i]); tp=float(d['tpos'][i]); e_in=float(d['Ein'][i])\\n    ev={'process':p,'e_in_MeV':round(e_in,6),'e_out_MeV':None if np.isnan(eo) else round(eo,6),\\n        'cos_scatter':None if np.isnan(cs) else round(cs,5),'t_e_MeV':round(te,6),\\n        'cos_electron':None if np.isnan(ce) else round(ce,5),'t_positron_MeV':None if np.isnan(tp) else round(tp,6)}\\n    if p=='rayleigh':\\n        ev['e_out_MeV']=round(e_in,6); ev['t_e_MeV']=0.0; ev['cos_electron']=None\\n    lines.append(json.dumps(ev,separators=(',',':')))\\nfor k in range(0,200,50):\\n    print(f\\\"--- {k}\\\")\\n    print(',\\\\n'.join(lines[k:k+50]))\\n\"}"
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 88815,
+  "completion_tokens": 505,
+  "total_tokens": 89320,
+  "cost": 0.001288145,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 87532,
+   "cache_write_tokens": 1281,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001288145,
+   "upstream_inference_prompt_cost": 0.001035645,
+   "upstream_inference_completions_cost": 0.0002525
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 0,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

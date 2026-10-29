@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791827807-UPeLUazRzNNcQp0alSJo",
+ "object": "chat.completion",
+ "created": 1791827807,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Calling subprocess with \"python3\" might invoke a different interpreter than the one running this script, so I should use sys.executable to ensure consistency.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_019muGrGuWFsayKP5MgH6rPs",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport subprocess, sys\\ndef runpy(path):\\n    r=subprocess.run([sys.executable,path],capture_output=True,text=True,cwd='/tmp/work')\\n    return r.stdout, r.stderr[-3000:]\\no,e=runpy('/tmp/work/an1.py')\\nprint(o[-8000:], e)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Calling subprocess with \"python3\" might invoke a different interpreter than the one running this script, so I should use sys.executable to ensure consistency.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS+gYKEAgSGAI4AUIIdGhpbmtpbmcSDBxsdjMP6rE2/PT2eRoMkUkNOrlchYlLpXYrIjBC3xSeMnJSVQI2LVr06kQQ4q5B6MoyOA40wv31/9KAoV/4t3ACgqkuLS8CrSBsYpwqlwaraFhxJgLJkawSrnNDKyMkP5Xi9Uo1EEHvN84zdZdi7kM2RaLqvpyGFp4z+En6g/jpQ/g33pG+9HAcG12ZfxI9oy8FwqOxJrbkBd07ifvCaW7FRKQkWrpt4IEESUG+yxm71FBuy6vDd+DgsIPm+mJooRl6Nu5zFatL5loQYRT2Au7fGtyJ3yFshyD5FcinXXfxJ8UrEFkdVBLn4GQ5vy4DFHxIeGoTNamz+lHoqqPqABCUVY1aAXfhnUf+v33VA0tF0cEyVw2oeTaE6HWdscKtdshTmF0EcHfNeqJ9nVhkBrEERCiTP09W3IkKS9j7wZi4K7+pQXrk5eC1GVlk7U9z7S0TCYmry2cwEsSkv8l9vPjg6EPD7yKQQF3h9ATaf8q0VOT+vNYyPxhz2y1Ph+fQnFtbFUUf/Ls7nXgQY93Td20bxheI8PbHrAkiaWMLKi31N8TLk5SnIfWEytXqp+U4TLlVN8/v+GwpwM0izexsvl0C6ArNTz7Q+DUWr3Xn/BxQOXehkaVCQlHLWJrk4XOOQcpHPfb0I2jyaHay7rZl1I0+txf66N1PwnJL+zN9tp4kmzf7S447ousCdUfgxh+2Xk+x9WtzLDwU82GbRodC5XWRaYHMrRggkyNNZtV1L3RJia8P0H6QRgN+LE7mvjdaUvEqCK5UKwuUahP4yJPPBMKzAwJJ1KyCUHWTooVACg1EdehZ8EYLgDO/kt0rYPJ1zFGf51crBJwQ8PtGt1Riv4A1ET2SQCIevHVP74Orc+h9LjALK6fhTcRHSY19oQHdxwoExesKPNrR8DCqeyfUoPKCGibGOWd8a3tAfbCmVPuDGn+KUYqrbhe5Lx4SM7USJG+F09P0FYnQhjChKlwsFtp7QEACWKBRQeA9QeW/G5UbgFl4QEApbkR2RtadDxulz2dThpnNyJxOi9Bq4qArNyNglKuWujEQCG/1qUhX4YNvgelVveyvBQc+uxlQvwSqdzTn0uZVgsW9gdP2aSzja4ICpYNjGE8YhqFNGruIRPjCrPICMl+npZACzrlt7S9mnO02xiUnjxgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 104779,
+  "completion_tokens": 181,
+  "total_tokens": 104960,
+  "cost": 0.01405745,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 90229,
+   "cache_write_tokens": 14548,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.01405745,
+   "upstream_inference_prompt_cost": 0.01360495,
+   "upstream_inference_completions_cost": 0.0004525
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 24,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791820666-8jvnbwiFCOtPSUBlEm7S",
+ "object": "chat.completion",
+ "created": 1791820666,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Checking the energy balance: the scattered fraction comes out to about 0.195 of the total, consistent with the mean photon energy of 1.506 MeV. I'm now looking at how the scattered photon spectrum breaks down across bins, noting that roughly 20% of the scattered fluence lies above 1.4 MeV outside the binned range.\n\nRayleigh contributes zero energy transfer as expected, photoelectric interactions account for under 1% of events, and pair production is similarly small at about 0.36%, with its energy-transfer fraction around 0.6%. Next I'm moving into the L3 birth analysis along with L4, L5, and the electron kernel calculations.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01Vrc82bD7sNEou5h2eEZuHF",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport sys, pickle; sys.path.insert(0,'/tmp/work')\\nimport numpy as np, xs, mell\\nfrom elec import EB25\\ntot=pickle.load(open('/tmp/work/tot.pkl','rb')); res=pickle.load(open('/tmp/work/eres1.pkl','rb'))\\nN=tot['N']; VC=np.pi*0.2; PHI=1/(0.0099751*110**2); norm=N*VC*PHI\\nB=tot['births']; T0=B[:,0]; c=B[:,1]; F=B[:,2]; w=B[:,3]; kind=B[:,4]\\nY=xs.Yld(np.maximum(T0,1e-2))*(T0>=0.01)\\n# L3 (all births)\\nsel=w>0\\ninb=(T0>=0.01)&(T0<1.4)\\nh=np.histogram(T0[inb],bins=EB25,weights=w[inb])[0]; L3spec=h/h.sum()\\nmE=np.sum(w*T0)/np.sum(w)\\np=F==0\\nh0=np.histogram(T0[inb&p],bins=EB25,weights=w[inb&p])[0]; L3spec_p=h0/h0.sum()\\nmEp=np.sum((w*T0)[p])/np.sum(w[p])\\ncb=np.histogram(c,bins=cedges,weights=w)[0]; L3dir=cb/cb.sum()\\nprint('L3 spectrum',np.round(L3spec,4)); print('mean',mE,'prim',mEp)\\nprint('L3 spec prim',np.round(L3spec_p,4)); print('dir',np.round(L3dir,4))\\nprint('birth fractions by kind', [w[kind==k].sum()/w.sum() for k in range(4)], 'scat frac births', w[F==1].sum()/w.sum())\\n# kerma\\nKt=np.sum(w*T0)/norm; Kc=np.sum(w*T0*(1-Y))/norm\\nprint('K',Kt,'Kcol',Kc,'g',1-Kc/Kt)\\ndose_scat=np.sum((w*T0*(1-Y))[F==1])/np.sum(w*T0*(1-Y))\\nprint('dose frac scattered parent', dose_scat)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Checking the energy balance: the scattered fraction comes out to about 0.195 of the total, consistent with the mean photon energy of 1.506 MeV. I'm now looking at how the scattered photon spectrum breaks down across bins, noting that roughly 20% of the scattered fluence lies above 1.4 MeV outside the binned range.\n\nRayleigh contributes zero energy transfer as expected, photoelectric interactions account for under 1% of events, and pair production is similarly small at about 0.36%, with its energy-transfer fraction around 0.6%. Next I'm moving into the L3 birth analysis along with L4, L5, and the electron kernel calculations.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "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.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 153169,
+  "completion_tokens": 1156,
+  "total_tokens": 154325,
+  "cost": 0.015155675,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 145156,
+   "cache_write_tokens": 8011,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.015155675,
+   "upstream_inference_prompt_cost": 0.012265675,
+   "upstream_inference_completions_cost": 0.00289
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 344,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

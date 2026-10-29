@@ -1,0 +1,9 @@
+{
+ "stdout": "",
+ "stderr": "Traceback (most recent call last):\n  File \"/tmp/work/_call_021.py\", line 50, in <module>\n    print(f\"T={T:.2f} MeV: S_col={S_col_water(T):.3f} MeV/cm, S_rad={S_rad_water(T):.4f} MeV/cm, R={R_csda_water(T):.4f} cm\")\n                                  ~~~~~~~~~~~^^^\n  File \"/tmp/work/_call_021.py\", line 25, in S_col_water\n    return float(np.interp(E, E_sp, S_col)) * rho\n                                              ^^^\nNameError: name 'rho' is not defined\n",
+ "exit_code": 1,
+ "timed_out": false,
+ "wall_s": 0.21,
+ "stdout_truncated": false,
+ "stderr_truncated": false
+}

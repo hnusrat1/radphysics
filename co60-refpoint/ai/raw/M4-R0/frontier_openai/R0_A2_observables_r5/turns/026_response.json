@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791825029-qGD03c8MVPUGxQnimrVp",
+ "object": "chat.completion",
+ "created": 1791825029,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Fixing interpolation issues**\n\nI noticed that I'm having some problems with my log interpolation due to some zeros in my data. The columns of indices include various elements, but these zeros are causing issues like NaN values. I need to ensure that I perform interpolation correctly for each of these elements. It looks like I also need to check the XCOM coefficients since water has a total in column six. My current simulation should properly handle these zero pairs that fall below the threshold.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_W0uCPlbHLWXipPkfQQDfDw1e",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import numpy as np\\nx=np.loadtxt('/tmp/data/xcom_water.txt',comments='#')\\nfor e in [1.1732,1.25,1.3325]:\\n i=np.searchsorted(x[:,0],e);print(e,x[i-1:i+1,:])\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Fixing interpolation issues**\n\nI noticed that I'm having some problems with my log interpolation due to some zeros in my data. The columns of indices include various elements, but these zeros are causing issues like NaN values. I need to ensure that I perform interpolation correctly for each of these elements. It looks like I also need to check the XCOM coefficients since water has a total in column six. My current simulation should properly handle these zero pairs that fall below the threshold.",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzRSJ8-uSclQgpCAaTlUHM4TSqZ3WHjKVfbRZfmaqRCQDrXYZR3h7vh8JpTKPAqo3y-w_LLMZ7McO7ZQpHNomwzfef_bvmP29fkpDVTVTKgwGQindHMD964RrZ-bxY9DP9ATMf1alFHvG4w4rQrLLYm9uZL5OOXFCwMdu9xncpHOb2AKKaWRsxtifSa1atce7Ek4S0JBOLu7dDQx4NxNhXSmBhBHEvRsgbqOBcOiVEBJ6npKFVZEN477w4x0C9MiirB1gSFumCfIUHGaYubX0_HOyhS8ZhYgo_nnsNtgMWU_KCE_yhcpJExshb3DuqZy3oLbtgOJOJusS30y6toYWZjcmtEQhKdGWJAaIjKescDKzLuSMaWx6Cy0RPC6c3iGVDgMNFK8J2yfQPyLUVk6XxnVlJQraoNZOSpNtJ6y4pIaf8b6tUjom7zziY953Vex5AlPqn7ZXeC-AhFBGKBachVwLYTec7KZLQhUGkcDC9KYTLzVa4GtMwMpJl9uWMHcEoHpvX84WoZqyZdIaQZSnk_2VdVSPA9v7PJ1O8TBLskimrzueQsyaEAuYcwK5_Bgdz2uQjWWYYPx5enx5moKJ3_RbH2HcY2hR9woYpLsDrcdBxAqSoX-3DelFmff1Ib0YAwHl6dxMshWU-fTiowq1jhgm5UcRqoVOqLWrKsfeQn0ZC7M8vXfVR9nU_6zhxFJ5ao5Yv8oOu414-VmBYb91_nuP4O1SKJn082jaXKGVJQzONROzZmTrK4HzKeqKAF_QUc-4prfozr9P9xbtmF2QPiHeXsi--T4eQU-GaQU_wAFkpBay1h5OvHiBnNGjfwOLN3agTaJ9CYTXM_DTbiTTl2wjrD1SIfEgZ3IN7Bx5fEv5otIy9ioNe6Yiuq2Gw3IBPuKxYNezQOtZvpUzjIuwIF1y8XO1sA3BCgZV1dJKFXCRQzlhWnbDjWas7f_4t5VgtETI9w7Q5gCOUIgxtk9GclNjQD0l-tDlCtVejutVQJMMa5d4VEmEDu38yCpFUr0HDc818vS0MDxCKE7E6BgHwrcqpux-GBn4h8A3ymd4-jP0Vbp0GCjmpisax_ol_xR6Tj0sXpkaxCGmfKYXnZgl1s7NrSrAPk0dqK6bYr0kwEmdytV2jQX3mmh5nPw30ig7W9rK8lAjT00FLUHU4B7ydH2q8aZHVi4lE7idDu4jgFUt-0Y4Ispm6tfZJaqZZ7fPfhNIgOdH281mRB8awkDozI1BB2bjlSqZycdNjZ3TQD7gwvdpgn3H7GmC3fhqKvACKw0DhzFzaxOlfYp-ztm1c_3L1PJZM_rTsnUxY1P-aYfBcCrykU9WKIki2BLr9nHhYwOyvgaqnLAU6BHKm5-bC329tFgWWyBhAtOY1xEkiGiGGJKbFqV9NW6_HSzJbrUe4iTH1hGkU6zeRzX3pEbykK9Lkg69eRXyPB1UToFil0bJ0jSNc2MP3g5zrxxZ7g5NtRS3gPVpgewgI3h4o9iP-ZZA4jkXrusH_v4MQ2GUnLawZFNShcIX7sbyyB9VJDhdYM7Xy2ys1nfl1zst0h_UvzmyyGhZMSQev7a_5mIckA4-s513RCc6m2wBhCWA2d2BiUBY7xbNxhDjDxfn41y14n3TXW6bV4X7P6-pvF1c-FetpVRwBl8fbc0t-t8Se7h6Gw73xaNddE49pYP131zwp68Luf-zXUK6emQtJhwspIxShW1uiCgTZO9VshUKSOwGKi-Zs12KNCgxKZX3rHC5krkyqUAYoIjDyODahXVSepkdo-zVZPPCWft6ILUq3zNR66OkMukRKvKF9O5xWNvRTNB5gUgXY9-OWvvOe9etk_1Rds11UIVYFt-4fJpNeVrl9pVXOWzdp41A6RB9p3e4M4ZbfxEwOAP3E6Myh_8svVVElGcP4gI9ImNrWZV7xr4Ukg2EZ-1INH8lXH8nEbY_Iq1NFwMyPAFpscxP6ET6859CJfH399oXSlo932W5yVW0VsptH9yN4dswAI58d5En4TDrS-skBJE-xKEKZbdrBYNP5c3ELjFMsZF5ahJ-ulTAJYokEmp0zN2tSqceyw7eDUUIpQ5OGMA6OvGyeFSlnxVJCjFUr2Z7QOOvN8yx6lZCeagfafHU7bxn6gCdhLPK2_MQV7VKIHbzcdPX4qu5TlEPFcCOTmiaVixZLjJ-L9Knksp3vMwVqyCmoCQ6dDxn2kVcWpE46wV6vqCpQxN8F7MWpxMb2oJ4xm6zXmjaazqBNWZKeH9R7F4ZA24NTVmHvj5ZgZtuovRVVxqMp4d0eqcGJPOuxN7tIiWIqwO7vrxSMqMun9IWMUXwT9d7JI_m3GS90UQx1QA8ta6OuvZAYLyRMzVxcH6s3Mi8tX33sEoCsOHIrDs0aY1QPVM5G4Cc8tMX3RLtJJt5V8A3aWeCs9Id4yQBWPP0pp2ETozvaodzXd14570PJ2SKdqVnm8GL_o4fhumWqlI9KBNVt44Z6_oGJHGZ3zefrT1qEzq4IOFkYJRSqCxY1cJC-sF6GRgAELNIeA==.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_0e30cfb0b80b823e016acd1486edf487d1b30fe52aab195528",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 42879,
+  "completion_tokens": 160,
+  "total_tokens": 43039,
+  "cost": 0.000898565,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 39489,
+   "cache_write_tokens": 3387,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000898565,
+   "upstream_inference_prompt_cost": 0.000818565,
+   "upstream_inference_completions_cost": 8e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 79,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

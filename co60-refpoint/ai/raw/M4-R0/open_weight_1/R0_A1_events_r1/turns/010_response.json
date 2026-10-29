@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791826832-aSr5SvYUC3E4Fe8yhHoN",
+ "object": "chat.completion",
+ "created": 1791826832,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I keep making syntax errors. Let me be more careful. Let me write a clean, correct version.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_81487dd83c224ee2991de6f6",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nfrom numpy.random import default_rng\\nimport math, json\\n\\nrng = default_rng(42)\\n\\n# ============================================================\\n# Constants and cross sections\\n# ============================================================\\nmec2 = 0.5110034\\nre = 2.8179403262e-13\\nnel_cm3 = 6.02214076e23 * 10 / 18.01528\\n\\ndef sigma_KN(E):\\n    a = E / mec2\\n    term = ((1+a)/a**2 * (2*(1+a)/(1+2*a) - np.log(1+2*a)/a) +\\n            np.log(1+2*a)/(2*a) - (1+3*a)/(1+2*a)**2)\\n    return 2 * np.pi * re**2 * term\\n\\ndef mu_c(E): return nel_cm3 * sigma_KN(E)\\ndef mu_p(E): return 0.00057 * (1.0/E)**3.5\\ndef mu_pp(E):\\n    if E <= 1.022: return 0.0\\n    return 0.00035 * (E-1.022)/(1.3325-1.022)\\ndef mu_r(E): return 0.00033 * (1.0/E)**2\\ndef mu_t(E): return mu_c(E)+mu_p(E)+mu_pp(E)+mu_r(E)\\n\\n# ============================================================\\n# Geometry\\n# ============================================================\\nsrc = np.array([0.0, 0.0, -100.0])\\nSCZMIN, SCZMAX = 4.9, 5.1\\nSCRAD = 1.0\\nPHZMIN, PHZMAX = 0.0, 30.0\\nPHHALF = 15.0\\n\\ndef in_scoring(p):\\n    return SCZMIN <= p[2] <= SCZMAX and (p[0]**2 + p[1]**2) <= SCRAD**2\\n\\ndef dist_boundary(pos, dir):\\n    \\\"\\\"\\\"Distance from pos along dir to exit the phantom. Returns inf if never exits.\\\"\\\"\\\"\\n    eps = 1e-12\\n    tmin = float('inf')\\n    # z=0\\n    if dir[2] > eps:\\n        t = -pos[2] / dir[2]\\n        if t > eps:\\n            cp = pos + t*dir\\n            if abs(cp[0]) <= PHHALF+eps and abs(cp[1]) <= PHHALF+eps:\\n                tmin = min(tmin, t)\\n    # z=30\\n    if dir[2] < -eps:\\n        t = (PHZMAX - pos[2]) / dir[2]\\n        if t > eps:\\n            cp = pos + t*dir\\n            if abs(cp[0]) <= PHHALF+eps and abs(cp[1]) <= PHHALF+eps:\\n                tmin = min(tmin, t)\\n    # x=-15\\n    if dir[0] > eps:\\n        t = (-PHHALF - pos[0]) / dir[0]\\n        if t > eps:\\n            cp = pos + t*dir\\n            if -eps <= cp[2] <= PHZMAX+eps and abs(cp[1]) <= PHHALF+eps:\\n                tmin = min(tmin, t)\\n    # x=15\\n    if dir[0] < -eps:\\n        t = (PHHALF - pos[0]) / dir[0]\\n        if t > eps:\\n            cp = pos + t*dir\\n            if -eps <= cp[2] <= PHZMAX+eps and abs(cp[1]) <= PHHALF+eps:\\n                tmin = min(tmin, t)\\n    # y=-15\\n    if dir[1] > eps:\\n        t = (-PHHALF - pos[1]) / dir[1]\\n        if t > eps:\\n            cp = pos + t*dir\\n            if -eps <= cp[2] <= PHZMAX+eps and abs(cp[0]) <= PHHALF+eps:\\n                tmin = min(tmin, t)\\n    # y=15\\n    if dir[1] < -eps:\\n        t = (PHHALF - pos[1]) / dir[1]\\n        if t > eps:\\n            cp = pos + t*dir\\n            if -eps <= cp[2] <= PHZMAX+eps and abs(cp[0]) <= PHHALF+eps:\\n                tmin = min(tmin, t)\\n    return tmin\\n\\n# ============================================================\\n# Source sampling\\n# ============================================================\\ndef source_dir():\\n    x = rng.uniform(-5.0, 5.0)\\n    y = rng.uniform(-5.0, 5.0)\\n    v = np.array([x, y, 0.0]) - src\\n    return v / np.linalg.norm(v)\\n\\ndef source_E():\\n    return 1.1732 if rng.random() < 0.5 else 1.3325\\n\\n# ============================================================\\n# Process selection and kinematics\\n# ============================================================\\ndef choose_proc(E):\\n    mt = mu_t(E)\\n    r = rng.random() * mt\\n    if r < mu_c(E):\\n        return 'compton'\\n    if r < mu_c(E) + mu_p(E):\\n        return 'photoelectric'\\n    if r < mu_c(E) + mu_p(E) + mu_pp(E):\\n        return 'pair'\\n    return 'rayleigh'\\n\\ndef comp_scat(E_in):\\n    a = E_in / mec2\\n    while True:\\n        ct = rng.uniform(-1.0, 1.0)\\n        denom = 1.0 + a * (1.0 - ct)\\n        E_out = E_in / denom\\n        if E_out <= 0 or E_out > E_in:\\n            continue\\n        r = E_out / E_in\\n        kn_val = r**2 * (r + 1.0/r - (1.0 - ct**2))\\n        if rng.random() * 2.0 < kn_val:\\n            t_e = E_in - E_out\\n            p_e_sq = t_e * (t_e + 2.0 * mec2)\\n            if p_e_sq <= 0:\\n                cos_e = 1.0\\n            else:\\n                cos_e = (E_in - E_out * ct) / np.sqrt(p_e_sq)\\n                cos_e = np.clip(cos_e, -1.0, 1.0)\\n            return E_out, ct, t_e, cos_e\\n\\ndef ray_scat(E_in):\\n    while True:\\n        ct = rng.uniform(-1.0, 1.0)\\n        if rng.random() < 0.5 * (1.0 + ct**2):\\n            return E_in, ct, 0.0, None\\n\\ndef pair_proc(Ein):\\n    exc = max(0.0, Ein - 1.022)\\n    te = rng.uniform(0.0, exc)    \\n    tp = exc - te\\n    ce = rng.uniform(0.9, 1.0)\\n    return None, None, te, ce, tp, None\\n\\n# Quick test\\nprint(f\\\"mu_t(1.1732)={mu_t(1.1732):.6f}, mu_t(1.3325)={mu_t(1.3325):.6f}\\\")\\n\\n# Test Compton\\nfor _ in range(2):\\n    eo, ct, te, ce = comp_scat(1.1732)\\n    print(f\\\"Compton: eo={eo:.4f}, ct={ct:.4f}, te={te:.4f}, ce={ce:.4f}\\\")\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I keep making syntax errors. Let me be more careful. Let me write a clean, correct version.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 33206,
+  "completion_tokens": 1783,
+  "total_tokens": 34989,
+  "cost": 0.001256993584,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 28672,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001256993584,
+   "upstream_inference_prompt_cost": 0.000932986824,
+   "upstream_inference_completions_cost": 0.00032400676
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 21,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

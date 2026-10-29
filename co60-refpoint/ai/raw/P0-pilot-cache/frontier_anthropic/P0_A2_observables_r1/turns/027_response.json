@@ -1,0 +1,57 @@
+{
+ "id": "gen-1791820672-4PEn8o4vLHguk3yBkG2a",
+ "object": "chat.completion",
+ "created": 1791820672,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01V5RfRMx2wVek8qeHSWAZL5",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport sys, pickle; sys.path.insert(0,'/tmp/work')\\nimport numpy as np, xs, mell\\nfrom elec import EB25\\ncedges=np.array([-1,-0.8,-0.6,-0.4,-0.2,0,0.2,0.4,0.6,0.8,1.0001])\\ntot=pickle.load(open('/tmp/work/tot.pkl','rb')); res=pickle.load(open('/tmp/work/eres1.pkl','rb'))\\nN=tot['N']; VC=np.pi*0.2; PHI=1/(0.0099751*110**2); norm=N*VC*PHI\\nB=tot['births']; T0=B[:,0]; c=B[:,1]; F=B[:,2]; w=B[:,3]; kind=B[:,4]\\nY=xs.Yld(np.maximum(T0,1e-2))*(T0>=0.01)\\ninb=(T0>=0.01)&(T0<1.4)\\nh=np.histogram(T0[inb],bins=EB25,weights=w[inb])[0]; L3spec=h/h.sum()\\nmE=np.sum(w*T0)/np.sum(w)\\np=F==0\\nh0=np.histogram(T0[inb&p],bins=EB25,weights=w[inb&p])[0]; L3spec_p=h0/h0.sum()\\nmEp=np.sum((w*T0)[p])/np.sum(w[p])\\ncb=np.histogram(c,bins=cedges,weights=w)[0]; L3dir=cb/cb.sum()\\nprint('L3 spectrum',np.round(L3spec,4)); print('mean',mE,'prim',mEp)\\nprint('L3 spec prim',np.round(L3spec_p,4)); print('dir',np.round(L3dir,4))\\nprint('birth fractions by kind', [w[kind==k].sum()/w.sum() for k in range(4)], 'scat frac births', w[F==1].sum()/w.sum())\\nKt=np.sum(w*T0)/norm; Kc=np.sum(w*T0*(1-Y))/norm\\nprint('K',Kt,'Kcol',Kc,'g',1-Kc/Kt)\\ndose_scat=np.sum((w*T0*(1-Y))[F==1])/np.sum(w*T0*(1-Y))\\nprint('dose frac scattered parent', dose_scat)\\nprint('frac births T0<1.4 and >=0.01', w[inb].sum()/w.sum(), 'T0 max', T0.max())\\n\"}"
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 154509,
+  "completion_tokens": 892,
+  "total_tokens": 155401,
+  "cost": 0.01072685,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 153167,
+   "cache_write_tokens": 1340,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.01072685,
+   "upstream_inference_prompt_cost": 0.00849685,
+   "upstream_inference_completions_cost": 0.00223
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 0,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791826915-a32UGGYNRpFVGgWbT2KL",
+ "object": "chat.completion",
+ "created": 1791826915,
+ "model": "qwen/qwen3.7-flash",
+ "provider": "Alibaba",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Good, now let me write the complete calculation in a file to avoid typos:",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_39a8b958be6542389465b2e0",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"script = r'''\\nimport numpy as np\\nimport json\\n\\nxcom = np.loadtxt('/tmp/data/xcom_water.txt', comments='#')\\nestar = np.loadtxt('/tmp/data/estar_water.txt', comments='#')\\n\\ndef ix(ci, E): \\n    return np.interp(np.log10(E), np.log10(xcom[:, 0]), xcom[:, ci])\\n\\ndef ie(ci, E): \\n    return np.interp(E, estar[:, 0], estar[:, ci])\\n\\nE_co = [1.1732, 1.3325]\\nw_co = [0.5, 0.5]\\ndepth = 5.0\\nrho = 1.0\\n\\npe_edges = np.array([0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, \\n                     0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, \\n                     1, 1.05, 1.1, 1.15, 1.2, 1.25, 1.3, 1.35, 1.4])\\nee_edges = np.array([0.01, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45,\\n                     0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95,\\n                     1, 1.05, 1.1, 1.15, 1.2, 1.4])\\nct_edges = np.array([-1, -0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1])\\n\\n# Layer 1\\nmtw = sum(w * ix(6, E) for w, E in zip(w_co, E_co))\\nml = mtw * rho\\npf = np.exp(-ml * depth)\\nbsp = 0.18\\ntf = pf * (1 + bsp)\\nsff = 1 - pf / tf\\nme_pri = 0.5*E_co[0] + 0.5*E_co[1]\\nme_sc = me_pri * 0.75\\nep = pf * me_pri\\nes = (tf - pf) * me_sc\\nsef = es / (ep + es)\\nmae = (ep + es) / tf\\n\\nprint(f\\\"L1: pf={pf:.6f}, tf={tf:.6f}, sff={sff:.6f}\\\")\\nprint(f\\\"L1 sef={sef:.6f}, mae={mae:.4f}\\\")\\n'''\\n\\nwith open('/tmp/calc_full.py', 'w') as f:\\n    f.write(script)\\n    \\nexec(open('/tmp/calc_full.py').read())\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Good, now let me write the complete calculation in a file to avoid typos:",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 34438,
+  "completion_tokens": 808,
+  "total_tokens": 35246,
+  "cost": 0.00109436,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 33408,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00109436,
+   "upstream_inference_prompt_cost": 0.00077116,
+   "upstream_inference_completions_cost": 0.0003232
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 17,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

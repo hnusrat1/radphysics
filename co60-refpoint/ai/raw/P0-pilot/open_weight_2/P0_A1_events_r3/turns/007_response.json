@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791816325-XtwZDOm5gHRrVxylXxBO",
+ "object": "chat.completion",
+ "created": 1791816325,
+ "model": "qwen/qwen3.7-flash",
+ "provider": "Alibaba",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Good! I generated 200 events but there are only compton (152), pair (40), and rayleigh (8) - no photoelectric events. This is because with the seed, we didn't get any of the very rare photoelectric interactions (expected ~0.17%, so maybe 0-1 in 200).\n\nAlso, I notice that process is stored as `np.str_('pair')` rather than just `'pair'`. Let me fix this to ensure proper JSON serialization. Also need to convert all numpy types to Python native types.\n\nLet me now create the final version with proper conversion and output format.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_02852ec341814ad5a45f23d2",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nimport json\\n\\n# Constants  \\nE_photon = 2.0  # MeV\\nm_e_c2 = 0.5109989461  # MeV\\n\\ndef sample_compton_cos(E):\\n    \\\"\\\"\\\"Sample cos(theta) from Klein-Nishina distribution.\\\"\\\"\\\"\\n    alpha = E / m_e_c2\\n    \\n    n_bins = 200\\n    cos_vals = np.linspace(-0.999999, 1, n_bins)\\n    \\n    pdf_values = []\\n    for ct in cos_vals:\\n        denom = 1 + alpha * (1 - ct)\\n        E_prime = E / denom\\n        r = E_prime / E\\n        val = r**2 + (1/r)**2 - (1 - ct**2)\\n        pdf_values.append(val)\\n    \\n    pdf_array = np.array(pdf_values)\\n    cumsum = np.cumsum(pdf_array)\\n    cumsum = cumsum / cumsum[-1]\\n    \\n    r_val = np.random.random()\\n    idx = np.searchsorted(cumsum, r_val)\\n    idx = min(idx, len(cos_vals)-1)\\n    \\n    return float(np.clip(cos_vals[idx], -1, 1))\\n\\ndef sample_rayleigh_forward():\\n    \\\"\\\"\\\"Sample forward-peaked angle for coherent scattering.\\\"\\\"\\\"\\n    a_param = 8.0\\n    \\n    while True:\\n        u = np.random.uniform(0, 1)\\n        cos_theta = 1 + np.log(u) / a_param\\n        \\n        if cos_theta >= -0.5 and cos_theta <= 1.0:\\n            return float(cos_theta)\\n\\ndef to_native(obj):\\n    \\\"\\\"\\\"Convert numpy types to Python native.\\\"\\\"\\\"\\n    if isinstance(obj, (np.ndarray,)):\\n        return obj.tolist()\\n    elif isinstance(obj, np.generic):\\n        return obj.item()\\n    elif isinstance(obj, dict):\\n        return {k: to_native(v) for k, v in obj.items()}\\n    elif isinstance(obj, (list, tuple)):\\n        return [to_native(x) for x in obj]\\n    else:\\n        return obj\\n\\n# NIST XCOM values at 2.0 MeV in liquid water\\nmu_compton = 0.0784\\nmu_rayleigh = 0.0026 \\nmu_photo = 0.00017\\nmu_pair = 0.0198\\nmu_total = mu_compton + mu_rayleigh + mu_photo + mu_pair\\n\\nprobs_dict = {\\n    'compton': mu_compton / mu_total,\\n    'rayleigh': mu_rayleigh / mu_total,\\n    'photoelectric': mu_photo / mu_total,\\n    'pair': mu_pair / mu_total\\n}\\n\\nprint(\\\"Event probabilities:\\\")\\nfor proc, prob in probs_dict.items():\\n    print(f\\\"  {proc}: {prob*100:.3f}%\\\")\\n\\nnp.random.seed(12345)\\n\\nevents = []\\nprocess_list = ['compton', 'rayleigh', 'photoelectric', 'pair']\\nprobs_list = [probs_dict[p] for p in process_list]\\n\\nfor i in range(200):\\n    proc = str(np.random.choice(process_list, p=probs_list))\\n    \\n    ev = {\\n        \\\"process\\\": proc,\\n        \\\"e_in_MeV\\\": round(E_photon, 6),\\n        \\\"e_out_MeV\\\": None,\\n        \\\"cos_scatter\\\": None,\\n        \\\"t_e_MeV\\\": 0.0,\\n        \\\"cos_electron\\\": None,\\n        \\\"t_positron_MeV\\\": None\\n    }\\n    \\n    try:\\n        if proc == 'compton':\\n            ct = sample_compton_cos(E_photon)\\n            E_out = E_photon / (1 + E_photon/m_e_c2 * (1-ct))\\n            t_e = E_photon - E_out\\n            \\n            gamma = 1 + t_e/m_e_c2\\n            tan_half = np.sqrt(max((1-ct)/(1+ct), 0))\\n            cot_theta_e = np.sqrt(max(gamma**2-1, 0))/gamma * tan_half\\n            \\n            cos_et = 1/np.sqrt(1+cot_theta_e**2)\\n            \\n            ev['e_out_MeV'] = round(float(E_out), 6)\\n            ev['cos_scatter'] = round(float(np.clip(ct, -1, 1)), 6)\\n            ev['t_e_MeV'] = round(float(t_e), 6)\\n            ev['cos_electron'] = round(float(np.clip(cos_et, -1, 1)), 6)\\n            \\n        elif proc == 'rayleigh':\\n            ct = sample_rayleigh_forward()\\n            ev['e_out_MeV'] = round(E_photon, 6)\\n            ev['cos_scatter'] = round(float(np.clip(ct, -1, 1)), 6)\\n            ev['t_e_MeV'] = 0.0\\n            \\n        elif proc == 'photoelectric':\\n            bind = 0.0005\\n            t_e = E_photon - bind\\n            \\n            ev['e_out_MeV'] = None\\n            ev['cos_scatter'] = None\\n            ev['t_e_MeV'] = round(float(t_e), 6)\\n            ev['cos_electron'] = round(float(np.random.uniform(-0.2, 1.0)), 6)\\n            \\n        elif proc == 'pair':\\n            E_avail = E_photon - 2*m_e_c2\\n            f_el = np.random.beta(2, 2)\\n            t_e = f_el * E_avail + m_e_c2\\n            t_p = (1-f_el) * E_avail + m_e_c2\\n            \\n            ev['e_out_MeV'] = None\\n            ev['cos_scatter'] = None\\n            ev['t_e_MeV'] = round(float(t_e), 6)\\n            ev['t_positron_MeV'] = round(float(t_p), 6)\\n            ev['cos_electron'] = round(float(np.random.uniform(0.7, 1.0)), 6)\\n        \\n        events.append(ev)\\n        \\n    except Exception as e:\\n        print(f\\\"Error in event {i}: {e}\\\")\\n        import traceback\\n        traceback.print_exc()\\n\\nfrom collections import Counter\\ncnt = Counter([e['process'] for e in events])\\nprint(f\\\"\\\\nProcess counts ({len(events)} total):\\\")\\nfor proc, count in sorted(cnt.items()):\\n    print(f\\\"  {proc}: {count} ({count/len(events)*100:.1f}%)\\\")\\n\\n# Save as JSON\\noutput = {\\n    \\\"method\\\": \\\"Generated 200 photon interaction events in liquid water at 2.0 MeV using NIST XCOM mass attenuation coefficients. Processes sampled proportionally: Compton (~78%), pair production (~19%), Rayleigh (~2.5%), photoelectric (~0.17%). Kinematics sampled from appropriate differential cross-sections: Klein-Nishina for Compton, exponential forward-peaked distribution for Rayleigh, symmetric energy split for pair production.\\\",\\n    \\\"events\\\": events\\n}\\n\\njson_str = json.dumps(output, indent=2, default=str)\\nwith open('photon_events.json', 'w') as f:\\n    f.write(json_str)\\n\\nprint(\\\"\\\\nSaved to photon_events.json\\\")\\nprint(\\\"\\\\nFirst event:\\\", json.loads(json_str)['events'][0])\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Good! I generated 200 events but there are only compton (152), pair (40), and rayleigh (8) - no photoelectric events. This is because with the seed, we didn't get any of the very rare photoelectric interactions (expected ~0.17%, so maybe 0-1 in 200).\n\nAlso, I notice that process is stored as `np.str_('pair')` rather than just `'pair'`. Let me fix this to ensure proper JSON serialization. Also need to convert all numpy types to Python native types.\n\nLet me now create the final version with proper conversion and output format.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 14111,
+  "completion_tokens": 1816,
+  "total_tokens": 15927,
+  "cost": 0.000376786,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 11776,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000376786,
+   "upstream_inference_prompt_cost": 0.000140706,
+   "upstream_inference_completions_cost": 0.00023608
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 137,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

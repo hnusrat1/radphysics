@@ -1,0 +1,85 @@
+{
+ "id": "gen-1791824306-cqARcZpjAFd9moXQcsSW",
+ "object": "chat.completion",
+ "created": 1791824306,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Evaluating scattering fractions**\n\nI'm considering primary rates and scattering fractions related to scattered energies. I think about normalizing the scattered spectrum and how it accounts for line energy after Rayleigh scattering, using the midpoint for each bin. I also need to include cross-section values in a logarithmic context. This seems to involve understanding the primary interactions deeply. It feels a bit complex, but I'm trying to piece it together thoroughly!",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_sEOrfv4kMIJ9Im7WShj72jHd",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import numpy as np\\n# manually spectrum scaled to .075\\nv=np.array([.0001,.0002,.0003,.0005,.0007,.001,.0012,.0015,.0018,.0022,.0026,.003,.0035,.004,.0045,.005,.0055,.0055,.005,.0045,.004,.0035,.003,.0025,.0015,.001,.0008,.0005]);v*=.075/v.sum()\\nedge=np.arange(0,1.4001,.05); Ebin=(edge[:-1]+edge[1:])/2\\nx=np.loadtxt('/tmp/data/xcom_water.txt',comments='#'); logx=np.log(x[:,0])\\ndef coeff(E,j): return np.exp(np.interp(np.log(E),logx,np.log(np.maximum(x[:,j],1e-300))))\\ndef meanT(E):\\n c=np.linspace(-1,1,10001); ep=1/(1+E/.51099895*(1-c)); ds=ep**2*(ep+1/ep-(1-c*c))/2; return np.trapezoid(ds*E*(1-ep),c)/np.trapezoid(ds,c)\\n# primary mean interactions coeff by lines; average fluence primary each .3645\\npcoeff=np.mean([[coeff(E,j) for j in range(1,6)] for E in [1.1732,1.3325]],axis=0)\\nprint('p coeff components coh,incoh,photo,pairN,pairE',pcoeff)\\n# rate vectors process coh/incoh/photo/pair\\nprate=np.array([pcoeff[0],pcoeff[1],pcoeff[2],pcoeff[3]+pcoeff[4]])*.729\\nsrate=np.zeros(4); energytransfer=np.zeros(4)\\nfor f,E in zip(v,Ebin):\\n cs=np.array([coeff(E,j) for j in range(1,6)])\\n rr=np.array([cs[0],cs[1],cs[2],cs[3]+cs[4]])*f\\n srate+=rr\\n energytransfer += np.array([0,rr[1]*meanT(E),rr[2]*E,rr[3]*max(E-1.022,0)])\\n# primary energy transfer rates\\nfor E in [1.1732,1.3325]:\\n cs=np.array([coeff(E,j) for j in range(1,6)])*.3645\\n energytransfer += np.array([0,cs[1]*meanT(E),cs[2]*E,(cs[3]+cs[4])*max(E-1.022,0)])\\nrate=prate+srate\\nprint('prate',prate,prate.sum(),prate/prate.sum())\\nprint('srate',srate,srate.sum(),srate/srate.sum())\\nprint('all frac',rate/rate.sum(), 'share scatter',srate.sum()/rate.sum())\\nprint('transfer',energytransfer/energytransfer.sum(),energytransfer,energytransfer.sum())\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Evaluating scattering fractions**\n\nI'm considering primary rates and scattering fractions related to scattered energies. I think about normalizing the scattered spectrum and how it accounts for line energy after Rayleigh scattering, using the midpoint for each bin. I also need to include cross-section values in a logarithmic context. This seems to involve understanding the primary interactions deeply. It feels a bit complex, but I'm trying to piece it together thoroughly!",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzRG6fEPYELb96uyYcdpdNjjb5pyaikkeD2iTFUry8KyiqfAlChOn2vw1WjPbLc8NND6tojx1aBhihu7HkqTBC574U_raBpGUHIul9q9awNX-2o-klNlZQjiNqjtNNhClGOtMN1cnHrJ5j6p73IV4tyMhvZLV2BB7DVoaYDjGUA6ZXYtONRn7CH_7A--vSHgBWvz8R8WhFXxbnxvZ9D8rUgLPDI2yV_OX0sL2-lodolaQKq62B3ya7fK06T5rZ81SUgHfMAWzSYTDxKPbjIRa-MK0Skp0jrG7sno1wwEt3e-Qy_k-ClcUF-V8piu2O6TUKJW9kFUGzg14md9_tpxZ7yYj2xdJGMlkYpFuQDSXNJWwTL2-E4SXz_v4lMpZnvH8LZwjghg-k-6cVkJF-gnewEuNLlaHDDcuFuqtN74URtHhl3kPahlSDZyf7wZeEZB69jYIZd6WzncNbaIcboXiDzhldqS3Tg1IndaOgkVQ8kPvTkkhhr4yMtN0IIOY5mTt2F8Fi6EyVtraZ7maPY3qqRJ8slmXGCNCl47YFWQ6Cf4TYRXumX4fIZ2nffO_wsKQb5LBNYrzQbzyomdhqQbwqqyJUiVnXs7J9oo3OQ1cybM1fnWJv64JplDLnGCKyT4JMRp3FdnKlaLyl1uDGGeUO7weI8SWJ-uMl5cszl_Vc1iJ6qV2QHOC8h0pptM4qY3WCTNQROoaNoAfrrXSqGv4-3oqIULBTrFIAJAb4UR5X3Yi_6uBUuriW7vQMm4WQ_oCixJVCP18oMzIo2qsqFcK3RtDrelwJ5DAXhlcJNWMktkuPK1HZ8PHQaGUOiTdAbYYeBhqHtkTDQ4x37snl9RBRwQWUoMWhbn0Fer9Sg1g2tW7ydNHSRIdmvC9r6qpPsxT_71eS3zc_rWAV_sEjsKwy5zwZcWgnDAuzppTqoIzUD942X79pGw4MK4heNlMMzrmbbJQXFzhTOEdwvVqbdYddxH99gzeLNnHpi3vDTJAberfcy4DkBaYWkBXZYfKfrrQZM3yYP-6Gosd51XJKe3SBtuuzXf6ExM4l1wB0xwaKI2sXOBW_izQeyKIa1-KbfqcNFvq3R6rBFfA250gWAQgBD3taSAg3wp2DcuxcTO3tZOO6Wu6jPzHFLQy4tSVBHnm_bDDSeDwnONboX2OQ_uFNOSFuM7HKxU2yuTAQPOWGSDw5VMpbJOO9SxMuFVU7cKqUAsDdwbSpStsIz0N42pw36sxHQY8Ha0xz-QzuVp1mbCj5egx0fWjsjVZAVeTiBKuedX5HtkNj6wOKdOeq0NJGPOyHCSnTQgzXZW57Kj6X89OVTZy1JgKphY8WIrn8SEpBiKcA37KGAWTKPsn9wjpLsXQa7AVwoP_g-Czjcw-eDdR5Z6rzAgK-EPiNpMM29Lh2m88U-3ZEN7JsihkepfIk-Z7RqpIVzevi57oJpnAPkJ-MpccYUYBfvv1Slf76y71y2BZz886lj40qG6CEk7u_T91g8HQu4EnjoPYO-vKGKXujHVj8h0ll6ISxk9oaD1GGcdOifk5J9ln_bztMwypUkWJBUPWkTqIr3EKac0YEql-3h_BycPLoa1G8eOE2hXNLEwlP8uzhmCXV9WMhN40hCrPHsjQeWXQ8dNyO46fNz8DYJV54Hoq1GtqpforgNiF9479mW2GciihsshA1jq7WCsYeiomAao5eZJWSQJKDQg9ikObOW7tUFEc6jQFBsO-sqCMGIdKhExPnHGkV38_31qL75Nf1ztGQA_-JTy7hLs92Hy98FWwdsaIr3WtM6Qvcv6AwnxUTbPqVPpfDECTWXt6ClZ_jeQBC5kRF-EFjVn5d2McQrLoRuTlOczDqo4JIxjbVAWA1csLVvKm-a9wpIRcE476KSa_jIjj23PMGtic6xfsogrhqohKNDTRWtHiZhpTILRhAAwd0hzkzUSQhr1uBOGEryLtUB6CJP_DgJ5LdYPPbk7uUd6ejD5dlPtA_DoXhyHITd67EcOidfyd0wsl1I8UyWfcvZZpxVBjJGsjA_3Uz118V9IKe47IBQMJGsAnYjNdoFfJ3UX8rxzpeTGeT2n_y7_9PfT-RrE_917G8SLuUxa-nZ-X2uBfUbcvSfP89uEqSSPNponN6T0ybpEAm_Ox2v5KNVLQHzOsq38231AYpJzGa9osS2eYO8KVFPgL6FGuzQuQ8b3dFQlVaknBe5bWK7H3OUtwr9KnXnauzvcS0FNJirY20Ki1rEiAf7zRMeNSiu-NDf01gqItnX-SAx6_DSgGUnRZhByB9nShrngxBTrMpwfwGFpcYyY7cwfV5KmK3E1e247o86_5OOhrLOYnZkED4QYyoZ0MgJA0iDoapX4gtb_H97eF76o1_i1j3Ocll_vD4-3f2qIwWHd-yXnmGghzcMpV9kdC3RaV1eGy2NqnxUvaYIL7R0lRjq-d5jmRQzYlp5DfrROcmh6NK_TirdsK_36HgcMZC0LUO3fqRyyAfR-yuUSZxS9tQOUbYiPEV3KKyGP9XbFsL5Fy-BoAMSVuZkoZuWENc0M37u0m-uUn92n1aB3ZT0Yz91FHdo_T6Jouexf0e-ES_z9UbAjcn___PXcdbfiBjhJ2tA_tXOp58I23BzYR-Cofe4cLoBBVpIEucp6T_lsnyoJE-V2GzrkQe6QOhoDOeMK7ThuhCRLkvKqjUieYQV4eP8kZV4d60gzyeAOVe90iIBc7SG0InbSKsuqAgIu6jcKC8q9D8NVbHfiPXPIPI8tJNid8d-pj6AcVcnk9QWpBeFG05gyaIseZCl4V3OxouN-G7Km7zv3-B4nNhIN3p7JxfujXiootb-bN0NQhfrzeyor2ZvQup-XASBuSqL4iyeaAG144IeFy7_q_O3VQA5RIBfdjdbMFyTYcTckiOG0TxeP_zS3zf-DriLfBN7qX4eeQatVVQMExHWNb8E3pDgxmoVaOZYvbazubogzplbNWSWx4nHEga1hFF0u5CqviUw6lpX4QxjvLNoywHeLI0Oa8PHxo364h4fstd4pC6Hi9xMSe6ppQzDCG_WzTsY2D27qX_q5L2RjsVTy51oP_lFZF3_FJRmqc2u0aB5rmOSuIV8zdu-6RZLufjntibEHLSoz5nT5PKgOFj79k6t8N6_hVKT3yEjwiFB7hjlZSCdVGtpY1s5TecTqkE5suF40XpOifjqACduxMq7gaokh8bDrOr8nUZkDOc4EXmnFh8L6ZXGV8fulcu15io745T7YgyNw9sG7C7FBdmw6pqKA7Jrgejoxel-UNehz4fbYrUsRNqZAHr6OAfU5mEfxOt0J-4NrNuuV2MRwgqW8odHX_pFRwfk6jRTFgHCwshYtyVVA9j_5rMhOdU_OEivQGXF2cI48HVkyCLStCHKP533BY12JfhEYX_5OyvDWWrO48tQDYNXQTboNy1kx-2hpuk2wg4wMPNK5_hMZ7TTvW65-xHNGOivcYS1VVerdUPcdB7Cp6qPtYAy68se68d1GZM1YDAlvCd2ygiJACgVeSxuAOazLYeX0AVShmSlTe9PL8n16jHfTKp3ei6f5HH3NyhQliXPEXRJeEjYTSeJ2kgReQn1PMMlYXKxynrzFM_6A-rxCOM_ZnDkMMS00gcWIhxn0IlE1DLG_WGOjG2kE_sUR_pG_4GBPYU0unvmY4ujdVLfpJK6WoqZT6FdklwksR0tIsV_9fBP_Au-IrJihylExm7h9UeUfjt0SxvQ1JbJZ7vsB_KFMV7V3Gzn8M98YHrYqWpJGuU7pR0YWafRabxVfA5s6UzYcjSnr0RiZgbJ2BbBSw0ImKeXBatlZRx9aG8BPe37JH-djo4p54dRBoJfpuY9vXDVSq0TCwKieykbI4FFQmdqnbyt3gyopxPViqKI7WWD-RSiCYNWAGFs0cgHym22ffns_ag1JyaLLuGpgLAuratrJQ6Rkfcov86su2zCUenSBoWPi7d-QUiXJVxpX4gMJomM2bGtwUO2oLCOtP_svNsQhLVGDgFWt6VBxA9qRLpn8_qQQs-nIr_pz_dztUNDvtiHLALjBrASyz7qbKuI4-EFJbAsXMCQeRw2JOkMKqRHSwZ4-UpXnUg2sep0vOO7nts1RygSupNR6GctTb8l4I-RXg_b4XOvbqp-RBu__3MjrIJBufInvF3Ode8tiZ03HddsDVhWCgkvQqusogo73gdhL_b1OzLJAa4jq1Wmo1a4y4ht4refwuY-iLwiXVmeqFzbwFfUm-9l2x-16Jo05MRVLVHToDT3-rv7cWMeUR1aI6CamUMBrML-U58zqBETHv_xZuossbs79faV2lO7tTpCfL6XzyeCd17SYDEkNvUzTxguklQavPrTR6AZRePshQUE-5-UKWLJyffCdjecmPq1SsQVvIbktENAr7EVucV52I0JN-Ej8f5OH2Gy9UJm-AYE624Ngek3kQ202AY-zIWimUjp-P6AcVg5cb9aCu-tC8TXpBGBG2BM9NfS6UijLsGzReYdd4sfOYBX5tWozdyaJ-RD6ntf_OqTDBL1V5ozJoRAH6nMBXJKgdJtAFZhFFbbRO55TkVcrIqWzZoXTlTzqJMGZMfPk2uZEkS_5BHFixpBTMDyVpsP3l2RotB_ayD4--P7rGoRz6JKiK6eqKwT_tUKiRWL2R08_gB1zJRCv1UzKp8cViNwNk8NxxSdeQFZG5xXvr0p1U0Tk7Ad6UWTqrJy-c6LIvDmS0K9ugThvowJFn7OsginE-WjnM9sCHUD0tvaCqbZOAvZ7H8ZcFFCITUKY1-x1kVH--bvUn6KejiS6A3ZtR6Eu470t6ik_6_1p4Sig3Z7O3HR8jxzyJPdQv5pB5ovqrpTilwXofphVUCuhELBujrXLqxCDtAOzxJAwKXcgwRQJ-B-1L9LxCxje6b5FEibSlvviXWFKDyZUzpQotke4-vTaJhyEoqE0UZEELit5iQbS5Ido9XbqNgzDyHW-nArBCsfOBZ3kmwx1Yhs4c5n9tU9UriGGChcmCJgFwpB8_2KUw5544Zi-rVbNkge9nAQYRi1lam_wcB5Xbnfo0lts5_3g8y_PDWOnGiKHUGY5LcAFdXS1LCoVcYy5iUsbN-LGNeCEg-0wu52HJybGyXhbSogm-LuUWUAsod94bzM3-7RFa5THluptXwunUQlKw_FCqh1rwRGUk4lPIWhFyDzmWoojDDuKZiTWsEYZE-DtrJlI4M5fwb8l2Asl121jRBQ_t0HFK279H70eHSQ4n2JxAhTFoc-g6s5ws2ddrlJDV8AJhWBbVDScsrcGzDhLrfRqw22AXa3q9faicAAYZS_uudBc-fq2Z0Js8Jc7stZW9vXeRx1T0bmSz8GfFT8v9UdYxcGDWN6RH5ITvb4YwK5MwxFJyf8xGNPDcTLJO-bXXg9qcnxcMmYHfAt7ZU-zfHOBpdhHom_-2dOF2rzrdTumaLyqy3hmB_BC5ur85yzhC-7AAuUEMXz8FNgx5yuyF4gBdWMNBTCJuYHvnd7PDmujEe1dLpBq0Ix7iKAink9Dx6MlXZ775l-TtdjSBGI4OI95YPCbW4zZRz8rJE9oX35zYEaKRB4mVXq8pJCKuZqfDC4ugLgrxb8h02EciZ1LouuI_zvveRbDENA5RBzxTRorOoAg_CpRktpkBJOpiA0rkT99X0HHHSxruVWwYDs8Vk26Wmmw-5mVhbKrdsF2-gjdHHEDQC24bqPiwGbpXv-v9p5JMX2vv3-nl7I2jGTdRnUp9VlpGHoJoers7vwl0Eg094Sdr65cwar55B6kyhdtfoC2b-UjeLp68aX0NM9j8a0dsC8eCiZC4lzv0xZlvgCT362kLypFQRXulXhX9PfQoFq1ZejbCE50x0179sQLXy6S4mtiomP9EaMblaB114rHdbMsjIuAvYyDRYmGrzPtY8tVst5AnIxSNSW9LnYZBWmg_xWEy4biXYgpRXvN8zb923sJyYWpIyzAErqd2St1CQXgciY7VFF2GlXAHV7W3dKUnjcAknURCY_wG6qGlLv5Pvnz491kncXWcqkQ7MTad-8vQDpx24FZR-5qb6OK47IAoANsp1iAdBAbtT_Jb_GzL2zihCgy9jwaF-WmwuEISzUkc7U5tJwlMWoQAJrFVo3Ca_KiA7F4JQkiKoxzcAssyu81A0h1z_XdBDeD2aQTy3-773naErXRRDDkgrfq2qLZFjaDlmxVzyWeoUtfx2a40CVbaWC9DCAhn5CPHGiFl10NPEn7QV-C0zqaXDGgFSAt2qwx7g6wOWKqi3cyqGXgwYRxmYDjxAIC7FoFie_3GMHUxQdFjHh8rB0qvVbNOqWzBPHDXlImxAO5MRkJWXTJGR5hFYgvJRgNPSfMCs5qixyNFO_dYpIoTnjm8iXlckrWZMdMHDiGNlgyfLVngq8lSFjp5Or2_xRpYJCCcTyCAiG8Rxg0D39Y9AIFY4n6_qkRLq7IhC2HzbXc6_Vpugij7LwDEaPt4Xcjs5chpNNsPmlKs3x9w3MEk6d0PZ_VcW1FNIzSNfSeX1m3Q7E-7-1Di_ixlJBMSrV_uk9wAc1OQfJhSkmJ0h8LsvThM5tjPkmQWvy9OW2Q9SBWnOQbR0nKVpWhWrpJr9AFyC90kJwoe7FB9WYaH9HgqoboMNlzuLIKo3Ego9lPpZLS0eX-ZmrZofdr9chavbItljK1RReL2qSw4vDzQXd5dOhflknqOu-iEjV8NroG6LQd05WGb9i6viAG03YW4C_Hp5FlOwA2yTf9WfhwU25Ntss8IHFMoWK1AIY-mjxdXXzpC4P3a3xD-J8YSphFSGF8lMVMsfve83LHCLi8qO02PyBdE2k79aQmzD0Z-7EklM8Uk1doGs1h2C8icrTk3A7tcAW5OPF706ARf60L8YIlE_gKgck47SIE569DxCMjOcZjGXE--rPv6HM-qj-3NBqYoCN6OgFuJhuEXImbvyNfb1dmSdWBLVpjXepR88idlhECMBHq6XO0avPorClIYvO-H70Vm04Jie8ljsFn8Pve5LxD-TmwMFYaE8JmdFBRFeLEFZfP21kDI7-IE7UVBxM8ZhMq3OSUSNEOdZfEKVALu0ZBLfYOZ3o1mfB4GRnJURGenqU7_bkW8b-mPgUQQt8nBAPJzU8j5PvUGjRGJFCnNtGtNUTIpZmsRAtBnwnfIGk6PwCUJeh5HZPMLZpfyY2kAz6AvJfKjOuPTC2bn7ts37d0uNppm3tbobtfr7_puCcjvbIw3Lj3UOQ9T80si3mTI49--rI2EURR62F45NieXOiihzTwoW9VGHfzPmay0w0RIxFcrDasEVrgM0Q4EYxWZQJna-529byrsBaGxd2voycEW86USD4DaPI9JYFy4nJsLTaoslwX4sBIEOpAz-4YlJ96foCJ1vgwU29Xg7WKPuZOD4TtXhpeLCyATklRQQpK6FtvyxP7D4_goNImfw9Hrw96sTetczMFDWR_Lqa_zY9Xolr0Qg0rQkrKo99BCQDtk2ol8ZrEE8AQHPDipBcfWMfCoCWGoSZVWR23G-RDGndlP6bjRbEQGwMHgLvl2meOlWTeg7k5VU7XAWFNRI3N7fJ2FFSAhGpVVOMCBJZ6Jh4gZhdSXW_PBVhrVfYSnU11W_nsQudDftxTWHxXe2w2SJ_VgLLGds5Fsxpa1mh3y9EHA6QHmfa9TRX77MlWECFS-ciArTt-OOKwWPTN8m_3dQf9m9d322FVvo7sfP9ucSO5qOTP4TUQpS75nKrkuNl1ep7rlwDmg2gZ9bNnVm1RZb62J61bf0dRgVSlt1R941AVz2FdZoQhW2Ow_yCQfCohoq8tF6AVDLg1NSpot0K9_mD3OVkkKclPaqVe0qCIexX2JvrL8An-jQhqIdTSNdG47NooaJFLzJ6T7SryuuuhXHCdCvdbQlxiOoF-0fRWvj6GolMpPm_W7q3cTBOCCXRFZmjE1H19VvS11IMklAvY16Q7UD6qfbI7fzZM9bnpVa94mRsz5-a4YCo00oM_-upAq86BDYddGIavwKf3P-9v1KBoJfBiUM85bB1WaPFqfTpmVQA==.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_0b98880d2ebb4a4d016acd11b3eed887d18550c68005a288ec",
+      "index": 1
+     },
+     {
+      "type": "reasoning.summary",
+      "summary": "**Calculating coefficients**\n\nI'm considering a bin with fluence values to calculate coefficients. I think I need to use both pairs, especially involving the Compton mean recoil from the KN formula. I'll integrate a numerical function, and this should yield fractions based on the chosen spectrum. It feels like a straightforward approach, but I want to ensure I'm correctly interpreting the parameters. I'll dive into how to best execute this process.",
+      "format": "openai-responses-v1",
+      "index": 2
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzRG7EZc7n8i5D8Wps6XZdfe5v6oD50fPf4XpRrQbynueNLa0ul_3_3gBVMIsoTC-feT0WeXkzCvgNvLT-F5UF3W2PXMdpFUGFwnBSlgJQfnF-382-UPULbaP67HVUhkVypG1gX_GF_BszgOM_T5XqLxhoYpvmMDZEJxI0it15JAeOUtKi2kE_eklPyr8uyq5ktTPXgP68Gb01uAiRjmh_rNZZ6TOS4fRv7fbUmb-enheUYq15nK0XaixydCBBAeWwMwX6Oz7lpfc6R8yNRQf75rWQ8172CvlV_NftxNa5U34WkuENbiTAvL0aq13NUpIfpaA-cNRNmD-A_Ieq9E2To29bnTDeOVVEZtxitY1urDxygTcQpRWukzPd9RKggPgpznI_MU00uvPxIA1RQxyVf-aBO3X8Dk21GcySRTnSqAQGUyHduATIkKaD1tuQepAdqdw7uWFvDnN1CxXATYiQuB-9i7EYVIAV03IXgZ7fZF0XLRzjy6BrmzM6Z4zlAFYb2u69U42wNe_r7wggJPyyn9MgG0CGonLgDhKT-9K4tGD-YfMKkNY831rEQ-HoipZ3d0nM9sLLWBLdtwlEIf6qA5epb93VuCFAPnaq49x4BlgZY1vFu0K6BKb-jD0qVIK91KD86PLGjyup6XN1v3RC102To5Mc4JD5yODaeGw6-VA2xNMmcUPviweYrYBZPAP3Yz9WNjD-WXgeX7HvdmuIfwmevBZPDTp49cKS7P_2cFlGoZ3l2kKXVc3II4L1UJ63cHgwe4MpuHgvXAcfgejD4D6TH5Uz1T_ciZuucXPrJYxkRWuD7f5sySKfrnqlykWQdJl3RRDOetwuvacwStRONPUG6152aiZUd64qfegE51weRuljdOSlcEjGvmQR7sijdDMSxMrHFHvJ1p0UdtsdYSuixg-o97wDfdxOrOBXjVakpC2ZbqtvUBKA21pnfkfgUb8U2LZlkCkE0IZs5zsxHmdOft_UslUz1NEfBNjwvb9M6jdiFWOPwbQG89vj2ZbxkMp89rfrmo2G59NwPKx7OEpmIb8CkCF6Q1_ujfWYFFCDDN5p_KdPQ7EsMQNyk-rEcaB_S15CqX1DL8iy_52YKWHO6esbdrfbFh15sMPm7g7B2vV4Tqdi-SsOeLXpBwHU8YMDfh4CJDSnczdNO742hGv4ppnbDEs_89lQHLKcym1SfjkPdaSIDtSaqegryYlyS-cS7hAtF_-g4B3b4vGrsRPonLzy9-Z0QcKl7mnwR2-vTNnDA9XayMWYMMnm7Ic-7ThG-E-5DXrAy_F4Hz_PDe8ErMtImbCOWRTBGmYtAxvyd7BAxdWjqrmd8STjMaI3HiGKPDTKcRFNDY3u5rtLGwidDJRp_c305koropx5B6xFo_fEeN9sB64ZlBvGAg167uiSjIC2zalpxhWPVRA14CTyJVwZ2_y-8KOhXXZi-XoZpWhXgO8FcicFNKWUM8IPq9bpr_CCKLtagPBPE9l8PITdAO67a8lwIog2jjPZsIRs1gJDa8tOm56Gbx18nh9ATBKcrAM_S-N0S6swqxEItnWzlqa2h40AFHzJijFxS5vmQGi_Yn50gS_Ue5VWJFIf8VxyOTyN_aD-x2oG3Q4wi9XaJ_T9TsXzLWPZkgZQWa80Ts5hSxNtsg88Bi6Mdg76x_7Z2od1FLBy0VBszEi2m5dUDodW8cVq06GPBK4AzL91LfO4dkturqgsLvsOyPBzX2HhziMRc-5DEZDkk3mvQqPRSylmrYOU0qDhgYFabd3w_dXZjgTNw_7RzuHQixct2vW2NDYc2l-k0vuSJ0Vcr5x8CtCdWNEwLY2g1N7cPR8yV1a4v-USpCzQ5HJiP1spahn2A1948S_IqgyXNuVwL1ceNMfU0Ty0_18RohQ7TAaraAxogAs9qdc3cxpc5-YslPNBcD9UoNfhde-aCHy6fbWiv3vPMLuT_sFh0X1SsXL7LJkYKyDEgtu21981sdT6cCAb6BZ9Du26NKkWWc2Xy-9__26v2Lztla8-FKQPlk-QKvryKjqAgglrJESAu6wGOC-jPYtjQTZ9bnWdz2fAmu6OniJ8upjXfqVxMcfe9TQWXEGoZN24HQf6LHipf_DreFcXnZXSN44hDLl4f9wzVW7iZU6xSHwRu7zGr-X57ggZHg=.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_0b98880d2ebb4a4d016acd11ba637c87d18795541d72d7f125",
+      "index": 3
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 20180,
+  "completion_tokens": 1242,
+  "total_tokens": 21422,
+  "cost": 0.0010188,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 18475,
+   "cache_write_tokens": 1702,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0010188,
+   "upstream_inference_prompt_cost": 0.0003978,
+   "upstream_inference_completions_cost": 0.000621
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 558,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

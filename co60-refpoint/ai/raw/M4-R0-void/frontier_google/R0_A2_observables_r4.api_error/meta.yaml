@@ -1,0 +1,28 @@
+slot: frontier_google
+provider: Google via OpenRouter
+api: openai_compatible
+model_requested: google/gemini-2.5-flash-lite
+settings:
+  reasoning:
+    effort: high
+  usage:
+    include: true
+condition: A2
+task: observables
+config: R0
+prompt_version: v1
+prompt_sha256:
+  system_A2.txt: fecd42c2861a3dc409de3e724bc896d6d29cab00ceabdd504cf75f0e535743a7
+  task_observables_R0.txt: 57d3c391f7d6e1e76358e1b31939b48e00fb008344fd731011f63a2acf79e07e
+started_utc: '2026-10-12T17:35:58Z'
+turns: []
+tool_calls: 0
+retries: 0
+outcome: api_error
+error: 'RuntimeError: in-band error after 6 attempts: {"code": 504, "message": "Upstream
+  idle timeout exceeded", "metadata": {"error_type": "timeout"}}'
+finished_utc: '2026-10-12T17:47:17Z'
+usage_total:
+  input_tokens: 0
+  output_tokens: 0
+  reasoning_tokens: 0

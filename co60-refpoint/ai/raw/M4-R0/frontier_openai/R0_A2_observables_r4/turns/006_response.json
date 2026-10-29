@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791824478-lUTXuoHh4tDnO7QCGLVx",
+ "object": "chat.completion",
+ "created": 1791824478,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Calculating energy fluence bins**\n\nI need to create a manual array using specific bin widths of 0.05 for energy fluence, with a mean scatter of 0.65. I'll set up 28 bins indexed with values: for example, bin0 is (0-0.05) with 0.005, bin1 is 0.006, and so on with various values down to bin27. I'm considering whether I should sum the values afterward. I\u2019ll make sure to follow this process clearly.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_4EkpD6KFfL0GjrLj8gbE7pKd",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"a=[.005,.006,.008,.009,.009,.009,.009,.008,.008,.007,.007,.006,.006,.005,.005,.005,.004,.004,.004,.004,.003,.003,.003,.003,.003,.002,.002,.002];print(sum(a))\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Calculating energy fluence bins**\n\nI need to create a manual array using specific bin widths of 0.05 for energy fluence, with a mean scatter of 0.65. I'll set up 28 bins indexed with values: for example, bin0 is (0-0.05) with 0.005, bin1 is 0.006, and so on with various values down to bin27. I'm considering whether I should sum the values afterward. I\u2019ll make sure to follow this process clearly.",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzRJk_yOdr1agAde5AdwSrsfsw93ph07EMydEP36vDk2GR5FRoAnFCN_1KiYsk1hlOWAWswOTH444VTAO4p0uKbdH5g62xhABzIzN0i70U7Ap8XdbCvJSSOpNgRUr9gGdfeieujEbJalVfyCkTNjemwQ9omjBnT8cpdf6sByNbSm4qaf_IkNgrb22k8EzLYcODOz48JJeo7RJvvTkB25_em62Vc7z2WNNuNtjo1dQX91btV7sx1IHjy6GEBPEcejw35QW5ENBZjPHap1odZURQvVx55-dFrIv9JpLN01flshWoGHVGoznGcbLM8eyfY3T6u9llxZSR1H2QD6Was8q0Sn5Unysg1QGLVEEhM4aog4FREo4u3S2dz9XvbMUWkolAPHdJsS3yzND9bHRryY5r-lh4UOyY0n_x2YV9brUqobepx3g4RHnwn-q2SAl_s7Dy1GeRKixm29Ha83WS1wpKISn5UGT2eTfcMaOE2CHwEnCM2TQWyGq_Mzw4o_xysC-uIfgqZYg5oViIOfxZFTRvp7pYCT5WTuEizmYEGCxoieVv-nI3zWodDv0KcyujNorl7nnIGsXE-FSQ4a7gNpeUAoVU5VQvSmxh9XWcwDm4C0f5Ol_9P-791bl8-YPQvSUBRntu30c1RJTsNKw3cjKYRHZUKBtNC4eQxiW26KMDBKYkO6QBIQRvQAYrEfTdqkQz8ReNr-LtrMFrhj6VLtU8bAPx0q6uGbnWK67ck1j34irt2bk7uoSVAKuymQ1ja7E14qnl-OnCaxKcUAdE_s64s61wp1ceW7ylEDS1GRRcEBxQS70aY5nfXXwYGyKziKYKcwfji8S2NjIzeGG0OyLWITnHuNVnnWqqnhuxMALZPq65xEW8Fv1zTSItteyTzfTWV8aaCoSgL8LtREUT8Ls7Q_q3Bw_lNnV31GOLQ6trkNiq8pT0qYe2mnWHEyvfGBP4vsv5gTNstEGNiUDeA-b773gBmTYje6fdwdqLK-AJvHjcb2oLO2tTxSqF8eqXdxk2Rgn-CM2hvvdHZxFIeqsMV2OepN8fuvAzVefyn6uGxCoPhCKZ72uzI3reoADvL9NGFknXejjEuMp1--psvNeytShZ3gBXVmtIbb7HiNZEJP17A4flxDpxzea3EWZpfVYFh_jb45dbs7445gV1MTMfmh7VQS4MPHXoS3SQDkR80MKJgtU0VNGvDxPvH2S0JTPVUbL6KGeCtafF89MS5-xJhO-SrJbYKXaHF8ZhAUnKc7D7c5IRCDji_8d1x3Fp4K8LIi_nmfElzO9AOVbFTg9D2LP3SECeV1Iwle_wHTOsm0crZNjvYqOk-4W3s_p0PR5heIMmMP2muabt1UKqlLLRX22YGf8EsBo_erYfizgGlb0I8jyUFnXSjJf5thmizZC7fwwzlu6QdBCzyb0PyOkClRWYG9UY6OZrWpi7Fk2EYFzehs0dpeeKlcF7evd48cL34dD09j5P6yOyCMZ42cPXYG12-UmB2UscsPT0OmvsNykmEA6tP74XayplEPikC_EDuOw4YhUk8JmBw3PtOmZrwM_hyNhLwmKkkPimqus6TDkouThWAFarQBBi6VBCFhsAdBX2CeWtNsVGSUMWuF4JWci6OPIPqprQJd6IMOlTW7-J_RnvgCB7nyLdR-cR3t7ga2ZMEVgqI8b4nn4yKpDBsJRzID9-CjLMQolT3k5nMRWw5qPRUTzOSlLrT8vYbkr-wPHAGdN8xckPcNhrjZldcC0XmGwwqR31l2EFFngvFhe5FHAUFxMC5urwd8yHYH6Lf9qdI72gzRkcztq6rHpzzLTn5PTm9vAbVdg8EA1hxlyPpWhxO-yjwShiyc4iC-0GTAxbEO4Y8IWBPip9G2dPIW9uQ0xSM466D6DRsDD0v5vnMaZsQKj7Ga05ciT44uKPfAVCqQeIj7-RihnN8oLafXI6d_FlVu3R3fxWzkCyPl1E2h2NOMkgH-3EjeTBjw8KXdN-vRol1ttedM7FrM7_N_FxNBpbSjUSSYjIIm_IquHq0u_FFpwgruapTlxFR6r--5sofmqMSTPXlFAA9CG81tGROIQDUSthsb7kdJIhdk6nITymKv0Lza5aHxsZHFto9vhzzajTT5-x5RAAidhgtUVYm60AwRXb1SxIiOOMCfhyQ7fiYO3__0IZjGpB2Ldv4THQhU7UKfx7sSZBnGRUKUk5T2K9ve5ZHiIkHeaNXDN3Rxx4oMAzYE-LpYU8vEmHdxgtgrGOTaDikW2shhDBluL6h5efQnryv_x32cWjCXOs2xAZyXJbPu0MwkUcXOd9CkmJj6oy-wFaiAPBY1KEkRThvX3VDH0hwRTbxL7Q0bhJinXH47DOGcZQRL0cDFZPaZpit1IQcfs0Yz3-fSye2rmfp6Z2MntfPXU5Ifz6vJwq2QcImZ7moGK6sWnVlWZH9axkowwttQPKz3X9fXJyRCagAHWPU7Pbmp6PignG-V6yZrSd9gC12XBxNjCGESKC6Zk6lhtu78xF5WqsUtSTi3a0MJ-PT9B1-gTnjbPk7ZE0sBRvVoPhUB9HECfOquVIBOWOoB3oPbECUCx1sDDKa9LWZADS_tAqp7wnXeG2Y5aoK_bcVzG8f5F--wWPc1W5mc9Gf6mXWlnBCF7UZzpxn624cmNMbE7KTFqhI8vkZ0BvcJ_OgBD8Q2BpULqOCjL-wjd6Bp51iHPeVWFS77qip0fnjKIfUf4zVmz4srcGZUsn-6KU2RfRARn7MpQaXTr2nIoBMN3qn7naxGdg0dR8lny2I7o0HK2CgPdTJsLVfinJ7VGQW4q5es7mnqQHq66W1OED-nMBf46a7vURTIBhCUb2OFHbaR-t5RES6k4JprI-Anh8HdscU6nrFwemW57-eI7mBBtlsJxkoM61TD2iY7Fjd-D0sr8Ej9KsTtbGfSLbVwxjBEi_5hW5ZfR-ZhETkz_dFpfIopOULuaa6QBY5jeBzJXtMMaDWcrIrkpF9pZTAnGAYz_Pnebq1N_ecejJHFaFJrHxbdJMdU62RvQmFuAi_5Yf_KP8JKUA9F-IT1Vzd5V99vHvZ9EmpMxcv0ANTlB4ZmkZOq7TZQNom0ff81dVq1TMU-8u3LAXW2oiKam1-_-EkYNEVelVWjc1yHDHCtaslBj2QlgRbAKJVEEA_ju9lKVApsWaG9xOFDCwbNg1lpKK0iNpuDAl8QI7jUOKyNzRlzXoZ1f1y4oLEVDs4txUaBEJBnNz8FcPvoVfUK7zzijIESP89mRfkkELVJpAi_8IISewsuKP9NAXJVHPDji75FQUIKMRwXpyyMYDaLcScMCGgSMlGSeT7728xPnXFSncgPDVb0xmxzUOH-F_msxh4BPxY178mg-TsJ0daHO5g1lszv3HYT-t8tD04gF8kdq0zJT9JufsLtfQr63_TxtYtq8Y2YYohLr6CwlX9NHRlQ2Bbq0aHVzgg86C2j0MvvRFkRgl2h-JWCKyDKS6O7nXJu3sy9SUWJJJTMe5NHq7su6XJT5yfKReorrbjSHo7sdBpxAEhaP2nF6pBSuB8pmi4la12XgKPT9WyYUtt8wEeVocWehoyrgU1Bc7rL6WlJHbYTjjRP6e1vYYCC41GYMegMHuTjXheXDP9nzGKdK6IjBnvbJJZH6Sk5n4YGv4NzWaF_SX5c6tT8LP9Blg3w0PW3-gy1EanclYUzH7ESEtNzvNTGJxvAHvvLl_7s-6EXRf2-oTv43_OR35G9fLAPHJoyHFVEVL0gX3-xxGrqqiocH8dz9sMQu4_iA7edQ6D7e5RFuA0FvWZgHLyPUTcTFrdAVvLVbp0pGT7nUKSIhIo1v4qg5Vz3QLc9ByMaz8efXZlSPyIblq5uqsYDSI8Rd-PSetLnc8zG3oCyfjtxMkdcJBpPN8F5PRWNOa4cXcFeegpT1SGT68U9Y_b7XF3avVY0UQk5tZQn_HUYFKbw5Jziea5u9lQZb5utPUJ4Gs_3WRNFnsvlk9awyA8CuOhHjS94GwxoUVybnX51cSlucFc6Y2-uCL2oQgBvc9ErZljh260W5CqsL_CX-lo7QqjSqUXbWlT7PglPTUJD_H1DSn4GzxlqZzESoFAEBnDH-OLRuvK8Lq9qu4n7IcPDJoPuVKgSPwqa8YQQXPXwQTXjC3zE56wOewSfgpZaYldW3MnDlKVXTbRevCPvrRuPTU8aopK2CIRWkUUvWl1g2v1g_sTer796nwlF_tvRdB-89rzK2Esv1Nu9tCUy5wKMqjuEFjg0H72b77sx60a_GH3mIqBLznQg7d3nMzpdngRQ6mbfQ4qAwciGJvA05zcnxYiZkIv3_aJazpUByMvKQN_m-9Py_j9rZNlYd4r6i16islFY-hqpyN_tlr67BxILIyx9qV9g0LoMWbSVe5BE14OyhqNgjJzeoekcB3FmwkaC6draJnk5sHkcAJIFZYt1zbHvHZ0zdl6KR2rCTzVFr3IcnAT1MO1vKajmvI3etZ_cqVgAtldP8RpaTqW4RCrnNOqtjSeeQJKkU7_umV-Sj_pXNejg5-nsVCSRgR03Axt7au6XzuxRuS_r6xdPUp9HH4mP8gDB0tp9u73zoBEaGx0PuPaMMIFFz5wBipx1Gek9a9bf4OBASlEUbyVSQwEMrb5LP9i3KkAAzU9t1qrD5b1nCZXrTvgWFAx-SHy2PL35nRNIhfHroNjmuxAEIkAe1-4ANR8TAjOelcidMF93rZ3bvlOjPphdXullqCt_9Ci-kqLd_giJVRE0M2TOit7n8Ary6p_m59mDa0QGExqh7rhPmm_x-u2ygOt8cFINKKX9170vRZ_J4oXxMf2BqJZF91QYwnL6s4xdTGAT1SQ4rQ-VvXIyJWr7ip-wBFCcXgfNuGVGIw2tZhOyjJusVYttl8j9k7p4RXJ6QbMjx6QbDLxtOIHvdjpH7MUCt2iJI4ps6gaj1HGWyKixgPBxKeoV2f5VmV2-TgnGEcM_lvQ6Wlz2uDIUZGuR1Twmb1YLFVNpx2CAAeG1ntu7q10N9vMJ_l64K53YjOqq1BxcQlFrTmNeV5tXuyNpBu2adlxDqOOGSr_KNfccbughZTIXVPrqKywCT3HdrmUiCmoyIAhUwibUusa-vv9w_8eDI24gDJ6otCcD-rPvcuziTNyQXYk4qpNYfs-MhZSnuw5xt5yKDFNAi9ITgv1YlD5qdzsTfO0rRC6uyplJ5y59y1krgPdmm9DkTfkbfboioHlQ3hCeB-BgBJ1zOwZegTS3ZXQZgLUgweXRPV5lL1mVkkFXzUy6rjC-d55BKlGUryhufZVHnLbbOJoRdEiSc54nxuOgDBL9nu-nfTuX8SYhSPP1TDF_w8yavUdvx6sy3Kv98Ii2l4T9IIm3_c82Pbcnd69yKI3UBYZgLphGkT0R4RXnCg0O2BPde2BEEwpVsYxtKWYvO7tmqWrAByXLtL06la7Ev2423fQwiyhgh2K0fQ8BpJK8Wxe1du4YyS8nJnDvTVdQP0ou8qKRYAutyTiGD70CzaIVmRMfYOv8VHDKYywx2Wvh8Aoc11T-_x_mJgJ03tT-JuIoe_ieggdFy0T-sNniBbiFNGXfw9EYUrYkuPsZbVG6KfkrzIeMhTnl-Ac0hSZB-D81_ZKtGf3TEQDCruvnLF7bUFyyQw1zSTGlZP745qGi4_lqyzSOD68v_uIgtiGSK6JFNlfM=.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_0c995b1150585540016acd125f548487d184e3be6178d278e0",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 11990,
+  "completion_tokens": 466,
+  "total_tokens": 12456,
+  "cost": 0.000403655,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 11548,
+   "cache_write_tokens": 439,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000403655,
+   "upstream_inference_prompt_cost": 0.000170655,
+   "upstream_inference_completions_cost": 0.000233
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 385,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

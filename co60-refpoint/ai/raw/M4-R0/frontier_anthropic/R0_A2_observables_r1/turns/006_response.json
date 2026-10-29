@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791826918-xppL4EZM75JclpGzQdti",
+ "object": "chat.completion",
+ "created": 1791826918,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I should note that numpy 2 renamed trapz to np.trapezoid, and scipy's dblquad would also work fine for this.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_011exfzk2q2276WVJiRz5GRP",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport numpy as np\\ntrapz=np.trapezoid\\nmu=np.linspace(-1,1,20001); E=1.1732\\nsig=2*np.pi*lib.re**2/2*trapz(lib.kn_f(E,mu),mu)\\nprint(\\\"n_e*sigKN =\\\",lib.ne*sig, \\\" XCOM inc =\\\", lib.mu_inc(np.array([E])))\\nrng=np.random.default_rng(1)\\nm=lib.kn_sample_mu(np.full(200000,E),rng)\\nprint(\\\"mean mu sampled\\\",m.mean(), \\\"analytic\\\", trapz(mu*lib.kn_f(E,mu),mu)/trapz(lib.kn_f(E,mu),mu))\\n# Moller normalization check: n_e * int eps dsig/deps from Delta to T/2 vs ESTAR\\nS=lib.S\\ndef moller_dsig(Tp,eps):\\n    tau=Tp/mec2; b2=tau*(tau+2)/(tau+1)**2\\n    br=1/eps**2+1/(Tp-eps)**2-(2*tau+1)/((tau+1)**2*eps*(Tp-eps))+(tau/(tau+1))**2/Tp**2\\n    return 2*np.pi*lib.re**2*mec2/b2*br\\nfor Tp in [0.1,0.5,1.0,1.25]:\\n    e=np.linspace(1e-5,Tp/2,200001)[1:]\\n    # integrate eps*dsig from I (75 eV) to Tp/2 ; compare with ESTAR Scol\\n    ee=np.linspace(75e-6,Tp/2,400001)\\n    Sd=lib.ne*trapz(ee*moller_dsig(Tp,ee),ee)\\n    Scol=np.interp(Tp,S[:,0],S[:,1])\\n    ee2=np.linspace(0.01,Tp/2,40001)\\n    Sd10=lib.ne*trapz(ee2*moller_dsig(Tp,ee2),ee2)\\n    print(Tp, \\\"delta-part all:\\\",Sd,\\\" Scol ESTAR:\\\",Scol, \\\" >10keV part:\\\",Sd10, \\\"L_Delta approx\\\", Scol-Sd10)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I should note that numpy 2 renamed trapz to np.trapezoid, and scipy's dblquad would also work fine for this.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSzAYKEAgSGAI4AUIIdGhpbmtpbmcSDJbTdPCSimSNakVPlRoMZmJY9mRyuhSajXWYIjAOU0bE53dCqAL9gRDMxgjJoqogkHeGxNNgzppvtpTFmqgcbLYbf7msiMbYYJBCXYAq6QUAW0rCowue9LaSq54Mual4kuDzf8NBUn+n6V4EGgdJW/RNvGpBBzYEnynimBVRyo3pKfrEseu76qUxpPmA/EW87XXFQ8QEWbO7D00LCbYBkDLWFJUOt4d0a/rqkEW1bBPqIldtL9xZ4RyPy04EpZQKxymgiuZTUUST7zYhSkUfxTwz1Ips68DxNkG05BXIQ5o9V267Yv94SLaXrCoCk5F4wOAZzaW0QtjTLYIcGe4RQuNUMRwcRvWEEK0rAEPYP2wYfxZTdkcNTo69Taz11T4ZsOmw8fK6i+Hn+YlcJgriGt3hA1L0OUyfE8lZlCiAoEEowD32klnxNPoTjgGjhi7/DK7pvZ+powOOEIlg2zi6tfNJYE5xLNgaVLqBH8qBi6pSoiCjQde9pDWrDq9K4ITNgdYKIY2EknP3ME1qVx+1TJW9RzYSnA9x2Ex39yaNDQqTO8lPMlyHKH5MSyfUiv4IGlSsm/evECHcZNaC7Ou+VkvX4yZo8rMxW6ICnFeIaqcNlb3OCj89m6bEdop9d42B//TaqxsYGfdVys8mkeBCtKB/wcFg14v30DUqkB4mnQANxcajsJ8TFJwBdllZbaZ2YHdpnimcfn89TZjPOI+f7Nv0gH1dNQDPFzsYnqLMiHsbENDghb76tuPr83yuuV1U5YnaiJrmwggsF8jd8w0jVq+bUbsrZAztCWydwjc+IK3ZJUH5n6Pj5TMMhAwtfQAFwvI6FLNI3vKOZ6WuuFMqVCffySJIsC2/IdwGTBRAXGNOpbU1OWdc2Txndwv5HmRP7aesfE46ZlobJ6xP7LQx5AjQnEhxKLrHdTj6E3mvSJ9xsD7qpGikuALP7y1HJvwyRFYgite2B3NfiVENGzlIjyptHwjEzkxQitNm++EbpoQ8m/lQe7eQzL7cUm7FVwXq7tlfWMjXzA43SKK3IdeyVlV6AkV5+7g1oO4H4+97L4/MAqqp+Sg6OWxrMXrJdSngIeHqq1qkIKW/GAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 93766,
+  "completion_tokens": 821,
+  "total_tokens": 94587,
+  "cost": 0.00142493,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 93098,
+   "cache_write_tokens": 666,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00142493,
+   "upstream_inference_prompt_cost": 0.00101443,
+   "upstream_inference_completions_cost": 0.0004105
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 33,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

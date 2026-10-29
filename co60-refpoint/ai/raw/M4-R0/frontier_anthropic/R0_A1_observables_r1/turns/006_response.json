@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791824351-Z81KUeXIzO5PShFekxNf",
+ "object": "chat.completion",
+ "created": 1791824351,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "I accidentally overwrote the module file, so I'll rewrite it and then run the checks.",
+    "refusal": null,
+    "reasoning": "I accidentally cleared out phys.py, so I need to rewrite its contents from scratch.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_011jXxUgEr6rAxUhbS1d7Pfe",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\ncode = r'''\\nimport numpy as np\\nfrom numpy.polynomial.legendre import leggauss\\nre=2.8179403e-13; mc2=0.51099895; ne=3.3428e23\\nLines=np.array([1.1732,1.3325])\\ndef sigKN(E):\\n    e=np.asarray(E,float); L=np.log(1+2*e)\\n    return 2*np.pi*re**2*((1+e)/e**2*(2*(1+e)/(1+2*e)-L/e)+L/(2*e)-(1+3*e)/(1+2*e)**2)\\ndef fKN(E,c):\\n    Ep=1/(1+E/mc2*(1-c)); s2=1-c*c\\n    return re**2/2*Ep**2*(Ep+1/Ep-s2)\\ndef mu_pe(E): return 0.0022*(0.1/np.asarray(E,float))**3\\ndef mu_coh(E): return 0.0030*(0.1/np.asarray(E,float))**2\\ndef mu_pair(E):\\n    x=np.clip((np.asarray(E,float)-1.022)/0.308,0,None); return 0.0002*x**2\\ndef mu_c(E): return ne*sigKN(E)\\ndef mu_tot(E): return mu_c(E)+mu_coh(E)+mu_pe(E)+mu_pair(E)\\n_x,_w=leggauss(200)\\ndef mu_tr_c(E):\\n    E=np.atleast_1d(np.asarray(E,float))\\n    out=np.zeros(E.shape)\\n    for i,e in enumerate(E):\\n        Ep=1/(1+e/mc2*(1-_x))\\n        out[i]=ne*2*np.pi*np.sum(_w*(e-e*Ep)*fKN(e,_x))\\n    return out\\nOMEGA=4*np.arcsin(25/10025.)\\n'''\\nopen('/tmp/work/phys.py','w').write(code)\\nsys.path.insert(0,'/tmp/work')\\nimport phys\\nprint(phys.mu_tot(phys.Lines), phys.mu_tr_c(phys.Lines), phys.mu_pair(phys.Lines), phys.OMEGA)\\nprint(phys.mu_tot(np.array([0.1,0.5,1.0])), phys.mu_tr_c(np.array([0.1,0.5,1.0])))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I accidentally cleared out phys.py, so I need to rewrite its contents from scratch.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSvgYKEAgSGAI4AUIIdGhpbmtpbmcSDGMYHYqrxybqNhvKfxoMuz8kSqIExYOX9gVpIjDBN761e8IsvaibkpKeRyC1+XPfxEfasxEsYQVK2yUSYQq2VirIgfnKl1HzKph2Ficq2wUZ1DJIBXpPzk4WQQCG9gBMu0BOo63N6zgJfRjN33bBz6OvkZCk8S1PEw4ptkWXM66S5UYNPOm6RuUb4fbrqC8cVFrMKxzQQKO3AxoXmcTE8b7Cwjz5fZf1JrSA/p/rymzwpUDqoOdAypcHB6YULefo6V6agXh02h9YaPYOgQayXEn8PbiT3clCAuKuqZ2RBwdoImisbyM08/kJMu6EpskS97olHNJMNXVqHnVlGhZrF6dcqo9vgxwMkVvEr7yEhykUvwzgn302qPaa4cM+WtaMGPpeiGGmt9XyZyCE9eCz1XljOmBahR84zqJ5WtS3NVCe4tTGQK4UvDIuYpgdG0BNdw6bBPvy6tXqfa7J4hvBGQZ9kx2b1IsFkZo4hiawj2DDNgje3ZOwiQMZaTnNFy+1Bk3GGqNzrIkNv3hgc35Eu8GNnduEawHRrRhFWmnfpRXNdSdn2+0Cj+vYpEEQ0ncTk+i5sbKnQXJO6rZdiCUnks+NOhbjVww2hAHPXl1ogDYJMbp3VHfX1bUTxX7IJYSGpdoQNebMq5ZDB1BwatC9aUWBhxQb5lXW1Dy3Cjn+YT+inQTh1W2wC886QQk8ztSe0qvtm82AY/5IPKJknaNtDbIOvlOsTeMIUWsnYiNR7NHkWQThx+qULKbjUJ3YysWsozdJY9BnPk1mlhuXKz+fNVNXq2s2sGuQ6jgd6sHD84RpmFJ2p74oK01+DVveNrynL8/ovtGcbchqxqsa96q3YB4/u+IXy7eUl07EtmLfIBOzY7Fqfe6X2yKSUTEvx8gXa5vk9em+64aBxcBmENR1nqMqkVvPVFOa8/w0JvHisBpVkAZ6mHoH05x0V1CKvm33L9uB50mUpSxs4X/ezFYH9Jkn2nIIL/6zhlggykVfCZ73nC1ZZ9zhIK/mN35NwAdHvaRtWaXb5OHh9NTtOmoviolemmE2yaFm3gAzf6TYfMWNSKjPk0jUohNjkxgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 83896,
+  "completion_tokens": 885,
+  "total_tokens": 84781,
+  "cost": 0.001309585,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 83651,
+   "cache_write_tokens": 243,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001309585,
+   "upstream_inference_prompt_cost": 0.000867085,
+   "upstream_inference_completions_cost": 0.0004425
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 27,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

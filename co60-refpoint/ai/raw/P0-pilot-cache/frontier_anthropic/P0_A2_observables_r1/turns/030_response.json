@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791820702-FiaNUiNGMa0VtPl3yZJ8",
+ "object": "chat.completion",
+ "created": 1791820702,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "That print statement was a mistake \u2014 I should rerun everything with proper imports, doing the full 20 batches and keeping the analysis separate. I'll normalize Q the same way as before, using Qslab divided by N times Vslab times PHI.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01LUAHKWDjLHHnJqsCCG5uPA",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport sys, time, pickle; sys.path.insert(0,'/tmp/work')\\nimport numpy as np, mcph, mcph2\\nt=time.time()\\ntot=None; births=[]\\nNB=20; NP=1000000\\nfor b in range(NB):\\n    r=mcph2.run(NP,100+b)\\n    births.append(r['births'])\\n    if tot is None:\\n        tot={k:(r[k] if not isinstance(r[k],dict) else {kk:vv.copy() for kk,vv in r[k].items()}) for k in ['flu_E','flu_c','en_fl','intr','etr','Qslab']}\\n    else:\\n        for k in ['flu_E','flu_c','en_fl','Qslab']: tot[k]=tot[k]+r[k]\\n        for k in ['intr','etr']:\\n            for kk in tot[k]: tot[k][kk]=tot[k][kk]+r[k][kk]\\ntot['births']=np.vstack(births); tot['N']=NB*NP\\npickle.dump(tot,open('/tmp/work/tot.pkl','wb'))\\nprint(time.time()-t, tot['births'].shape, tot['flu_E'].sum(axis=1)/tot['N']/(np.pi*0.2*mcph.PHI0_PER_SRC))\\nPHI=mcph.PHI0_PER_SRC\\nprint(np.round(tot['Qslab'][:12]/(tot['N']*np.pi*9*0.25*PHI),5))\\nprint(np.round(tot['Qslab'][[20,30,40,47]]/(tot['N']*np.pi*9*0.25*PHI),5))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "That print statement was a mistake \u2014 I should rerun everything with proper imports, doing the full 20 batches and keeping the analysis separate. I'll normalize Q the same way as before, using Qslab divided by N times Vslab times PHI.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS7gcKEAgSGAI4AUIIdGhpbmtpbmcSDEyYfqAGe586/54V7hoM0e1SKP3/IHl5cDtpIjARBvFjeP/IdV7/VZ6rCaAF+is6/Wz5YlpDWqb0eY7OKGkxaxisC+J36cAN4S4LRVUqiwd32Nb8wOzToTO4nj7UL/bgUG48ji87+urJ2AilZ1Btf4yYwwLspq+7EX16VkfNDCYXFEPyLwutDmH2XdAdAuu5nLUgYC1fI45k4vi+22jLY8AMOmXLAckTpe4F4kX85VNIb7dAcQ2Nplt2e6hwHcjc8QkA3pcDSWeRgWCu5PwfB4C5W9BQV5BatDMZsfqUzc/F78te7lPth9+Y5Z/qYkA8tVtFt3NC6vcyuzWVp2R4vSg4AOUMme2I9XvNI7FcwUdMAYFaIY3tuwyuK9W5qVTCF6SZuVkMW0uNAwY3XLUd2hhgU9YpFVj72u57QBv139KbJMn1Um1/sTLeZ1MxPHFaf5Gi5Py/pz6BTun5fCk10ybKW4+YXe1EMVkkkfbzger44WcFSVNzoj9n4OiD4lCR37wZa8wU6s8aLMebbT5COmg/z7FP6FFjbegxpxna8GI9ZojMxHSywr2Sasi5/Bl6/zvvC5ToqK8eHn2d/HGTJPwjbtp0nW4xkPgFuMMnhG3VK+aAfEbXnHST+TBrprpFKiX0HS+OvQLvjDSSuKNqAsuxwV9A9Yh5oOusyfXnUnGXul4aP53NfQylL7b0sDMb7aKCXvWYAcVAM6BKnlYpplG6wMcI0s0Aq39vwYRNgTW88lcMWZ5b0nUtd/j8qZkcFo5/Y+1hTieEQUtyhpYA47+jLpp10UsgMohGWCDFde3Vq8EwYz7k7eOvCj5VwmGjTHgc73VV3EvfuTQ98dedLgaaTDwNQ3AUvzPadU1DZenwopYdfd/yj27nQwzJ9VxC4cgX0ei0dJc0U72PycM8F3Pz4aig9DcVG3vtFA4r8CX+slBJrCqtliRB2vAjBhQoITmOg8vDzcLOR9hzh6wYkCfUdFEzHengtrPZVkk/pLpS+xP/zKXycnkvA0WyJhS41TdlHgOy21QMVckdWAOn8j2I1K1DtSEzESvaDVkSJaGr/m1NRzynCQjePecRgkeesYjcJ/QawLbbieYVGXKKQI/ZHwmUhJUPYvLjgnHYCJwDUfw90PGPxo1UWzdBcDX1Ex+lN2mereu0UM+VavDauO/NSkfv7IGUJWmPTQfcHv8A7ETh7e8TmvNRJ3LdUDG+G18eqi03Z/atAR2QbqE+wOB/DrZd+5M9AsvYuJdV+tH+paUnsgxYIzVdkcqItCa6HU0+t8x00xrROnKKdTbgiGJjYHNFpHLUc3N1GAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 161620,
+  "completion_tokens": 666,
+  "total_tokens": 162286,
+  "cost": 0.010839975,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 159717,
+   "cache_write_tokens": 1901,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.010839975,
+   "upstream_inference_prompt_cost": 0.009174975,
+   "upstream_inference_completions_cost": 0.001665
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 76,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

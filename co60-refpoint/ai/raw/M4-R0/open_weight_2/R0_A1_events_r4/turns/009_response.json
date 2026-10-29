@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791827486-YkcFnRLLizbjzoJ42qGr",
+ "object": "chat.completion",
+ "created": 1791827486,
+ "model": "qwen/qwen3.7-flash",
+ "provider": "Alibaba",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "The JSON was successfully generated with exactly 200 events. I will now output it in the required format.\nI'll read the file and print it inside the json code block.\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_7791f4d8e71940f38da55e63",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"with open(\\\"output.json\\\", \\\"r\\\") as f:\\n    content = f.read()\\nprint(content)\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The JSON was successfully generated with exactly 200 events. I will now output it in the required format.\nI'll read the file and print it inside the json code block.\n",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 94021,
+  "completion_tokens": 88,
+  "total_tokens": 94109,
+  "cost": 0.0020645,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 92160,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0020645,
+   "upstream_inference_prompt_cost": 0.0020293,
+   "upstream_inference_completions_cost": 3.52e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 38,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

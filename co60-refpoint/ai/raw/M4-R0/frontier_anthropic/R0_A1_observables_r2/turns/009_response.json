@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791825056-fA7bfQ5XARw33z45YXq0",
+ "object": "chat.completion",
+ "created": 1791825056,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Since each call starts fresh, I'll need to include the imports every time, so I'm consolidating everything into a single script that I can run via subprocess instead.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01B6cUdD6LK9FXxepDiwQd4K",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport sys, time, pickle\\nsys.path.insert(0,'.')\\nimport mc2, numpy as np\\ndepths=[0.25,0.5,0.75,1.0,2.0,3.0,4.0,5.0,6.0,8.0,10.0]\\nt=time.time()\\nallres=[]\\nfor sd in range(10,16):\\n    r=mc2.run(2000000,depths,seed=sd)\\n    allres.append(r)\\n    print(sd, round(time.time()-t,1), flush=True)\\npickle.dump(allres,open('allres.pkl','wb'))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Since each call starts fresh, I'll need to include the imports every time, so I'm consolidating everything into a single script that I can run via subprocess instead.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSwgcKEAgSGAI4AUIIdGhpbmtpbmcSDIYGt1dB8APyE3IPGxoMquslyVM3OqhVSJpFIjBI6u8k6myKkNiA9wh9zu4MF9qRtPOGvua+jqUrh7mgA3ezTl013QuAiCIkTRkQDowq3wbMYi474qX19mGpKoTVJyggDt51Tb+C05EDc7C0rHPiPNBY4nGCj4FR8WzRLoCSxGtYv/QtBRT3jh7iI79E6LpM3O4YcYBAALKTzEm7Zy8dT+rml0NpCnf8Kgl+GbRqFL0eIsezg6Rtu/cy2Z7rA20FjLHqLBFeu0PZGA0VUO/kU1AydJIjX/saa5lwPki6covSBaSXES78lijdI9uBYypSCcyo0ECYmeVGqFuZtNApwuPReQr8S95/2IyorF3sy7B+fN/cdPJE1gd/FkZxUyX3SxPP2Bz9vf4bNiEAQR4TMLMHE2VOrVcWBiAzBfyeWtuEn7uMJIvc3+MtFGbnQGTe1PBzfJ7mNIXJyKSa3ScJZ6UnVsIczJyXDVvGH/S1bOKsAPfdHhzx+VVh+mGaY4NDU/sSjqsze7gmpaleoSdyEnIZzwNCWlfjwsVUgP1oRc4/5Ja8j1exGpCxewCS2sjseMYPOLCXJlFTR0PlEo7WpZ2XU6jVQlXcdDUplp+WLVXU5tyV157W5DHwei8WuvadAOd4MjRSrIrfGGtfC/EodGamteUv2a0oK+e1q6g7kq48CjDL9E+i6bbRiXLOd4ayQUBZm4O6jnguBcAjyBFmxDVVQy+2VW4YgJE/gRabzzTvDNSuoQ00WWCb8MpIOv2Zxvto+4oxu5xejkMt+uyb7oBOd3o/vp6zcmJkq2Rtpemxkzggu/OksDbbido7miUYsOF8TGnE/7HnZ2eUJESIHl2A0GMJh5FRsV0h14pQufOk/kJy7qQEqwl2xhBjNry2hS/dtJ6bA8VPFlJ/+U7TznSnYewwT7xuMQCHDnPMtJ7gPylQ1fXjTZ9AJqZBqVGZ7cMaUy8LNqg6X7ABSGxFtl/EUGRz1AFsqoRQcGFdmXXRjqmUVXy4TIXOeO6XYNqL3AG7cVSdKQfA6ZElmKOTV6saZYT/WvsnJDnpItksY9sB1pix0CfimAbhK+yR5EnNaTVh3ATwc6UPCdXWhWe2wULBD5CFpVTYvcLe0fcECcHFTiVgrNcuXmFMLggSXqsY/nc2msYhYHrW3pttQ8n1oEjfM7Emz4jJw5qOsVyYrbRvtwxCg5fial0VuHOPb1xiDPLbQbKekbZKr5V8NFHTxApJs04lN0lZX8Khn+6pVxgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 74814,
+  "completion_tokens": 276,
+  "total_tokens": 75090,
+  "cost": 0.001431075,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 70075,
+   "cache_write_tokens": 4737,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001431075,
+   "upstream_inference_prompt_cost": 0.001293075,
+   "upstream_inference_completions_cost": 0.000138
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 43,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

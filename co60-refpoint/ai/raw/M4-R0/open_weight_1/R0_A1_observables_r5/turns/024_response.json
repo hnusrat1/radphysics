@@ -1,0 +1,57 @@
+{
+ "id": "gen-1791836193-xLv4FYqYZYmHkCNXbEOm",
+ "object": "chat.completion",
+ "created": 1791836193,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "SiliconFlow",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "01a131c2bffacc48faa1096d890298f5",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport sys, os, time, importlib\\nsys.path.insert(0,'/tmp/work'); os.chdir('/tmp/work')\\nimport numpy as np\\nimport mcbeam\\nimportlib.reload(mcbeam)\\nmcbeam.photon_mc.debug = None\\nt0=time.time()\\nr=mcbeam.photon_mc(300000, rng=np.random.default_rng(7))\\nprint('time',time.time()-t0)\\nprint('debug', mcbeam.photon_mc.debug)\\nprint('L0_sum',r['L0_sum'])\\nprint('ph_p_tot',r['ph_p_tot'],'ph_s_tot',r['ph_s_tot'])\\nprint('prim ratio',r['ph_p_tot']/r['L0_sum'], 'total ratio',(r['ph_p_tot']+r['ph_s_tot'])/r['L0_sum'])\\nprint('L2p',r['L2p'],'L2s',r['L2s'])\\n\"}"
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 104045,
+  "completion_tokens": 255,
+  "total_tokens": 104300,
+  "cost": 0.003074114,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 103168,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.003074114,
+   "upstream_inference_prompt_cost": 0.003002714,
+   "upstream_inference_completions_cost": 7.14e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 1,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

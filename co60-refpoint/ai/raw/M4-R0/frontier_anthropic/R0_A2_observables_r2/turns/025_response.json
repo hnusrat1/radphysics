@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791829567-X9IXmzF5tNKvVc9HZqmb",
+ "object": "chat.completion",
+ "created": 1791829567,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I'm suspecting the bottleneck is in the sigma loop over 270\u00d7270 combinations, each calling moller_dsde and a Gauss integration, which adds up to a significant chunk of runtime.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01Hqgxf6YU79k6AxJrLtHbmm",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport time,sys\\nt00=time.time()\\nsrc=open('/tmp/ana4.py').read()\\nparts=src.split('\\\\n# ')\\nimport re as _re\\nlines=src.split('\\\\n')\\n# instrument: time each top-level statement roughly by executing with timers\\nimport ast\\ntree=ast.parse(src)\\ng={}\\nfor node in tree.body:\\n    t0=time.time()\\n    exec(compile(ast.Module([node],[]),'x','exec'),g)\\n    dt=time.time()-t0\\n    if dt>0.5: print(round(dt,2), ast.get_source_segment(src,node)[:60].replace('\\\\n',' | '))\\nprint('total',time.time()-t00)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I'm suspecting the bottleneck is in the sigma loop over 270\u00d7270 combinations, each calling moller_dsde and a Gauss integration, which adds up to a significant chunk of runtime.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS4woKEAgSGAI4AUIIdGhpbmtpbmcSDGt6T/DGVUa0DNSOyxoMUro8+Ojs94temSelIjDQtZxj6eDtaWQHvw+f12XC8mNrjwX1mP5CuESwhBWR5iX/GIci9M14IlAjZZt5qQQqgAqIiYltVaPT5okmStZgc0d5UKZw5M4Z1O+mQoYeiWfp+DWKLnumtduZxAM8tAdOjWozyrqdXYMdJrSnhQWwVzOwIiUqofOuF0WDtkyHbkDnHQcF0zAjKKaTBCVsUVKsCpNA5CY0HwUY1tqt1yRC9tmMo5XcU/LPZULiW/4ZZZJQlXrmFR61Ml7YgCH6V+a9dpFZ4amBY8qlfN6EFZU0FSTA+jnlg/79bkTDT+drn7JBME81hLP9UGFiiyo+wIwGPZnhLP9vCde1gqPsr4F8vezkvZ+/aMrhMmN0BekEV8WMllmJrS3qYdu9pfHb9CucUg7cktwzLGhHBijRBLAxbXSEgTr8p8pZSxdkV6cgqK/f5+01jvSge8BBecJ59E1B14aaNP9M8jC1qxh1ZI53HjuXAmEM9Jr1ihYs8/cxULzytV2N7vomJemM0Xx/f86R+K0SjI9ZYqHH6ay6wAbY+3D2L5sC022eI0/9KB7f39hcJn2M/wunXaUuHwUYZip4rXef0CdqJVb4TZoJGtjzgCEOjQB5mXXwy3+ZGnGU6zuoK8pncunZfnLsBqAPjOSUX+WkFnCnwsA+v+EVGaiqB5aikdwfcKLC7yy1nJPqAilD2prSchRI+Qjm1BeGnCh5+qJ9YSiWa46ftVXJKicUlPY8f79jBrr8vX/NRcPoRBpXy6OOTIa6Z8GJc1VvMzmOj3nLuFQp5jEoUZ5w4qKzNNLLvu3YE6Tzdm18+r09AZlQ202Tz7DTlHXREZKf9B1Ymu6QVBbgpeQl/28ctq5cCvtWl9J7BoYlay7/1B8Y+sUthunA7U7lGA+IwaDMoRxU0AYg2tC07rb6zJ/dAA6DNSg3REU4aa1sxbI1nGgBNRx+EGckfsAox1s+K9NgjGSSjU6vj+NBXFn5AMCtKlnL2xnKRM3RMZFSvSYgs0Q30gxHkKETkmNH47+5mNg94tIRWbg3aSQPVm+yEEP5GdIvr1BkurOpJUboDhKPt/EAFOXiADt8NzbOlNfkvljdC0ouxCVl/Ng3f4cNtQQs+nUm42+3YCEkm0/MqnvevKYo0tr86dtB1VXKeFJL1piarDwT9CEWTKS9k9lo1rQZDNBawEkwbLK6wWBwr5vhNOWl/MRD/ZyMEQmu8T7DVP6coNyKraml1rWatZ/Ql4TIAPM6S6m+9p+kXnq86NmNSZgwSUK7vdY7gLki3BBWHcngZBlz1GNKu3Aa1SUkMymiqMS26enIjPGiI12dSEnoB3Y9xvnS+TA/9zi3cTkWJJ50Dy5QF3u5p3i1h6fgmkmqgWBLF0zfeNnBum/ZRiMHjPLFdouIXKe0OPcWfoqRzFN4cJzknwB343jqamfpXGhejtrb7RfvePkqtFjd0HWZvZ/TV0u8iJ0KsrYdNyxPGtJU5rc99ACgECdNRmjESs/HBRMEcr5sI9ivutegUBJi5orMYTesPYQlfXhvWHwDP1KY94NwDTOfqhWiqRGe6dkyfSbD1+lmC0NMU4dqvwnHA5So1FKHtlxaztAqTALZAK/FJ3lGK2+haEf5ccZ9+3crDKSSekKhl4H4Gh4MlxY0Lw2B4TnXlGuj+FPf3MtTKsLwqUeBmVaGepMu18PBOqFkpkDQknIapLldKncZIcYsbWn6C4+dEFpw6cPZsksPtZkvVZqAc5OXcjCXtdiRmaxVCQT/6P+DS1phcWPdK+dLzS1dbjt81RgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 142470,
+  "completion_tokens": 531,
+  "total_tokens": 143001,
+  "cost": 0.00903265,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 141458,
+   "cache_write_tokens": 1010,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00903265,
+   "upstream_inference_prompt_cost": 0.00770515,
+   "upstream_inference_completions_cost": 0.0013275
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 263,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

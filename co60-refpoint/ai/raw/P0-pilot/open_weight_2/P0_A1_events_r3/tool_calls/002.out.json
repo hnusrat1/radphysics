@@ -1,0 +1,9 @@
+{
+ "stdout": "Event probabilities: {'compton': 0.7764682578983856, 'rayleigh': 0.02575022283846687, 'photoelectric': 0.0016836684163612954, 'pair': 0.1960978508467862}\ncompton: 77.65%\nrayleigh: 2.58%\nphotoelectric: 0.17%\npair: 19.61%\n",
+ "stderr": "Traceback (most recent call last):\n  File \"/tmp/work/_call_002.py\", line 176, in <module>\n    cos_theta = sample_rayleigh_angle(E_photon)\n  File \"/tmp/work/_call_002.py\", line 84, in sample_rayleigh_angle\n    q = 2 * E / h_bar_c * np.sin(np.arccos(ct)/2)  # momentum transfer\n                ^^^^^^^\nNameError: name 'h_bar_c' is not defined\n",
+ "exit_code": 1,
+ "timed_out": false,
+ "wall_s": 0.36,
+ "stdout_truncated": false,
+ "stderr_truncated": false
+}

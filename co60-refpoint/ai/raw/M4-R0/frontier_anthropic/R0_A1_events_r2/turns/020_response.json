@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791827416-4GEmDjXRfLqwdKFGd1XA",
+ "object": "chat.completion",
+ "created": 1791827416,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "The output got truncated since the full JSON is large\u2014roughly 200 events worth. I'm thinking about how to trim it down, maybe by reducing number precision to three decimals, while keeping all required fields including nulls, and printing it in smaller chunks to fit.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_019eMu51gXkZv5pJ5ogGRTRc",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport subprocess\\nt=r'''\\nimport json\\nd=json.load(open('events.json'))\\nev=d['events']\\nmethod=(\\\"Analog photon Monte Carlo of the water cube with next-event estimation to the 1 cm x 0.2 cm scoring cylinder. \\\"\\n\\\"Source photons (both lines, 50:50) sampled uniformly in solid angle of the 10x10 cm pyramid; uncollided primaries scored analytically with exponential attenuation. \\\"\\n\\\"Every phantom collision (Klein-Nishina Compton, Rayleigh, pair with two 511 keV isotropic annihilation photons, all transported) gives candidate interactions in the cylinder weighted by cross-section fractions and 1/r^2 geometry. \\\"\\n\\\"200 events drawn by systematic probability-proportional-to-weight sampling without replacement; process at the point chosen by cross-section fraction, kinematics sampled from KN/Rayleigh/pair models.\\\")\\ndef r(x,n=3):\\n    return None if x is None else round(float(x),n)\\nout=[]\\nfor e in ev:\\n    out.append({\\\"process\\\":e['process'],\\\"e_in_MeV\\\":r(e['e_in_MeV']),\\\"e_out_MeV\\\":r(e['e_out_MeV']),\\n                \\\"cos_scatter\\\":r(e['cos_scatter']),\\\"t_e_MeV\\\":r(e['t_e_MeV']),\\n                \\\"cos_electron\\\":r(e['cos_electron']),\\\"t_positron_MeV\\\":r(e['t_positron_MeV'])})\\ns=json.dumps({\\\"method\\\":method,\\\"events\\\":out},separators=(',',':'))\\nopen('final.json','w').write(s)\\nprint(len(s), len(out))\\nlines=[json.dumps(o,separators=(',',':')) for o in out]\\nopen('lines.txt','w').write('\\\\n'.join(lines))\\n'''\\nopen('fin2.py','w').write(t)\\nr=subprocess.run(['python','fin2.py'],capture_output=True,text=True,cwd='.'); print(r.stdout,r.stderr[-3000:])\\nprint(open('lines.txt').read()[:20000])\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The output got truncated since the full JSON is large\u2014roughly 200 events worth. I'm thinking about how to trim it down, maybe by reducing number precision to three decimals, while keeping all required fields including nulls, and printing it in smaller chunks to fit.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "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.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 127999,
+  "completion_tokens": 1060,
+  "total_tokens": 129059,
+  "cost": 0.01848775,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 111585,
+   "cache_write_tokens": 16412,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.01848775,
+   "upstream_inference_prompt_cost": 0.01583775,
+   "upstream_inference_completions_cost": 0.00265
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 320,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791826719-vlzDajTfuPAXUsH6wfVP",
+ "object": "chat.completion",
+ "created": 1791826719,
+ "model": "qwen/qwen3.7-flash",
+ "provider": "Alibaba",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Let me look at more of the data to understand the full energy ranges:",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_9c93bd40e88e481795c7de7d",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\n\\n# Read full XCOM data\\nxcom = np.loadtxt('/tmp/data/xcom_water.txt')\\nprint(\\\"XCOM first column (energy in MeV):\\\")\\nprint(xcom[:, 0])\\nprint(\\\"\\\\nXCOM columns:\\\")\\nprint(\\\"Col 0: Energy (MeV)\\\")\\nprint(\\\"Col 1: Total\\\")\\nprint(\\\"Col 2: Coherent (Rayleigh)\\\")\\nprint(\\\"Col 3: Incoherent (Compton)\\\")\\nprint(\\\"Col 4: Photoelectric\\\")\\nprint(\\\"Col 5: Pair production (nuclear)\\\")\\nprint(\\\"Col 6: Pair production (electron)\\\")\\nprint(\\\"Col 7: Total (uncorrected?)\\\")\\n\\nprint(\\\"\\\\n---\\\\n\\\")\\n\\n# Read full ESTAR data  \\nestar = np.loadtxt('/tmp/data/estar_water.txt')\\nprint(\\\"ESTAR columns:\\\")\\nfor i, col in enumerate(estar[0]):\\n    print(f\\\"Col {i} min/max:\\\", ester[:, i].min(), ester[:, i].max())\\n    \\nprint(\\\"\\\\nESTAR energies:\\\")\\nprint(estar[:, 0])\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Let me look at more of the data to understand the full energy ranges:",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 6211,
+  "completion_tokens": 282,
+  "total_tokens": 6493,
+  "cost": 0.000109326,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 4736,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000109326,
+   "upstream_inference_prompt_cost": 7.2666e-05,
+   "upstream_inference_completions_cost": 3.666e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 15,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

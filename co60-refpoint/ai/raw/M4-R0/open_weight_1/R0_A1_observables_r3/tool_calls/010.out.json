@@ -1,0 +1,9 @@
+{
+ "stdout": "n scatter segments: 472661\nmean scatter z: -77.1805271731387  median: -82.30985565043609\nmean radial: 4.239573536671331  median: 1.9997171149256918\nfraction with r<1: 0.38563790962232974\nmean cos uz: 0.2738747878294904  frac uz>0.9: 0.13872521743913713  frac uz>0.6: 0.3932416679184447\n",
+ "stderr": "Traceback (most recent call last):\n  File \"/tmp/work/_call_010.py\", line 144, in <module>\n    hit = ray_cylinder_hit(sc_pos, u_=np.stack([np.sqrt(np.maximum(1-sc_uz**2,0))*np.cos(np.arange(len(sc_uz))*0.123), np.sqrt(np.maximum(1-sc_uz**2,0))*np.sin(np.arange(len(sc_uz))*0.123), sc_uz],axis=1))\nTypeError: ray_cylinder_hit() got an unexpected keyword argument 'u_'. Did you mean 'u'?\n",
+ "exit_code": 1,
+ "timed_out": false,
+ "wall_s": 0.98,
+ "stdout_truncated": false,
+ "stderr_truncated": false
+}

@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791824781-VhPyON8ETcvgFVjnY5Eh",
+ "object": "chat.completion",
+ "created": 1791824781,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I accidentally included a '|' character. This is getting frustrating with copy errors. Let me write the whole final code in one text block very carefully.\n\nActually, I realize the best approach is to save the simulation code to a file and then execute it. Let me write it out fully in one go.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_1c617b4f580a488eb1a4f1ea",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np, math, time, json\\nfrom collections import Counter\\n\\nrng = np.random.default_rng(12345)\\nme=0.51099895; re=2.8179403262e-13; Ne=3.343e23\\n\\ndef kn_f(mu,E):\\n    a=E/me; r=1.0/(1.0+a*(1.0-mu))\\n    return r*r*(1.0/r+r-(1.0-mu*mu))\\n\\nEgrid=np.logspace(np.log10(0.001),np.log10(10.0),300)\\nsig_grid=np.empty(300)\\nfor j,E in enumerate(Egrid):\\n    mus=np.linspace(-1,1,3001)\\n    sig_grid[j]=np.pi*re**2*np.trapezoid(kn_f(mus,E),mus)\\n\\nE_ph=np.array([0.01,0.02,0.03,0.04,0.05,0.06,0.08,0.10,0.15,0.20,0.30,0.50,0.80,1.0,1.5,2.0])\\nmu_ph=np.array([4.90,0.506,0.162,0.0712,0.0375,0.0223,0.00988,0.00547,0.00240,0.00128,0.000526,0.000151,5e-5,3e-5,1e-5,4.7e-6])\\nE_pa=np.array([1.022,1.25,1.5,2.0,2.5,3.0,4.0,5.0,6.0,8.0,10.0])\\nmu_pa=np.array([0.0,3.1e-5,1.32e-4,4.1e-4,8.1e-4,1.39e-3,2.69e-3,4.32e-3,6.19e-3,1.05e-2,1.55e-2])\\nE_co=np.array([0.01,0.02,0.03,0.05,0.08,0.10,0.15,0.20,0.30,0.50,0.80,1.0,1.5,2.0])\\nmu_co=np.array([0.30,0.060,0.022,0.0098,0.0046,0.0034,0.0017,0.0011,0.0006,0.0003,0.00015,0.00012,8e-5,4.5e-5])\\n\\ndef mu_comp(E): return Ne*np.interp(np.log(np.clip(E,1e-3,10)),np.log(Egrid),sig_grid)\\n# Fix photo and pair and coh functions using the pre-imported arrays\\ndef mu_photo(E): \\n    return np.exp(np.interp(np.log(np.clip(E,E_ph[0],E_ph[-1])),np.log(E_ph),np.log(mu_ph)))\\ndef mu_pair(E):\\n    res=np.zeros_like(E); mask=E>1\u3002022\\n    if mask.any():\\n        res[mask]=np.exp(np.interp(np.log(np.clip(E[mask],E_pa[1],E_pa[-1])),np.log(E_pa[1:]),np.log(mu_pa[1:])))\\n    return res\\ndef mu_coh(E): return np.exp(np.interp(np.log(np.clip(E,E_co[0],E_co[-1])),np.log(E_co),np.log(mu_co)))\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I accidentally included a '|' character. This is getting frustrating with copy errors. Let me write the whole final code in one text block very carefully.\n\nActually, I realize the best approach is to save the simulation code to a file and then execute it. Let me write it out fully in one go.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 85308,
+  "completion_tokens": 926,
+  "total_tokens": 86234,
+  "cost": 0.00196475664,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 81920,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00196475664,
+   "upstream_inference_prompt_cost": 0.00179648392,
+   "upstream_inference_completions_cost": 0.00016827272
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 62,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

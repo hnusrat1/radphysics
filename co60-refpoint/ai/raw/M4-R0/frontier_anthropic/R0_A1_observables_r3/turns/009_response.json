@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791825839-UkkTGlqxyPHDI4mev4Im",
+ "object": "chat.completion",
+ "created": 1791825839,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "First-order check agrees (0.2318 MC vs 0.2321 numerical), so the point-estimator normalization is right. Now the full run with multiple scoring depths.",
+    "refusal": null,
+    "reasoning": "The agreement looks good, 0.2318 versus 0.2321, though this only captures first-order scatter from NEE collisions. Comparing to the full multi-scatter run which gave roughly 0.44 for N=20000, albeit noisy, suggests the first-order contribution is about half the total scattered fluence.\n\nLet me scale up to N=1e6 across the full set of z-points (0.25 through 10, with z=5 as index 8), timing suggests 1e6 histories take around 10 seconds plus NEE overhead, so I'll run with N=1e6 for the main point while watching memory usage for stored collision data.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_019iAXrGE9ThbDSpR8Vst77o",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport time\\nzpts=[0.25,0.5,0.75,1.0,1.5,2.0,3.0,4.0,5.0,6.0,8.0,10.0]\\nt=time.time()\\nR=M.run(1000000, zpts, seed=21, store_main=zpts.index(5.0))\\nprint(\\\"time\\\",time.time()-t, \\\"collisions\\\",R['nColl'])\\nN=R['N']\\nfor j,z in enumerate(zpts):\\n    print(z, \\\"scat fluence/Phi0=\\\", P.SF/N*R['A_tot'][j], \\\"K_col_scat=\\\", P.SF/N*R['A_Kc'][j], \\\"K_scat=\\\",P.SF/N*R['A_K'][j])\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The agreement looks good, 0.2318 versus 0.2321, though this only captures first-order scatter from NEE collisions. Comparing to the full multi-scatter run which gave roughly 0.44 for N=20000, albeit noisy, suggests the first-order contribution is about half the total scattered fluence.\n\nLet me scale up to N=1e6 across the full set of z-points (0.25 through 10, with z=5 as index 8), timing suggests 1e6 histories take around 10 seconds plus NEE overhead, so I'll run with N=1e6 for the main point while watching memory usage for stored collision data.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "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.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 111747,
+  "completion_tokens": 770,
+  "total_tokens": 112517,
+  "cost": 0.00803075,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 110845,
+   "cache_write_tokens": 900,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00803075,
+   "upstream_inference_prompt_cost": 0.00610575,
+   "upstream_inference_completions_cost": 0.001925
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 439,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

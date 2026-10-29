@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791823061-NjNYihNSxXDNycKlcyid",
+ "object": "chat.completion",
+ "created": 1791823061,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Evaluating model samples**\n\nI'm looking at this simple model sample with 10,649 local event interactions based on 20 million primaries, which seems like a proper setup. I need to inspect the process counts in the sample compared to all processes. Should I focus on the sample selected processes or include overall counts? There\u2019s a lot to unpack here, and I'm curious about how these counts align with the sample's effectiveness. Let's see what insights I can gather!",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_h3jQCD2s1v4q4aSTIrJOK2R6",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import pandas as pd, numpy as np\\narr=[]\\nfor l in open('/tmp/sample.txt'):\\n a=l.split(); arr.append([int(a[0])]+[float(x) for x in a[1:]])\\na=np.array(arr); print(np.bincount(a[:,0].astype(int))); print('E ranges',a[:,1].min(),a[:,1].max(),np.percentile(a[:,1],[0,10,50,90,100])); print('scat mu',np.percentile(a[a[:,0]==0,3],[0,10,50,90,100])); print('max event energies low')\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Evaluating model samples**\n\nI'm looking at this simple model sample with 10,649 local event interactions based on 20 million primaries, which seems like a proper setup. I need to inspect the process counts in the sample compared to all processes. Should I focus on the sample selected processes or include overall counts? There\u2019s a lot to unpack here, and I'm curious about how these counts align with the sample's effectiveness. Let's see what insights I can gather!",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzQzXATaTx7eVK2rJRUnVbhmhhQzW-qOz8dUIAbN11QYDcjVspw8T3lfG1JgKxSAyl1VB7rY6V8tnSaDYUI0zj242OOXGhMlehaO3wqa5f5BYN_ILUXPApIHDzYjO7BhE11mHvGja0WIYmv7ZW172ou-jNzOM2lEt1qOm7dUeUpjksvwEUYctCR3OzW0FWBrkvS-tPfMeO1shH7SBM5yq4ny5xIpJ2jcIR4zEL6nDrqCrIwzsGufwLpLzkLR653k12N4MNJ3yPKKBjqJiomEb6Vo_FZRldPuq_v-ji5B3Oh2rYA_1ghdaob1IXWhD-8Jie5_sy7fJKRUjf76bKlAAWMRXe20a3DcWEyJu5d3ooT6nXy-yjbseGynWt8bk9owJO41XojrcH5fo8SQWVWgMoolLPAAf56j6QHVelZM6Wf2Anzr2LFpcie7iSoeKSMepJPVtim81YXXkt4CCnHJMsaDQPMjUmMJ2PC21AIVxnNyAA53PE4vVr2sOwo9V6sTSvrFpVdhH60zmY3lJtuS9B3DqQqpQX67QwjRJMASk_kLGCx21HtG-FJCPmcfGKsy5A-QH4xKYOxJB3g8Q0htggywnvuZLaGQcncR63Mze2F7sNvStH7vgBnYx5sT4kyDd20lavYhro0jFXOIWlKgr-Ez9VAk2VRpbnYtT4MOFc4KcrC9nauJDyNY-Q662sUrqh7ecuz95PoXNFRogMVP-wnW_R1fxoUeoSBzr392Hr1yUNw1PqlqKci13J6hRq1FaK3ltw4bUg9YaL2FUC1aMBDDuF-wX5_x8yx365JkM-WLGL7aaJnfarkSOepf5L6qMsC-o7Q2YdJu0scgNcMIRgGjTJASj6pBKcDSmZSWpmPZIo3dURjviTSAA7P-lFq8Erh4mx9hmJZaVYDvNrRMRAiaEKmpnIswrM9nXQkW7ytA00hcWsHUprOpJaegEEPKm38J-3Ui0florFY2pYyfDNVsQN1mkQUHzn8HBlr9Z1ShQQdk4y2YJCC7hhnaIjpnJHKJxbRGJqo-qKT-WX6koSjUCL-DsVkrEfJhHra6X8GBJdkWMXsJU1mVCtsOXpWCIux7egF3akg7sJ7un4ykaHd1dwAqF-kmnVz4XcJZMKXU1A_CY8CkQe8vwSV42qD_5D2GeWuu_cBG238mGvGhhXRwtWv7AX3KnKfanNEAVcCtwrrm6qzOPXkjaWLBspHJACwocpe-_Ug8fdGiRHHKu_e5BQcf90V-2qYNYNZdl1MJ62tIitnfgk7JcvjZ-DFCU6XQWH5oIqKZ0oTh4GclJsHs57c_FmZh3rQL8yWHhz34qoG-dmzSv3maJ0Aler7Di5Tvr_fIGWGj_dhnOotyEGb6iwL9Yz1Idjaj6ICXdwbKrcD3-RwJ3h_Q1mBMX7r6nyJTvVtp2SJOCRVUeLGN-5tzCVJ6vNSSx1QiORAmoXZjKhS_YDi5Kc7j4cVym_NbvCOinSRSaUOjqgBXV6umeSSGnhA7XviHZqKoImToxJZwWZF-QCtgBLAsidREUJppp2fdn1wv2ybuuYdmPZC5BsDOVw4y4AjzPyFetuvx9KoER7_ZAUCvJiw48TWIn_coijoLYLLpS6-_VcZam0JYJk_10qiOHKsAz25YEYKra8zLMRQCkif5OenS-iVb5SZzx5efsGMBeq3TBvd8nwAka-s_6P4BaO1MB3xasf9mauAmquQlqNutZgrhY0YJBHfu6Yr3PH93xSAvKaJvLVxq2m1clcK2sEy0K910-gOCsiuYAIveSEAVeSj8AGbTMv1FRfnlAVDK6jDLx8UL_-Ca_Vfk11EOivP6cU83Uqumujdm5BOiF_epd7ByHz1kuiEO6y03EBKGF8_qzartUv6PA3xC6SnO39hEiWVosA1qX11qclXb41p2rOdJqK7lMEAwmzLtKqG9tG0ArCMkcST80NyQOqivnjrKxEriegWsSAcAOPRQCMKmU77ZEuGt_IcITcYh08F7UMZAOYv74U_AW8f05pf0tpgqk7B-YNvV9DJQplMFa8qzYXmlWpIm6vtsdi1YdQCq3AAkHbKhYXkHPzTRd5w==.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_098c931a4059667c016acd0cd67adc87d190c6493d413723d6",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 9065,
+  "completion_tokens": 195,
+  "total_tokens": 9260,
+  "cost": 0.000208085,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 8891,
+   "cache_write_tokens": 171,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000208085,
+   "upstream_inference_prompt_cost": 0.000110585,
+   "upstream_inference_completions_cost": 9.75e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 39,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

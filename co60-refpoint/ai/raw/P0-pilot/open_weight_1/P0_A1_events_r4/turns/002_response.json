@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791825289-69rGVGjA8XYuWo9dsRO7",
+ "object": "chat.completion",
+ "created": 1791825289,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "The Compton value 0.0489 cm^2/g seems reasonable. But the photoelectric seems high (0.0028 cm^2/g) which is too high for 2 MeV; should be around 1e-5. Let me fix the photoelectric formula.\n\nAlso, pair production at 2 MeV should be slightly above threshold (1.022 MeV), so there is some small cross section. Let me recalculate.\n\nLet me look up approximate NIST values for water:\n\nFrom memory (or typical values):\nWater (H2O) mass attenuation coefficients (cm^2/g):\n\nEnergy (MeV) | \u03bc_tot | \u03bc_pe | \u03bc_incoh (Compton) | \u03bc_pair | \u03bc_Rayleigh\n2.0 | 0.0492 | 0.00001 | 0.0491 | 0.00005 | ~0\n\nSo at 2 MeV, Compton dominates almost completely.\n\nLet me adjust my formulas to match these values better.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_63715bb1a7d54a3597c35e5e",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\n\\n# Let's define better approximations based on known NIST values\\n# For water, I'll create interpolation tables\\n\\n# Energy grid (MeV)\\nenergies = np.array([0.01, 0.015, 0.02, 0.03, 0.04, 0.05, 0.06, 0.08, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.6, 0.8, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 6.0, 8.0, 10.0, 15.0, 20.0])\\n# Approximate mu/rho values for water (cm^2/g) from NIST\\n# Total, Compton, photoelectric, pair, Rayleigh\\n# These are rough but plausible\\nmu_total = np.array([5.33, 1.67, 0.796, 0.376, 0.269, 0.214, 0.187, 0.166, 0.171, 0.151, 0.136, 0.118, 0.106, 0.0967, 0.0894, 0.0786, 0.0708, 0.0583, 0.0492, 0.0360, 0.0271, 0.0216, 0.0178, 0.0130, 0.0102, 0.00622, 0.00418])\\nmu_compton = np.array([0.443, 0.439, 0.437, 0.432, 0.427, 0.422, 0.417, 0.408, 0.399, 0.380, 0.364, 0.339, 0.319, 0.303, 0.290, 0.268, 0.251, 0.218, 0.194, 0.155, 0.128, 0.109, 0.0945, 0.0732, 0.0582, 0.0364, 0.0246])\\nmu_pe = np.array([4.89, 1.23, 0.359, 0.0559, 0.0400, 0.0250, 0.0159, 0.00380, 0.00163, 0.000440, 0.000200, 0.000080, 0.000040, 0.000025, 0.000018, 0.000010, 0.000007, 0.000003, 0.000002, 0.000001, 0.0000005, 0.0000003, 0.0000002, 0.0000001, 0.00000005, 0.00000002, 0.00000001])\\nmu_pair = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0004, 0.0011, 0.00275, 0.0036, 0.0046, 0.0051, 0.0055, 0.0059, 0.0064, 0.0068, 0.0074, 0.0077])\\nmu_rayleigh = np.array([0.160, 0.0560, 0.0260, 0.0080, 0.0035, 0.0018, 0.0010, 0.0004, 0.0002, 0.00005, 0.00002, 0.000005, 0.000002, 0.000001, 0.0000005, 0.0000002, 0.0000001, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])\\n\\n# Check at 2 MeV\\nfrom scipy.interpolate import interp1d\\nf_total = interp1d(energies, mu_total, kind='linear', bounds_error=False, fill_value=0.0)\\nf_compton = interp1d(energies, mu_compton, kind='linear', bounds_error=False, fill_value=0.0)\\nf_pe = interp1d(energies, mu_pe, kind='linear', bounds_error=False, fill_value=0.0)\\nf_pair = interp1d(energies, mu_pair, kind='linear', bounds_error=False, fill_value=0.0)\\nf_rayleigh = interp1d(energies, mu_rayleigh, kind='linear', bounds_error=False, fill_value=0.0)\\n\\nprint(f\\\"At 2 MeV:\\\")\\nprint(f\\\"Total: {f_total(2.0):.6f}\\\")\\nprint(f\\\"Compton: {f_compton(2.0):.6f}\\\")\\nprint(f\\\"PE: {f_pe(2.0):.6e}\\\")\\nprint(f\\\"Pair: {f_pair(2.0):.6e}\\\")\\nprint(f\\\"Rayleigh: {f_rayleigh(2.0):.6e}\\\")\\nprint(f\\\"Sum: {f_compton(2.0)+f_pe(2.0)+f_pair(2.0)+f_rayleigh(2.0):.6f}\\\")\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The Compton value 0.0489 cm^2/g seems reasonable. But the photoelectric seems high (0.0028 cm^2/g) which is too high for 2 MeV; should be around 1e-5. Let me fix the photoelectric formula.\n\nAlso, pair production at 2 MeV should be slightly above threshold (1.022 MeV), so there is some small cross section. Let me recalculate.\n\nLet me look up approximate NIST values for water:\n\nFrom memory (or typical values):\nWater (H2O) mass attenuation coefficients (cm^2/g):\n\nEnergy (MeV) | \u03bc_tot | \u03bc_pe | \u03bc_incoh (Compton) | \u03bc_pair | \u03bc_Rayleigh\n2.0 | 0.0492 | 0.00001 | 0.0491 | 0.00005 | ~0\n\nSo at 2 MeV, Compton dominates almost completely.\n\nLet me adjust my formulas to match these values better.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 5580,
+  "completion_tokens": 1560,
+  "total_tokens": 7140,
+  "cost": 0.000790482,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000790482,
+   "upstream_inference_prompt_cost": 0.0005069988,
+   "upstream_inference_completions_cost": 0.0002834832
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 205,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

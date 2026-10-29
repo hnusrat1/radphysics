@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791817080-ywzPU0n6FKPReB0ny1ny",
+ "object": "chat.completion",
+ "created": 1791817080,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "My computed attenuation coefficient at 2 MeV comes out about 0.5% low versus the NIST reference value, which is close enough that I'll leave it as is rather than apply a correction factor. Now I'll move on to event generation and transport.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01SvUx6nXAa2SmDAqNt2p9iu",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\ndef sample_cos_thomson(n):\\n    out=np.empty(n); todo=np.arange(n)\\n    while len(todo):\\n        c=rng.uniform(-1,1,len(todo)); acc=rng.uniform(size=len(todo))<(1+c*c)/2\\n        out[todo[acc]]=c[acc]; todo=todo[~acc]\\n    return out\\n\\ndef sample_photo_cos(T):\\n    # Sauter-like angular distribution  sin^2/(1-beta cos)^4 ; rejection\\n    b=np.sqrt(1-(ME/(T+ME))**2)\\n    grid=np.linspace(-1,1,401)\\n    M=np.max((1-grid[None,:]**2)/(1-b[:,None]*grid[None,:])**4,axis=1)*1.001\\n    out=np.empty(len(T)); todo=np.arange(len(T))\\n    while len(todo):\\n        c=rng.uniform(-1,1,len(todo))\\n        f=(1-c*c)/(1-b[todo]*c)**4\\n        acc=rng.uniform(size=len(todo))*M[todo]<f\\n        out[todo[acc]]=c[acc]; todo=todo[~acc]\\n    return out\\n\\ndef make_events(Ein,W):\\n    n=len(Ein)\\n    mc=mu_c(Ein); mr=mu_R(Ein); mpe=mu_pe(Ein); mp=mu_p(Ein); mt=mc+mr+mpe+mp\\n    xi=rng.uniform(size=n)*mt\\n    proc=np.where(xi<mc,0,np.where(xi<mc+mr,3,np.where(xi<mc+mr+mpe,1,2)))  # 0 compton,1 photo,2 pair,3 rayleigh\\n    names=np.array(['compton','photoelectric','pair','rayleigh'])\\n    ev={'W':W,'process':names[proc],'e_in':Ein,'e_out':np.full(n,np.nan),'cos_s':np.full(n,np.nan),\\n        't_e':np.zeros(n),'cos_e':np.full(n,np.nan),'t_pos':np.full(n,np.nan)}\\n    # compton\\n    m=proc==0\\n    if m.any():\\n        E=Ein[m]; eps=kn_eps(E,rng); k=E/ME\\n        c=1-(1/eps-1)/k\\n        Eo=eps*E\\n        pe_x=E-Eo*c; pe_mag=np.sqrt(E*E+Eo*Eo-2*E*Eo*c)\\n        ev['e_out'][m]=Eo; ev['cos_s'][m]=c; ev['t_e'][m]=E-Eo\\n        ev['cos_e'][m]=np.clip(pe_x/pe_mag,-1,1)\\n    m=proc==1\\n    if m.any():\\n        ev['t_e'][m]=Ein[m]; ev['cos_e'][m]=sample_photo_cos(Ein[m])\\n    m=proc==2\\n    if m.any():\\n        Tt=Ein[m]-2*ME; f=rng.uniform(size=m.sum())\\n        te=Tt*f; ev['t_e'][m]=te; ev['t_pos'][m]=Tt-te\\n        th=np.abs(rng.normal(0,1,m.sum()))*ME/(te+ME)*1.0\\n        ev['cos_e'][m]=np.cos(np.clip(th,0,np.pi))\\n    m=proc==3\\n    if m.any():\\n        c=sample_cos_thomson(m.sum()); ev['e_out'][m]=Ein[m]; ev['cos_s'][m]=c; ev['t_e'][m]=0.0\\n    return ev\\n\\ndef chord_from(x,dirs):\\n    return cyl_chord(x,dirs)\\n\\ndef nee_channels(x,inc,E,rng):\\n    \\\"\\\"\\\"x (M,3) collision points, inc (M,3) incident dirs, E (M,) energies.\\n    returns list of (W,Eprime) arrays for compton, rayleigh, pair-annihilation channels\\\"\\\"\\\"\\n    M=len(E)\\n    vec=CEN[None,:]-x; d=np.linalg.norm(vec,axis=1)\\n    axis=vec/d[:,None]\\n    full=d<=RB\\n    cosa=np.sqrt(np.clip(1-(RB/np.maximum(d,1e-12))**2,0,None))\\n    cmin=np.where(full,-1.0,cosa)\\n    OmB=np.where(full,4*np.pi,2*np.pi*(1-cosa))\\n    res=[]\\n    mt=mu_tot(E)\\n    xi=rng.uniform(size=M); phi=rng.uniform(0,2*np.pi,M)\\n    c=cmin+(1-cmin)*xi\\n    Od=rotate(axis,c,phi)\\n    hit,sin_,sout=chord_from(x,Od)\\n    cos_th=np.sum(Od*inc,axis=1)\\n    k=E/ME\\n    # Compton\\n    cth=np.clip(cos_th,-1,1)\\n    eps=1/(1+k*(1-cth)); Ep=eps*E\\n    dsig=RE**2/2*eps**2*(eps+1/eps-(1-cth*cth))\\n    mtp=mu_tot(Ep)\\n    T=np.exp(-mtp*sin_); P=1-np.exp(-mtp*np.clip(sout-sin_,0,None))\\n    W=np.where(hit,NE*dsig/mt*OmB*T*P,0.0)\\n    res.append(('c',W,Ep,hit))\\n    # Rayleigh\\n    pR=3/(16*np.pi)*(1+cth*cth)\\n    mtr=mt\\n    T=np.exp(-mtr*sin_); P=1-np.exp(-mtr*np.clip(sout-sin_,0,None))\\n    W=np.where(hit,mu_R(E)/mt*pR*OmB*T*P,0.0)\\n    res.append(('r',W,E.copy(),hit))\\n    # pair annihilation photons (two, isotropic), E'=0.511\\n    Ea=np.full(M,ME)\\n    mta=mu_tot(Ea)\\n    T=np.exp(-mta*sin_); P=1-np.exp(-mta*np.clip(sout-sin_,0,None))\\n    W=np.where(hit,mu_p(E)/mt*2/(4*np.pi)*OmB*T*P,0.0)\\n    res.append(('a',W,Ea,hit))\\n    return res\\n\\ndef simulate(N, batch=200000):\\n    ev_all=[]\\n    # ---- primary forced events\\n    # pyramid sampling uniform in solid angle\\n    u=np.empty(0); v=np.empty(0)\\n    us=[];vs=[]; tot=0\\n    while tot<N:\\n        uu=rng.uniform(-0.05,0.05,2*N); vv=rng.uniform(-0.05,0.05,2*N)\\n        acc=rng.uniform(size=2*N)<(1+uu*uu+vv*vv)**(-1.5)\\n        us.append(uu[acc]); vs.append(vv[acc]); tot+=acc.sum()\\n    u=np.concatenate(us)[:N]; v=np.concatenate(vs)[:N]\\n    D=np.stack([u,v,np.ones(N)],1); D/=np.linalg.norm(D,axis=1,keepdims=True)\\n    p0=np.zeros((N,3)); p0[:,0]=100/D[:,2]*D[:,0]; p0[:,1]=100/D[:,2]*D[:,1]\\n    hit,sin_,sout=chord_from(p0,D)\\n    # shift: sin_ measured from p0 (phantom entry)\\n    mu2=mu_tot(np.array(2.0))\\n    T=np.exp(-mu2*sin_); P=1-np.exp(-mu2*np.clip(sout-sin_,0,None))\\n    Wp=np.where(hit,T*P,0.0)\\n    m=Wp>0\\n    prim=make_events(np.full(m.sum(),2.0),Wp[m])\\n    ev_all.append(prim)\\n    # ---- analog transport of all photons, NEE from each collision\\n    pos=p0.copy(); dr=D.copy(); E=np.full(N,2.0)\\n    nee_list=[]\\n    alive=np.ones(N,bool)\\n    while alive.any():\\n        idx=np.nonzero(alive)[0]\\n        mt=mu_tot(E[idx])\\n        s=-np.log(rng.uniform(size=len(idx)))/mt\\n        sb=exit_dist(pos[idx],dr[idx])\\n        coll=s<sb\\n        alive[idx[~coll]]=False\\n        ci=idx[coll]; sc=s[coll]\\n        if len(ci)==0: break\\n        x=pos[ci]+sc[:,None]*dr[ci]\\n        pos[ci]=x\\n        Ec=E[ci]; inc=dr[ci]\\n        for (ch,W,Ep,h) in nee_channels(x,inc,Ec,rng):\\n            if h.any():\\n                nee_list.append((ch,W[h],Ep[h]))\\n        # analog interaction\\n        mt=mu_tot(Ec); mc=mu_c(Ec); mr=mu_R(Ec); mp=mu_p(Ec)\\n        xi=rng.uniform(size=len(ci))*mt\\n        isC=xi<mc; isR=(xi>=mc)&(xi<mc+mr); isP=(xi>=mc+mr)&(xi<mc+mr+mp)\\n        isPE=xi>=mc+mr+mp\\n        alive[ci[isPE]]=False\\n        # pair: kill photon, create two annihilation photons\\n        pidx=ci[isP]; alive[pidx]=False\\n        if len(pidx):\\n            xp=x[isP]\\n            cdir=rng.uniform(-1,1,len(pidx)); ph=rng.uniform(0,2*np.pi,len(pidx))\\n            d1=rotate(np.tile([[0,0,1.]],(len(pidx),1)),cdir,ph)\\n            # isotropic direction: use rotate with random axis: simpler build via random normal\\n            g=rng.normal(size=(len(pidx),3)); g/=np.linalg.norm(g,axis=1,keepdims=True)\\n            new_pos=np.concatenate([xp,xp]); new_dir=np.concatenate([g,-g])\\n            new_E=np.full(2*len(pidx),ME)\\n            pos=np.concatenate([pos,new_pos]); dr=np.concatenate([dr,new_dir]); E=np.concatenate([E,new_E])\\n            alive=np.concatenate([alive,np.ones(2*len(pidx),bool)])\\n        # Compton / Rayleigh updates\\n        cidx=ci[isC]\\n        if len(cidx):\\n            Ein=E[cidx]; eps=kn_eps(Ein,rng); k=Ein/ME; cth=1-(1/eps-1)/k\\n            ph=rng.uniform(0,2*np.pi,len(cidx))\\n            dr[cidx]=rotate(dr[cidx],cth,ph); E[cidx]=eps*Ein\\n        ridx=ci[isR]\\n        if len(ridx):\\n            cth=sample_cos_thomson(len(ridx)); ph=rng.uniform(0,2*np.pi,len(ridx))\\n            dr[ridx]=rotate(dr[ridx],cth,ph)\\n        # energy cut\\n        low=alive & (E<0.01)\\n        alive[low]=False\\n        # ensure arrays length consistent\\n    return ev_all, nee_list, prim\\n\\nt0=time.time()\\nev_all,nee_list,prim=simulate(200000)\\nprint(\\\"time\\\",time.time()-t0, \\\"prim events\\\",len(prim['W']), \\\"sum prim W\\\", prim['W'].sum())\\nprint(len(nee_list))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "My computed attenuation coefficient at 2 MeV comes out about 0.5% low versus the NIST reference value, which is close enough that I'll leave it as is rather than apply a correction factor. Now I'll move on to event generation and transport.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSwAcKEAgSGAI4AUIIdGhpbmtpbmcSDFMcrcLLrkVT4fOXERoMrzRVnuMmaRpYKZ+rIjD0QZAc12YBeG5ZGt0D5J+XfV09D7O5V+TbnJhIsoTwogbhZ/48SpPlIAIazFD16DMq3QY4NLgqbLOSltEhdLW5u3jhu4hdUu2klCQ40VCiIeTOx7OvorFk0jgNS02Nxq3UCpHWahg2p/XqdZpfa1BM4Q64fAKkNe9sz6St0QfAhxJoZQqLkTMkuksMe3WAhisOg7XmWNa3m4NO3kr1K6j3aJWa1yrB742/mpEpVCQdb7dQ1wkl2o+wJrMmqteSclqLxpVNilCZ0wSQYZHrP9k0pqR8/Dbbxx4Uek8np3QzkwQLntaRcu5xSp5wYd53XRKfRm+51ST6pJMv7N0XXm0G6uszjM8Ro07ro5IJpIWl+pwPHyvSzfhGv8x1wwoQED3AnA7BmS2l9F4lRe01Squ1luxW0E4gC0/oSZir0NZABUXKN96Ykpid+2/Oey+eX9cfjqBzPI6qCWX1AwoiYDIvaftCiVPFXGm3KOQTWBgaJ9ZqvqDcG5TL2Nb1S8ENTYEsFktnCfISJ8aNnrzMcZVqP6aVLnvZ28xMhoIDk0NbO4qU0Lz7rUlxIZxwsJabo+VLFLS63jZwqagujoIkx4zIpt4bYSUqJQ9xtEJM2e3a38InxqHRQn+y8L2wBPjCDVrt2wharLdrE/VSVPDYywlaSGU2NsBxbARK94f+QJi7iNDbj3VDIep8ddyEmZDvEYQi2JZd/yfkMQCo9psUdRZHHBxK3sZpodJeUT6jn4qKGuDy6htDRV+qb3nzTT99tJpyBf5L2O3OzYLQEnKcCofTI4ovUNTNB2TisqVE1QmCWUcFqkCM4Ng0bruti12n1JwoRwjy2LbtOdBodi4SbVhvAMj23hUvQYja0+nj9fLRUaBHwA1RaFvzFord3kdJOqSt2x2ovFBA2lkbeAtQsHWtukEff7kjRlZQkrOyxRjaC3euah+PesTT5N0OqfMja3kliUfDX2lIfMbzQsXQfMIA7q1IkbBiWDTnGU8bTdbbVXvNUbfqJHIyltngA56nDZ2DjRzRGn3hSm54mk6emzWmgOXwAjA6sc4PS6NIl2bUjAe2t3VlbZVlevCY/e8HxtcMNjQUvZkyjdWUk0congbUucYiQUb4XCSwX8tJjbBBZ0o5BrXUlEwoJH5S+EVmaMafpL7GfMB3VC1szQ29m1tmp5pS5WL3OxsljP4Ox9sVtC9dTFg5nt7Dcda71Y7Vby0YAQ==.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 63697,
+  "completion_tokens": 4213,
+  "total_tokens": 67910,
+  "cost": 0.0084762,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0084762,
+   "upstream_inference_prompt_cost": 0.0063697,
+   "upstream_inference_completions_cost": 0.0021065
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 140,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

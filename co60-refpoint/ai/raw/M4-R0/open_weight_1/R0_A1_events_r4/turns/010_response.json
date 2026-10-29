@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791828811-ce7lqD6QbXMUFQGgzcwo",
+ "object": "chat.completion",
+ "created": 1791828811,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Good, the Compton cross section works. Now let me fix the other functions and write the full simulation. I'll type more carefully this time, avoiding invisible characters.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_ee589e6658334522bc4530fb",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nimport math\\nimport random\\n\\nmec2 = 0.511\\nr0 = 2.8179403262e-13\\nn_e_per_cm3 = 3.3456e23\\n\\nsource_z = -100.0\\nphantom_z_min = 0.0\\nphantom_z_max = 30.0\\nphantom_half = 15.0\\nscoring_r = 1.0\\nscoring_z0 = 5.0\\nscoring_dz = 0.1\\nfield_half = 5.0\\n\\ndef mu_inc(E):\\n    if E <= 0:\\n        return 0.0\\n    a = E / mec2\\n    a2 = a*a\\n    x = 1.0 + 2.0*a\\n    lnx = math.log(x)\\n    term1 = (1.0+a)/a2 * (2.0*(1.0+a)/x - lnx/a)\\n    term2 = lnx/(2.0*a) - (1.0+3.0*a)/(x*x)\\n    sigma = 2.0*math.pi*r0*r0 * (term1 + term2)\\n    return sigma * n_e_per_cm3\\n\\ndef mu_pp(E):\\n    if E <= 2*mec2:\\n        return 0.0\\n    e_arr = np.array([1.1732, 1.3325, 2.0, 3.0, 5.0, 10.0])\\n    mu_arr = np.array([0.006205, 0.006286, 0.0082, 0.0109, 0.0126, 0.0120])\\n    if E <= 1.1732:\\n        t = E - 2*mec2\\n        if t <= 0:            return 0.0        t0 = 1.1732 -1.022        return \\b0.006205 * (t/t0)**2    elif E >= 10.0:\\n        return \\b0.0120\\n    else:\\n        le = math.log(E)\\n        le_arr = np.log(e_arr)\\n        lmu_arr = np.log(mu_arr)\\n        return math.exp(n.interp(le, le_arr, lmu_arr))\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Good, the Compton cross section works. Now let me fix the other functions and write the full simulation. I'll type more carefully this time, avoiding invisible characters.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 24028,
+  "completion_tokens": 573,
+  "total_tokens": 24601,
+  "cost": 0.0007986594,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 20480,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0007986594,
+   "upstream_inference_prompt_cost": 0.00069453384,
+   "upstream_inference_completions_cost": 0.00010412556
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 33,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791826781-zItjEe8aPiBQy4vogLDD",
+ "object": "chat.completion",
+ "created": 1791826781,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Good. Now let me compute the necessary quantities step by step. Let me start with the key calculations.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_e23a0f9b94104c1492727c36",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nfrom scipy.interpolate import interp1d\\n\\nxcom = np.loadtxt('/tmp/data/xcom_water.txt')\\nx_e = xcom[:,0]\\nx_inc = xcom[:,2]\\nx_tot = xcom[:,6]\\nx_coh = xcom[:,1]\\nx_pho = xcom[:,3]\\nx_pn = xcom[:,4]\\nx_pe = xcom[:,5]\\n\\nestar = np.loadtxt('/tmp/data/estar_water.txt')\\nes_e = estar[:,0]\\nes_coll = estar[:,1]\\nes_rad = estar[:,2]\\nes_csda = estar[:,3]\\nes_ry = estar[:,4]\\n\\nf_inc = interp1d(x_e, x_inc, kind='linear', bounds_error=False, fill_value=0.0)\\nf_tot = interp1d(x_e, x_tot, kind='linear', bounds_error=False, fill_value=0.0)\\nf_coh = interp1d(x_e, x_coh, kind='linear', bounds_error=False, fill_value=0.0)\\nf_pho = interp1d(x_e, x_pho, kind='linear', bounds_error=False, fill_value=0.0)\\nf_pn = interp1d(x_e, x_pn, kind='linear', bounds_error=False, fill_value=0.0)\\nf_pe = interp1d(x_e, x_pe, kind='linear', bounds_error=False, fill_value=0.0)\\nf_coll = interp1d(es_e, es_coll, kind='linear', bounds_error=False, fill_value=0.0)\\nf_rad = interp1d(es_e, es_rad, kind='linear', bounds_error=False, fill_value=0.0)\\nf_csda = interp1d(es_e, es_csda, kind='linear', bounds_error=False, fill_value=0.0)\\nf_ry = interp1d(es_e, es_ry, kind='linear', bounds_error=False, fill_value=0.0)\\n\\nmec2 = 0.511; rho = 1.0; E0 = 2.0; SSD = 100.0\\n\\nmu_tot_0 = float(f_tot(E0))\\nmu_inc_0 = float(f_inc(E0))\\nmu_coh_0 = float(f_coh(E0))\\nmu_pho_0 = float(f_pho(E0))\\nmu_pair_0 = float(f_pn(E0)) + float(f_pe(E0))\\n\\nprint(\\\"Cross sections at 2.0 MeV (cm^2/g):\\\")\\nprint(f\\\"  total={mu_tot_0:.6f}\\\")\\nprint(f\\\"  incoherent={mu_inc_0:.6f}\\\")\\nprint(f\\\"  coherent={mu_coh_0:.6e}\\\")\\nprint(f\\\"  photo={mu_pho_0:.6e}\\\")\\nprint(f\\\"  pair={mu_pair_0:.6e}\\\")\\n\\n# L1 primary\\nL1_pri = np.exp(-mu_tot_0 * 10.0)\\nprint(f\\\"\\\\nL1_primary_fluence_per_phi0 = {L1_pri:.6f}\\\")\\n\\n# Interaction fractions for primary photons at 2.0 MeV\\nfrac_inc_pri = mu_inc_0 / mu_tot_0\\nfrac_coh_pri = mu_coh_0 / mu_tot_0\\nfrac_pho_pri = mu_pho_0 / mu_tot_0\\nfrac_pair_pri = mu_pair_0 / mu_tot_0\\nprint(f\\\"\\\\nInteraction fractions for primary photons:\\\")\\nprint(f\\\"  Compton: {frac_inc_pri:.6f}\\\")\\nprint(f\\\"  Rayleigh: {frac_coh_pri:.6f}\\\")\\nprint(f\\\"  Photo: {frac_pho_pri:.6f}\\\")\\nprint(f\\\"  Pair: {frac_pair_pri:.6f}\\\")\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Good. Now let me compute the necessary quantities step by step. Let me start with the key calculations.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 40973,
+  "completion_tokens": 930,
+  "total_tokens": 41903,
+  "cost": 0.000933114028,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 40704,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000933114028,
+   "upstream_inference_prompt_cost": 0.000764114428,
+   "upstream_inference_completions_cost": 0.0001689996
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 21,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

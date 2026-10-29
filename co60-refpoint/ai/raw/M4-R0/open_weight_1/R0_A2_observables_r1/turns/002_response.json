@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791826754-OYSTbeOp5vMULecq0eJs",
+ "object": "chat.completion",
+ "created": 1791826754,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "GMICloud",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Let me see the rest of both files.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_771ce9ebd84740c58a67e8c3",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"with open('/tmp/data/xcom_water.txt') as fh:\\n    lines=fh.readlines()\\nprint('XCOM lines:', len(lines))\\nprint(''.join(lines[-15:]))\\nprint('='*80)\\nwith open('/tmp/data/estar_water.txt') as fh:\\n    lines=fh.readlines()\\nprint('ESTAR lines:', len(lines))\\nprint(''.join(lines[-25:]))\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Let me see the rest of both files.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 35138,
+  "completion_tokens": 136,
+  "total_tokens": 35274,
+  "cost": 0.0011503492,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 28461,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0011503492,
+   "upstream_inference_prompt_cost": 0.0011255972,
+   "upstream_inference_completions_cost": 2.4752e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 7,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

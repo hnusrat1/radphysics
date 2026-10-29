@@ -1,0 +1,187 @@
+slot: open_weight_2
+provider: open-weight via OpenRouter (pinned weights)
+api: openai_compatible
+model_requested: qwen/qwen3.7-flash
+settings:
+  reasoning:
+    effort: high
+  usage:
+    include: true
+condition: A1
+task: events
+config: P0
+prompt_version: v1
+prompt_sha256:
+  system_A1.txt: e06e9a5ea06c2f5ca29739818f324713f2dbbf775f019c11018d1aa7ef5416b8
+  task_events_P0.txt: 994719c1edf5944e6dac9acaa42f55a5117a6c605f5bcfb8316e676dfdbbc913
+started_utc: '2026-10-12T14:33:29Z'
+turns:
+- n: 1
+  usage:
+    input_tokens: 1551
+    output_tokens: 1465
+    reasoning_tokens: 345
+  stop: tool_calls
+  wall_s: 18.11
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 1
+- n: 2
+  usage:
+    input_tokens: 3177
+    output_tokens: 2671
+    reasoning_tokens: 335
+  stop: tool_calls
+  wall_s: 30.99
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 1
+- n: 3
+  usage:
+    input_tokens: 6174
+    output_tokens: 2442
+    reasoning_tokens: 36
+  stop: tool_calls
+  wall_s: 24.02
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 1
+- n: 4
+  usage:
+    input_tokens: 8678
+    output_tokens: 1659
+    reasoning_tokens: 75
+  stop: tool_calls
+  wall_s: 15.92
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 1
+- n: 5
+  usage:
+    input_tokens: 10522
+    output_tokens: 1391
+    reasoning_tokens: 66
+  stop: tool_calls
+  wall_s: 13.7
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 1
+- n: 6
+  usage:
+    input_tokens: 12101
+    output_tokens: 1431
+    reasoning_tokens: 63
+  stop: tool_calls
+  wall_s: 11.67
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 1
+- n: 7
+  usage:
+    input_tokens: 14111
+    output_tokens: 1816
+    reasoning_tokens: 137
+  stop: tool_calls
+  wall_s: 15.28
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 1
+- n: 8
+  usage:
+    input_tokens: 16193
+    output_tokens: 1946
+    reasoning_tokens: 130
+  stop: tool_calls
+  wall_s: 16.32
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 1
+- n: 9
+  usage:
+    input_tokens: 18830
+    output_tokens: 499
+    reasoning_tokens: 71
+  stop: tool_calls
+  wall_s: 6.47
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 1
+- n: 10
+  usage:
+    input_tokens: 20044
+    output_tokens: 986
+    reasoning_tokens: 273
+  stop: tool_calls
+  wall_s: 10.98
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 1
+- n: 11
+  usage:
+    input_tokens: 21210
+    output_tokens: 145
+    reasoning_tokens: 70
+  stop: tool_calls
+  wall_s: 3.6
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 1
+- n: 12
+  usage:
+    input_tokens: 31979
+    output_tokens: 25545
+    reasoning_tokens: 51
+  stop: stop
+  wall_s: 172.18
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 0
+- n: 13
+  usage:
+    input_tokens: 55892
+    output_tokens: 853
+    reasoning_tokens: 701
+  stop: tool_calls
+  wall_s: 11.09
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 1
+- n: 14
+  usage:
+    input_tokens: 67369
+    output_tokens: 679
+    reasoning_tokens: 476
+  stop: tool_calls
+  wall_s: 6.76
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 1
+- n: 15
+  usage:
+    input_tokens: 68270
+    output_tokens: 23133
+    reasoning_tokens: 158
+  stop: stop
+  wall_s: 98.18
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 0
+tool_calls: 13
+retries: 1
+outcome: parse_failure
+model_reported: qwen/qwen3.7-flash
+first_parse_errors:
+- '$.method: missing'
+- '$.events: missing'
+- '$.$schema: not in schema'
+- '$.type: not in schema'
+- '$.required: not in schema'
+- '$.additionalProperties: not in schema'
+- '$.properties: not in schema'
+parse_errors:
+- '$.events: 243 items, expected 200-200'
+finished_utc: '2026-10-12T14:51:06Z'
+usage_total:
+  input_tokens: 356101
+  output_tokens: 66661
+  reasoning_tokens: 2987

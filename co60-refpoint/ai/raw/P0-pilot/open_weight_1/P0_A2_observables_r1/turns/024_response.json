@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791826775-FK2ULqIcfPlo9Af1Xo7I",
+ "object": "chat.completion",
+ "created": 1791826775,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "OK let me try a more careful approach. I'll write the code in smaller pieces to avoid corruption.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_2c3abab2b2c84ac9a91ab222",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nprint(\\\"numpy ok\\\")\\nfrom scipy.interpolate import interp1d\\nprint(\\\"interp1d ok\\\")\\nxcom = np.loadtxt('/tmp/data/xcom_water.txt')\\nprint(f\\\"xcom shape: {xcom.shape}\\\")\\nestar = np.loadtxt('/tmp/data/estar_water.txt')\\nprint(f\\\"estar shape: {estar.shape}\\\")\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "OK let me try a more careful approach. I'll write the code in smaller pieces to avoid corruption.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 40733,
+  "completion_tokens": 147,
+  "total_tokens": 40880,
+  "cost": 0.001048142788,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 36864,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001048142788,
+   "upstream_inference_prompt_cost": 0.001021429948,
+   "upstream_inference_completions_cost": 2.671284e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 21,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

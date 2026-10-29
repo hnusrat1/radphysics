@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791830266-dvxE7Tcoh7SvxtUfLUZS",
+ "object": "chat.completion",
+ "created": 1791830266,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "GMICloud",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "L3 results:\n- Mean initial electron energy: all = 0.234 MeV; primary-parent = 0.587 MeV. The \"all\" mean is low because scattered photons dominate interactions (56% share) and produce low-energy electrons (mean ~0.1 MeV). Hmm, 0.234 MeV seems low. Let me sanity check: scattered share of electron production... The scattered photon fluence contributes most of the interactions. The scattered spectrum is weighted by \u03bc_incoh which is higher at low energy. So yes, many low-energy electrons set in motion by low-energy scattered photons. 0.234 MeV mean initial energy all electrons. Plausible given scattered photons dominate.\n\nWait, but is that physical for dose? The dose is dominated by primary interactions (higher energy electrons), but the NUMBER of electrons is dominated by scattered photons (low energy). Yes.\n\n- L3 directions: all: 49% in cos\u03b8 0.8-1; primary-parent: 60.6% in cos\u03b8 0.8-1. Forward peaked. Good.\n\nBut there's an issue: L3_spec bins 18-22 show a bulge (0.0787 at bin 18 (0.95-1.0) for primary etc.) and bins 23-24 zero. The primary-electron spectrum from Compton at 1.17-1.33 peaks near ~0.9-1.0 MeV (electron energy max 1.04/1.12). Fine.\n\nFor \"all\" spectrum, bin 0 (0.01-0.05) has 46.8%! That's a huge fraction of electrons with energy 10-50 keV. Because scattered photons of low energy (0.05-0.2 MeV) produce Compton electrons of a few tens of keV, and PE at low E produces electrons ~0.05-0.1. The bin 0-0.05 dominates. Plausible for the interaction-weighted electron production.\n\nHmm wait, but PE at E<0.05: bin 0 covers 0.01-0.05; scattered photon spectrum in bin 0 (0-0.05 MeV) \u2014 we have spec_scat bin 0 maybe ~small (photons below 0.05 rarely reach 5 cm). Actually in the earlier spec_scat, bin 1 (0.05-0.1) had 1.5, bin 0 (0-0.05) maybe 0? Let me check: earlier spec_scat (small run): bin0 = 1.5478? Actually that output listed [1.5478 7.6065 ...] as bins 0..27. Bin 0 (0-0.05) = 1.55. So there are low-energy scattered photons. Their Compton electrons are < 0.05 MeV, in bin 0. Plus PE of 0.05-0.1 MeV photons produce electrons in bin 0 or 1.\n\nSo 46.8% in bin 0 is plausible.\n\nNow Layer 4: CPE solution. Let me build S0 on a fine grid from these photon groups, solve for total, primary-parent, scattered-parent; compute fluence spectra, delta fraction, mean energy, and D.\n\nThen L5.\n\nLet me also reconsider: L3_initial_spectrum is defined as \"fraction in each electron energy bin, summing to 1\" \u2014 normalized over bins. Good.\n\nNow Layer 4 code.\n\nAlso need L4_electron_fluence_spectrum per bin per Phi0: \u222b_bin \u03a6\u0303_e dE. And L4_electron_fluence_per_phi0 = \u03a3.\n\nLet me implement and test the integral equation.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_939bcd6532ab46f8a7796550",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nfrom scipy.interpolate import interp1d\\nme=0.51099895\\nr0=2.8179403e-13; NA=6.02214076e23; Ne_w=NA*(10.0/18.015268)\\n\\nd=np.loadtxt('/tmp/data/xcom_water.txt',comments='#')\\n_Em=d[:,0]; _incoh=d[:,2]; _pe=d[:,3]; _pair=d[:,4]+d[:,5]\\nf_incoh=interp1d(_Em,_incoh,bounds_error=False,fill_value=(_incoh[0],_incoh[-1]))\\nf_pe=interp1d(_Em,_pe,bounds_error=False,fill_value=(_pe[0],_pe[-1]))\\nf_pair=interp1d(_Em,_pair,bounds_error=False,fill_value=(_pair[0],_pair[-1]))\\nd2=np.loadtxt('/tmp/data/estar_water.txt',comments='#')\\n_Ee=d2[:,0]; _Sc=d2[:,1]; _St=d2[:,3]\\nf_Sc=interp1d(_Ee,_Sc,bounds_error=False,fill_value=(_Sc[0],_Sc[-1]))\\nf_St=interp1d(_Ee,_St,bounds_error=False,fill_value=(_St[0],_St[-1]))\\n\\nEL_EDGES=np.array([0.01,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,\\n                   0.75,0.8,0.85,0.9,0.95,1,1.05,1.1,1.15,1.2,1.4])\\nPH_EDGES=np.array([0,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,\\n                   0.8,0.85,0.9,0.95,1,1.05,1.1,1.15,1.2,1.25,1.3,1.35,1.4])\\nphc=(PH_EDGES[:-1]+PH_EDGES[1:])/2\\nE1=1.1732; E2=1.3325\\n\\ndef kn_ratio(E,mu):\\n    a=E/me; r=1/(1+a*(1-mu)); return r*r*(r+1/r-(1-mu**2))\\n\\ndef compton_pdf_grid(E, EG):\\n    a=E/me\\n    mu=np.linspace(-1+1e-9,1-1e-9,6000)\\n    r=1/(1+a*(1-mu)); Ep=E*r; Ee=E-Ep\\n    dmu=mu[1]-mu[0]\\n    w=2*np.pi*kn_ratio(E,mu)*dmu\\n    dEe=np.abs(E*a*r**2)*dmu\\n    dP=w; tot=dP.sum()\\n    pdf_hist,bins=np.histogram(Ee,bins=EG,weights=dP/tot)\\n    widths=np.diff(EG)\\n    return pdf_hist/widths  # per MeV piecewise\\n\\ndef moller_dsdT(Ep,T):\\n    gamma=(Ep+me)/me; b2=1-1/gamma**2\\n    pref=2*np.pi*r0**2*me/b2\\n    term=1/T**2+1/(Ep-T)**2-(2*gamma-1)/gamma**2/(T*(Ep-T))+((gamma-1)/gamma)**2/me**2\\n    return pref*term\\n\\ndef solve_fluence(S0, EG, iters=80):\\n    N=len(EG); dE=np.gradient(EG)\\n    Sc=f_Sc(EG); St=f_St(EG)\\n    def cumint(f):\\n        vals=f*dE; c=np.zeros(N); c[-1]=vals[-1]/2\\n        for i in range(N-2,-1,-1):\\n            c[i]=c[i+1]+(vals[i]+vals[i+1])/2\\n        return c\\n    # kernel: K[j,i]=Ne_w*dE_j*d\u03c3/dT(EG_j, EG_i) for EG_i<=EG_j/2\\n    K=np.zeros((N,N))\\n    for j in range(N):\\n        limit=EG[j]/2\\n        iend=np.searchsorted(EG,limit,side='right')\\n        if iend>0:\\n            K[j,:iend]=Ne_w*moller_dsdT(EG[j], EG[:iend])\\n    I0=cumint(S0)\\n    Phi=np.zeros(N)\\n    for it in range(iters):\\n        Sd=K.T.dot(Phi*dE)\\n        Id=cumint(Sd)\\n        Phinew=(I0+Id)/St\\n        Phinew=np.maximum(Phinew,0)\\n        Phi=Phinew\\n    # primary-only (no delta)\\n    Phi_prim=cumint(S0)/St\\n    return EG, Phi, Phi_prim\\n\\n# ---- build S0 on grid ----\\nr=np.load('mc_results.npz',allow_pickle=True)\\nVcyl=np.pi*0.2; N=int(r['N']); i5=np.argmin(abs(r['depths']-5.0))\\nprim_phi=0.5*(np.exp(-0.0653626*5)+np.exp(-0.06122524*5))\\nk=prim_phi/(r['prim_tl'][i5]/Vcyl/N)\\nspec_scat_per=r['spec_scat']/Vcyl/N*k\\nf1=0.5*np.exp(-0.0653626*5); f2=0.5*np.exp(-0.06122524*5)\\ngroups_all=[(E1,f1),(E2,f2)]+[(phc[i],spec_scat_per[i]) for i in range(28) if spec_scat_per[i]>0]\\ngroups_prim=[(E1,f1),(E2,f2)]\\ngroups_scat=[(phc[i],spec_scat_per[i]) for i in range(28) if spec_scat_per[i]>0]\\n\\nEG=np.exp(np.linspace(np.log(0.010),np.log(1.4),150))\\n\\ndef build_S0(groups, EG, include_positron_in_pair=False):\\n    S0=np.zeros(len(EG))\\n    for E,w in groups:\\n        minc=f_incoh(E)\\n        if minc>0:\\n            S0+=w*minc*compton_pdf_grid(E,EG)\\n        mpe=f_pe(E)\\n        if mpe>0:\\n            i=np.argmin(abs(EG-E))\\n            S0[i]+=w*mpe/(EG[1]-EG[0])\\n        mp=f_pair(E)\\n        if mp>0 and E>1.022:\\n            Te=(E-1.022)/2\\n            i=np.argmin(abs(EG-Te))\\n            npar=2 if include_positron_in_pair else 1\\n            S0[i]+=npar*w*mp/(EG[1]-EG[0])\\n    return S0\\n\\nS0_all=build_S0(groups_all,EG)\\nS0_p=build_S0(groups_prim,EG)\\nS0_s=build_S0(groups_scat,EG)\\nprint(\\\"S0_all integral:\\\",np.trapz(S0_all,EG), \\\" primary:\\\",np.trapz(S0_p,EG), \\\" scat:\\\",np.trapz(S0_s,EG))\\n\\nEG2,Phi_all,Phi_p0=solve_fluence(S0_all,EG)\\nEG2,Phi_prim,Phi_prim0=solve_fluence(S0_p,EG)\\nEG2,Phi_scat,Phi_scat0=solve_fluence(S0_s,EG)\\n\\n# fluence per bin per Phi0\\ndef fluence_bins(EG,Phi,edges):\\n    out=np.zeros(len(edges)-1)\\n    for i in range(len(edges)-1):\\n        m=(EG>=edges[i])&(EG<edges[i+1])\\n        out[i]=np.trapz(Phi[m],EG[m]) if m.sum()>1 else 0\\n    return out\\n\\nL4_spec_all=fluence_bins(EG,Phi_all,EL_EDGES)\\nL4_flu_tot=L4_spec_all.sum()\\nL4_spec_p0=fluence_bins(EG,Phi_p0,EL_EDGES)\\nL4_spec_prim=fluence_bins(EG,Phi_prim,EL_EDGES)\\nL4_spec_scat=fluence_bins(EG,Phi_scat,EL_EDGES)\\nprint(\\\"L4 electron fluence/Phi0 (total incl delta):\\\",L4_flu_tot)\\nprint(\\\"L4 primary-only fluence (no delta):\\\",L4_spec_p0.sum())\\nprint(\\\"delta fraction:\\\", 1-L4_spec_p0.sum()/L4_flu_tot)\\nprint(\\\"L4 mean energy:\\\", np.trapz(EG*Phi_all,EG)/np.trapz(Phi_all,EG))\\nprint(\\\"L4 spectrum sum primary-parent:\\\",L4_spec_prim.sum(),\\\" scattered-parent:\\\",L4_spec_scat.sum())\\n# radiative/collision\\nSc=f_Sc(np.maximum(EG,0.011)); Sr=f_Sr if False else interp1d(d2[:,0],d2[:,2],bounds_error=False,fill_value=(d2[0,2],d2[-1,2]))(np.maximum(EG,0.011))\\nrr=np.trapz(Phi_all*Sr,EG)/np.trapz(Phi_all*Sc,EG)\\nprint(\\\"L4 radiative/collision:\\\",rr)\\nnp.savez('fluence_results.npz', EG=EG, Phi_all=Phi_all, Phi_prim=Phi_prim, Phi_scat=Phi_scat,\\n         Phi_p0=Phi_p0, L4_spec_all=L4_spec_all, L4_flu_tot=L4_flu_tot, S0_all=S0_all)\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "L3 results:\n- Mean initial electron energy: all = 0.234 MeV; primary-parent = 0.587 MeV. The \"all\" mean is low because scattered photons dominate interactions (56% share) and produce low-energy electrons (mean ~0.1 MeV). Hmm, 0.234 MeV seems low. Let me sanity check: scattered share of electron production... The scattered photon fluence contributes most of the interactions. The scattered spectrum is weighted by \u03bc_incoh which is higher at low energy. So yes, many low-energy electrons set in motion by low-energy scattered photons. 0.234 MeV mean initial energy all electrons. Plausible given scattered photons dominate.\n\nWait, but is that physical for dose? The dose is dominated by primary interactions (higher energy electrons), but the NUMBER of electrons is dominated by scattered photons (low energy). Yes.\n\n- L3 directions: all: 49% in cos\u03b8 0.8-1; primary-parent: 60.6% in cos\u03b8 0.8-1. Forward peaked. Good.\n\nBut there's an issue: L3_spec bins 18-22 show a bulge (0.0787 at bin 18 (0.95-1.0) for primary etc.) and bins 23-24 zero. The primary-electron spectrum from Compton at 1.17-1.33 peaks near ~0.9-1.0 MeV (electron energy max 1.04/1.12). Fine.\n\nFor \"all\" spectrum, bin 0 (0.01-0.05) has 46.8%! That's a huge fraction of electrons with energy 10-50 keV. Because scattered photons of low energy (0.05-0.2 MeV) produce Compton electrons of a few tens of keV, and PE at low E produces electrons ~0.05-0.1. The bin 0-0.05 dominates. Plausible for the interaction-weighted electron production.\n\nHmm wait, but PE at E<0.05: bin 0 covers 0.01-0.05; scattered photon spectrum in bin 0 (0-0.05 MeV) \u2014 we have spec_scat bin 0 maybe ~small (photons below 0.05 rarely reach 5 cm). Actually in the earlier spec_scat, bin 1 (0.05-0.1) had 1.5, bin 0 (0-0.05) maybe 0? Let me check: earlier spec_scat (small run): bin0 = 1.5478? Actually that output listed [1.5478 7.6065 ...] as bins 0..27. Bin 0 (0-0.05) = 1.55. So there are low-energy scattered photons. Their Compton electrons are < 0.05 MeV, in bin 0. Plus PE of 0.05-0.1 MeV photons produce electrons in bin 0 or 1.\n\nSo 46.8% in bin 0 is plausible.\n\nNow Layer 4: CPE solution. Let me build S0 on a fine grid from these photon groups, solve for total, primary-parent, scattered-parent; compute fluence spectra, delta fraction, mean energy, and D.\n\nThen L5.\n\nLet me also reconsider: L3_initial_spectrum is defined as \"fraction in each electron energy bin, summing to 1\" \u2014 normalized over bins. Good.\n\nNow Layer 4 code.\n\nAlso need L4_electron_fluence_spectrum per bin per Phi0: \u222b_bin \u03a6\u0303_e dE. And L4_electron_fluence_per_phi0 = \u03a3.\n\nLet me implement and test the integral equation.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 118073,
+  "completion_tokens": 3116,
+  "total_tokens": 121189,
+  "cost": 0.0038335206,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 102723,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0038335206,
+   "upstream_inference_prompt_cost": 0.0032664086,
+   "upstream_inference_completions_cost": 0.000567112
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 781,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

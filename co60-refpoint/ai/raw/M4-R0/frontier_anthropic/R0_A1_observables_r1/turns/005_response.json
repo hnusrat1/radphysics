@@ -1,0 +1,57 @@
+{
+ "id": "gen-1791824350-e1xHiU341nWbikYxQLxK",
+ "object": "chat.completion",
+ "created": 1791824350,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_018Y1aUoLvSPcSRLNpoyKTGc",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport os,sys\\nprint(os.getcwd(), os.listdir('.')[:20])\\nsys.path.insert(0,os.getcwd())\\nopen('phys.py','w').write(open('/dev/null').read() or \\\"\\\")\\n\"}"
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 83653,
+  "completion_tokens": 117,
+  "total_tokens": 83770,
+  "cost": 0.001010095,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 82652,
+   "cache_write_tokens": 999,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001010095,
+   "upstream_inference_prompt_cost": 0.000951595,
+   "upstream_inference_completions_cost": 5.85e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 0,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

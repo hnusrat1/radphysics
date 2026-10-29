@@ -1,0 +1,1 @@
+print("\n".join(rows[70:140]))

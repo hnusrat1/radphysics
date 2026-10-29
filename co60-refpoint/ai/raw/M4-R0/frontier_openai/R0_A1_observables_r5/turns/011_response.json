@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791822867-NIFyv54mPPlhjtzeyVZH",
+ "object": "chat.completion",
+ "created": 1791822867,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Calculating output mean**\n\nI\u2019m starting by setting a mean value of 0.543 and adjusting the L3 mean to 0.54. It seems I need to focus on the primary weighted actual bins to derive the output. I'll think through how these adjustments might affect the results and ensure they align with my expectations. There\u2019s a bit of precision needed here, so I\u2019ll make sure to double-check my calculations for accuracy.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_hHF64TvIw3Gsdj1gepLb1ItL",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"print(np.dot(p,mid))\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Calculating output mean**\n\nI\u2019m starting by setting a mean value of 0.543 and adjusting the L3 mean to 0.54. It seems I need to focus on the primary weighted actual bins to derive the output. I'll think through how these adjustments might affect the results and ensure they align with my expectations. There\u2019s a bit of precision needed here, so I\u2019ll make sure to double-check my calculations for accuracy.",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzQwV5JFU8aRtmoYxv5RgidCN5cBE6E4SqW6m7QiJxtMxtY2dXobaqTHdOtzA5CZusx9uOFDB_VG04iKz1K1o4AS4JzA2xe3LVC7g_TBLMC_ak5269TSaKQmT2OxersVUILWYU-8opR3ArDnKT7X810gcchaHdEFqvVgr4BN-KvFCtlQm5yyvWDGaC1LlnN335Xj0AxsEaUlTsqBGJsu-hmQEbWkJTnBrFuLz15eUoppkBrf-TTzHxmLWRlODiyBJIc6-aNXFYBkUuAO1oa76eyidR08V_u99qn-HARDVT6uvRslWJSQtzE2ZcXJN14WCIGuATnhfuulS9Edzil_iE58GgonTB5nsG2hxmr3OF6Mj65d7gC5CKPqFaOQgwORODrYVkY79OFE-IkWAqBlCzT1-0QaIThnXgw2WIe90AZ8Du4M8aG37ScVcTlpodYYgsbQEjEhhyGUky5nhW3Bs1y-w0BJlUKtYl2PZPyURk33Xy-Uw4FLaGOphV_cmNnCVcIVoLIt-bBReKEDDuOkk2s76UFb_DPVHKLCHgDKR37MOQ4map5J-Kw5oH_uz6SOsSbbXS7Ig1qIwC2-718-zdBHC4f3G1KG8ME4B_tPWz7AqyEeCFuGVohH00ImS8l5poJr4P3RcdDXMTaR-2p7rV6pM50dRytQ7xb9ahoiMpV_02du30Ts745d0LG6NlCkv4e_exby42ZGqi7pvU-APdZExLra1qF1Sjjp7CMohcf57jA2QkhlOngtXPO9IdJ-qlUHBUR1Yd3uSQMlFgrb0XAt1OMWiL5DPU9HQBxIneE75-Ldewd2IsPuauDtdvHuuMMKRE1vDkezTzArnTL4s2UgleZJEpxx4VMGIc2Ufl3I-vVY3Im-omXvYktHxDO-ffVVsZmimMwVfnIHpd5DYG9ZDJfRSQCXpoMm3-ZBVaLoy0dUwxJ0P6Yc4KtImW_RHL4z5OaEo1j7Ri4JjLYobgSbOdGoLpdOBkvSeRv9Eds-Wr8Tjjb9QW9q7Mxu9UQO2EiG-SKyAYiS6K-_ZLkPH31swfkMRJUmqpIvmjR51D0kXXGi5z_vLqRn_eKGWNDhkd7fPUwFsovc7--7sxQnvO1yPryeVPWbPHrNIOG41oyTbJkTj3HiaL7zc5lizaJ0f48wKINnyjyTlDCt0KbGEfgnhFqEr7psCr3d0oAspAduOYKWwPf0d-O4T6C1smItJyr--DQOmFKQmv9WqxkHXKDc0Nu1oly0HBpjlrtzFbXXviIfSKPl7G9WqM_54OdNhy-QmEAgk5K2RHDEOn4TkkBqDiRLCaJnpijeqzG-35BALWb5IsonovnMtIDLV3QD-WLnrrmpW26r1zexv1GGIAtj6DAPgpJR2r4lqg7-aOF-jDvNqv0GIFOLQHQTZ0zQ3cKGPQLUMEjpv750TU-HjHbGkPMy9ngMp39dO1FFlP9EbmpJC-m2R3YY891LT7xT80TWMUVTMkzw0xuDaJ9VKGj8JVWCPDuas6DdL3RY6-Idng85xGBbCJ0W6eVrF9GF7KM7fDJvKIOEYzB0IeGCh7O9LJeeKFRbJFvB7SMSOWEf7l9bwJ8ybI9pIRBm4BsxiAY5_3FhDnfZOdgfxqvf9rw0R0oPTMYv1dJ_69wfLrVBr5ugdU7eocJlu6tFGizAR0GjXCyDh7WB74DzUdMi9rYyh8AuerJgc5EO6tKeC3WaAfjutuwOicGBgbW3UW6bwxSmsM782JHK2LDQbRFKtsF4Ro81Nv5p70RfIa8mUGsqoJFmfg88PUZ3YOBL7pVXyGB97ETBRV5Zrs45ThntKYIlh0VhAWiwk1E92WPwQvg4kM8E=.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_03f5766b96718137016acd0c13ddb087d193250677a6425080",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 17658,
+  "completion_tokens": 49,
+  "total_tokens": 17707,
+  "cost": 0.00037293,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 16163,
+   "cache_write_tokens": 1492,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00037293,
+   "upstream_inference_prompt_cost": 0.00034843,
+   "upstream_inference_completions_cost": 2.45e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 24,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

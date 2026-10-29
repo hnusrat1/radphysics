@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791815312-vf8OKvDIvRgY7anTIdOd",
+ "object": "chat.completion",
+ "created": 1791815312,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "Bethe stopping powers match ESTAR (0.1 MeV: 4.115; 0.5 MeV: 2.034; 1 MeV: 1.873 vs 1.849, the gap being the omitted density effect). Next I'll assemble the final JSON from the computed values.",
+    "refusal": null,
+    "reasoning": "My stopping power values check out well against ESTAR across the energy range, and the PDD numbers look reasonable with dmax around 0.85 cm and 83.4% at 5 cm depth. Now I'm moving on to the next comparison.\n\nPulling together the final numbers for the JSON output - D/Phi0, K, Kcol, g, beta, s_w_air, PDD5 all check out against my saved results, and I need to decide on reasonable rounding while flagging approximations. I should be upfront that while Compton cross-sections and Klein-Nishina calculations are solid, my photoelectric/pair/Rayleigh cross-sections are rough estimates rather than pulled from XCOM, and there are several simplifications I need to caveat: the photon spectrum is truncated above 2 MeV, bremsstrahlung is neglected, electron fluence relies on CSDA approximations, and the PDD is a simplified straight-ahead calculation with meaningful uncertainty.\n\nI'm also noting that the angular distribution reuses the all-electron spectrum as a stand-in approximation. To avoid transcription errors with all the numeric arrays - the scattered photon spectrum, electron spectra, and direction data - I'm going to generate the final JSON programmatically rather than typing values by hand.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_018hKiTEzKUotK9agPSa7ers",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport pickle, json\\nR=pickle.load(open('/tmp/work/R.pkl','rb'))\\nout={k:R[k] for k in R if not k.startswith('_')}\\ndef rnd(x):\\n    if isinstance(x,float): return float(f\\\"{x:.5g}\\\")\\n    if isinstance(x,list): return [rnd(v) for v in x]\\n    if isinstance(x,dict): return {k:rnd(v) for k,v in x.items()}\\n    return x\\nout=rnd(out)\\nout['method']=(\\\"Crude in-house Monte Carlo (no transport code available): analog photon transport in a 30 cm water cube, \\\"\\n \\\"2 MeV point source at 100 cm SSD, uniform-solid-angle 10x10 cone, 4x10^7 histories. Compton via Klein-Nishina with exact kinematics; \\\"\\n \\\"rough photoelectric, pair and coherent coefficients. Fluences, interaction rates and energy transfer scored by track length in the 1 cm x 0.2 cm cylinder, normalised to Phi0. \\\"\\n \\\"Compton/photo/pair electron sources scored in the cylinder. Electron fluence from a CSDA-type recursion with Moller delta-ray production (infinite-medium, CPE assumed). \\\"\\n \\\"Kerma from energy transfer, D = Kcol (CPE), radiative loss via 0.00927*T ratio. Spencer-Attix from restricted Bethe minus Moller delta energy above 10 keV. \\\"\\n \\\"PDD from straight-ahead CSDA deposition of electrons born within 3 cm of the axis. Primary fluence is analytic exp(-mu*10) and agrees with MC. \\\"\\n \\\"Scoring-volume spectra on the 2 MeV source fall outside the 0-1.4 MeV grid, so primary spectrum bins are zero. \\\"\\n \\\"Bremsstrahlung and fluorescence are neglected; angular electron distribution is approximated.\\\")\\nout['data_sources']=(\\\"Klein-Nishina cross section (analytic, Compton total = 0.0489 cm^2/g at 2 MeV, close to XCOM incoherent); \\\"\\n \\\"Berger-Seltzer Bethe collision stopping power for water (I=75 eV, no density effect; checked against ESTAR at 0.1, 0.5 MeV); \\\"\\n \\\"Moller delta cross section; air I=85.7 eV for Spencer-Attix denominator; radiative/collision ratio ~ Z/800*T with Z=7.4. \\\"\\n \\\"Photoelectric, pair and coherent coefficients are rough power-law/approximate values (not XCOM); they contribute ~1-2% of interactions. \\\"\\n \\\"No ESTAR/XCOM tables were used directly; no tabulated values were available offline.\\\")\\nprint(json.dumps(out,indent=1)[:12000])\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "My stopping power values check out well against ESTAR across the energy range, and the PDD numbers look reasonable with dmax around 0.85 cm and 83.4% at 5 cm depth. Now I'm moving on to the next comparison.\n\nPulling together the final numbers for the JSON output - D/Phi0, K, Kcol, g, beta, s_w_air, PDD5 all check out against my saved results, and I need to decide on reasonable rounding while flagging approximations. I should be upfront that while Compton cross-sections and Klein-Nishina calculations are solid, my photoelectric/pair/Rayleigh cross-sections are rough estimates rather than pulled from XCOM, and there are several simplifications I need to caveat: the photon spectrum is truncated above 2 MeV, bremsstrahlung is neglected, electron fluence relies on CSDA approximations, and the PDD is a simplified straight-ahead calculation with meaningful uncertainty.\n\nI'm also noting that the angular distribution reuses the all-electron spectrum as a stand-in approximation. To avoid transcription errors with all the numeric arrays - the scattered photon spectrum, electron spectra, and direction data - I'm going to generate the final JSON programmatically rather than typing values by hand.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS/xMKEAgSGAI4AUIIdGhpbmtpbmcSDBLNPJv1LkU8h3TC/RoMHsWoraLNfEfqTPW2IjA8D5XL0xK4XTFEE/ICTS6b1rn6cbVHarKPRbWd04Nw6ALzMG10Dz7/77aYneXZUO0qnBPhdDr1qa8PXvzpGbHNGDs2dpK2E379kcVoTOsvPV8YM36pjT6JOXa7r7w73W85yUJGxaGnu16o9NfupA1PQXFZuhqPj6YVrEySPuJQ1ExAzoJ0crdCLZlKIy24HZ2gVFmTAU+U1AR/WE2bpggENpHE1SUF/HpjmcN8HXaXODSXGKrI0zUrpT/F3dp1q3evM/YWjnmhaQCvgnstrOijZs4q1IS5JCCTA73KcQXbD8XsiVXNfn1Z/N812ZXQfLBpEf7YG/HVRx58FliXjxJh7NfONZ+YGvMrjLnrp4UxrZ6fHItI5EAKPdtP63igULkjVR9c92eWXRCgUzIETNKxuFYSYzeBpWGuhQgtxu6TvwdJtMLm0rdx6BOnBDVyNKsxVE322B9BNMZFDQJPJq2xJ+ZGVbPB3YBc8SK4UBfsc+yK8JyPcDcpz1uUb2ZNwLsyYPgy2/nd9n//eYOfUPYonPasvlsePaz6lsIIF/oXVv64LFo+YSx2PoZLqBPXZbrTxzfCIKwSxziSWGOi/uupdvzF+ZYxzToUwxVQjHJ+LGkIyA74OvkLvpopY/+FsuAitoDs7w9d56eT58UA1YycW31C6Vp4viKqgVVfyl00P33RonPn7cxMOb8OjMOkbcYQPRDjgnBKQD77mHsca8+r9z10LrNju6LSWgTlciHkJuQR+abdJj3F+1to9cUyn1dHyUCY8JY5KAI/qXUZPqiDwor6FipGCN5Mfoi61eQfv8oBCMkov/EV0pIfnOqSNu/kJx9TRhed7FSnAjJogWt4TJRAx7Fnrgi7ljAlscBw2oyewMvcbN8BpBE0mwLoGgVpPBaAIoajD/KpHB29CfdsA8b9pAeQi+RXjYqYXr2dKBY+mmJ6oUJj/kuQZXTXQAd1LhvbWsHTgvWvVKlC2H7juJxaG9rCMZ0B45KPu6o3GEVtIIjZ0zwmwM/WUBaWYe45FxwaCCDH6+wUsQsHRTv0y93K7R8ju6jEb+8DpzqrFe+OUszs1D0uGxWrrzqP0sOOkmucrHijea3l+m53H1XtIjVkgBKoHWp7BpclLH/gqiTxTk2AdTuEtnhYZ94+2ALe1lG9qo/p2iciAURwKvJT85cv+k9ya6p2V2c1dRdoWtnoSnz8qRI+E1CG0uobVVx9qmTZxZCg6jdbrPyrNc/tqRabk3mQD0DYqZfcULg6bCoQThzvWTwAjfftLsov0OdrgPIVx0QDyGfEZz7OJm6+oDOQnZQ+cdiTnv1jHuwUaoI1xiUc2m1rykno47CIZuAnIVeoJHxBbNa9T5ajiN0wmAh0stRbulqolvUwkaifyWBQBx6hLgXwpnWUAblc2+IFIvY5y8wJeduhxK6FchdqtJsJt3j98/zQAMv+eHuFSDrfZ0eaT2je2Q7FohB5z5B02t55jG9DAGM+9IDh/Oy8NUGdAAJ9ICmRMbhS6QG81cLIGateIy187onc18LCx/+IJP9h3parwJARxwY2LrPpcwNpY6SeOv38WJmjuu6FnPsovK+/tWsGEd472FNeEYOJdgKXC/GfMtg9/P2Tq3VYmnO32PEoQcO1BQUB+1gOQJdIHRreIwJ3wmKJAz+F1sR8yBLHzzdAd5kf9dUwLCGYphsS8fo0n2gzhv5zMBQ8kH1CkoJ8U1IdH9b/aBwwEZAEnEplD0D9cJJ2EwhzkCv/P3SMHnQ5sPvGLpbmt2lqO7ueoyT18GSS9gv0RpU7icPlN1ioitkLPAmprNX8oKK7oige/qMiyI/V66o4QG8YSSK9ROj7hl8HnDxmjHu6XJ/pq5M2ll5O/dYJoWb0asWX3XmmKCmS/624CQSr0+Lxr3e01L4AXaJ7yFRZcSH09UeElaLZ50iNkcKXn99Gdw0UH3tqZ75Kt0C34+2035+cIXmqvaw7tX3Go7cbOIqgX3UT4SAov0fdSSZcNNFSjySCzDaODnO+8jLkFSwwnAuAmNT7do2POkNtra0c7n9qbBQILkxfeu1m2Xyw1180iIGyFe1NuMfZqnaDnw7jj8YtYB3BCUkkT5nnzJtB9IaPPOdwiQAWb/gPDonyBUVHN50+R/8sjLLIZ1MiuLwpQs5gxYS2fNs4HjeGjORtRdmFTtbveNwyMAGpu41GrVWpSfcQtQa8sy0tynyL/vWNFEo3H4uvvlFvaT3KxiT/yPGj3chiuV8YsAruvxCsrO4O+tPpm7paxllnwUl/ehYjCGKz1gHWiBlow5Rgs2N3wrYv11UG0gx7YXCgF0s4IlyWKPinLQXLcEf8dMHv0QGA6hLBkejWfyvjXnxkofNT/2PoHAoXs0dMydXcB0pfsw6m18Z7aJa4k2IYR5Kj68Hb7JRHOWwhM5NK2M4j4ONq3RAYKEOFKMUPCgKVZxLAM9hVCZ//rHwy6TCBbzL6EROqjaSRyVfXUxNcQB7NQGgKhwgp6P3kLLbWBSwz6lsf9EVLM7Q6O2qtJyjt5b6vQHHvBKTQ7hHyHHhhJ4WukhD2UA6z6Xs7nK1WaIfz/dgEex1Eds+zLEsN1bygfPRV/438tfreTHQVmu1opkWcJw9D3UuLyZkfd+S1Nt6VO7QqnFghmyPVM9Vw03MYO7/y/sMFiU/rdaWxWr3wOt2X7tc6mUw/r1ZYJLXUeLXu7ifdbm0/lDx75A8yPkaLr7+fe1Ipw6fD6LO8gXVFEMONqlkT/KMSPNvWBOR4adVi+1TVE8kvr0jrFyqid0oX5cEsyGq5xwxU6TaV8anYAckg2pFh1liUAg30x164JPRDaMSREojhLlWlPXRFi0bAOGNylJ2uuzXBzzVglyRd4ycToX+HYAPJT+znjJCH+1NyPRzTHrcj5DZ+Hx29Z3KKQwU5Fg3lCXWv7OqZztYZycI3Jy+cVqcCwyk7mSO0SDpomN0XykkaRxy3yaX3xCRFmdz+Lwzbh2A/Np8qMLsnAS6QI7XxWf5/Qx5OTNNDN5J/rGy9rc2rDr19i72Lz1hT49QJkw5lSGcrvMqem4BdOZizNo23D/R3Pytchmb1EX05t1qVb+fn5NmeCQX817E6vEDjPRHYYmEElg36P9QC++Tb1m7QBi0MKry9S+aPbRLEXsCzb/Zk8v72TRhwws1mHYfWkZY3Fb6P80b2JhwqVq9FMLYcdgivEoLKignL+6MkKzKY6XIlQrnkE246mmjGg8e91G+agACJuTPwSLxcEuiyKsb1x219jzZwpSW8YlmQKE2t6Cl4XAs+rlyTPR0GJBNuDdgyAxfD0vec55oLDhbc3ucpfMeldCtIiP20XtyheyXK7neK4N0YAQ==.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 115373,
+  "completion_tokens": 1923,
+  "total_tokens": 117296,
+  "cost": 0.062494,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.062494,
+   "upstream_inference_prompt_cost": 0.0576865,
+   "upstream_inference_completions_cost": 0.0048075
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 845,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

@@ -1,0 +1,57 @@
+{
+ "id": "gen-1791820283-nZ53CGgG5AvDKKqJ6Id4",
+ "object": "chat.completion",
+ "created": 1791820283,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01DWDakMg1xGELM9efF8Qvwt",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\ns=open('/tmp/work/mcph2.py').read().replace('np.trapz','np.trapezoid')\\ns=s.replace(\\\"\\\"\\\"    for k in mc_:\\\"\\\"\\\",\\\"\\\"\\\"    for k in mc_:\\\"\\\"\\\")\\nopen('/tmp/work/mcph2.py','w').write(s)\\ns2=open('/tmp/work/mcph.py').read().replace('np.trapz','np.trapezoid'); open('/tmp/work/mcph.py','w').write(s2)\\nimport importlib\\nimportlib.reload(mcph); importlib.reload(mcph2)\\nt=time.time(); r=mcph2.run(20000,1); print(time.time()-t)\\nprint(r['flu_E'].sum(axis=1), r['intr'], r['births'].shape, r['Qslab'][:5])\\n\"}"
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 92990,
+  "completion_tokens": 301,
+  "total_tokens": 93291,
+  "cost": 0.001181665,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 92109,
+   "cache_write_tokens": 879,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001181665,
+   "upstream_inference_prompt_cost": 0.001031165,
+   "upstream_inference_completions_cost": 0.0001505
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 0,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791826992-kYzXi4ycO2UisZLuKiXC",
+ "object": "chat.completion",
+ "created": 1791826992,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "The subprocess is probably using a different Python than the one with scipy installed; since importing in-process worked fine earlier, I should just invoke the subprocess using sys.executable instead.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01F2W5JFdbwJRaX9PsPmTeqn",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport sys, subprocess\\nprint(sys.executable)\\nr=subprocess.run([sys.executable,'/tmp/work/sim.py','20000','1','test'],capture_output=True,text=True,cwd='/tmp/work')\\nprint(r.stdout, r.stderr[-3000:])\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The subprocess is probably using a different Python than the one with scipy installed; since importing in-process worked fine earlier, I should just invoke the subprocess using sys.executable instead.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSrAcKEAgSGAI4AUIIdGhpbmtpbmcSDC+arJ5L/pcsoKjEGhoMO1qblnCtpXaMzu52IjBmmKBCsi5M4IjYOoHdHEnElzxXi6CZQLJc1EFVz3phLlojprJKaVdf+lZT9jBiNEQqyQapu02/b87taOG2JVSuXa6Mb84ZqpRQY1uT8V+rU1mSIPzjE6/DCqSyH9E7qzsFRH0kHdc3iDRh5Fyv45+cK3rD+s6/LS4/cscAMMDkealD8DGMS2UolU4saHT4pz+dgvr1eflhfapZ8XZzxe/KcpfqVBwZJHhsVlSCd4bTAlLwCRfpQe6D4h9NPGGT/yy7uQyIFFMf3gbRRIZGf/kdclG15wtpZIuW6eQpz9cDzHCN1wfrS4wWlJZumBzEAKQuhNg0T4zEeH5UE8tw+IkyLxVHSKNbvJswfNRtPjPKh9CZ7vzKwXg0uGUDaBIM+9sGOydWxba7HoAaUNO0Z8O/hJVZoSYkSmQFBuJlxZ7m3hDLruvG7mIzqdqbJEd+1k6wkw+yutvilLNyBbReH8YCiVhcw8toV+63Hi5+G6xzpuGlLjz/XZXMC+vxscRvgp13QZNFNhO4Y+Jl6LKvu4KP5f5oou1Rzhe1kMW7Al0d5pA2f8/fUowt/bJqeTJf5xnD3GYopsiVe0n3EGclXpVcuiUcoBZD4xjxYRLH4Qu58BlkjMA6grn9dBFntiJMqClsoDlBgpEyJ4P9+M9CFmoj0dT0mWUS2HbOAwYMH6Kgq0WsYL4kYIoVv9tFdpLlVbOKTM651tgxMdbSxubt6z4v4p5oZjdTPokw5qKDwx/Wn23JYSKtScaYM/HBrDhnTdzSSTIXKliI620Nuix+hnqswc0Y2EXq4r7QEPM6a084pGATXl9DrCyuDHQFzZOlR4CRC6YWLIUJbCBvQx27V2XuN3gpT3V3ytJY+PCqnXqRYSiceryib+Fj82t4YPjwiSEtpsbNhDLSURORZZry9ejAcaANxkfa5V49HUocMqiv+ymPcGcMAXze+MlUZxEXMRzm92HNC4kqo8m+5vgbrBCop8OCkjiYl7eAGLhKrovtcFQmFFfTGCFP8enIuAzbvUIa/fPn6zgpHrsmJ2ehsWYsty/k5KauCjS6x05CTRg1WXKDwgkqTnFin7Bf39N5k/OWdxwn9VoTybDkcXk2XLSr8refELKYlDIj+EQ4QvVJQsiDmfWVNPu+t4Z/6ZsHJXB/sy6yHbdiaFB4sMiKRa4am20xhyxI45lGeOHNGAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 108706,
+  "completion_tokens": 188,
+  "total_tokens": 108894,
+  "cost": 0.013261025,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 95913,
+   "cache_write_tokens": 12791,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.013261025,
+   "upstream_inference_prompt_cost": 0.012791025,
+   "upstream_inference_completions_cost": 0.00047
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 45,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

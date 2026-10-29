@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791831414-wPYfAxJDH14QTybKCpXD",
+ "object": "chat.completion",
+ "created": 1791831414,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "GMICloud",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Layer 1 results:\n- L1_primary_fluence_per_phi0 = 0.7247 (statistical; analytic 0.7295). Note the sim value has ~0.7% statistical error (fl_prim sum 24842.8 with ~sqrt(N) uncertainty... The primary fluence tally: pe ~ sqrt(\u03a3 Lcyl\u00b2)... Let me estimate error later. The analytic 0.7295 is more accurate; I'll use the analytic value as L1_primary_fluence_per_phi0 for the report (it's exact), but use sim for the spectrum. Actually better: report the MC value? The MC value (0.7247) differs from analytic by 0.65%. The MC has statistical error ~0.6%. I'll report the analytic value for the total primary fluence since it's exact (and the sim confirms), and note MC used for spectra. Hmm, but consistency: the total fluence should equal analytic 0.7295. The scattered fluence ratio 0.365 is from MC. Let me use analytic primary = 0.72948 and MC scattered/primary = 14289.9/24842.8 = 0.5752, so scattered fluence per phi0 = 0.7295*0.5752 = 0.4196. Then total = 1.1491, scattered fraction = 0.3652. Cleaner.\n\nActually, I'll keep the MC-derived values for all quantities requiring simulation (spectra, angular, scattered) but scale scattered by the analytic primary normalization. Let me define: primary_fluence_per_phi0 = 0.72948 (analytic). scattered_fluence_per_phi0 = 0.72948 * fl_scat.sum()/fl_prim.sum() = 0.72948*0.57524 = 0.41965. total = 1.14913. scattered fraction = 0.3652. Energy-fluence fraction = 0.1818 (from MC spectra ratios). Mean photon energy 0.9707.\n\nLet me now compute Layer 1 spectra and angular arrays, Layer 2, Layer 3.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_125fd3c35a8f493c8dc0b5dc",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np, pickle\\nwith open('/tmp/photon_results.pkl','rb') as f:\\n    res=pickle.load(f)\\nN=6000000; V=np.pi*0.2\\nOmega=4*np.arcsin(np.sin(np.arctan(5/100))**2); Phi0=1/(Omega*105**2)\\nfl_prim=res['fl_prim']; fl_scat=res['fl_scat']\\nscale = 0.72948169572262/(fl_prim.sum())  # scale so primary per phi0 = analytic\\nspec_prim = fl_prim*scale     # fluence/phi0 per bin\\nspec_scat = fl_scat*scale\\nprint('spec_prim sum', spec_prim.sum(), 'spec_scat sum', spec_scat.sum())\\nprint('primary spectrum:', np.round(spec_prim,6))\\nprint('scattered spectrum:', np.round(spec_scat,6))\\n# angular\\nangp = res['ang_prim']/res['ang_prim'].sum()\\nangs = res['ang_scat']/res['ang_scat'].sum()\\nprint('angular primary:', np.round(angp,6))\\nprint('angular scattered:', np.round(angs,6))\\n# Layer2\\nint_all=res['int_all']; int_prim=res['int_prim']; int_scat=res['int_scat']\\netr_all=res['etr_all']; \\nL2_if = {k:v for k,v in zip(['rayleigh','compton','photoelectric','pair'], int_all/int_all.sum())}\\nL2_etf = {k:v for k,v in zip(['rayleigh','compton','photoelectric','pair'], etr_all/etr_all.sum())}\\nprint('L2_interaction_fractions', L2_if)\\nprint('L2_energy_transfer_fractions', L2_etf)\\nprint('L2_primary', int_prim/int_prim.sum())\\nprint('L2_scattered', int_scat/int_scat.sum())\\nprint('L2_scattered_share', int_scat.sum()/int_all.sum())\\n# Layer3\\ne_edges=np.array([0.01,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1.0,1.05,1.1,1.15,1.2,1.4])\\nTe=res['L3_Te']; cos_e=res['L3_cos']; par=res['L3_parent']\\nh=np.histogram(Te, bins=e_edges)[0].astype(float); h/=h.sum()\\nhp=np.histogram(Te[par==1], bins=e_edges)[0].astype(float); hp/=hp.sum()\\nprint('L3 spectrum all:', np.round(h,5))\\nprint('L3 spectrum prim:', np.round(hp,5))\\nprint('L3 mean Te', Te.mean(), 'mean Te prim', Te[par==1].mean())\\ncbins=np.linspace(-1,1,11)\\nhd=np.histogram(cos_e, bins=cbins)[0].astype(float); hd/=hd.sum()\\nprint('L3 initial direction:', np.round(hd,5))\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Layer 1 results:\n- L1_primary_fluence_per_phi0 = 0.7247 (statistical; analytic 0.7295). Note the sim value has ~0.7% statistical error (fl_prim sum 24842.8 with ~sqrt(N) uncertainty... The primary fluence tally: pe ~ sqrt(\u03a3 Lcyl\u00b2)... Let me estimate error later. The analytic 0.7295 is more accurate; I'll use the analytic value as L1_primary_fluence_per_phi0 for the report (it's exact), but use sim for the spectrum. Actually better: report the MC value? The MC value (0.7247) differs from analytic by 0.65%. The MC has statistical error ~0.6%. I'll report the analytic value for the total primary fluence since it's exact (and the sim confirms), and note MC used for spectra. Hmm, but consistency: the total fluence should equal analytic 0.7295. The scattered fluence ratio 0.365 is from MC. Let me use analytic primary = 0.72948 and MC scattered/primary = 14289.9/24842.8 = 0.5752, so scattered fluence per phi0 = 0.7295*0.5752 = 0.4196. Then total = 1.1491, scattered fraction = 0.3652. Cleaner.\n\nActually, I'll keep the MC-derived values for all quantities requiring simulation (spectra, angular, scattered) but scale scattered by the analytic primary normalization. Let me define: primary_fluence_per_phi0 = 0.72948 (analytic). scattered_fluence_per_phi0 = 0.72948 * fl_scat.sum()/fl_prim.sum() = 0.72948*0.57524 = 0.41965. total = 1.14913. scattered fraction = 0.3652. Energy-fluence fraction = 0.1818 (from MC spectra ratios). Mean photon energy 0.9707.\n\nLet me now compute Layer 1 spectra and angular arrays, Layer 2, Layer 3.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 107523,
+  "completion_tokens": 1253,
+  "total_tokens": 108776,
+  "cost": 0.003124303,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 94620,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.003124303,
+   "upstream_inference_prompt_cost": 0.002896257,
+   "upstream_inference_completions_cost": 0.000228046
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 459,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

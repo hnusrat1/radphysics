@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791825002-tO08npExDBTAcsvFd20y",
+ "object": "chat.completion",
+ "created": 1791825002,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "Next I'll run a small test to check timing and that the tallies behave sensibly.",
+    "refusal": null,
+    "reasoning": "I'm double-checking the alive/dead logic: photons marked as exits correctly get killed, and those interacting via photoelectric or pair production are properly indexed into the pre-filter arrays, while scattered photons stay alive as expected. I'm now verifying that newly created pair-production photons get the right positions assigned.\n\nEverything else checks out\u2014the Compton direction update, the tally accumulation, interaction count weighting by segment type, and the electron histogram sampling for pair production (using E\u22121.022 for the charged particle energy) all look correct. I think it's time to test this with a smaller N to check timing before scaling up.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01KdqtGni2c1hRHUvore3cQc",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport time, sys\\nsys.path.insert(0,'.')\\nimport importlib, mc2\\nimportlib.reload(mc2)\\nt=time.time()\\ndepths=[0.5,5.0]\\nres=mc2.run(200000,depths,seed=2)\\nprint(\\\"time\\\",time.time()-t, res['nsteps'])\\ntal=res['tal']\\nV=mc2.Vcyl; P0=mc2.Phi0_hist\\nfor c in range(2):\\n    print(\\\"depth\\\",depths[c])\\n    print(\\\" primary fluence/phi0\\\", tal['Lp'][c]/(200000*V*P0), \\\" total\\\", (tal['Lp'][c]+tal['Ls'][c])/(200000*V*P0))\\n    print(\\\" interactions C,PE,PP,R (p/s):\\\", [round(tal[f'I{x}_p'][c]+tal[f'I{x}_s'][c],6) for x in ['C','PE','PP','R']])\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I'm double-checking the alive/dead logic: photons marked as exits correctly get killed, and those interacting via photoelectric or pair production are properly indexed into the pre-filter arrays, while scattered photons stay alive as expected. I'm now verifying that newly created pair-production photons get the right positions assigned.\n\nEverything else checks out\u2014the Compton direction update, the tally accumulation, interaction count weighting by segment type, and the electron histogram sampling for pair production (using E\u22121.022 for the charged particle energy) all look correct. I think it's time to test this with a smaller N to check timing before scaling up.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSpxAKEAgSGAI4AUIIdGhpbmtpbmcSDA6WuyodZtpYUgtGzhoMsmL/G6btUd69MRsDIjChzH4Rc/lPCTlcC5ND5vxrZBryc84kBi8vfwLNe8bM117Ji0XLxNEu0ZEQqeQjGKsqxA8TWJwZQxHCXa0VmiLya7/lDksXy2oBfRm7EiJg0J5JoVqpd95DJRB8d/wkJ6viQw7DJfN0fkoOzxp/JxZ5CmrAS6jF7gSy7dBTa9KFwxBANI3UITpBjYSaPKz9q0jcDRqmtIJ10PIS1oncV/7wlW8Xepm7us/bhgZQ7MiJMLlYVhBXbJq5N4I0bZBWTVsUbOA5OkCRhHnIpXvElOtJiMu1narWuVOly/d/9566bAq7PoeLbXLxJSWiTwWcEV5XNVVXhj6vmJj16PukqBLtQkXRWbpCJNluPULo7Lt7tN+C8QyxDmNNkkfswX1bARJ7jAJ6vmGtMiXWiKmLDeKy9O2WrMqd4MmYew/oun+EzgPr8Y18ubM2aiQm1t9EBtQ2k0IovvBQQHwkxPxPQdD6zWKsz/eKZfvF8rbi+1iAsz0zQuVp9sgNKqykE5+r4Mlq30ZFjri4f8oAGRK3nRTuQP66PDHSqcp1vuXUd6Em7WcnjAB3cQOjb13ieF+77okiKRwsjo+pDrtL0FVn3btJn9wM0qcT/mB5n5IWLW2OdU3pRuqUkIEmS8pBhMMs8FKMFSmRTc2dQfZ4XV+UG9EFrRBsO9BBwGoYcfSEypoxrl/SkAFM2UBd1jMV+IbruJ0JyaQo59+sd6MxbrZ6Bsf65f8rakPY4opPt6irRMLfmQCqicHE8rI03UHNNPPISDgvkSWEQOYzaOuyJp1dWbZmAKoS2LgVj7VLaohQTEEAepOUZtylcL4mg41uaKu06JQx/9oG7L/IcfhjMmDKEiyWmW8yBSTI0u9e5zB9P601HTnry1ltlUxRC/7FaN8tw0LM3CqlZ/l9JAb27KnSESD83WsDzY3GYdSzg3FiAq/Udu7SzdldR5ddVp4yoiuUqAk+nT+jvOFOfmGFoloM7opbN/boKO1I0ENKKQ18keIzxj2KFcwbFgIudYk1g6Ajlm0xKI4EYyAH5pBL05c1Ci33q+0tnOzXXXqQrJIxSN0Xyrplg9psSOYqiGtBhTYIyL9kEbj/gMsvyhYsndCTpoPwFAeKk1hv/I5C6ae3qRnEwdDlG9/Jmgb5luub4lQcWrUeDO0CzsUH2oN1AngmYW1uwjy19clLnOEhECxkOj2425lW1U1e1UbkAHf2TIwo3jUNyeSpZnoeY+p2gIJMzpPsdd+95q7RwSavMlF2lqzNsQ+/tZectw44LLRuqCVMcoS5xEzZO+gJMeRLVlURvLEJKVaSYvrdFwNaBgRLg8gzJiLg/xWDS0cG+XUvmzSvCzl9zUVXui4Hwm3n7piDuwa9QluqmUMtQOkYOklSUVJPJ/UUgwkgBZpMuHYyCfg2Baq1tPzjBA9lfL/CGlWqQDkrFlZn1FuCPQKL18dFpDDa0D5kuaOZht7TmPeoyizGN+Evjc8NkHY5BFFKkKsNcH/64qY5fvzCk1RqTnU4jYl4GzCd++zjHIPd9xBNS5YtDbqeSdBnhuIFKuaIfjJBebHgkoPJfmzPkyPIo8lGA47wme9BoBcEBR0llIx6ZI6TJWTDj5cG15NCgY+rz59CtdmMLUznf0QjugjkIckcxxaJYDu77pKBU6aAwK6fnQA+lEINKGCwHihB25u5F4kkiu23+SAtsGTBgEfprQU5qrFKhkyVGZxmGPZ0hOlJoaewEH9cS0zlfQoSgdhV2H247VMJYkv0W5w7KNnv0ed2HSmMJgke2aIAKuIdGwBRly6AV/xCQND7ed4gz3LHEYqcs4seUp1Hls1rb9SIy6qiMzSkAd8EGUM0lODNhbTMHcWxrblaCPF++1lfUjKiQ0O8GoXaEBZYE5/V4frqR8RDHThQiJpj7jkV7qPdEXPz/XDa2ypLI5uwlCMCNaeePGVw2eFkfzcSMuCwOJtMtjjEw5yuB6PJQMxgFVYHL7iyTFDC/vJLbAa2gqPsii4z1kj//3PpPXRI9ZWhuEfrpbIa2XY8wzgJwX1kURnuTM2Epzw35OF4OzTGPIweCKt7ZPXh+IovxC0OM8/MHK9T+0jCnxmXsKqgVq9iQhnCiw08NfhT7SInW9Ri8nst1o7O0zS3CQlOzRttp9PPGOLgY27j80C19JbvCZZZp3C8Fr+2TSaCTHPDCwGDkYv3QXI9oNzz2qiVKg/CIgIqcEyoWZlpXw0Y9ZhTOed5pKPfuuQSQuRhJyl3cafcGjLJgLmO0/LOgxF5qBPXDWx2tlpQW0v/XPmrEq0S+kz0wyoIKf2OupolXl+VQptlxqUGRxxHDbUsZeIe950j0lJuthW+o20VwZXLGsHInGFY8KAthUtp8ij8Q8VpO9ETIyiQO0nTdkaq3crIWX/jC14wmtQiWueocvG5UudD/z90PG0dSAJHcklz9ZlikIRUcG3OLzCqb+Xve55ufHeVS2/q/eBWcUnWBgJY8xO0lve77EAuXfFkEgWhSEyHYIcjKYHAM7Jy0tsldlQ2So6N81BztfRYyuH//6WoPwAmZ5CB3ofmMJ5693U5Uo8Zrn1Vhh+xHP8S/wQRsarlaVvuBpjVIhmzNqapyh2OOj4ph0jJGKsf6Xg0mKFU867kzQ57ey6dWXqd+4JlBReA0yvDWliqKzHXZBlGM5BHkrVbRvCk0g6FmneKNBU8fB93qjMFx5sgwCcVcGdRMwJMzrFh/xggXBgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 64954,
+  "completion_tokens": 936,
+  "total_tokens": 65890,
+  "cost": 0.0033984,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 45120,
+   "cache_write_tokens": 19832,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0033984,
+   "upstream_inference_prompt_cost": 0.0029304,
+   "upstream_inference_completions_cost": 0.000468
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 562,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

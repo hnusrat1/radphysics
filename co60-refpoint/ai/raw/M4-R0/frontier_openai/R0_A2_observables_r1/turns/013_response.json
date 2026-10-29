@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791823644-atuOJE9zabVpd3Cd7RSA",
+ "object": "chat.completion",
+ "created": 1791823644,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Calculating energy dose**\n\nI'm mentally calculating the approximate dose by multiplying fluence and supporting factors. The calculations yield various values, and I need to check if the total is too high at .05 MeV/g, which seems concerning. I notice our low-energy bin tracks below 50 keV with significant stopping, but the energy flow should be about .03 MeV/g. I'll estimate a lower electron fluence spectrum based on these factors to refine my calculations. Now, I need to compute the integral for better accuracy.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_DwuLwD3kvLNJyoxOFiZui9nT",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import numpy as np\\nv=np.array([.0018,.0017,.0015,.00135,.0012,.00105,.0009,.0008,.0007,.00062,.00054,.00047,.0004,.00034,.00028,.00023,.00018,.00014,.00010,.00007,.00005,.00003,.00002,.00001,.000005]);ee=np.array([.01,.05,.1,.15,.2,.25,.3,.35,.4,.45,.5,.55,.6,.65,.7,.75,.8,.85,.9,.95,1,1.05,1.1,1.15,1.2,1.4]);mid=(ee[:-1]+ee[1:])/2\\nest=np.loadtxt('/tmp/data/estar_water.txt',comments='#')\\nSc=np.exp(np.interp(np.log(mid),np.log(est[:,0]),np.log(est[:,1])))\\nprint(np.dot(v,Sc),np.dot(v,Sc)*1.602e-10,Sc)\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Calculating energy dose**\n\nI'm mentally calculating the approximate dose by multiplying fluence and supporting factors. The calculations yield various values, and I need to check if the total is too high at .05 MeV/g, which seems concerning. I notice our low-energy bin tracks below 50 keV with significant stopping, but the energy flow should be about .03 MeV/g. I'll estimate a lower electron fluence spectrum based on these factors to refine my calculations. Now, I need to compute the integral for better accuracy.",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzQ8gU7wSIFO16munshnGXRbBj-om576i7xciP-JLn_-8o2Y7pPzmQMgnZhbj5gLkuUHHJyYzA_278swlrIuyagpa8yhBgmJP9YMhBr9SMlk8YRsfNEZ7aLLw4dFA7hbrwbdlyb2eJAlS2kq6RXaQUDxquZZTxkEf7TQozEtQVBr_VuFpHm1qb_UQgB9hw7T7eqe23H6rc6SfJiJdwxrnxZ5N4D4hYHKTLQc8jrVucxmslULOdQou8vv0sXU9-SdY4kZZZK3R1H-dPps8MtGm-g7IlnwcdbWc0yb8g8eAV1uCqps1YPV_qrRLzlFUmc7adpbrWe93IVfN5kbRZkwXb1m1YW93BRoyMVM2OLUP2Sf-kYQJQWA-GHPzcabeqruNR0uCzZjwg6z9HMl31JGZ4WA7Fbsr6AxtLEMdzugLOcBFH9mClGHu-PckhgglpzoTiexySHajOgVtwFOLm9TC3VT6tv-zG6oEsuv6NhQ1Deha07wW_TTnV1wile8swjbHkPbiRqsMwPZpgyq4Eoz3yAJyxpagIhiFz-wxiTBUR789HMrdWvMSKv5qgJpjY94usjaHoAoyncV5eRHn2hdS0rH_9DbiJF4-gmBETzbyl7h0k8SSwtTrG2oVCZe9tdN2Do4jOl80iDvE-h5NEvijtJeDMjeLuOq0acg_FPCBDoKzzzdC1C0snoNP28SqGyWr2EWPkuQbWQsYXxLr_K0uJoHrS32AVMGLohpdqbJ7HeJD-Gk1EZaIofmJtNLQIZ5wSPxDewNXLDo7k8Y9SdEMKQIs5CkRfvCrWRJ2RL0zasENzxG0gfPRir959n1U0uXMy1N449pgP5rTAZFqt5s6wuBbMhifwpaDlR8VeMT1_6p0MnjEW2FpnFM22OtdRV6QACJZAZO1Y_a2EbG8kzT7V-pF98KIVNtaFYYnkfbHVDq8oQBgiKnDc49qr4mScV4kQf62EsmALClTBRIA-BhDfa_nKf7RzofLpVXwdjqWlGOwJaHRHNMvyR6C785cn8knVnXOL1AQaQ3VUhBGqFpqec0UUrqc1u4oOG5lWGAwHf7hVEFc2SoahdpR8EO3kLzICAkkHF1at4PYqKFMQy6DcWP5WORUWVBYExBv4ov5QwaJsY2ykRcjVrpBZjhTzDuO-ehba2TF2uDlppb5qA4R891_OA2vnAfAvybH7RL7ASt3iKEO-deWFLSXHZoi1df1qdGSY5SLPt4zQA6si3pzooqdcj_MXFRJLwz8FnevCH7CFclZWqOvAmJ5Zgj0UFrsx1g_poa3rBbFZ0tYfk6jY7ldtCu7TBauy9dcn-mRFVFUk4h64_D8y-JyAy_GGHwD38Q80I8ozog0RZI11jQdY4t6XtQG2389Mb3zJMT-D7TmJ-cllkP7qmpqYjBM7QI8e-02_Kv8QZ2c5jPPeEKYqKoCP0Bz3GF5dTmaOzehqm3mYWWTfVHs88TMSVPVh2LPKV5_oPWtM9-WsA2qc4C66Sf9rbSDIvMUsbGmGpPEX-P1nTso5wtUS9o5qXsmFmTJrsKFsyglk01nEG4v_NnioxMjGnGG8YXru9TI6u2dsRENMIJaT408U0ZWS8VbJ_3eVKFNSx4BKuiP2Sy6dbmaIxeRvmI3ueiJg-DOS04kNTEWfwFmFgL-dCNySaeT6LjxL1mS3l05zsmcQvoqMEJYVr1pmJlCsoCsIFDkZmT8JHmD2ao7aZm1rAKCGmMF3hVvwZPgw8bGSHTLcQ2zyd4oABM_YOMMDvSt4ooVO_C4FvAjcupvd40QDOZYm3JVbVhAkp7fXsNi8QpM73P4atBHOdDlZNTrm-vfXloRyQGsDoT8s-6Uu8abMOY_vHE-obESQonFCNBxjcnb5OOq0JA8IdFblfWkPuRAkRiyF9-diO44U2mmwnJTojCwMAjrGG1bm8Rx9PYVsiAwaDHJnPhNfw5GflOE4NnPsRCn7xGlBJFUdAEpMQTnw2eUUKSxuTcktnQpMWQP_vASkxOdExr8JhMu4fcIXdyloAa3kILnq9BOugXIxlqRU2DptuXuT6r70xFAlsosd0qbMGznAM1NLmlp355gQEWun58IjNBjjD3eumlSN0hpivKrf2CBGfq5D7VwHXgYvPq9A9QPZolpmUfOpxoXFcLYc72Y2Gk2_k3wrIE71O5DufMpc6x8-YX9SxhenTFmZaJltRot-_7q0MFG0CnSIV1s_gFi4DiuabLs7ZMwbn2Lp6IVO5O7xI4qiC26uXn70va_Jbpu3PgCcVttovD-PIoFCLnxJmwQaRK0JI1rw62hQAXNRusT90tPAHglopfYjJxsErM5c7W7lzMfmI8ae9O7jBQZlEbUa4rkrp6V1_Ck5_ZEi-FQWJP0s2ZBwk2HtipADMyiPtOKNsh-ZZGmDln6nYnEPWaztOn0glqMKl1tvELzuyuynsGmU4SE4jZLlxl0jbsZnApTm_w8PgFmiHdTA2tgKD73b1Ah6wCLEE5o6xh2lrNF7El0GNITAj7aiZovfv1y90ZVyxTNRhVvpweVT2iTPxgRWps7bdH0N3levWGsqsieSnoI8Z0M_xAJEbYcflibvrkw_6BhpuSxZ4vgGjrAPb-nVhA35v7a3vNbx3YvZQRB24Ox1KClNxsKcWZJJKNbctI-ItrlfCnjVrvPVJ0-h2DeUAMydbHHqwk_wTA9J6SmboKQOTJ4jQPEH6KBqCU0drsbmcEH1jL4gL25qz4ca52uouw_YuOuxlGlXzYswwNnuvHeGyIZANYBPf_Gs8iwz9FBMe38kqlJ8B6_wGQ88Q9scwCq1OcsjNPXhWc1ZcEwS-1VpMsxNO4brKVw5Xz-daXWnQuTMpBkChoXy_RRAb5g_GLcI5lNvHwtF10MntzeXc29gsvY54znzNy2O_gi8J5GOSCR8LmGSVv9v873dOYrgY7dlIjQDgPXgB3iax-2Xk2jYGVEUooEu9oWY8RLFuMuoagTZAEjlUK6zLDZO0moCTeIx8vz8b9r8azgrfUxbujB_WdES03j5qGCbe6MDmRW2CiKj4bCtjJdpPe_9tSV03KT2Np-ag4a4MEe7PXxPphurPWv_QRc1BU-7jEZTJBOKqQxkI4-GQ4UAja7DT7rEEVdG0LSmhdetcVllzM65ianQEb3iP9b-QKt-xOaMniyZR10WttraGF2v_Bl6d_D8lxQX2aOFEnof8gbeNivQCYYS8pRp7sV6vGNi-dEILjiFsGNni1zvptBbJKKS7sLsQyARF7JLjKTZlZpTxeq4aNy_ov9aVSahmjaW3c6hq-W98bg7vJ8X1E32pjEj9h3J1bk_9U=.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_08b25cd38fe34654016acd0f1e141487d18b522ed0aad6fe44",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 19192,
+  "completion_tokens": 409,
+  "total_tokens": 19601,
+  "cost": 0.00043165,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 18885,
+   "cache_write_tokens": 304,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00043165,
+   "upstream_inference_prompt_cost": 0.00022715,
+   "upstream_inference_completions_cost": 0.0002045
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 163,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

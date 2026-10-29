@@ -68,6 +68,20 @@ def post_json(url, payload, headers, timeout=900, retries=5):
             raise RuntimeError(f"connection to {url} failed: {e}") from None
 
 
+RETRY_CODES = (408, 409, 429, 500, 502, 503, 504, 529)
+
+
+def in_band_error(resp):
+    """An error that OpenRouter returns inside an HTTP 200 body (for example an upstream 429 or idle timeout):
+    a top-level "error", or a choice with finish_reason "error". None when the response is a real reply."""
+    if resp.get("error"):
+        return resp["error"] if isinstance(resp["error"], dict) else {"message": str(resp["error"])}
+    ch = (resp.get("choices") or [{}])[0]
+    if ch.get("finish_reason") == "error" or ch.get("error"):
+        return ch.get("error") or {"message": "finish_reason error", "code": None}
+    return None
+
+
 class Conversation:
     def __init__(self, slot, system, user, tools):
         self.slot, self.system, self.tools = slot, system, tools
@@ -79,10 +93,21 @@ class Conversation:
         self.messages = []
         self.init(user)
 
-    def step(self):
+    def step(self, retries=8):
         url, headers, payload = self.request()
         t0 = time.time()
-        resp, attempts = post_json(url, payload, headers)
+        attempts, delay = 0, 20.0
+        for k in range(1, retries + 1):
+            resp, n = post_json(url, payload, headers)
+            attempts += n
+            err = in_band_error(resp)
+            if err is None:
+                break
+            if (err.get("code") is None or err.get("code") in RETRY_CODES) and k < retries:
+                time.sleep(delay)
+                delay *= 2
+                continue
+            raise RuntimeError(f"in-band error after {attempts} attempts: {json.dumps(err)[:500]}")
         turn = self.parse(resp)
         turn.raw_request, turn.raw_response = payload, resp
         turn.wall_s, turn.http_attempts = round(time.time() - t0, 2), attempts
@@ -127,10 +152,20 @@ class OpenAIChatConversation(Conversation):
 
     def init(self, user):
         role = self.settings.pop("system_role", "system") if isinstance(self.settings, dict) else "system"
+        self.cache = self.settings.pop("prompt_cache", False)
         self.messages += [{"role": role, "content": self.system}, {"role": "user", "content": user}]
 
     def request(self):
-        p = {"model": self.model, "messages": self.messages, **self.settings}
+        msgs = self.messages
+        if self.cache:
+            # Anthropic prompt caching through OpenRouter: breakpoints on the system prompt and the newest message,
+            # so each turn reads the conversation so far from the cache. What the model sees is unchanged.
+            msgs = [dict(m) for m in self.messages]
+            for i in (0, len(msgs) - 1):
+                if isinstance(msgs[i].get("content"), str) and msgs[i]["content"]:
+                    msgs[i]["content"] = [{"type": "text", "text": msgs[i]["content"],
+                                           "cache_control": {"type": "ephemeral"}}]
+        p = {"model": self.model, "messages": msgs, **self.settings}
         if self.tools:
             p["tools"] = [{"type": "function", "function": t} for t in self.tools]
         base = self.slot.get("base_url", "https://api.openai.com/v1")

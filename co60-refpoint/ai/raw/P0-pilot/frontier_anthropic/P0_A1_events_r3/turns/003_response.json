@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791816032-i6weTwBen4ZGUzoQ9Arr",
+ "object": "chat.completion",
+ "created": 1791816032,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Since state isn't persisted between calls, I'll write the full script in one file and run it directly. I need to fix my direction vector calculation: the source is at z=-100 and the plane is at z=0, so rays should go from the source toward points (x,y,0) with x,y ranging within \u00b15cm on that plane, giving direction vectors proportional to (x,y,100).\n\nSampling uniformly across x,y on this plane and applying a cos\u00b3 acceptance factor correctly gives uniform solid-angle sampling, with r = sqrt(L\u00b2+x\u00b2+y\u00b2) and acceptance (L/r)\u00b3. The starting point on the surface is just the plane point itself, consistent with my scaling. Now I'll write the complete script.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01FZeBkUizFJVezD2s9dag73",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\ncode = r'''\\nimport numpy as np, sys\\nrng=np.random.default_rng(12345)\\nre=2.8179403e-13; me=0.51099895\\nNA=6.02214076e23\\nne=(2*1+8)/18.015*NA\\ndef sigKN(E):\\n    k=E/me; L=np.log(1+2*k)\\n    return 2*np.pi*re**2*((1+k)/k**2*(2*(1+k)/(1+2*k)-L/k)+L/(2*k)-(1+3*k)/(1+2*k)**2)\\ndef mu_comp(E): return ne*sigKN(E)\\ndef mu_pair(E): return np.where(E>2*me, 0.00048*np.minimum(1,np.maximum(E-2*me,0)/(2-2*me)),0.0)\\ndef mu_coh(E): return 0.0051*(0.1/E)**2\\ndef mu_pe(E): return 2.76e-3*(0.1/E)**3\\n\\ndef sample_KN(E,n):\\n    k=E/me\\n    out=np.empty(n); todo=np.arange(n)\\n    mg=np.linspace(-1,1,20001); e=1/(1+k*(1-mg)); fmax=(e**2*(e+1/e-(1-mg**2))).max()*1.02\\n    while todo.size:\\n        m=rng.uniform(-1,1,todo.size); e=1/(1+k*(1-m))\\n        f=e**2*(e+1/e-(1-m**2))\\n        acc=rng.uniform(0,fmax,todo.size)<f\\n        out[todo[acc]]=m[acc]; todo=todo[~acc]\\n    return out\\ndef sample_rayleigh_mu(n):\\n    out=np.empty(n); todo=np.arange(n)\\n    while todo.size:\\n        m=rng.uniform(-1,1,todo.size)\\n        acc=rng.uniform(0,1,todo.size)<(1+m**2)/2\\n        out[todo[acc]]=m[acc]; todo=todo[~acc]\\n    return out\\ndef rotate(d, mu, phi):\\n    n=d.shape[0]\\n    a=np.where(np.abs(d[:,0:1])<0.9, np.array([[1.,0,0]]), np.array([[0,1.,0]]))\\n    e1=np.cross(d,a); e1/=np.linalg.norm(e1,axis=1)[:,None]\\n    e2=np.cross(d,e1)\\n    s=np.sqrt(np.clip(1-mu**2,0,None))\\n    return d*mu[:,None]+s[:,None]*(np.cos(phi)[:,None]*e1+np.sin(phi)[:,None]*e2)\\ndef iso_dirs(n):\\n    c=rng.uniform(-1,1,n); p=rng.uniform(0,2*np.pi,n); s=np.sqrt(1-c*c)\\n    return np.stack([s*np.cos(p),s*np.sin(p),c],1)\\ndef start_photons(N):\\n    xs=[]; cnt=0; L=100.0\\n    while cnt<N:\\n        m=2*N\\n        x=rng.uniform(-5,5,m); y=rng.uniform(-5,5,m)\\n        r=np.sqrt(L*L+x*x+y*y)\\n        acc=rng.uniform(0,1,m)<(L/r)**3\\n        xs.append(np.stack([x[acc],y[acc],np.full(acc.sum(),L)],1)); cnt+=acc.sum()\\n    v=np.concatenate(xs)[:N]\\n    d=v/np.linalg.norm(v,axis=1)[:,None]\\n    t=100.0/d[:,2]\\n    p=np.zeros((N,3))+np.array([0,0,-100.0])+t[:,None]*d\\n    p[:,2]=0.0\\n    return p,d\\n\\nLO=np.array([-15.,-15.,0.]); HI=np.array([15.,15.,30.])\\nE0=2.0\\nNHIST=int(sys.argv[1]) if len(sys.argv)>1 else 1000000\\n\\n# event storage\\nev=[]  # tuples: process, e_in, e_out, cos_s, t_e, cos_e, t_pos\\ndef record(proc, ein, eout, cs, te, ce, tp, mask):\\n    idx=np.nonzero(mask)[0]\\n    for i in idx:\\n        ev.append((proc, float(ein[i]), None if eout is None else float(eout[i]),\\n                   None if cs is None else float(cs[i]), float(te[i]),\\n                   None if ce is None else float(ce[i]), None if tp is None else float(tp[i])))\\n\\ndef inside_volume(p):\\n    r2=p[:,0]**2+p[:,1]**2\\n    return (r2<=1.0) & (p[:,2]>=9.9) & (p[:,2]<=10.1)\\n\\n# Initial photons\\np,d=start_photons(NHIST)\\nE=np.full(NHIST,E0)\\nprim=np.ones(NHIST,bool)\\n# particle queue: pos, dir, E\\npos=p; dr=d; En=E.copy()\\nstats={'compton':0,'rayleigh':0,'pair':0,'photo':0,'escape':0,'annih':0}\\nit=0\\nwhile pos.shape[0]>0:\\n    it+=1\\n    n=pos.shape[0]\\n    # distance to exit\\n    tex=np.full(n,np.inf)\\n    for ax in range(3):\\n        u=dr[:,ax]\\n        with np.errstate(divide='ignore',invalid='ignore'):\\n            tp_=np.where(u>0,(HI[ax]-pos[:,ax])/u,np.where(u<0,(LO[ax]-pos[:,ax])/u,np.inf))\\n        tex=np.minimum(tex,tp_)\\n    tex=np.maximum(tex,0)\\n    mc=mu_comp(En); mp=mu_pair(En); mr=mu_coh(En); mpe=mu_pe(En)\\n    mt=mc+mp+mr+mpe\\n    s=-np.log(rng.uniform(0,1,n))/mt\\n    inter=s<tex\\n    # escaping photons: stats only\\n    stats['escape']+=int((~inter).sum())\\n    pos=pos[inter]; dr=dr[inter]; En=En[inter]; mc=mc[inter]; mp=mp[inter]; mr=mr[inter]; mpe=mpe[inter]; mt=mt[inter]; s=s[inter]\\n    if pos.shape[0]==0: break\\n    pos=pos+s[:,None]*dr\\n    m=pos.shape[0]\\n    inv=inside_volume(pos)\\n    xi=rng.uniform(0,1,m)*mt\\n    isC=xi<mc; isP=(~isC)&(xi<mc+mp); isR=(~isC)&(~isP)&(xi<mc+mp+mr)\\n    isPE=~(isC|isP|isR)\\n    newpos=[]; newdir=[]; newE=[]\\n    # Compton\\n    idx=np.nonzero(isC)[0]\\n    if idx.size:\\n        Ei=En[idx]; mu=sample_KN(1.0,0) if False else None\\n        mu=np.empty(idx.size)\\n        for E_val in np.unique(Ei):\\n            sel=Ei==E_val\\n            mu[sel]=sample_KN(E_val,sel.sum())\\n        Eo=Ei/(1+(Ei/me)*(1-mu))\\n        phi=rng.uniform(0,2*np.pi,idx.size)\\n        dd=dr[idx]\\n        ndir=rotate(dd,mu,phi)\\n        pe_par=Ei-Eo*mu\\n        pe_mag=np.sqrt(Ei**2+Eo**2-2*Ei*Eo*mu)\\n        ce=pe_par/pe_mag\\n        te=Ei-Eo\\n        mask=inv[idx]\\n        # record\\n        for j in np.nonzero(mask)[0]:\\n            ev.append(('compton',float(Ei[j]),float(Eo[j]),float(mu[j]),float(te[j]),float(ce[j]),None))\\n        stats['compton']+=idx.size\\n        newpos.append(pos[idx]); newdir.append(ndir); newE.append(Eo)\\n    # Rayleigh\\n    idx=np.nonzero(isR)[0]\\n    if idx.size:\\n        mu=sample_rayleigh_mu(idx.size); phi=rng.uniform(0,2*np.pi,idx.size)\\n        ndir=rotate(dr[idx],mu,phi)\\n        mask=inv[idx]\\n        for j in np.nonzero(mask)[0]:\\n            ev.append(('rayleigh',float(En[idx][j]),float(En[idx][j]),float(mu[j]),0.0,None,None))\\n        stats['rayleigh']+=idx.size\\n        newpos.append(pos[idx]); newdir.append(ndir); newE.append(En[idx])\\n    # pair\\n    idx=np.nonzero(isP)[0]\\n    if idx.size:\\n        Ei=En[idx]; T=Ei-2*me\\n        fr=rng.uniform(0,1,idx.size)\\n        Te=T*fr; Tp=T*(1-fr)\\n        # angles: approximate, scale m/(E_kin+m) times |N(0,1)|\\n        th_e=np.abs(rng.normal(0,1,idx.size))*me/(Te+me)\\n        th_p=np.abs(rng.normal(0,1,idx.size))*me/(Tp+me)\\n        ce=np.cos(np.minimum(th_e,np.pi))\\n        mask=inv[idx]\\n        for j in np.nonzero(mask)[0]:\\n            ev.append(('pair',float(Ei[j]),None,None,float(Te[j]),float(ce[j]),float(Tp[j])))\\n        stats['pair']+=idx.size\\n        # annihilation photons (at rest), two 0.511 MeV back to back\\n        dirs=iso_dirs(idx.size)\\n        newpos.append(pos[idx]); newdir.append(dirs); newE.append(np.full(idx.size,me))\\n        newpos.append(pos[idx]); newdir.append(-dirs); newE.append(np.full(idx.size,me))\\n        stats['annih']+=2*idx.size\\n    # photoelectric\\n    idx=np.nonzero(isPE)[0]\\n    if idx.size:\\n        Ei=En[idx]; mask=inv[idx]\\n        th=np.abs(rng.normal(0,1,idx.size))*me/(Ei+me)\\n        ce=np.cos(np.minimum(th,np.pi))\\n        for j in np.nonzero(mask)[0]:\\n            ev.append(('photoelectric',float(Ei[j]),None,None,float(Ei[j]),float(ce[j]),None))\\n        stats['photo']+=idx.size\\n    if newpos:\\n        pos=np.concatenate(newpos); dr=np.concatenate(newdir); En=np.concatenate(newE)\\n        # annihilation photons born at rest; for others keep\\n    else:\\n        pos=np.zeros((0,3)); dr=np.zeros((0,3)); En=np.zeros(0)\\n    # for Rayleigh/Compton the photon's new direction already set; pair annihilation photons have energy me already\\nprint(\\\"iterations\\\",it,\\\"stats\\\",stats,\\\"nevents\\\",len(ev), file=sys.stderr)\\nimport pickle\\npickle.dump(ev,open('events_%d.pkl'%NHIST,'wb'))\\n'''\\nopen('mc.py','w').write(code)\\nimport subprocess,time\\nt=time.time()\\nr=subprocess.run(['python','mc.py','200000'],capture_output=True,text=True)\\nprint(r.stdout, r.stderr[-3000:], time.time()-t)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Since state isn't persisted between calls, I'll write the full script in one file and run it directly. I need to fix my direction vector calculation: the source is at z=-100 and the plane is at z=0, so rays should go from the source toward points (x,y,0) with x,y ranging within \u00b15cm on that plane, giving direction vectors proportional to (x,y,100).\n\nSampling uniformly across x,y on this plane and applying a cos\u00b3 acceptance factor correctly gives uniform solid-angle sampling, with r = sqrt(L\u00b2+x\u00b2+y\u00b2) and acceptance (L/r)\u00b3. The starting point on the surface is just the plane point itself, consistent with my scaling. Now I'll write the complete script.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "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.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 20108,
+  "completion_tokens": 4375,
+  "total_tokens": 24483,
+  "cost": 0.0041983,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0041983,
+   "upstream_inference_prompt_cost": 0.0020108,
+   "upstream_inference_completions_cost": 0.0021875
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 356,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

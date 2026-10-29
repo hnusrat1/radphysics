@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791824640-Gw3YU8SdjstoQnYV7L1Q",
+ "object": "chat.completion",
+ "created": 1791824640,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "State doesn't persist, so I'll put the whole driver in one script that saves its results to disk.",
+    "refusal": null,
+    "reasoning": "Since state doesn't persist between calls, I'll need to consolidate everything into a single driver script that runs the averaging, prints per-seed stats, and saves results to JSON\u2014using something like 100,000 samples across 8 seeds (roughly 20 seconds), maybe bumping to 16 seeds for better statistics at around 40 seconds.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01P5Pw5LjsPuoRSxcMM3G2uR",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\ndriver = r'''\\nimport sys, json, time, gc\\nsys.path.insert(0,'/tmp/work')\\nimport numpy as np, final\\nseeds=range(int(sys.argv[1]) if len(sys.argv)>1 else 16)\\nouts=[]\\nt=time.time()\\nfor s in seeds:\\n    o,B=final.compute(100000,500+s,Nel=20000)\\n    outs.append(o); del B; gc.collect()\\nprint('time',time.time()-t)\\nkeys=[k for k in outs[0] if not k.startswith('_')]\\nres={}\\nfor k in keys:\\n    vals=[o[k] for o in outs]\\n    if isinstance(vals[0],dict):\\n        res[k]={a:float(np.mean([v[a] for v in vals])) for a in vals[0]}\\n    elif isinstance(vals[0],list):\\n        res[k]=np.mean(np.array(vals,float),0).tolist()\\n    else:\\n        res[k]=float(np.mean(vals))\\njson.dump(dict(res=res, outs=outs), open('/tmp/work/results.json','w'))\\nfor key in ['L1_scattered_fraction_fluence','L1_scattered_fraction_energy_fluence','L5_dose_fraction_parent_scattered','L5_K_over_phi0_Gy_cm2','L5_s_w_air','L4_delta_fraction','L2_scattered_share_of_interactions','L4_electron_fluence_per_phi0','L1_total_fluence_per_phi0','L4_radiative_to_collision','L5_g']:\\n    v=np.array([o[key] for o in outs]); print(key, 'mean',v.mean(),'sem',v.std(ddof=1)/np.sqrt(len(v)))\\n'''\\nopen('/tmp/work/driver.py','w').write(driver)\\nimport subprocess\\nr=subprocess.run(['python3','/tmp/work/driver.py','16'],capture_output=True,text=True,cwd='/tmp/work')\\nprint(r.stdout[-4000:], r.stderr[-3000:])\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Since state doesn't persist between calls, I'll need to consolidate everything into a single driver script that runs the averaging, prints per-seed stats, and saves results to JSON\u2014using something like 100,000 samples across 8 seeds (roughly 20 seconds), maybe bumping to 16 seeds for better statistics at around 40 seconds.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSuggKEAgSGAI4AUIIdGhpbmtpbmcSDBIobXxPS/RAulK4exoMxOZHWCJr9hEaj8fUIjAFMdRUw0htlgndHCmuUeEI05R2kLut6GoSC1ptJKNIejzy61Q///lGi85g7vl2pdkq1wfhoabekHzxpVDMxMM63S5Urx1ssWziODflTFJaA1rbBCR6Jq30af8jRnbUTYMHN+7zpBR6OR6zAloJnxiZ+wup+XZjUjkvDslJnzRxfdjeR7c0nRhU9wf16xxbqKUg2Otx5OZbotZkT/gwHjNTqShLN1plhKoJNjVRXX0rhUfmA2sw2ri8H5OnAH+OTENsQLmLZltN/nQmtEVlWXJ93WvAwtMQ1nYfax1QZYW5v6XbiXjqjp4ojdJCT1u+GA3avSvr/1LckvuJZfO/5JnHX/C9ywLp7FXyJaCWkLRVkxHNDzF65me/ofRc9DgT1UYum+1lhUnaZzH1l7AID+hYEb5VXL0+24q2HdHoHabXcIRVRQW+FpWCdLd1RA+czLROlCMQ7sQUGIUoKH68K1uRk51UL/BNBT3JiYkybTGW1sTTdzJgXdSPvyDjR7q1hMldEgwrmD9fB5km0akEohnyjIyeCogsyqSG2WmqHL46NCBVNiVtaM/t13LQvjFDrS/cCRDVItnTOzllQbI5skepq3Zgb+TAke1vfLOlgSO6kcAsEMvH3XjUbx/ns09UO37zDlJEmAK3fhDwm3hyD9PuJ630zoKw7qegNYE0BCL+t4byg9w7KZ8JIHTnjHsjX+wlqbA2mCNP3S2Qqn5XW180LjuFH5CXnWEW1jZ4qSSXXQGqNREJM7+vmK7MO7At6Rqb2Ii5wmEQ40kRx9nk4HEkeo+J4hTp28dwCt7RVH7Aj49/7RSL/1qGugeu34LEsCQVgJJlNHCbARAJZTpyGPuSvms6vE+4orNA4gUJB6ai4+P1+XthUYrP+v+sZM8j0cXTMt9Qpt36bXt9WpvUeVCB9q8VSLe+2pt/yVZDUPrvL39tSXZw1tKsZbBwMyBdGn8aQgxbaDvS6g4hARLPY3RQdToK0GOffAFiQ2xLoMpeHzxgBHH228KO3ofjDqgBvhz8Y/PvXYHmx1cSrAeb1f/unIaqahaKFKZsk1a7KkxBSzZagzXyevXQS+W0ZTpEyAAuSJRWj56jkaIVKNbCMzVFgJk3cmzNnLuXlXiQkLBWNEbvNLWbQq7UIcWFZ/Ag6kOr/y6veTkMkla2wQtOR0nMmBB3S+uHexHALWmeso7vYSZd6mliSooRHYLgdscL/4icOKOEmsoU9L5r0jZN4UfSN46TiIgIqFBqhP43QDxuONxC48x0eFhv72TMlmANIVw3Sxo9wOxRSSpsHh+bhSUOt+btQrQcyA2vDSbrrIVhy4xfQ6dae6hsa9UfJgzaenJIA29Hc8rZ93MS2jsibK+v1HNljOO6x0josRgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 140858,
+  "completion_tokens": 865,
+  "total_tokens": 141723,
+  "cost": 0.009749675,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 139911,
+   "cache_write_tokens": 945,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.009749675,
+   "upstream_inference_prompt_cost": 0.007587175,
+   "upstream_inference_completions_cost": 0.0021625
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 104,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

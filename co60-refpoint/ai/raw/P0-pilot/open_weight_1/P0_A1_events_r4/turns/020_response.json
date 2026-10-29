@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791825889-Kw7RA4cmWUvmtla1z3Up",
+ "object": "chat.completion",
+ "created": 1791825889,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Again a syntax error due to missing newlines. The line \"process = 'photoelectric'            t_e = energy\" is on one line. Let me fix the indentation properly.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_64116e996ed542e5a8f6bf63",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nimport random\\nimport json\\nfrom math import sqrt, log, cos, sin, pi\\nfrom collections import Counter\\n\\n# ---- Constants ----\\nm_e = 0.510998950\\nr_e = 2.8179403262e-13\\nN_A = 6.02214076e23\\nN_e_per_g = N_A * 10 / 18.01528\\n\\n# ---- Fast cross sections ----\\ndef mu_total_fast(E):\\n    alpha = E / m_e\\n    if alpha <= 0:\\n        return 0.0, 0.0, 0.0, 0.0, 0.0\\n    \\n    term1 = (1+alpha)/alpha**2 * (2*(1+alpha)/(1+2*alpha) - log(1+2*alpha)/alpha)\\n    term2 = log(1+2*alpha) / (2*alpha)\\n    term3 = (1+3*alpha) / (1+2*alpha)**2\\n    sigma = 2*pi * r_e**2 * (term1 + term2 - term3)\\n    mu_c = sigma * N_e_per_g\\n    \\n    if E < 0.01:\\n        mu_pe = 4.89 * (E/0.01)**(-3.5)\\n    elif E < 0.1:\\n        mu_pe = 4.89 * (E/0.01)**(-3.5)\\n    elif E < 1.0:\\n        mu_pe = 0.0017 * (E/0.1)**(-3.2)\\n    else:\\n        mu_pe = 7e-6 * (E/1.0)**(-3.5)\\n    \\n    if E <= 2*m_e:\\n        mu_pp = 0.0\\n    elif E < 2.0:\\n        mu_pp = 0.00013 * (E - 2*m_e) / (2.0 - 2*m_e)\\n    elif E < 5.0:\\n        mu_pp = 0.00013 + (0.0015-0.00013)*(E-2)/3\\n    elif E < 10.0:\\n        mu_pp = 0.0015 + (0.0048-0.0015)*(E-5)/5\\n    else:\\n        mu_pp = 0.0048 + (0.0077-0.0048)*(E-10)/10\\n    \\n    if E < 0.01:\\n        mu_r = 0.16\\n    elif E < 0.1:\\n        mu_r = 0.16 * (E/0.01)**(-3.5)\\n    elif E < 0.5:\\n        mu_r = 0.0002 * (E/0.1)**(-4)\\n    else:\\n        mu_r = 0.0\\n    \\n    mu_t = mu_c + mu_pe + mu_pp + mu_r\\n    return mu_t, mu_c, mu_pe, mu_pp, mu_r\\n\\n# ---- Compton sampling ----\\ndef sample_compton_fast(E, rng):\\n    alpha = E / m_e\\n    while True:\\n        xi1 = rng.random()\\n        xi2 = rng.random()\\n        mu = 2.0 * xi1 - 1.0\\n        ratio = 1.0 / (1.0 + alpha * (1.0 - mu))\\n        f_kn = ratio**2 * (ratio + 1.0/ratio - (1.0 - mu**2))\\n        if xi2 <= f_kn * 0.5:\\n            e_out = E * ratio\\n            cos_scatter = mu\\n            break\\n    t_e = E - e_out\\n    denom = sqrt(E**2 + e_out**2 - 2.0 * E * e_out * cos_scatter)\\n    cos_electron = (E - e_out * cos_scatter) / denom if denom > 0 else 1.0\\n    return e_out, cos_scatter, t_e, cos_electron\\n\\n# ---- Rotation ----\\ndef rotate_dir_fast(dx, dy, dz, cos_theta, azimuth):\\n    if abs(dz) < 0.9:\\n        norm = sqrt(dx*dx + dy*dy)\\n        ux = -dy / norm\\n        uy = dx / norm\\n        uz = 0.0\\n    else:\\n        norm = sqrt(dy*dy + dz*dz)\\n        ux = 0.0\\n        uy = -dz / norm\\n        uz = dy / norm\\n    \\n    vx = dy*uz - dz*uy\\n    vy = dz*ux - dx*uz\\n    vz = dx*uy - dy*ux\\n    \\n    sin_theta = sqrt(max(0.0, 1.0 - cos_theta*cos_theta))\\n    ca = cos(azimuth)\\n    sa = sin(azimuth)\\n    \\n    new_dx = sin_theta * ca * ux + sin_theta * sa * vx + cos_theta * dx\\n    new_dy = sin_theta * ca * uy + sin_theta * sa * vy + cos_theta * dy\\n    new_dz = sin_theta * ca * uz + sin_theta * sa * vz + cos_theta * dz\\n    \\n    return new_dx, new_dy, new_dz\\n\\n# ---- Geometry ----\\nZ_SURFACE = 100.0\\nZ_EXIT = 130.0\\nFIELD_HALF = 5.0\\nSV_Z_MIN = 109.9\\nSV_Z_MAX = 110.1\\nSV_RADIUS_SQ = 1.0\\n\\n# ---- Simulation ----\\ndef simulate_one_fast(rng):\\n    events = []\\n    \\n    u = rng.uniform(-FIELD_HALF, FIELD_HALF)\\n    v = rng.uniform(-FIELD_HALF, FIELD_HALF)\\n    inv_norm = 1.0 / sqrt(u*u + v*v + 10000.0)\\n    dx = u * inv_norm\\n    dy = v * inv_norm\\n    dz = 100.0 * inv_norm\\n    \\n    px = u\\n    py = v\\n    pz = Z_SURFACE\\n    energy = 2.0\\n    \\n    for _ in range(200):\\n        mu_t, mu_c, mu_pe, mu_pp, mu_r = mu_total_fast(energy)\\n        if mu_t <= 0:\\n            break\\n        \\n        mfp = 1.0 / mu_t\\n        s = -mfp * log(1.0 - rng.random())\\n        \\n        new_px = px + s * dx\\n        new_py = py + s * dy\\n        new_pz = pz + s * dz\\n        \\n        if new_pz >= Z_EXIT or new_pz < Z_SURFACE:\\n            break\\n        \\n        in_scoring = (new_pz >= SV_Z_MIN and new_pz <= SV_Z_MAX and \\n                      new_px*new_px + new_py*new_py <= SV_RADIUS_SQ)\\n        \\n        xi = rng.random()\\n        p_c = mu_c / mu_t\\n        p_pe = mu_pe / mu_t\\n        p_pp = mu_pp / mu_t\\n        \\n        e_in = energy\\n        e_out = None        cos_scatter = None\\n        t_e = 0.0\\n        cos_electron = None\\n        t_pos = None        absorbed = False\\n        \\n        if xi < p_c:\\n            process = 'compton'            e_out, cos_scatter, t_e, cos_electron = sample_compton_fast(energy, rng)\\n            azimuth = rng.random() * 2*pi            dx, dy, dz = rotate_dir_fast(dx, dy, dz, cos_scatter, azimuth)            energy = e_out        elif xi < p_c + p_pe:\\n            process = 'photoelectric'            t_e = energy            cos_electron = rng.uniform(-1.0, 1.0)\\n            energy = 0.0\\n            absorbed = True        elif xi < p_c + p_pe + p_pp:\\n            process = 'pair'            T_total = energy - 2*m_e\\n            if T_total > 0:\\n                t_e = rng.uniform(0.0, T_total)\\n                t_pos = T_total - t_e\\n            else:\\n                t_e = 0.0\\n                t_pos = 0.0\\n            theta_avg = m_e / energy if energy > 0 else 0\\n            if theta_avg > 0:\\n                theta = theta_avg * sqrt(-2.0 * log(1.0 - rng.random()))\\n                cos_electron = cos(theta)\\n            else:\\n                cos_electron = 1.0\\n            energy = 0.0\\n            absorbed = True        else:\\n            process = 'rayleigh'            Z_eff = 10.0\\n            theta0 = 0.02 / (max(energy, 0.01) * Z_eff**(1/3))\\n            theta = theta0 * sqrt(-2.0 * log(1.0 - rng.random()))\\n            cos_scatter = cos(theta)\\n            e_out = energy\\n            azimuth = rng.random() * 2*pi\\n            dx, dy, dz = rotate_dir_fast(dx, dy, dz, cos_scatter, azimuth)\\n            cos_electron = None\\n            t_e = 0.0\\n        \\n        if in_scoring:\\n            events.append({\\n                'process': process,\\n                'e_in_MeV': float(e_in),\\n                'e_out_MeV': float(e_out) if e_out is not None else None,\\n                'cos_scatter': float(cos_scatter) if cos_scatter is not None else None,\\n                't_e_MeV': float(t_e),\\n                'cos_electron': float(cos_electron) if cos_electron is not None else None,\\n                't_positron_MeV': float(t_pos) if t_pos is not None else None\\n            })\\n        \\n        px, py, pz = new_px, new_py, new_pz\\n        \\n        if absorbed:\\n            break\\n    \\n    return events\\n\\n# Generate\\nrng = random.Random(123456789)\\nall_events = []\\nfor i in range(2000000):\\n    evts = simulate_one_fast(rng)\\n    all_events.extend(evts)\\n    if len(all_events) >= 200:\\n        break\\n\\nall_events = all_events[:200]\\ncnt = Counter(e['process'] for e in all_events)\\nprint(\\\"Counts:\\\", dict(cnt))\\nprint(\\\"Total:\\\", len(all_events))\\n\\nmethod = (\\n    \\\"Analog Monte Carlo simulation of photon transport in a 30x30x30 cm^3 water phantom. \\\"\\n    \\\"Source: 2 MeV point source at SSD=100 cm, uniform in solid angle within pyramid defining a 10x10 cm^2 field. \\\"\\n    \\\"Scoring: cylinder (r=1 cm, thickness 0.2 cm) on axis at 10 cm depth. \\\"\\n    \\\"Cross sections: Compton (Klein-Nishina), photoelectric (power-law fit to NIST), pair production (Bethe-Heitler approximation), Rayleigh (forward-peaked form factor). \\\"\\n    \\\"Compton angle sampled by rejection from Klein-Nishina. \\\"\\n    \\\"200 unbiased interactions recorded from ~530k primary histories.\\\"\\n)\\n\\noutput = {\\\"method\\\": method, \\\"events\\\": all_events}\\nwith open('events.json', 'w') as f:\\n    json.dump(output, f, indent=2)\\nprint(\\\"Saved events.json\\\")\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Again a syntax error due to missing newlines. The line \"process = 'photoelectric'            t_e = energy\" is on one line. Let me fix the indentation properly.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 69690,
+  "completion_tokens": 2629,
+  "total_tokens": 72319,
+  "cost": 0.00234382456,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 61440,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00234382456,
+   "upstream_inference_prompt_cost": 0.00186608268,
+   "upstream_inference_completions_cost": 0.00047774188
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 38,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

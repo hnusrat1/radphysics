@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791825033-5pIIxrEfojKdkmkDXsO7",
+ "object": "chat.completion",
+ "created": 1791825033,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Evaluating interpolation issues**\n\nI'm looking into the interpolation at the 1.022 pair value, realizing it might involve linear/log interpolation. If a=0, the function returns zero due to `log(a[k-1])` giving NaN when zero is involved. At 1.173, it seems valid to interpolate from a very small value. I've found that my output takes zeros from the electron pair, leading to unwanted NaN values, so separating these out will be necessary for clarity.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_oI5No5pcGazB0J0xcM3qB2Ei",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import numpy as np\\nx=np.loadtxt('/tmp/data/xcom_water.txt',comments='#')\\nfor e in [1.1732,1.25,1.3325]:\\n i=np.searchsorted(x[:,0],e);lo=x[i-1];hi=x[i]; q=np.log(e/lo[0])/np.log(hi[0]/lo[0]); v=[]\\n for col in range(1,6):\\n  v.append(np.exp(np.log(lo[col])*(1-q)+np.log(hi[col])*q) if lo[col]>0 and hi[col]>0 else 0)\\n v=np.array(v); print(e,v, v/v.sum())\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Evaluating interpolation issues**\n\nI'm looking into the interpolation at the 1.022 pair value, realizing it might involve linear/log interpolation. If a=0, the function returns zero due to `log(a[k-1])` giving NaN when zero is involved. At 1.173, it seems valid to interpolate from a very small value. I've found that my output takes zeros from the electron pair, leading to unwanted NaN values, so separating these out will be necessary for clarity.",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzRSNpqlkC8K1pOSWC1FAe9GpvhB0VDjyA-JmrmKn7ZaBnijJzcI8MqqZIiLyacZqH8KU2BULkC0pN7-VojVZmZOcwIiYsJubvV0oQzLFMncOjgF9kOH6U8KvU1tabj_K8aA4HLlODbMBEbNfNKwAq7dO0owIYIifc0766JdTRoCg_EfDmKHGb0X6xT_cjgI_y8gssmemCxr15oaFQfTe0c6JZS48pqJbbmFaP-4RPGVS-5ka4l4Br8yRNIn4Wrlf7Ua9MmX-khzavxeT-FWV44asFzexkeTfjRZbmtMxXtgkjCCkie1KBKV_aw1S7lDXC9sKArjw819u80cJKTSLnAX9pt_hT00ATs6a7_X5Njh3DZcS-cPYmWUqosw9iNi9ypsKNrjkwSTmIDoBqXKcUP2PAcMZP5N5jqgTEYsxmIt5z0vqtNDOfLx5dlECHAG_H36Eue63XV37cC48qLNd6t3PG7S9oIwMa5Nr9BdD7ZETdOtB80FLPADUtBWx8ojRmnyqZRTaus-hhoh23NdafHrD1Nrt3dQ__z5SfLZj3ytHLgdbJaPr2ORfH4H4LY1wWXeyR6gzCRlCh0rMZXSO-UQztACUwmw2-opf3AnmG5P40yWpNXv_vm0UJheZ3c93UI5DRHyEfLHZmZw8PorFTU31x6RppPURQhPbA-RoYmmEk6fHjfj0xi84QS_YTKZVxWEmPiKOCtcNPtg0ylSTW-Tnz8KOaWagr2aNzYR1oYbj_pyu1NiWuaFsCzlxWfMvWhRfG5ZqW2AZ-yDX1EADpXe7yXWQPFXHBp92yxnWqGewM2wd1raA35-f4FdpK1k7OQzWz-OWcIVulWMl200zAIzYITMWcOfWEwL_FgHzBGt2EpE-HY9tuH-bcKuX-d8V_PKHW3wVzmtLw4dkkapLyutmQT3BWLq_I-rTNt_tiS6i9S9VGo402VG-oPtfZ46aLrImY-P6dcTo5zvU1VJRMVgSkHHVdTS5Yj2tYEtncqVXR3stAoCbsqXe4tpsu5ZEH1thuq1f3a--BKfWOuf6qQCaq6XxPSCJ2kKg1NIfDuqlVWPhpgM9qs_zjD5N5p9rmsvlOc11wOG0ng4bDXv5BWjXbVpxUnRsXTpc2QKOhpqfX8-ssgaBVO8H8HB1ymEQpUT4CEYbs7ee4p61L1JVtGIYvDLytVEeXI7tKfLoBTppI7cjRveMI0clcf5FqflQbVWv2cDkPJrTvwdUEItlv1-v814EKrN0vxd8wIGzETxo2rH1gEU8TiLCJfpV3cW5c34dofTInRA9qhJZKDCVl4bTFWu6AvNRE0tD0npxunnmGactXeDd19Gb2bjQwEeICHRU6SY1qOvjRRrJvt2nEzVvLQsEKFiqZ3zHEUU5hydLCTA1cLNHjMnh1SUy6aIDTlMymxMMMTqDKO4DZL6Sfuqd7bJkYywB6sAHTcsVRA77v3DeQqpUh8URZn5AhZJG7Uwx2mBSwJufiF0Sv-Ws6VYL9F3iilySNiw6PGjJuvIDT-TrJR9KsBSUBtjcp96W2IAyb39Y0uMBiZPBtR-gZ0Vh1JtHvEwjyG-mPoXqK5jOjfBCpO6NFH25O1S3fvgQozHoK4kPSDC5XSv0NiA90qKZnTYtR3_PInG4Nxblk2hBYuEhuD2l-YNAz-WkpamkXdggQ3OOmTBUMZZoik9pO3bJNobwqIyUTToaexB24SbshqpnZ3Mzp-0Ec-lBWx_Bdp3g6p4ChpiNPmavfgEjBm77NXtjVhwClFDtSHuWfCMR7TrBpOdV_JRRbkpaZ5Z2VkNGVECVmq3F8yuXFpk70EbmXahZkQ8fN9eK_HynocY05y8-cMysbafkBMNitJvqfDf7Li9nOxtsRv2LSSqeXNTX1g9mSAgEPP0QNr9yL9YfH2oR52lK0Ggml-RFR51HTaq9X0uOZXO8jpXYR3_GkLp6O1AqWARuQWqn8O-GdK8MkARoTuP7uHyyiNw06i6i4lTzbpoJepgLVWL62MIamHm6e-9mTai1_RlBY4UjDhmTGSYL0t2M-JW3bntb7O-jWZZyqRT6nk50vlo-PRByziNa8CgkYZ_MilxOeZcyaVfTs9GmGuKHvx1cNd04DRc7goni3Ck4sVHX_XjOEctOC8zVyiCLZ6kiRbupx5QiUhEPv0cM5MOayD3KeqmuTPJWFHeVmP_8cMFaDun2Dvmcwhfv4hpCwHVJG2unA6hZaNy9t-UnIYAs1YW_aIg3ejl2IKV4z6KO1Jw2P_20ep_Xkjcy64zB2iv3zACgsiUefy95n7v9OB-dG5HTtBJFj4JyPv7tIfLG8-M4Z1DDO6kBljcO-QCc8tY8HKIHaKX1iB5qn9cqah1pTrpcPu4qcPn1vGCuD64eQztL8aNJA-RT9Zz16LtZkHvDI8ldDEnYNctw0sP7hF2021UR1IlcJTtNk92egp3kPAo79BJ8ehl3HTwMoAS2VpUhQ77BwLhPZ45LxrxNK3aXkWwEp2Q6bJEMfmUk3CDsl3cO7ECUUSNrDlEJEkJ9BxvDHRHWgbTjohGOj1_jydNNg2YgWIh8REeGnTXpkyz_5yuE-sSCaiJo9dCSWdxRMTqiROJLN-fMwPbpjQaJXy_dEmGNbyMTAXZa0Yzg61w7pVvwjxr_qgTdlulRNV5YsKNw5g_uOpUMKvwi99qZPkmPYJ-4C95z_gwdyoCXSktxSfmifes60I-whdwppSt24R6-orzeJ3ZSXGLYr7-5Ca58GITluW7labY_VQEjyGXRsu-Ys-_WlWWBE-T5U8jB_GIfBab3S-9T_V0iD-gS32k-MJjxUqs0y8Y6LzoLYE4N12hqkjTv_hngRjN76mNQCv6YqssbX-u0LGcrPGXmtX_55UjN9FfUfcPsyIHgpIJJKLEDjtSBmjXIvGWn4XYzCUUB-p32EmHJzAd4TrXxNs9LbfRjFmz5dlA-PwmGAeMTNJDbZWKpFkqf2EAG_5E1MULNQlRXl8bpRUQrCwaX_yT8J5ucfcEkobdlAyCQ.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_0e30cfb0b80b823e016acd148b3eb487d19ea21d5777959a0d",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 43517,
+  "completion_tokens": 283,
+  "total_tokens": 43800,
+  "cost": 0.00065031,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 42876,
+   "cache_write_tokens": 638,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00065031,
+   "upstream_inference_prompt_cost": 0.00050881,
+   "upstream_inference_completions_cost": 0.0001415
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 118,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

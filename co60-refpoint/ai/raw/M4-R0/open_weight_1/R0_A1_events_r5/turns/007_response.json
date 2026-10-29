@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791829834-FhPUSqUPPlaqNYxbF9GI",
+ "object": "chat.completion",
+ "created": 1791829834,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "OK let me just rewrite the whole thing properly in one call. I'll make a complete simulation.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_420ceb674b6b4e948ec87808",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nfrom scipy.interpolate import interp1d\\nimport json\\n\\nnp.random.seed(42)\\n\\n# ============================================================\\n# Constants\\n# ============================================================\\nm_e = 0.51099895\\nr_e = 2.8179403262e-13\\nN_A = 6.02214076e23\\n\\n# ============================================================\\n# Cross sections (NIST-based for water, linear attenuation cm^-1)\\n# ============================================================\\ne_arr = np.array([1.0, 1.1, 1.1732, 1.2, 1.25, 1.3, 1.3325, 1.4, 1.5])\\nmu_t = np.array([0.07070, 0.06780, 0.06590, 0.06520, 0.06400, 0.06280, 0.06220, 0.06080, 0.05780])\\nmu_c = np.array([0.06950, 0.06650, 0.06430, 0.06350, 0.06200, 0.06060, 0.06000, 0.05850, 0.05550])\\nmu_p = np.array([0.00040, 0.00030, 0.00025, 0.00022, 0.00020, 0.00017, 0.00015, 0.00013, 0.00010])\\nmu_pp = np.array([0.0, 0.0, 0.00020, 0.00028, 0.00050, 0.00080, 0.00100, 0.00130, 0.00150])\\nmu_r = np.array([0.00080, 0.00068, 0.00060, 0.00055, 0.00050, 0.00043, 0.00040, 0.00035, 0.00030])\\n\\nf_t = interp1d(e_arr, mu_t, kind='cubic', bounds_error=False, fill_value='extrapolate')\\nf_c = interp1d(e_arr, mu_c, kind='cubic', bounds_error=False, fill_value='extrapolate')\\nf_p = interp1d(e_arr, mu_p, kind='cubic', bounds_error=False, fill_value='extrapolate')\\nf_pp = interp1d(e_arr, mu_pp, kind='cubic', bounds_error=False, fill_value='extrapolate')\\nf_r = interp1d(e_arr, mu_r, kind='cubic', bounds_error=False, fill_value='extrapolate')\\n\\ndef mu_tot(E): return float(f_t(np.clip(E, 0.01, 10.0)))\\ndef mu_compton(E): return float(f_c(np.clip(E, 0.01, 10.0)))\\ndef mu_photoel(E): return float(f_p(np.clip(E, 0.01, 10.0)))\\ndef mu_pairprod(E): return float(f_pp(np.clip(E, 0.01, 10.0)))\\ndef mu_rayleigh(E): return float(f_r(np.clip(E, 0.01, 10.0)))\\n\\n# ============================================================\\n# Geometry\\n# ============================================================\\nSSD = 100.0\\nfield_half = 5.0\\nz0 = 0.0\\nzc = 5.0\\nzh = 0.1\\nz_low = zc - zh\\nz_high = zc + zh\\ncyl_r = 1.0\\nsrc_pos = np.array([0.0, 0.0, -SSD])\\n\\n# Pyramid solid angle\\nth_half = np.arctan(field_half / SSD)\\nOmega_pyr = 4 * np.arcsin(np.sin(th_half)**2)\\n\\n# Electron density\\nn_e = 10 * N_A / 18.015\\n\\nprint(f\\\"Omega_pyr = {Omega_pyr:.6f} sr\\\")\\nprint(f\\\"n_e = {n_e:.4e} e-/cm^3\\\")\\n\\n# ============================================================\\n# Helper functions\\n# ============================================================\\ndef compton_Eout(E_in, costh):\\n    return E_in / (1 + (E_in / m_e) * (1 - costh))\\n\\ndef kn_dcs(E_in, costh):\\n    th = np.arccos(np.clip(costh, -1, 1))\\n    E_out = compton_Eout(E_in, costh)\\n    return (r_e**2 / 2) * (E_out/E_in)**2 * (E_in/E_out + E_out/E_in - np.sin(th)**2)\\n\\ndef sample_compton(E_in):\\n    max_d = r_e**2 * 1.1\\n    while True:\\n        ct = np.random.uniform(-1, 1)\\n        d = kn_dcs(E_in, ct)\\n        if np.random.random() * max_d < d:\\n            break\\n    E_out = compton_Eout(E_in, ct)\\n    t_e = E_in - E_out\\n    num = E_in - E_out * ct\\n    den = np.sqrt(E_in**2 + E_out**2 - 2*E_in*E_out*ct)\\n    ce = num / den if den > 0 else 1.0\\n    return E_out, ct, t_e, ce\\n\\ndef rotate_vec(v, costh):\\n    u = v / np.linalg.norm(v)\\n    th = np.arccos(np.clip(costh, -1, 1))\\n    ph = np.random.uniform(0, 2*np.pi)\\n    if abs(u[2]) < 0.999:\\n        w = np.cross(u, np.array([0,0,1]))\\n    else:\\n        w = np.cross(u, np.array([1,0,0]))\\n    w = w / np.linalg.norm(w)\\n    v2 = np.cross(w, u)\\n    return u * costh + w * np.sin(th) * np.cos(ph) + v2 * np.sin(th) * np.sin(ph)\\n\\n# Hmm, I have errors. Let me rewrite more carefully.\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "OK let me just rewrite the whole thing properly in one call. I'll make a complete simulation.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 39923,
+  "completion_tokens": 1443,
+  "total_tokens": 41366,
+  "cost": 0.0024009755,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 20480,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0024009755,
+   "upstream_inference_prompt_cost": 0.00213875354,
+   "upstream_inference_completions_cost": 0.00026222196
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 20,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

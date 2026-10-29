@@ -1,0 +1,85 @@
+```json
+{
+  "method": "Rough semi-analytic estimates, not Monte Carlo transport tallies. Primary transmission was estimated from exponential attenuation in water; scattered spectra and angular distributions were approximated from Compton-scattering kinematics and broad-beam buildup. Electron spectra, dose, and depth-dose quantities were estimated from energy-transfer and stopping-power relationships. The detailed spectra and angular distributions are particularly uncertain.",
+  "data_sources": "Reference basis: NIST XCOM photon attenuation and interaction data for water; NIST ESTAR and ICRU electron stopping-power/range data; ICRU Spencer-Attix water-to-air stopping-power-ratio conventions. Representative values were used approximately; no transport code or local tabulated-data query was run.",
+  "L1_primary_fluence_per_phi0": 0.737,
+  "L1_total_fluence_per_phi0": 0.897,
+  "L1_scattered_fraction_fluence": 0.1784,
+  "L1_scattered_fraction_energy_fluence": 0.1080,
+  "L1_mean_photon_energy_MeV": 1.1539,
+  "L1_photon_fluence_spectrum_primary": [
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0.3685, 0, 0, 0.3685, 0
+  ],
+  "L1_photon_fluence_spectrum_scattered": [
+    0.0004715, 0.0006287, 0.0011002, 0.0018861, 0.0028291, 0.0039293, 0.0050295,
+    0.0062868, 0.0073870, 0.0081729, 0.0091159, 0.0097446, 0.0103733, 0.0110020,
+    0.0114735, 0.0114735, 0.0110020, 0.0103733, 0.0094303, 0.0081729, 0.0067583,
+    0.0051866, 0.0036149, 0.0022004, 0.0012574, 0.0006287, 0.0003143, 0.0001572
+  ],
+  "L1_angular_primary": [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+  "L1_angular_scattered": [0.02, 0.03, 0.04, 0.05, 0.06, 0.08, 0.11, 0.15, 0.20, 0.26],
+  "L2_interaction_fractions": {
+    "compton": 0.99221,
+    "photoelectric": 0.006252,
+    "pair": 0.000668,
+    "rayleigh": 0.000870
+  },
+  "L2_energy_transfer_fractions": {
+    "compton": 0.982,
+    "photoelectric": 0.0176,
+    "pair": 0.0004,
+    "rayleigh": 0
+  },
+  "L2_interaction_fractions_primary": {
+    "compton": 0.9987,
+    "photoelectric": 0.0004,
+    "pair": 0.0008,
+    "rayleigh": 0.0001
+  },
+  "L2_interaction_fractions_scattered": {
+    "compton": 0.9692,
+    "photoelectric": 0.027,
+    "pair": 0.0002,
+    "rayleigh": 0.0036
+  },
+  "L2_scattered_share_of_interactions": 0.22,
+  "L3_initial_spectrum": [
+    0.05702727, 0.06276822, 0.05720793, 0.05324346, 0.05016645,
+    0.04747382, 0.04520562, 0.04316766, 0.04147294, 0.04003961,
+    0.03878208, 0.03782105, 0.03725084, 0.03717966, 0.03787262,
+    0.03968309, 0.04327281, 0.04971200, 0.06145893, 0.03721322,
+    0.02841283, 0.03687731, 0.01668598, 0.00000461, 0
+  ],
+  "L3_initial_spectrum_parent_primary": [
+    0.034682, 0.042714, 0.042046, 0.041417, 0.040826,
+    0.040317, 0.039868, 0.039514, 0.039301, 0.039230,
+    0.039383, 0.039826, 0.040659, 0.042071, 0.044312,
+    0.047824, 0.053382, 0.062444, 0.078061, 0.047323,
+    0.036240, 0.047198, 0.021363, 0, 0
+  ],
+  "L3_mean_initial_energy_MeV": 0.523,
+  "L3_mean_initial_energy_parent_primary_MeV": 0.596,
+  "L3_initial_direction": [0.002, 0.004, 0.009, 0.018, 0.035, 0.055, 0.085, 0.12, 0.20, 0.472],
+  "L4_electron_fluence_per_phi0": 0.017,
+  "L4_electron_fluence_spectrum": [
+    0.0003523, 0.0007927, 0.0010570, 0.0012332, 0.0013212,
+    0.0013212, 0.0013212, 0.0012332, 0.0011451, 0.0010570,
+    0.0009689, 0.0008808, 0.0007927, 0.0007047, 0.0006166,
+    0.0005285, 0.0004404, 0.0003523, 0.0002642, 0.0002114,
+    0.0001585, 0.0001057, 0.0000705, 0.0000352, 0.0000352
+  ],
+  "L4_delta_fraction": 0.25,
+  "L4_mean_electron_energy_MeV": 0.433,
+  "L4_angular": [0.02, 0.025, 0.035, 0.05, 0.07, 0.09, 0.12, 0.16, 0.20, 0.23],
+  "L4_radiative_to_collision": 0.003,
+  "L5_D_over_phi0_Gy_cm2": 5.01e-12,
+  "L5_K_over_phi0_Gy_cm2": 5.07e-12,
+  "L5_Kcol_over_phi0_Gy_cm2": 4.94e-12,
+  "L5_beta": 1.015,
+  "L5_g": 0.0256,
+  "L5_dose_fraction_parent_scattered": 0.12,
+  "L5_s_w_air": 1.133,
+  "L5_PDD5_percent": 81.0
+}
+```

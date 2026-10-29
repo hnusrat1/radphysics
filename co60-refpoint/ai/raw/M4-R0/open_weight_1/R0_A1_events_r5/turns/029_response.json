@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791830746-NTz62RF71a5dQIQ7ZBxx",
+ "object": "chat.completion",
+ "created": 1791830746,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Let me continue writing the file.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_f82aa5f0b4a045fda3b5eee2",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"with open('/tmp/full_sim.py', 'a') as f:\\n    f.write('''\\n    else:\\n        w = np.cross(u, np.array([1.0, 0.0, 0.0]))\\n    w = w / np.linalg.norm(w)\\n    vv = np.cross(w, u)\\n    return u*ct + w*np.sin(thv)*np.cos(ph) + vv*np.sin(thv)*np.sin(ph)\\n\\ndef src_samp():\\n    E = 1.1732 if np.random.random() < 0.5 else 1.3325\\n    x = np.random.uniform(-fh, fh)\\n    y = np.random.uniform(-fh, fh)\\n    d = np.array([x, y, SSD])\\n    d = d / np.linalg.norm(d)\\n    return E, d, x, y\\n\\ndef sample_proc(E):\\n    t = mu_c(E) + mu_ph(E) + mu_pp(E) + mu_rl(E)\\n    r = np.random.random() * t\\n    if r < mu_c(E):\\n        return \\\"compton\\\"\\n    elif r < mu_c(E) + mu_ph(E):\\n        return \\\"photoelectric\\\"\\n    elif r < mu_c(E) + mu_ph(E) + mu_pp(E):\\n        return \\\"pair\\\"\\n    else:\\n        return \\\"rayleigh\\\"\\n\\ndef intersect_cyl(ori, direc, R, zL, zH):\\n    d = direc / np.linalg.norm(direc)\\n    if d[2] > 0:\\n        tzL = (zL - ori[2]) / d[2]\\n        tzH = (zH - ori[2]) / d[2]\\n    elif d[2] < 0:\\n        tzL = (zH - ori[2]) / d[2]\\n        tzH = (zL - ori[2]) / d[2]\\n    else:\\n        if ori[2] < zL or ori[2] > zH:\\n            return None\\n        tzL = -1e30\\n        tzH = 1e30\\n    a = d[0]**2 + d[1]**2\\n    if a < 1e-15:\\n        if ori[0]**2 + ori[1]**2 <= R**2:\\n            return (tzL, tzH) if tzL < tzH else (tzH, tzL)\\n        return None\\n    b = 2.0 * (ori[0]*d[0] + ori[1]*d[1])\\n    c = ori[0]**2 + ori[1]**2 - R**2\\n    disc = b*b - 4.0*a*c\\n    if disc < 0:\\n        return None\\n    sq = np.sqrt(disc)\\n    t1 = (-b - sq) / (2.0*a)\\n    t2 = (-b + sq) / (2.0*a)\\n    if t1 > t2:\\n        t1, t2 = t2, t1\\n    te = max(tzL, t1)\\n    tx = min(tzH, t2)\\n    if te >= tx or tx < 0:\\n        return None\\n    return (te, tx)\\n\\n# ===== COMPUTE RATES =====\\nNMC = 500000\\n\\n# Primary rate\\nprim_tot = 0.0\\nprim_by = {\\\"compton\\\":0.0, \\\"photoelectric\\\":0.0, \\\"pair\\\":0.0, \\\"rayleigh\\\":0.0}\\n\\nfor _ in range(NMC):\\n    E, d, x, y = src_samp()\\n    dz = d[2]\\n    if dz <= 0:\\n        continue\\n    x_ep = x * (SSD + zlo) / SSD\\n    y_ep = y * (SSD + zlo) / SSD\\n    if np.sqrt(x_ep**2 + y_ep**2) > Rc:\\n        continue\\n    path = 0.2 / dz\\n    muE = mu_t(E)\\n    t_sc = (zlo - zs) / dz\\n    att = np.exp(-muE * t_sc)\\n    p_int = 1.0 - np.exp(-muE * path)\\n    w = att * p_int\\n    prim_tot += w\\n    mt = mu_c(E) + mu_ph(E) + mu_pp(E) + mu_rl(E)\\n    prim_by[\\\"compton\\\"] += w * mu_c(E) / mt\\n    prim_by[\\\"photoelectric\\\"] += w * mu_ph(E) / mt\\n    prim_by[\\\"pair\\\"] += w * mu_pp(E) / mt\\n    prim_by[\\\"rayleigh\\\"] += w * mu_rl(E) / mt\\n\\nprim_tot /= NMC\\nfor k in prim_by:\\n    prim_by[k] /= NMC\\n\\nprint(f\\\"Primary: {prim_tot:.8f}\\\", file=sys.stderr)\\nfor k, v in prim_by.items():\\n    print(f\\\"  {k}: {v:.10f}\\\", file=sys.stderr)\\n\\n# Scatter rate (forced detection)\\nscat_tot = 0.0\\nscat_by = {\\\"compton\\\":0.0, \\\"photoelectric\\\":0.0, \\\"pair\\\":0.0, \\\"rayleigh\\\":0.0}\\n\\nfor _ in range(NMC):\\n    E, d, x, y = src_samp()\\n    dz = d[2]\\n    if dz <= 0:\\n        continue\\n    muE = mu_t(E)\\n    t_max = 30.0 / dz\\n    C = 1.0 - np.exp(-muE * t_max)\\n    if C <= 0:\\n        continue\\n    t_scat = -np.log(1.0 - np.random.random() * C) / muE\\n    sp = np.array([x, y, zs]) + t_scat * d\\n    if abs(sp[0]) > 15 or abs(sp[1]) > 15:\\n        continue\\n    pdf_scat = muE * np.exp(-muE * t_scat) / C\\n\\n    # Direction to scoring volume center\\n    d2v = np.array([0.0, 0.0, zc]) - sp\\n    dist = np.linalg.norm(d2v)\\n    if dist < 0.01:\\n        continue\\n    d2v = d2v / dist\\n    costh = np.dot(d, d2v)\\n    costh = np.clip(costh, -1.0, 1.0)\\n    dcs = KN(E, costh)\\n    E_out = c_E(E, costh)\\n\\n    # Solid angle of scoring volume\\n    cosv = abs(d2v[2])\\n    proj = np.pi * Rc**2 * max(cosv, 0.01)\\n    solid = proj / (dist**2)\\n\\n    # Check ray hits scoring volume\\n    it = intersect_cyl(sp, d2v, Rc, zlo, zhi)\\n    if it is None:\\n        continue\\n    te, tx = it\\n    if te < 0:\\n        te = 0\\n    pv = tx - te\\n    if pv <= 0:\\n        continue\\n\\n    mu_out = mu_t(E_out)\\n    att_v = np.exp(-mu_out * te)\\n    p_int_v = 1.0 - np.exp(-mu_out * pv)\\n\\n    w = ne * dcs * solid * att_v * p_int_v / pdf_scat\\n    scat_tot += w\\n    mt = mu_c(E_out) + mu_ph(E_out) + mu_pp(E_out) + mu_rl(E_out)\\n    scat_by[\\\"compton\\\"] += w * mu_c(E_out) / mt\\n    scat_by[\\\"photoelectric\\\"] += w * mu_ph(E_out) / mt\\n    scat_by[\\\"pair\\\"] += w * mu_pp(E_out) / mt\\n    scat_by[\\\"rayleigh\\\"] += w * mu_rl(E_out) / mt\\n\\nscat_tot /= NMC\\nfor k in scat_by:\\n    scat_by[k] /= NMC\\n\\nprint(f\\\"Scatter: {scat_tot:.8f}\\\", file=sys.stderr)\\nfor k, v in scat_by.items():\\n    print(f\\\"  {k}: {v:.10f}\\\", file=sys.stderr)\\n\\ntot = prim_tot + scat_tot\\nprint(f\\\"Total: {tot:.8f}, scatter frac: {scat_tot/tot:.4f}\\\", file=sys.stderr)\\n\\n# ===== GENERATE 200 EVENTS =====\\nn_prim = int(round(200 * prim_tot / tot))\\nn_scat = 200 - n_prim\\nprint(f\\\"Generating {n_prim} primary + {n_scat} scatter\\\", file=sys.stderr)\\nevents = []\\n\\n# Primary events\\ngen = 0; atts = 0; max_a = 5000000\\nwhile gen < n_prim and atts < max_a:\\n    atts += 1\\n    E, d, x, y = src_samp()\\n    dz = d[2]\\n    if dz <= 0: continue\\n    x_ep = x * (SSD + zlo) / SSD\\n    y_ep = y * (SSD + zlo) / SSD\\n    if np.sqrt(x_ep**2 + y_ep**2) > Rc: continue\\n    path = 0.2 / dz\\n    muE = mu_t(E)\\n    t_sc = (zlo - zs) / dz\\n    att = np.exp(-muE * t_sc)\\n    p_int = 1.0 - np.exp(-muE * path)\\n    max_p = np.exp(-0.064 * 5.0) * (1.0 - np.exp(-0.064 * 0.2))\\n    if np.random.random() * max_p * 1.5 > att * p_int: continue\\n    \\n    proc = sample_proc(E)\\n''')\\nprint(\\\"File written so far\\\")\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Let me continue writing the file.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 89456,
+  "completion_tokens": 2282,
+  "total_tokens": 91738,
+  "cost": 0.002290326192,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 86016,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.002290326192,
+   "upstream_inference_prompt_cost": 0.001875641152,
+   "upstream_inference_completions_cost": 0.00041468504
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 7,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

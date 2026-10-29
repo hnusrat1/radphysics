@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791815178-WTL8yzbjMW49SjOajYRt",
+ "object": "chat.completion",
+ "created": 1791815178,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I should fix the slicing to limit the list properly, and double-check the depth-dose loop\u2014the energy deposited per substep equals Te/M, which checks out as correct for equal energy steps. The runtime is acceptable, so I'll just patch this and rerun with some caching to speed things up.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01WrpXUBQME4n64nAk1fNNfP",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nana=open('/tmp/work/ana.py').read().replace(\\\"list(map(float,100*D/Dmax)[:60])\\\",\\\"[float(v) for v in (100*D/Dmax)[:60]]\\\")\\nopen('/tmp/work/ana.py','w').write(ana)\\nimport subprocess\\nr=subprocess.run(['python','/tmp/work/ana.py'],capture_output=True,text=True,cwd='/tmp/work')\\nprint(r.stdout[-6000:],r.stderr[-3000:])\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I should fix the slicing to limit the list properly, and double-check the depth-dose loop\u2014the energy deposited per substep equals Te/M, which checks out as correct for equal energy steps. The runtime is acceptable, so I'll just patch this and rerun with some caching to speed things up.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS8ggKEAgSGAI4AUIIdGhpbmtpbmcSDNuzwlO/Ir1x8Z5ptRoMT6Fapx39Ly1s1rRQIjD/PdEXpMk7+4afIZr9BcPGlXLKZ4/nHicn8lS+sNk5geNByBan7tZqzjBEEbptDWMqjwhXZjXYawf0uJuo9ZIMLu9R8YW/Xaqmz9pIo1Y0LAPxQUlPvoRWjSwJh8HBTwaYuFLgLSNclfcqZEOW7iCwv+PvcymPT48X+SlBco3Ts8QQU3XOtW9N+QWmSGZf+sdk8bXUUjegHayTWE/EklLIApgJaOXRicXgLlvCHcxxNCWC7M/3GybXXiW1JAuypGmZGnZWA4Qzo6kLyY4MYOxLvMGjN25QdA7V8XjTz4hQWXIHtYBEKpTkVNnqHn4yjsTdSmnx8XLswYFLQnx7njWPwwn72cYavs12rW/AxSOF1AVegpvbCxxFeKagClkShaec0kv5D/vsH46awJZkmixwuwdohcEPGJ5R4T5DvTZvTsfqrBa8RU8xifLhXwoID/qjQzhnz5b+do5KIwQwpkkOWAp1MyIkGL3YR0UqvKQlTaVvdjGu97GAzoB3zw/nTkf/aTWFXVXTlDDngta1/JTIJOF+BpW1yWx3LLXSv2I6NsEpxUwWGHPR7NLG/x10yybkB1qELsXBG8enHqVaNYEArBrOjtaUS85l4v+sGRiIMeqhpeoo/0lNts9ehkTCeChI+fjb64Um8MpX83P9XE59w/pVIrDTCQdvGQBx1XnheKacLUmm0M0Dmh6uUqITGQVbYbdvpMAkHP07XPfbIsYjjdkviv9T3GE+Xqe7okJI7xM37a6xH8vdC2b6cmc0LM444CBlFr+q6x+q1dJaX5wLhGzI6MyZgo3fsbgRJW4owMjT6UjHTb4ZJPBPqci3Yv9FBDx7kZbLppchlytXK0k4oDBRS+flRyXDY5YhBdoH3AajoEtPiLVxMV4RF34zYwYE0WeZsHgtWpF/FM/pJqRqDzu1kM7qbw/0ZnrJKNpXY0VsyGznw5aM0F3kwoE6Aqqn15/bcj40IibHc2MXGPt4WMShqg7rzPra3zaGS/krWCKQcCkKRZ2dqB0A4dn/b5YJ+/ujpZp5AtXooT01Ey2Qr8waOI9X612HWr0hG2mE4vl/gnRCeiIHdZDQ+nz0dUnFiVZvj0TUMHeTXjw7hYBT40x6yAk35XUHxprHAq3bHuWWOgzvK48I51Z4adSHmzvQS3Qm5tdDwXGwrnUw3iObiWlxr1YEuNb1akv8Muq+kv9HuWz3YkBwZ0iNhJyCoaA0/Fo/K5BhgNKHCU8tb/X61NCpokA7VYU0Fjyux5IavMWTz4o4yrPKtwrS+ilgmtTmyk+jpldyLfIZmoy08HZc1ZiXu2mc3luw6Jx+6Yt5YE2O+wFhj2aSRMKE9zlbU7V7VzkKXNEdTzGnVDmPbEYicKoseVDfdlp//OQtpfzmO93810YofTAt5xabfk5n0zia1YNCDG2J4I8IhVAPzfdBNDYxejIuNleGWPlUxEoc51nGGAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 106312,
+  "completion_tokens": 365,
+  "total_tokens": 106677,
+  "cost": 0.0540685,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0540685,
+   "upstream_inference_prompt_cost": 0.053156,
+   "upstream_inference_completions_cost": 0.0009125
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 151,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

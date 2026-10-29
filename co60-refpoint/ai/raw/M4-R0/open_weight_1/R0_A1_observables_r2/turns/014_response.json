@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791827510-KYq9RUMtRzLKrKjZaFN4",
+ "object": "chat.completion",
+ "created": 1791827510,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "SiliconFlow",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Module not found? The working directory may be /tmp/work but writing file there? It said written but import fails \u2014 maybe cwd differs between calls? Let me check: use os.getcwd() and list dir. Possibly each call's cwd is /tmp/work but file was written... The import says no module. Maybe the file write went to different cwd. Let me check and print.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "01a1313e7c837c416f2b02c07af60aeb",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import os\\nprint(os.getcwd())\\nprint(os.listdir('.')[:20])\\nimport sys\\nprint(sys.path[:5])\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Module not found? The working directory may be /tmp/work but writing file there? It said written but import fails \u2014 maybe cwd differs between calls? Let me check: use os.getcwd() and list dir. Possibly each call's cwd is /tmp/work but file was written... The import says no module. Maybe the file write went to different cwd. Let me check and print.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 100297,
+  "completion_tokens": 151,
+  "total_tokens": 100448,
+  "cost": 0.004228922,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 86784,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.004228922,
+   "upstream_inference_prompt_cost": 0.004186642,
+   "upstream_inference_completions_cost": 4.228e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 83,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

@@ -1,0 +1,57 @@
+{
+ "id": "gen-1791829747-QtJtM0GvGmVB0jpceOHT",
+ "object": "chat.completion",
+ "created": 1791829747,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01LQTQrTZ7Peh9119HD59371",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport sys; sys.path.insert(0,'/tmp/work')\\nimport importlib, mcmod\\nfrom mcmod import *\\nprint(Phi0_src, Omega)\\nrng=np.random.default_rng(0)\\nEp=np.full(200000,1.25)\\neps,cs=sample_kn(Ep,rng); print(\\\"mean eps\\\", eps.mean(), \\\"mean T/E\\\", (1-eps).mean())\\nprint(mu_tr_c(1.25), mu_en_c(1.25), mu_tr_c(1.0), mu_en_c(0.5))\\n\"}"
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 108671,
+  "completion_tokens": 230,
+  "total_tokens": 108901,
+  "cost": 0.010851525,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 100248,
+   "cache_write_tokens": 8421,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.010851525,
+   "upstream_inference_prompt_cost": 0.010276525,
+   "upstream_inference_completions_cost": 0.000575
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 0,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

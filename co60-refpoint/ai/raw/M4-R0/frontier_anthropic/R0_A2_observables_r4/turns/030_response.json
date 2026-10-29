@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791830528-qG7vDm5cv9tTPl4LCPm8",
+ "object": "chat.completion",
+ "created": 1791830528,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "The convolution itself is correct (D/K = 1.0051 at exactly 5 cm). The earlier 1.0002 came from using a grid point slightly off 5 cm. I'll recompute \u03b2, dmax and PDD5 on a fine grid evaluated at exactly 5 cm and print every final quantity.",
+    "refusal": null,
+    "reasoning": "Checking the zf grid at index 4000 confirms z=4.0cm, and computing D5 against K(5) gives a ratio of about 1.0051, close to the expected 1.0057 \u2014 so the discrepancy I saw earlier was likely due to imprecise index matching in the zq grid rather than a real computational error.\n\nLet me stop guessing and just recompute directly with z=5.0 exactly to get the true D/K ratio, since my estimates keep giving inconsistent numbers. I should fix the code to evaluate Dof and Ktot at the precise depth rather than relying on the nearest grid point, and do the same for the PDD ratio and dmax determination using a finer grid near the peak.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_0127UHQVv5ET5qLxCKWS5fZ8",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport numpy as np, sys\\nsys.path.insert(0,'/tmp/work')\\nimport ana4 as A4\\nzf=A4.zf; Kf=A4.Kf; lam=A4.lam; Ktot=A4.Ktot\\ndef D_at(z):\\n    m=zf<=z+1e-12\\n    kern=np.exp(-(z-zf[m])/lam)/lam\\n    return np.trapezoid(Kf[m]*kern,zf[m])\\nzg=np.arange(0.1,7.0001,0.01)\\nDg=np.array([D_at(z) for z in zg])\\nimax=np.argmax(Dg)\\nD5=D_at(5.0); K5=float(Ktot(np.array([5.0]))[0])\\nprint('dmax',zg[imax],'Dmax',Dg[imax],'D5',D5,'K5',K5,'beta',D5/K5,'PDD5',100*D5/Dg[imax])\\nprint('sample D/K at 0.5, 1,2,5:',[D_at(z)/float(Ktot(np.array([z]))[0]) for z in [0.5,1,2,5]])\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Checking the zf grid at index 4000 confirms z=4.0cm, and computing D5 against K(5) gives a ratio of about 1.0051, close to the expected 1.0057 \u2014 so the discrepancy I saw earlier was likely due to imprecise index matching in the zq grid rather than a real computational error.\n\nLet me stop guessing and just recompute directly with z=5.0 exactly to get the true D/K ratio, since my estimates keep giving inconsistent numbers. I should fix the code to evaluate Dof and Ktot at the precise depth rather than relying on the nearest grid point, and do the same for the PDD ratio and dmax determination using a finer grid near the peak.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "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.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 204313,
+  "completion_tokens": 1602,
+  "total_tokens": 205915,
+  "cost": 0.016458875,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 200420,
+   "cache_write_tokens": 3891,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.016458875,
+   "upstream_inference_prompt_cost": 0.012453875,
+   "upstream_inference_completions_cost": 0.004005
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 1079,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

@@ -1,0 +1,9 @@
+{
+ "stdout": "",
+ "stderr": "Traceback (most recent call last):\n  File \"/tmp/work/_call_028.py\", line 26, in <module>\n    M.run(1000000,900+c,t); NTOT+=1000000\n    ~~~~~^^^^^^^^^^^^^^^^^\n  File \"/tmp/mc.py\", line 130, in run\n    slab_add(tallies,pos[selz],d[selz],loz[selz],hiz[selz],Ez,flz,mu_tr_coef(Ez),TLz[selz])\n    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/mc.py\", line 211, in slab_add\n    np.add.at(tallies['slab_TL'], (fl.astype(int), k), ov)\n    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nIndexError: index 100 is out of bounds for axis 1 with size 100\n",
+ "exit_code": 1,
+ "timed_out": false,
+ "wall_s": 7.73,
+ "stdout_truncated": false,
+ "stderr_truncated": false
+}

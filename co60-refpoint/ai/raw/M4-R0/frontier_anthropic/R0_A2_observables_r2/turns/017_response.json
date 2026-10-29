@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791828446-H4hz2ff4hyXGK9vObvf5",
+ "object": "chat.completion",
+ "created": 1791828446,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I'm worried the subprocess python environment might not have scipy installed, so instead I'll just read the analysis script's contents and exec it directly within the python tool itself.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_011ber8V8HyuVfHbC4EUeZwQ",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"exec(open('/tmp/ana.py').read())\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I'm worried the subprocess python environment might not have scipy installed, so instead I'll just read the analysis script's contents and exec it directly within the python tool itself.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS2ggKEAgSGAI4AUIIdGhpbmtpbmcSDLu+uIE3VXn86bVLjhoMv74TtGQb5MIWUtgKIjBA27+KZbcI9IhIZqwkP6ttWCxSypn1Tk9dqn6Fg+Cd+5Ct+UnXkgP3sye4jkrKmU4q9wdSBGnx679LjNrEz25njJ4GBs5yEzSDRQsnGoqlA1hEk9IUH0ecB85lS/CurIbWAH+inl22mwPP7g/S1idtbF0K8NPNPV6zF6jIvIcdYeXs04SdmRt5VmOOBzgfM9dOZRAZ1w4ttACF+jS1LA37bAYkwlEPB1MIl8rdAjF6xM4rhSmwtzeRLyHHDOQXW0I758A3TqhVeXF1+Gt8Sd3gI6Vi3rhk+spGGz8OTgd1OOchoyfEHrW5uUr3Uli08F3dSDtMiJqkMMraTiWn0tlyupYw3p0Ot71Bi8meGJ06sk5ScJY8UixZzc0H9X+0RvuFIfdVpS256XFeudttKnpjO3t59Rdh/p10F60VqG4OS3UKHJEF3WeFpw/WyIEe7VDPHmea1OROYkI5kKMN6/kknoQ6QRh6j5EQ7sAfXrlM9M4XlGYKpclqCgyyWAoy6SONih5JbUKZ7s40CnnnhbIUYwODvxnYLiw8DUKzjpfthNIJeOtQyBOglUgNDNmcGniLnjZYzM9KkK1w9azmr1hzlvqB+pWswCJLRvVtwg4+mblBCVkZC5iAIXhWfcO8HIRxIP/lDRPHAznEOU6A5Ui7vr70m4DphSQXN5bwYWaMLvFbBZbtVu2sqow5SLJJvW/t3mvLaD5CE5qsqt0KNq7xZNXUO5RFqTpObCabm2Dstt/EFElYRg8y5iwvil8ZgH7ZlOy23NMs1ZOuo6eNGIzvsbNRXokk1vXvwwIzMX3RJagwz8grFNhoViubY809K6nYMZ3aZt8bPvH+pPwdKOBuQxTvVgDO11vkH9rbg78qMb93Nlx3PRbjmeCB5vgyOyXDdKO0pYSm+zuqLh9Fzw/rP/S0R+dek5n+T66lThekbtBu/3JX2+K70FlY5iIhgKnOBKbUGGKCVEdk4p3P+98owldWvU6QMa6ZobmF7t1ABnM/QPd0sVQTnQ1RpWFUl+r8i56uV4bjaOkARt1iFDM1f3PvXzvI8JKfzYVVcnpZOMfs86wOEy0VCed6tKEtFUEelsF/FfGjOH59cfLoqzha7XawO0FRX/C9bYaoUfRFjUw2vyFqp6HB2wlJdXLivJrH3edpUyLsPGgmJTaBkYep4/1DY5WDlMXeIHIzmIVv7G69uooLpic+HZFBexRGqUAf6cb0zvm3cLTR8gT3k0Kmbpb4dFQORAIXS+Pw2tNdXrFPEOAzeHLKnrHxeoWLJpzFfZrIO+Ew3u4KtwaSqbdjadBCwjbl/shYtwOOQ63hiKbf6UK7w+VZmcPsTsqiyDn1M+FJwf5cx8DYWawcADz6aDtrgbtRS3q7+J1TVi4eHVUlmOyBFbvU8OTUmm10cgwG/CDMrU4RaKUnGAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 124958,
+  "completion_tokens": 161,
+  "total_tokens": 125119,
+  "cost": 0.011992475,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 115667,
+   "cache_write_tokens": 9289,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.011992475,
+   "upstream_inference_prompt_cost": 0.011589975,
+   "upstream_inference_completions_cost": 0.0004025
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 99,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

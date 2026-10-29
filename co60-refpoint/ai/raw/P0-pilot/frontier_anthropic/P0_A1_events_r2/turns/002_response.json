@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791815753-GsojkoA3eqQjwz1X9Zs9",
+ "object": "chat.completion",
+ "created": 1791815753,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I need to fix the sign function error, and double-checking my Klein-Nishina cross section against NIST values for water - getting about 0.1465 barns at 2 MeV per electron, which seems plausible comparing to the 0.2112 barn value at 1 MeV.\n\nWorking through the NIST breakdown for water at 2 MeV: incoherent scattering with binding corrections should be around 0.0488 cm\u00b2/g, leaving roughly 0.0006 for pair production once coherent and photoelectric are accounted for. I'll go with mu_pair(2 MeV) \u2248 0.0006 cm\u00b2/g and Rayleigh \u2248 5e-5, acknowledging these are approximate since pair production is such a small fraction of total attenuation at this energy.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01GHDAWgBnLbzRWhiPyVQT9q",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport re\\nsrc = open('/tmp/work/_call_001.py').read() if False else None\\ndef sgn(x): return 1.0 if x>=0 else -1.0\\ndef rotate(d, cost, phi):\\n    ux,uy,uz = d\\n    sint = math.sqrt(max(0.0,1-cost*cost))\\n    if abs(uz) > 0.99999:\\n        nx = sint*math.cos(phi); ny = sint*math.sin(phi); nz = cost*sgn(uz)\\n    else:\\n        temp = math.sqrt(1-uz*uz)\\n        nx = sint*(ux*uz*math.cos(phi) - uy*math.sin(phi))/temp + ux*cost\\n        ny = sint*(uy*uz*math.cos(phi) + ux*math.sin(phi))/temp + uy*cost\\n        nz = -sint*math.cos(phi)*temp + uz*cost\\n    n = math.sqrt(nx*nx+ny*ny+nz*nz)\\n    return (nx/n, ny/n, nz/n)\\n\\ndef mu_pair(E):\\n    if E < 2*M_E: return 0.0\\n    return 0.0006*min(1.0,(E-2*M_E)/(2.0-2*M_E))\\n\\nevents = []\\nN = 300000\\nt0 = time.time()\\nfor i in range(N):\\n    p,d = sample_entry_dir()\\n    track_photon(2.0, p, d, events, None)\\nprint(\\\"histories\\\", N, \\\"events in volume\\\", len(events), \\\"time\\\", round(time.time()-t0,1))\\nprint(Counter(e['process'] for e in events))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I need to fix the sign function error, and double-checking my Klein-Nishina cross section against NIST values for water - getting about 0.1465 barns at 2 MeV per electron, which seems plausible comparing to the 0.2112 barn value at 1 MeV.\n\nWorking through the NIST breakdown for water at 2 MeV: incoherent scattering with binding corrections should be around 0.0488 cm\u00b2/g, leaving roughly 0.0006 for pair production once coherent and photoelectric are accounted for. I'll go with mu_pair(2 MeV) \u2248 0.0006 cm\u00b2/g and Rayleigh \u2248 5e-5, acknowledging these are approximate since pair production is such a small fraction of total attenuation at this energy.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "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.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 21620,
+  "completion_tokens": 1315,
+  "total_tokens": 22935,
+  "cost": 0.0028195,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0028195,
+   "upstream_inference_prompt_cost": 0.002162,
+   "upstream_inference_completions_cost": 0.0006575
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 745,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

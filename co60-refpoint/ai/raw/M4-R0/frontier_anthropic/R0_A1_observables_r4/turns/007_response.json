@@ -1,0 +1,57 @@
+{
+ "id": "gen-1791826752-DOwAkFAe4SrdTbpY6k5W",
+ "object": "chat.completion",
+ "created": 1791826752,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_016YSB4bDJZ1nnuDunwvj3r1",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport sys; sys.path.insert(0,'/tmp/work')\\nimport phys, numpy as np\\nEt=np.array([0.02,0.1,0.3,0.5,1.0,1.1732,1.3325])\\nfor k,v in phys.mu_parts(Et).items(): print(k, np.round(v,5))\\nprint('Om',phys.Om,'F0',phys.F0)\\n\"}"
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 79836,
+  "completion_tokens": 171,
+  "total_tokens": 80007,
+  "cost": 0.00090796,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 79626,
+   "cache_write_tokens": 208,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00090796,
+   "upstream_inference_prompt_cost": 0.00082246,
+   "upstream_inference_completions_cost": 8.55e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 0,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

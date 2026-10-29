@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791825941-eFNoxPCw98jq8DRLLgyo",
+ "object": "chat.completion",
+ "created": 1791825941,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "Track-length results are now smooth in depth. Next, a larger run split into independent chunks to get statistical errors.",
+    "refusal": null,
+    "reasoning": "I'm double-checking the logic: the segment contribution correctly counts exit cases since L equals texit there, and the position update works for both interacting and exiting photons since exiting ones get removed afterward anyway. The store size of 18 entries looks fine, and I'm starting to verify the numerical values now.\n\nI'm scaling up to N=1e7 histories, running in chunks of 2.5e6 with different seeds to estimate statistical error, since 3e5 took about 2.1s so 1e7 should take roughly 70-80s total across four calls, and memory for the stored segment data should stay manageable.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01S8kKvfQikXSkXGuHDmo2z8",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport sys, time, pickle; sys.path.insert(0,'/tmp/work')\\nimport mc2 as M2, physics as P, numpy as np\\nzpts=[0.25,0.5,0.75,1.0,1.25,1.5,2.0,3.0,4.0,5.0,6.0,8.0,10.0]\\nim=zpts.index(5.0)\\nchunks=[]\\nt=time.time()\\nfor s in range(4):\\n    chunks.append(M2.run(2500000, zpts, seed=100+s, store_main=im))\\nprint(\\\"time\\\",time.time()-t)\\nkeys=['A_E','A_c','A_tot','A_Ef','A_K','A_Kc','A_int','A_tr','A_Kc_scat']\\ntot={k:sum(c[k] for c in chunks) for k in keys}\\nNtot=sum(c['N'] for c in chunks)\\nstore=[]\\nfor c in chunks: store+=c['store']\\n# per-chunk totals for error estimate\\nratios=np.array([[P.SF/c['N']*c['A_tot'][j] for j in range(len(zpts))] for c in chunks])\\nprint(\\\"scat fluence per chunk at 5cm:\\\", ratios[:,im])\\nprint(\\\"mean scattered fluence/Phi0:\\\", dict(zip(zpts,np.round(P.SF/Ntot*tot['A_tot'],4))))\\npickle.dump(dict(tot=tot,N=Ntot,zpts=zpts,ratios=ratios),open('/tmp/work/tot.pkl','wb'))\\nEs=np.concatenate([s[0] for s in store]); ds=np.concatenate([s[1] for s in store]); Ws=np.concatenate([s[2] for s in store])\\nnp.savez('/tmp/work/main5_seg.npz',E=Es,d=ds,W=Ws)\\nprint(len(Es), Ws.sum()*P.SF/Ntot, tot['A_tot'][im]*P.SF/Ntot)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I'm double-checking the logic: the segment contribution correctly counts exit cases since L equals texit there, and the position update works for both interacting and exiting photons since exiting ones get removed afterward anyway. The store size of 18 entries looks fine, and I'm starting to verify the numerical values now.\n\nI'm scaling up to N=1e7 histories, running in chunks of 2.5e6 with different seeds to estimate statistical error, since 3e5 took about 2.1s so 1e7 should take roughly 70-80s total across four calls, and memory for the stored segment data should stay manageable.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "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.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 126784,
+  "completion_tokens": 1220,
+  "total_tokens": 128004,
+  "cost": 0.016712725,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 114047,
+   "cache_write_tokens": 12735,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.016712725,
+   "upstream_inference_prompt_cost": 0.013662725,
+   "upstream_inference_completions_cost": 0.00305
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 480,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

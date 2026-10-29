@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791829640-vSkYi27V4xEYrQkK32H7",
+ "object": "chat.completion",
+ "created": 1791829640,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "GMICloud",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Now the MC runs (it=31 steps, 382 pair spawns, 12 s for 3e5 photons). \n\nSanity check primary fluence: flu_prim total per photon = 0.004116 cm of track in the scoring volume per source photon. Per Phi0: \u03c6_prim/Phi0 = 0.004116 / Vcyl \u00d7 \u03a9_pyr 105\u00b2 = 0.004116/0.6283 \u00d7 109.975 = 0.7206. Expected: 0.5\u00d7(e^{\u2212\u03bc1 5}+e^{\u2212\u03bc2 5}) = 0.5\u00d7(0.7220+0.7369)=0.7295. Close (0.7206 vs 0.7295, ~1.2% low). Hmm. The reason: the scoring cylinder radius 1 cm at z=5; primary photons passing through: the fluence at the scoring volume is the average fluence over the cylinder volume, while Phi0 is the fluence at the central axis point. The fluence averaged over the 1-cm-radius cylinder is slightly less than at the center because the beam fluence decreases with lateral position? Actually for a uniform-in-solid-angle source, the fluence at lateral offset r on the plane z=105 is \u03c6 = N/(\u03a9 r'\u00b2) where r'=distance from source. At r=1 cm lateral offset, r'=sqrt(105\u00b2+1)=105.0048, so \u03c6 \u2248 N/(\u03a9 105.0048\u00b2) \u2248 0.9999\u00d7center \u2014 negligible. So the primary fluence should be 0.7295 \u2014 but MC gives 0.72 (1.3% low). Statistical? With 3e5 photons, the primary track length in the cylinder: expected per photon 0.004167 (0.7295\u00d7V/\u03a9105\u00b2=0.7295\u00d70.6283/109.975=0.004167). We got 0.004116 \u2014 difference 1.2%, which is 300000\u00d70.004167=1250 cm track total; sqrt(1250)/1250 = 2.8% std? Actually the number of photons crossing the cylinder ~ 300000\u00d70.0285=8550, each ~0.2 cm; total track ~1710 cm; Poisson ~2.4%. So 1.2% off is fine statistically (z~0.5\u03c3).\n\nHmm wait: but the track-length estimator should be more precise than pure counting: each photon contributes a chord ~0.2; the variance is similar. OK ~1.2% is within ~0.5\u03c3. Good.\n\nScattered: flu_sec total per photon 0.001122 \u2192 \u03c6_sec/Phi0 = 0.001122/0.6283\u00d7109.975 = 0.1964. So scattered fluence fraction ~0.196/(0.72+0.196) \u2248 21% of fluence. For 10x10 Co-60 at 5 cm depth, the scattered-to-primary fluence ratio ~20-25%? The scattered dose fraction is ~5-8%. Fluence fraction larger because scattered photons are lower energy (fluence counts photons equally). Plausible.\n\nEnergy fluence: Eflu_sec/N=0.000748 (MeV\u00b7cm per photon); Eflu_prim/N=0.005164. Scattered energy fluence fraction = 0.000748/(0.005164+0.000748)=0.126 (12.6%). Dose fraction from scattered ~ Kcol_scattered/Kcol_total ~ maybe 6-8% (since lower-energy photons have higher \u03bc_en, but scattered photons are at lower E with higher \u03bc_en... so energy fluence fraction 12.6% \u2192 dose fraction maybe ~12%?). Hmm let me compute later. Actually let me reconsider: Kcol = \u03c6 E \u03bc_en; scattered photons have lower E but higher \u03bc_en; so dose fraction ~ (\u03a3 \u03c6_sec \u03bc_en E)/(total) \u2014 compute properly later.\n\nNow, the per-depth slab data: let me look at slab_prim (line intensities per depth) and slab_sec and slab_Kcol \u2014 check the depth profile. Also need to verify the primary attenuation profile: slab_prim[0,k]/N = \u03a61(z)\u00d7(V_slab/\u03a9105\u00b2)... The slab fluence per photon in slab k = slab_prim[line,k]/N / V_slab; per Phi0 = \u00d7\u03a9105\u00b2. Should equal e^{\u2212\u03bc z} at depth z. Let me check.\n\nAlso slab_Kcol per photon: chs*muenE per photon for photons at depth z... this gives Kcol\u00d7track... integrated over all photons crossing the slab. Kcol per unit Phi0 per unit mass in slab = (slab_Kcol[k]/N)/V_slab \u00d7 \u03a9105\u00b2 [MeV/g per Phi0]... Wait slab_Kcol[k] = \u03a3 chs\u00d7muenE(E) with chs in cm and muenE in MeV cm\u00b2/g \u2192 cm \u00d7 MeV cm\u00b2/g = MeV cm\u00b3/g. Divide by V_slab (cm\u00b3) \u2192 MeV/g per photon. \u00d7\u03a9105\u00b2 \u2192 MeV/g per Phi0. \u00d71.602e-10 \u2192 Gy cm\u00b2... Let me verify with expected Kcol at 5 cm: \u03c6/Phi0=0.72, \u03bc_en\u00d7E avg \u22480.0355 \u2192 Kcol = 0.72\u00d70.0355=0.0256 MeV/g per Phi0 \u2192 4.1e-12 Gy cm\u00b2. \n\nLet me check slab numbers, then run a bigger N (say 2e6) for better statistics. But first let me examine the slab results and check the attenuation profile and Kcol profile shape (for PDD).\n\nAlso I should double check the scoring volume cylinder: \"radius 1.0 cm, thickness 0.2 cm, centred at 5.0 cm depth\": z\u2208[4.9,5.1], radius 1. Good.\n\nLet me analyze the test run output.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_598286c03b9140d6bf37ba50",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nr=np.load('/tmp/test_photon_mc.npy',allow_pickle=True).item()\\nN=r['N']; Omega105_2=109.97517633116931; Vcyl=np.pi*0.2\\nprint(\\\"Vcyl\\\",Vcyl)\\nz=r['zc_slabs']; hh=r['hh_slab']; Vslab=np.pi*hh*2  # radius 1 -> V=pi*1^2*(2hh)\\n# primary fluence per Phi0 vs depth\\nfor k in [0,2,4,6,8,10,12,16,20,24,28,31]:\\n    f1 = r['slab_prim'][0,k]/N / Vslab * Omega105_2\\n    f2 = r['slab_prim'][1,k]/N / Vslab * Omega105_2\\n    ftotp = (r['slab_prim'][0,k]+r['slab_prim'][1,k])/N/Vslab*Omega105_2\\n    exp1=0.5*np.exp(-0.06514178*float(z[k])); exp2=0.5*np.exp(-0.06104757*float(z[k]))\\n    print(f\\\"z={z[k]:.2f}: prim1/ph0={f1:.4f} (exp {exp1:.4f}) prim2={f2:.4f} (exp {exp2:.4f}) totprim={ftotp:.4f}\\\")\\n# scattered fluence per Phi0\\nfsec = r['slab_sec'][:, :].sum(axis=1)/N/Vslab*Omega105_2\\nfprim=(r['slab_prim'][0]+r['slab_prim'][1])/N/Vslab*Omega105_2\\nprint(\\\"\\\\nscattered fluence/ph0 at depths:\\\", np.round(fsec[[0,2,4,6,8,10,12,16,20]],4))\\n# Kcol per Phi0 (MeV/g) from muenE scoring\\nKcol_MeVg = r['slab_Kcol']/N/Vslab*Omega105_2\\nprint(\\\"Kcol(MeV/g per Phi0):\\\", np.round(Kcol_MeVg[[0,2,4,6,8,10]],4))\\nprint(\\\"Kcol[Gy cm^2] at z=5:\\\", Kcol_MeVg[20]*1.602e-10)\\n# primary Kcol at depth z: phi(z)*muenE_avg\\nimport scipy.interpolate as si\\nE1=1.1732; E2=1.3325\\n# recompute muenE for the two lines quickly (approx values from earlier)\\nmuenE1=0.03519; muenE2=0.03882\\nKprim_5= (0.5*np.exp(-0.06514*5)*muenE1 + 0.5*np.exp(-0.06105*5)*muenE2)\\nprint(\\\"analytic primary Kcol at 5 cm (MeV/g per Phi0):\\\",Kprim_5, \\\"Gycm2:\\\",Kprim_5*1.602e-10)\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Now the MC runs (it=31 steps, 382 pair spawns, 12 s for 3e5 photons). \n\nSanity check primary fluence: flu_prim total per photon = 0.004116 cm of track in the scoring volume per source photon. Per Phi0: \u03c6_prim/Phi0 = 0.004116 / Vcyl \u00d7 \u03a9_pyr 105\u00b2 = 0.004116/0.6283 \u00d7 109.975 = 0.7206. Expected: 0.5\u00d7(e^{\u2212\u03bc1 5}+e^{\u2212\u03bc2 5}) = 0.5\u00d7(0.7220+0.7369)=0.7295. Close (0.7206 vs 0.7295, ~1.2% low). Hmm. The reason: the scoring cylinder radius 1 cm at z=5; primary photons passing through: the fluence at the scoring volume is the average fluence over the cylinder volume, while Phi0 is the fluence at the central axis point. The fluence averaged over the 1-cm-radius cylinder is slightly less than at the center because the beam fluence decreases with lateral position? Actually for a uniform-in-solid-angle source, the fluence at lateral offset r on the plane z=105 is \u03c6 = N/(\u03a9 r'\u00b2) where r'=distance from source. At r=1 cm lateral offset, r'=sqrt(105\u00b2+1)=105.0048, so \u03c6 \u2248 N/(\u03a9 105.0048\u00b2) \u2248 0.9999\u00d7center \u2014 negligible. So the primary fluence should be 0.7295 \u2014 but MC gives 0.72 (1.3% low). Statistical? With 3e5 photons, the primary track length in the cylinder: expected per photon 0.004167 (0.7295\u00d7V/\u03a9105\u00b2=0.7295\u00d70.6283/109.975=0.004167). We got 0.004116 \u2014 difference 1.2%, which is 300000\u00d70.004167=1250 cm track total; sqrt(1250)/1250 = 2.8% std? Actually the number of photons crossing the cylinder ~ 300000\u00d70.0285=8550, each ~0.2 cm; total track ~1710 cm; Poisson ~2.4%. So 1.2% off is fine statistically (z~0.5\u03c3).\n\nHmm wait: but the track-length estimator should be more precise than pure counting: each photon contributes a chord ~0.2; the variance is similar. OK ~1.2% is within ~0.5\u03c3. Good.\n\nScattered: flu_sec total per photon 0.001122 \u2192 \u03c6_sec/Phi0 = 0.001122/0.6283\u00d7109.975 = 0.1964. So scattered fluence fraction ~0.196/(0.72+0.196) \u2248 21% of fluence. For 10x10 Co-60 at 5 cm depth, the scattered-to-primary fluence ratio ~20-25%? The scattered dose fraction is ~5-8%. Fluence fraction larger because scattered photons are lower energy (fluence counts photons equally). Plausible.\n\nEnergy fluence: Eflu_sec/N=0.000748 (MeV\u00b7cm per photon); Eflu_prim/N=0.005164. Scattered energy fluence fraction = 0.000748/(0.005164+0.000748)=0.126 (12.6%). Dose fraction from scattered ~ Kcol_scattered/Kcol_total ~ maybe 6-8% (since lower-energy photons have higher \u03bc_en, but scattered photons are at lower E with higher \u03bc_en... so energy fluence fraction 12.6% \u2192 dose fraction maybe ~12%?). Hmm let me compute later. Actually let me reconsider: Kcol = \u03c6 E \u03bc_en; scattered photons have lower E but higher \u03bc_en; so dose fraction ~ (\u03a3 \u03c6_sec \u03bc_en E)/(total) \u2014 compute properly later.\n\nNow, the per-depth slab data: let me look at slab_prim (line intensities per depth) and slab_sec and slab_Kcol \u2014 check the depth profile. Also need to verify the primary attenuation profile: slab_prim[0,k]/N = \u03a61(z)\u00d7(V_slab/\u03a9105\u00b2)... The slab fluence per photon in slab k = slab_prim[line,k]/N / V_slab; per Phi0 = \u00d7\u03a9105\u00b2. Should equal e^{\u2212\u03bc z} at depth z. Let me check.\n\nAlso slab_Kcol per photon: chs*muenE per photon for photons at depth z... this gives Kcol\u00d7track... integrated over all photons crossing the slab. Kcol per unit Phi0 per unit mass in slab = (slab_Kcol[k]/N)/V_slab \u00d7 \u03a9105\u00b2 [MeV/g per Phi0]... Wait slab_Kcol[k] = \u03a3 chs\u00d7muenE(E) with chs in cm and muenE in MeV cm\u00b2/g \u2192 cm \u00d7 MeV cm\u00b2/g = MeV cm\u00b3/g. Divide by V_slab (cm\u00b3) \u2192 MeV/g per photon. \u00d7\u03a9105\u00b2 \u2192 MeV/g per Phi0. \u00d71.602e-10 \u2192 Gy cm\u00b2... Let me verify with expected Kcol at 5 cm: \u03c6/Phi0=0.72, \u03bc_en\u00d7E avg \u22480.0355 \u2192 Kcol = 0.72\u00d70.0355=0.0256 MeV/g per Phi0 \u2192 4.1e-12 Gy cm\u00b2. \n\nLet me check slab numbers, then run a bigger N (say 2e6) for better statistics. But first let me examine the slab results and check the attenuation profile and Kcol profile shape (for PDD).\n\nAlso I should double check the scoring volume cylinder: \"radius 1.0 cm, thickness 0.2 cm, centred at 5.0 cm depth\": z\u2208[4.9,5.1], radius 1. Good.\n\nLet me analyze the test run output.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 74151,
+  "completion_tokens": 2066,
+  "total_tokens": 76217,
+  "cost": 0.0023193898,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 65994,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0023193898,
+   "upstream_inference_prompt_cost": 0.0019433778,
+   "upstream_inference_completions_cost": 0.000376012
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 1313,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

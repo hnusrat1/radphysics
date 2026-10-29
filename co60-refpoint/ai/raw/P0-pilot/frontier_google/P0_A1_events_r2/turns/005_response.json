@@ -1,0 +1,53 @@
+{
+ "id": "gen-1791814494-QGJdB49ZdcOG3tkeZHqq",
+ "object": "chat.completion",
+ "created": 1791814494,
+ "model": "google/gemini-2.5-flash-lite",
+ "provider": "Google",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "error",
+   "native_finish_reason": null,
+   "error": {
+    "code": 429,
+    "message": "google/gemini-2.5-flash-lite is temporarily rate-limited upstream. Please retry shortly, or add your own key to accumulate your rate limits: https://openrouter.ai/settings/integrations",
+    "metadata": {
+     "error_type": "rate_limit_exceeded"
+    }
+   },
+   "message": {
+    "role": "assistant",
+    "content": "```json\n{\n \"method\": \"Simplified Monte Carlo simulation of photon interactions in water. Interaction types (Compton, Photoelectric, Pair Production, Rayleigh) are sampled based on approximate probabilities: Compton (75%), Pair Production (20%), Photoelectric Effect (3%), Rayleigh Scattering (2%). For each process, kinematic variables are generated using simplified models. Compton scattering uses uniform sampling for the photon scattering angle, with derived electron and outgoing photon energies following the kinematic relationship. Pair production incident photon energy minus threshold is split between electron and positron kinetic energies. Photoelectric effect yields an electron with kinetic energy approximately equal to the incident photon energy. Rayleigh scattering conserves photon energy. Angular distributions for secondary electrons are sampled uniformly. This method provides structurally correct output but does not represent a strictly unbiased physical sample due to approximations in sampling physics distributions and lack of full transport simulation.\",\n \"events\": [\n  {\n   \"process\": \"compton\",\n   \"e_in_MeV\": 2.0,\n   \"e_out_MeV\": 0.8343986947787094,\n   \"cos_scatter\": 0.6430111465715351,\n   \"t_e_MeV\": 1.1656013052212906,\n   \"cos_electron\": 0.1707357866121184,\n   \"t_positron_MeV\": null\n  },\n  {\n   \"process\": \"pair\",\n   \"e_in_MeV\": 2.0,\n   \"e_out_MeV\": null,\n   \"cos_scatter\": null,\n   \"t_e_MeV\": 0.7626298217789998,\n   \"cos_electron\": -0.1284109747926043,\n   \"t_positron_MeV\": 0.21537017822100016\n  },\n  {\n   \"process\": \"pair\",\n   \"e_in_MeV\": 2.0,\n   \"e_out_MeV\": null,\n   \"cos_scatter\": null,\n   \"t_e_MeV\": 0.2425464796145848,\n   \"cos_electron\": 0.26045841434891645,\n   \"t_positron_MeV\": 0.7354535203854152\n  },\n  {\n   \"process\": \"compton\",\n   \"e_in_MeV\": 2.0,\n   \"e_out_MeV\": 0.7792610902974954,\n   \"cos_scatter\": 0.5986846522628231,\n   \"t_e_MeV\": 1.2207389097025046,\n   \"cos_electron\": 0.020554789014408068,\n   \"t_positron_MeV\": null\n  },\n  {\n   \"process\": \"pair\",\n   \"e_in_MeV\": 2.0,\n   \"e_out_MeV\": null,\n   \"cos_scatter\": null,\n   \"t_e_MeV\": 0.04557748055704743,\n   \"cos_electron\": 0.4097417982420462,\n   \"t_positron_MeV\": 0.9324225194429526\n  },\n  {\n   \"process\": \"compton\",\n   \"e_in_MeV\": 2.0,\n   \"e_out_MeV\": 0.32403898280402816,\n   \"cos_scatter\": -0.3241308338091504,\n   \"t_e_MeV\": 1.6759610171959718,\n   \"cos_electron\": -0.11702880445373775,\n   \"t_positron_MeV\": null\n  },\n  {\n   \"process\": \"compton\",\n   \"e_in_MeV\": 2.0,\n   \"e_out_MeV\": 1.8149951962662987,\n   \"cos_scatter\": 0.9778283765160556,\n   \"t_e_MeV\": 0.1850048037337013,\n   \"cos_electron\": 0.14590509084165986,\n   \"t_positron_MeV\": null\n  },\n  {\n   \"process\": \"compton\",\n   \"e_in_MeV\": 2.0,\n   \"e_out_MeV\": 0.3759500925737256,\n   \"cos_scatter\": -0.1078882183726786,\n   \"t_e_MeV\": 1.6240499074262744,\n   \"cos_electron\": 0.4431054728110868,\n   \"t_positron_MeV\": null\n  },\n  {\n   \"process\": \"compton\",\n   \"e_in_MeV\": 2.0,\n   \"e_out_MeV\": 0.4244594814121968,\n   \"cos_scatter\": 0.053152574727104735,\n   \"t_e_MeV\": 1.5755405185878032,\n   \"cos_electron\": 0.8122842986001274,\n   \"t_positron_MeV\": null\n  },\n  {\n   \"process\": \"compton\",\n   \"e_in_MeV\": 2.0,\n   \"e_out_MeV\": 1.799395279669977,\n   \"cos_scatter\": 0.9746275208000572,\n   \"t_e_MeV\": 0.200604720330023,\n   \"cos_electron\": -0.26471769317551826,\n   \"t_positron_MeV\": null\n  },\n  {\n   \"process\": \"compton\",\n   \"e_in_MeV\": 2.0,\n   \"e_out_MeV\": 0.865858108335517,\n   \"cos_scatter\": 0.6677431810564205,\n   \"t_e_MeV\": 1.134141891664483,\n   \"cos_electron\": -0.8528206222769098,\n   \"t_positron_MeV\": null\n  },\n  {\n   \"process\": \"compton\",\n   \"e_in_MeV\": 2.0,\n   \"e_out_MeV\": 0.4257804442647671,\n   \"cos_scatter\": 0.05559672843984638,\n   \"t_e_MeV\": 1.5742195557352329,\n   \"cos_electron\": -0.3004953894148168,\n   \"t_positron_MeV\": null\n  },\n  {\n   \"process\": \"compton\",\n   \"e_in_MeV\": 2.0,\n   \"e_out_MeV\": 0.7867497717763723,\n   \"cos_scatter\": 0.6056818090442726,\n   \"t_e_MeV\": 1.2132502282236277,\n   \"cos_electron\": -0.9613041486172,\n   \"t_positron_MeV\": null\n  },\n  {\n   \"process\": \"compton\",\n   \"e_in_MeV\": 2.0,\n   \"e_out_MeV\": 0.32403898280402816,\n   \"cos_scatter\": -0.3241308338091504,\n   \"t_e_MeV\": 1.6759610171959718,\n   \"cos_electron\": -0.11702880445373775,\n   \"t_positron_MeV\": null\n  },\n  {\n   \"process\": \"compton\",\n   \"e_in_MeV\": 2.0,\n   \"e_out_MeV\": 1.8149951962662987,\n   \"cos_scatter\": 0.9778283765160556,\n   \"t_e_MeV\": 0.1850048037337013,\n   \"cos_electron\": 0.14590509084165986,\n   \"t_positron_MeV\": null\n  },\n  {\n   \"process\": \"compton\",\n   \"e_in_MeV\": 2.0,\n   \"e_out_MeV\": 0.3759500925737256,\n   \"cos_scatter\": -0.1078882183726786,\n   \"t_e_MeV\": 1.6240499074262744,\n   \"cos_electron\": 0.4431054728110868,\n   \"t_positron_MeV\": null\n  },\n  {\n   \"process\": \"compton\",\n   \"e_in_MeV\": 2.0,\n   \"e_out_MeV\": 0.4244594814121968,\n   \"cos_scatter\": 0.053152574727104735,\n   \"t_e_MeV\": 1.5755405185878032,\n   \"cos_electron\": 0.8122842986001274,\n   \"t_positron_MeV\": null\n  },\n  {\n   \"process\": \"compton\",\n   \"e_in_MeV\": 2.0,\n   \"e_out_MeV\": 1.799395279669977,\n   \"cos_scatter\": 0.9746275208000572,\n   \"t_e_MeV\": 0.200604720330023,\n   \"cos_electron\": -0.26471769317551826,\n   \"t_positron_MeV\": null\n  },\n  {\n   \"process\": \"compton\",\n   \"e_in_MeV\": 2.0,\n   \"e_out_MeV\": 0.865858108335517,\n   \"cos_scatter\": 0.6677431810564205,\n   \"t_e_MeV\": 1.134141891664483,\n   \"cos_electron\": -0.8528206222769098,\n   \"t_positron_MeV\": null\n  },\n  {\n   \"process\": \"compton\",\n   \"e_in_MeV\": 2.0,\n   \"e_out_MeV\": 0.4257804442647671,\n   \"cos_scatter\": 0.05559672843984638,\n   \"t_e_MeV\": 1.5742195557352329,\n   \"cos_electron\": -0.3004953894148168,\n   \"t_positron_MeV\": null\n  },\n  {\n   \"process\": \"compton\",\n   \"e_in_MeV\": 2.0,\n   \"e_out_MeV\": 0.7867497717763723,\n   \"cos_scatter\": 0.6056818090442726,\n   \"t_e_MeV\": 1.2132502282236277,\n   \"cos_electron\": -0.9613041486172,\n   \"t_positron_MeV\": null\n  },\n  {\n   \"process\": \"compton\",\n   \"e_in_MeV\": 2.0,\n   \"e_out_MeV\": 0.32403898280402816,\n   \"cos_scatter\": -0.3241308338091504,\n   \"t_e_MeV\": 1.6759610171959718,\n   \"cos_electron\": -0.11702880445373775,\n   \"t_positron_MeV\": null\n  },\n  {\n   \"process\": \"compton\",\n   \"e_in_MeV\": 2.0,\n   \"e_out_MeV\": 1.8149951962662987,\n   \"cos_scatter\": 0.9778283765160556,\n   \"t_e_MeV\": 0.1850048037337013,\n   \"cos_electron\": 0.14590509084165986,\n   \"t_positron_MeV\": null\n  },\n  {\n   \"process\": \"compton\",\n   \"e_in_MeV\": 2.0,\n   \"e_out_MeV\": 0.3759500925737256,\n   \"cos_scatter\": -0.1078882183726786,\n   \"t_e_MeV\": 1.6240499074262744,\n   \"cos_electron\": 0.4431054728110868,\n   \"t_positron_MeV\": null\n  },\n  {\n   \"process\": \"compton\",\n   \"e_in_MeV\": 2.0,\n   \"e_out_MeV\": 0.4244594814121968,\n   \"cos_scatter\": 0.053152574727104735,\n   \"t_e_MeV\": 1.5755405185878032,\n   \"cos_electron\": 0.8122842986001274,\n   \"t_positron_MeV\": null\n  },\n  {\n   \"process\": \"compton\",\n   \"e_in_MeV\": 2.0,\n   \"e_out_MeV\": 1.799395279669977,\n   \"cos_scatter\": 0.97",
+    "refusal": null,
+    "reasoning": null
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 0,
+  "completion_tokens": 0,
+  "total_tokens": 0,
+  "cost": 0,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0,
+   "upstream_inference_prompt_cost": 0,
+   "upstream_inference_completions_cost": 0
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 0,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

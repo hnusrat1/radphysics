@@ -1,0 +1,57 @@
+{
+ "id": "gen-1791830058-gZEjFXhnBSYKe2GPSFja",
+ "object": "chat.completion",
+ "created": 1791830058,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_019HsnYbGjfM7mTw9wFUG6WS",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport sys; sys.path.insert(0,'/tmp/work')\\nimport pickle, numpy as np\\nSM=pickle.load(open('/tmp/work/SM.pkl','rb'))\\nOm=0.009975072683099257\\nprint(SM['N'], SM['g']*Om*105**2/SM['N'])\\nprint('hE per-phi0 (5cm):', SM['hE'][4]*Om*105**2/SM['N'])\\n\"}"
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 158084,
+  "completion_tokens": 189,
+  "total_tokens": 158273,
+  "cost": 0.0087387,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 157454,
+   "cache_write_tokens": 628,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0087387,
+   "upstream_inference_prompt_cost": 0.0082662,
+   "upstream_inference_completions_cost": 0.0004725
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 0,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

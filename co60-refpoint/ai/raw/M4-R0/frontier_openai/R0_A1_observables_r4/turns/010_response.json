@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791822638-dZ3GOozobrP6GhMeRf2y",
+ "object": "chat.completion",
+ "created": 1791822638,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Calculating values and fluence**\n\nI'm trying to make sense of these values: P1 is .3645, P2 is .370, and Ep adds up to .9208 when I combine .4277 and .4931. Then there's es at .08614. I think the total fluence is .85775, confirmed by another calculation of .7345 plus .12325 getting the same result. Energy appears to be 1.00694 and mean1 is 1.1736. Earlier, I used .923, but I need to get the exact numbers using a tool.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_JiCOhaoZdRXc6L1HlHcfdPCe",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import numpy as np\\nP1=.5*.729;P2=.5*.740;S=np.array([.00005,.00015,.00035,.0007,.0012,.002,.003,.004,.0055,.007,.0085,.0095,.010,.0105,.0105,.010,.009,.008,.0065,.005,.0038,.0028,.002,.0015,.0008,.0005,.0003,.0001]);cent=np.arange(28)*.05+.025;totp=P1+P2;Ep=P1*1.1732+P2*1.3325;Es=S@cent;print(totp,Ep,S.sum(),Es,(Ep+Es)/(totp+S.sum()),S.sum()/(S.sum()+totp),Es/(Ep+Es))\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Calculating values and fluence**\n\nI'm trying to make sense of these values: P1 is .3645, P2 is .370, and Ep adds up to .9208 when I combine .4277 and .4931. Then there's es at .08614. I think the total fluence is .85775, confirmed by another calculation of .7345 plus .12325 getting the same result. Energy appears to be 1.00694 and mean1 is 1.1736. Earlier, I used .923, but I need to get the exact numbers using a tool.",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzQsxcZQpMlgOEN3VxWbU07i9FiGzemaFozmyk6-_kgy7KhtS9EYMFLKQng6a1hjAPmO01FlkRm5CzsmBeYWcrGxKL8fUI0Nin8fHnwXJpBYFIbWgAJ3O4jxn_4K5GEjt1Kuried1I9X05KbPL6Jsn_IRB71yI_Xef7oMbvY_EG2lDci5wEsdKub15sScGkF7ERPbw1gXtBsDfUZHe0TXSFiUSz0J9l5q0p7ngxMxOgl5BEMqtPgTxLeM6R3T-jJr0BE5AlYN9yB45Q0FSu-m732KOMQTtVaU3Cl7yqGMNirgGk4WvqEoVz86EW_8ObGZ19HYZHpqj0ljdepcewrRlZCWNMxUKGv4nvsUbwcrfiyzzPnfuojRJc9AF0eMNoqYcOEy43zFMql5VxVgOs7-4YRI4_tmxmYNJ08GIrfYbTrZS9V8ADXZjBynP3ERv7-CkryVy5Q7IRrZIYZrjljoGr4D28fWwaKkeln7rYAU9b40Um3aPdSp7xd3Z-ca_AHE-G31tb007fNOGNDHRreTCe7GLCYYf9g5QHtoMbwiQwA6zkbHdA1wm9B7HtWsI6xMe4Bwdy1qfY5HFxqooEbtULgxc7ZJtNPXskV_hBSF4hLv_g-E6C2LNZmfxmifM-8eWExDdxi1wargcXJ3FwlWwUft_oFGcjsXdCgDB6OyjWbs6n_xlh3VWjJVCGCN9iPLRI-gKkgMfxCLRg8Wbkije6eQGX-TQJfRY1LwW3Qi3J-YNbzZvo03oyjHFfzVYA2cv6sOFfi0CKqlajv2R8TNdL2WtT7pxwrWcTC5AlKnviGPsTscm3i99a-oY7JkQRqD0T0qbIIaTw-xrgNTHanmB_WQ54lOGdIHb9Py6vDw-iX3zH9lYxm4XyZKmLDluyWrvZFp106G05TMlo1VYcKMNvwaM621Jy9LiDTWQEfJdbznd8azmy4MDBQdzhZh2kMjVVBgzrFwgXevC4gYSnv8ZwvCdc7RIN4IC7kgbwJeJ1tRRPh0W4E4IJw8PGuRKUKv8mFWgDUWyi_Bp5DB7vCO6ZWI2Ojtcsjm7ehzk-i1xMP6v-suWY9HwGh2rhm0b9ZjhTHjpPZwaY2h2JHXMQdK3yY1i6OK283y1ieGhwutqQL2Q1bSDKrOM7wPLAot-hgr3ijW3g5OYPLmmxt6SgzFX0F2P73-uN6SrEvsGUhE_13Fgl-zyziDxHzqR6OfS4GekC4LoOYIK27ic-0wejaVXvMN6lt8ECtwCaG7e2Fpi50qAjPyxOajMKSh8yrQMycA2jPbtXmqrN0zvusfdEv8u5KtKO5uDoJjhemgYgjEFmHW-OnXF8F8wkVE3vNUcBcH_oDCqPXrWYW0BVa6m5UDXzmKCWFmKFMrOZVLSguuCdllqnLUXcfTUek6Z3tXCACGOsSlvPJZe0VEE6LE0iYCqB58HG7eJSCJITIsX6zSMA1GXHBuiT6i63hJKJjx7MykCQofL2KExqYU6Qe7lxcfOqLZg7-7Y9qprIUC0c9hI8cfr1O8DYOuBKTdd3Z-9N8GQoWpoz8kanq_Mi9U4K62B3aJIhYwVp8xayOpz9fmJO0-aJjaVbcJM-MIzuBv7JfY3jAG1BRQQS1t6JO6UJEF7m5YHDzb6W3Zq_EBOUgakMzeImD0PQ4tbz3NYM5D0zAhnX7RRuOYGPmihQSw2dD2gDxVl0e2SQUwAchKliVMQKsoOPxvtMRKJnjUXzd0Q23MSlkhRh1uu_zWdv9_852-NRvr5ghgQvnGaYJWJvd3HbR7PKiV4BPWDDFbJSNYb7uWmZwC1lOVZmZ7qNvkG0V4R6NeDBH36CRrUADQf9aubHmLIyakzPdIJwUPGxvupN9NQnL5EmxKMwyt1aOQGdxCGsJNRus1sHl4uP2D_0jHvyJJ48P5s3aeBe8ONN8SB4_kLgbgftnAr226yzLvj1aJQ237DhXH4oZfrQ6IKfhHUwC___9UGBcclnJQlehKAtaClfWM7tSzb27PARCDj609iU0rk5za_bKV2tlcyMP-vxlMt2Dj-6fC4pwES5YCwRMB_7VW2ABOEWICmoflqI-X1CFrIfRlK_VLumzk3WFbj1slnj1K3GFLqWKE8MI_9NFQiY2tBQcZE27tiaIAL3L00WS0b2a-KZV2ezXytrYmwb_15EL7a5ue7Dn5XPwGruc_UR_8mbHSp3thz6GS1cyloDabFnyjmhm7HnEzniPYeoDVvRecxVpJZjlNzI2_K2XzZyntAiu2NbenZcN9lieiy6RTWoSsrKPmwNz5LYMQY5X5dxc=.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_0489e75b4db6a3f8016acd0b2f045887d1b6e9fb9be60ebe20",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 17072,
+  "completion_tokens": 266,
+  "total_tokens": 17338,
+  "cost": 0.00059839,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 14509,
+   "cache_write_tokens": 2560,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00059839,
+   "upstream_inference_prompt_cost": 0.00046539,
+   "upstream_inference_completions_cost": 0.000133
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 73,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

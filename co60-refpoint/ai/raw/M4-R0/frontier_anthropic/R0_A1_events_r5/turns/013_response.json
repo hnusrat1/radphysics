@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791828315-Z5ueUs95HJYPUAJCLqa7",
+ "object": "chat.completion",
+ "created": 1791828315,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I'm noting the Rayleigh event has a scattered photon energy of about 0.8267, which looks fine, and the Compton cosine values for the electron also seem reasonable in that 0.2-0.5 range for high-energy cases. Moving on to print the remaining results.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01SMuJ9DGKg1CCMgy8LEV48b",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"print(\\\"\\\\n\\\".join(lines[100:]))\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I'm noting the Rayleigh event has a scattered photon energy of about 0.8267, which looks fine, and the Compton cosine values for the electron also seem reasonable in that 0.2-0.5 range for high-energy cases. Moving on to print the remaining results.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSzQcKEAgSGAI4AUIIdGhpbmtpbmcSDGf4RVxrvHub4e4qXRoMmPzgaMQu/nvh8wLcIjAoQxqo9MdrqbsHJ3bPf8v95sr5JjT97Saaquy/apBNGJ3dhmT1eO8f7TBxEsBpGCoq6gZH6H1FcUhi1zvmWLs85bmjRvcQDrcPClRZFYGHDsCnArCuIJSgW4Tv5Ik7ruCqZ7mXiK/kOlUsDpM/udueLL5WyJHUlxdyAT0IyJeZhkvq/SWDn2CB+TkA+6PNdy7PVeHa8lqm/7bldydNBV6aEu1uOO7AGUvgBioaV4J84Ch4uxPQHag25WLvGcoUT27a+P9SKiExp5AbRGusPJZHNpGlEyvYTXFxk5yTptrYrKmWlA2o4A1MclM16jIs5rpYkO8QmTb4uKWr5XYCi1d/KyH7kPzbXM9g6nZyEgJzofjQLh1ErgnMoaIahgG8EOOq4tW8aM09NL8eCjv8e6lvnkiVEMIijsJevauPm5bKqarccCMK1NzPcREWsdFwndARHOP4lg8MdlU9+VseT0fbJ8Tozkms+fe3ioM+NdO6dO7WnamSpHuDVcBYKzOWq7s7UyLKyQhwWd/0aozQzB38niiqmmPlkX9UGT8egGWSyVWV1QxBRAbiPlI1OVgU3CCJ35z9HmK5f57Jka+9VWoL6bGVheFzeUsoZKvW1UeqPlP3TPWDM34nWDTgi4QUccYqgq/6zk+TDfUMvVH2YpJThyYvsVkrj019Oy5YIyysoGzqPmGd0FiR80Nxj33Dv3M3C3Eh1oSBSCDu2erNghxEtb0wllX6cCiFsCTqhCeaeM0aQd+fWKF5IShXUqd6rUnElvju5Y00jR7E4IEcIWbBT8dWHeECteqvuNd7R8ZSOGFM268jw6WVhLN7Fi32Q8OiXrmPHyLXW65PiTbeqQsCSQD5oL1yHRqPVXXGvDZ7AmH7hX9FEx865Qb39TOEqj3FYC8vCfSRqHWCcpHY6nnPYUFmN/E433iw49+MHAj4YpTzp5OpQZTGn4s6DOF4qnB2sKAufA9wFC+omW83w+0ftSFyftG7cUrMf3TiLoXMjNMGAyp2r78LKDA20tOxZGJKfP4vHTrATdHiE3YGbyYeQVJ7YA86FQHiSRPd6SSVhMs3WNcE4BEcBQlOQMSwrlkHV0Y+i5M5mQA5AO94qV6o8+TyTAUUxTHCLIHaIevB7+h5rAOYy6cUxaKRRFtqhl4K3mul8L61PcC5cKUI/I3Cl73/mh6+yMzXxLPWo4hyF0bR+xmIM/WxPOkq62xVM61vEKy0C2qWgOopdAIqGAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 59240,
+  "completion_tokens": 135,
+  "total_tokens": 59375,
+  "cost": 0.00114331,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 55036,
+   "cache_write_tokens": 4202,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00114331,
+   "upstream_inference_prompt_cost": 0.00107581,
+   "upstream_inference_completions_cost": 6.75e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 76,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

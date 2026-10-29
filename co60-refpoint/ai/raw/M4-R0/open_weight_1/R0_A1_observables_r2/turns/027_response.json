@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791827895-yoWy4kLA7Bq70YNpV7iy",
+ "object": "chat.completion",
+ "created": 1791827895,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "SiliconFlow",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Let me verify the patches are syntactically correct by running a quick small N.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "01a13143ef552cb9a09489de7d4c40b9",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import sys, os\\nsys.path.insert(0, os.getcwd())\\nimport numpy as np, importlib, mc_photon\\nimportlib.reload(mc_photon)\\nres = mc_photon.run_mc(50000, seed=2)\\nprint('time', round(res['t'],2))\\nprint('depth_tr sum (total E_tr in axis cyl)', res['depth_tr'].sum(), 'nonzero bins', (res['depth_tr']>0).sum())\\nprint('E_tr total from proc', sum(res['E_tr_by_proc'].values()))\\nprint('prim/sct flu', res['flu_pri_ph'].sum(), res['flu_sct_ph'].sum())\\nprint('N_int_cyl', res['N_int_cyl'])\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Let me verify the patches are syntactically correct by running a quick small N.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 123251,
+  "completion_tokens": 221,
+  "total_tokens": 123472,
+  "cost": 0.004386334,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 114688,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.004386334,
+   "upstream_inference_prompt_cost": 0.004324454,
+   "upstream_inference_completions_cost": 6.188e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 18,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

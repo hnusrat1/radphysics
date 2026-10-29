@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791825917-a6LZGhSAhWPZcWWDPyKu",
+ "object": "chat.completion",
+ "created": 1791825917,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "There's a problem with the way I'm writing the code - the indentation and newlines are getting corrupted. Let me write the code more carefully with proper newlines between statements.\n\nActually, I think the issue is that when I paste the code, some lines are getting merged together. For example, \"e_out = None        cos_scatter = None\" should be on separate lines but appear on the same line.\n\nI need to ensure each statement is on its own line. Let me write the code in a text file using the python tool, but ensure proper formatting.\n\nActually, the issue is that my text editor (the context) might be merging lines. Let me write the code step by step in a cleaner way.\n\nLet me just use the previously generated events from the working run (the 200 events from the earlier simulation that worked). I saved them in a variable but it was lost. Let me re-run a clean version of the working code.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_c9f781ce01da450187700817",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"# Let's just read the previous events.json if it exists, or regenerate using a clean script\\nimport os\\nif os.path.exists('events.json'):\\n    with open('events.json', 'r') as f:\\n        data = json.load(f)\\n    print(f\\\"Loaded {len(data['events'])} events from file\\\")\\nelse:\\n    print(\\\"No events.json found\\\")\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "There's a problem with the way I'm writing the code - the indentation and newlines are getting corrupted. Let me write the code more carefully with proper newlines between statements.\n\nActually, I think the issue is that when I paste the code, some lines are getting merged together. For example, \"e_out = None        cos_scatter = None\" should be on separate lines but appear on the same line.\n\nI need to ensure each statement is on its own line. Let me write the code in a text file using the python tool, but ensure proper formatting.\n\nActually, the issue is that my text editor (the context) might be merging lines. Let me write the code step by step in a cleaner way.\n\nLet me just use the previously generated events from the working run (the 200 events from the earlier simulation that worked). I saved them in a variable but it was lost. Let me re-run a clean version of the working code.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 72421,
+  "completion_tokens": 314,
+  "total_tokens": 72735,
+  "cost": 0.00217128142,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 61440,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00217128142,
+   "upstream_inference_prompt_cost": 0.00211422134,
+   "upstream_inference_completions_cost": 5.706008e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 194,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

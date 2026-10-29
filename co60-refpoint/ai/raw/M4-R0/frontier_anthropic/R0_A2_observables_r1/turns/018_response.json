@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791827240-BGCqFnuZU6YaDR7h6Rn3",
+ "object": "chat.completion",
+ "created": 1791827240,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "It looks like each call resets its globals, so I'll need to re-import at the top of every call rather than relying on persistence. Let me check how the runs have progressed so far.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01S8Dskut2736CUUuFee16cW",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport glob, subprocess\\nprint(glob.glob('/tmp/work/H_*.npz'), open('/tmp/work/log11.txt').read())\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "It looks like each call resets its globals, so I'll need to re-import at the top of every call rather than relying on persistence. Let me check how the runs have progressed so far.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS1QcKEAgSGAI4AUIIdGhpbmtpbmcSDAy6C0tLQiiVxJAxcxoMPiaPDg1ASGnvXT1RIjAw6VEwK7CS13RE20Z3C30p1/p80qA5IzQkMy8ax1XCRy1HG5SATjMibQFpuwSyF6cq8gZDbYQHe0buyN6vE6aKfaerQuNCwZZOP3bOKD6c+tGigemKB7INXw8tAqQbPadebWg9bO37CjYa9ygCu1FX6FSwUfYnBVjvFuhDrpwYzIjouo4t/IHtBqtnILx1yz4/gAiQc1Zo30Ka+YSQyi9mK1sHyky8/mNbupHjwiawq6nNAX6CD0AixFmqsruPE3DUwJJJlB4c954w8XMqpdBDa8fEqL63jBJbe5jVTc4GlWv7RMIKb5jbDCVqmv/OM8ytn0LLljRusfPykuZ9M7DLQDOvUBG2tZRZ6mCXpPnezcbugbg7+qMuPfmpgXT0IKPuKjibE+apPcf2Y4otCoWIWEzmxpkwtN9GiqK/wCZOm4jsZ609ZwqkYvn6sJyYnMo6Of8L5tQ46/We60cBRc2icwH1mgqmE5IIszkWh25KcA8UuuBi+91xYoLsgPNSxmxPIgOVN+CvGfJd5dwGZ1PqkpbIwzJkPFAM2Xz+SH/zXzSrNkHDwzGX91AsfhpmYDhggLblpfTDPz3X6zYQbd2Xops8BvDEo69cRzQ4a3CXiGuC2GhPAF+8f75Snth4rRuKj2NAaK2670IJk+/K4olMmn2XxeOxYx/HfGqasvDHBcxmNML/74E15NGWhALrEy3JbZIi+S7I3hGn39rZpWpacgEWRxtDiQKB7PhGh4Eepx/T1paGYvLiFLPUUqDUyEScl+zySghrnFj8qF6TeNbErJkkzyj+TvJxyiJmTQkaL6scr78WKatYUVnA2smNGZBxJ+qUOHs0OD70RBe+sgLk0/Z5Zn0prm0fx4MzIXjxjlYosxS0kvqh6sNxZgYNeebMNc9w2ZO5IRPBZOTRKDoZL9WTpXG4ZhuWOxNiTkzotGAETMXMVGGF1IAusD7U5UAq5c252gwER4k7UMmA24lXWvHCJvhUQzPvWM9bs+97MXSt5+DX0sX97TEG/nmR9jNGKLyzpwW7ZkMmz0IbUblzKqXARlBYUFEbXJcZoF+Cy1V4vJZh5LPW7eCpkeD2rR2pXKw7Ddn32TMZBHWO52DNBxpdoLh7Ab9lUsyUuwnPVqy8qbANrsg0Efq7Ke/XIG1QyxzT/nrjb6FlmAiBYEm6OXhqJAIn6Fh2fWntEskR07M3+HuVLgr7GupudcKc6e9wC9WpmyFYORJ7AW8VDSXeOzG/WG4YAQ==.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 138061,
+  "completion_tokens": 146,
+  "total_tokens": 138207,
+  "cost": 0.013959075,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 126424,
+   "cache_write_tokens": 11635,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.013959075,
+   "upstream_inference_prompt_cost": 0.013594075,
+   "upstream_inference_completions_cost": 0.000365
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 50,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

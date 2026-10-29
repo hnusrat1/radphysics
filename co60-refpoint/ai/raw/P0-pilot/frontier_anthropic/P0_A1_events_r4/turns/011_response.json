@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791816553-oTQpDnPThx8rAPlep1BD",
+ "object": "chat.completion",
+ "created": 1791816553,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I'm checking the photoelectric and Rayleigh fractions from the quick run, then weighing how many histories I can run within the time limit\u20141e8 seems feasible at roughly 400 seconds, so I'll aim for something safely under that.\n\nBetter plan: split into 4 parallel processes of 3e7 histories each, totaling 1.2e8, which should run in about 200 seconds per core and yield roughly 38k usable events\u2014plenty to sample 200 from.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01K11PcV2HcAzJ8J7hx6dpFf",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport subprocess, time\\nt0=time.time()\\nprocs=[subprocess.Popen(['python3','/tmp/work/mc.py','30000000',str(s),'500000'],stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,cwd='/tmp/work') for s in [11,12,13,14]]\\nouts=[p.communicate()[0] for p in procs]\\nprint(outs, time.time()-t0)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I'm checking the photoelectric and Rayleigh fractions from the quick run, then weighing how many histories I can run within the time limit\u20141e8 seems feasible at roughly 400 seconds, so I'll aim for something safely under that.\n\nBetter plan: split into 4 parallel processes of 3e7 histories each, totaling 1.2e8, which should run in about 200 seconds per core and yield roughly 38k usable events\u2014plenty to sample 200 from.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSvgsKEAgSGAI4AUIIdGhpbmtpbmcSDOUrtv1vMgVab078UhoMZQteCIDHzYddzebUIjAe/tD3iPADytf3VgqH5eXOWmMqu6LU4K4d3UOgL6h0ABSf9QioLeV3XgD8Ql7/t4Aq2wo6+0iMwjp6ZhJBWOE9mzxSfOYmhXo1tpY6+P88liiVx8ez6QDbjM4wFp+truC9msmNUTyUQOEklsFoXX+AjS0M94vn2rb9YMu/5ZT+syZkkJP6L/YICp/qsWO+fvMM/wazz2mehfyKDAkNapxyx/QcA097xzk+bUkZqXuczjBTS7Q7j+cEd6aYTlax8i7RgZjfQvZbPZv0Lmqzbvef3GUGInGN4G6p5TtIu6ULer0qHlZroDKWZo/eqTGpHQsxwEoLb8TVstu33B0OtZ36TnbmBUkoR9QCA4APAPHKJgMHWneJCe/7NSfVxWrZeZdEVh6DiHG+UYKSgBL/tm9A0ZW4aWrTXt0lImjnsolBk5WVjxng/Um4vtKOZowY8J5HU3cp6EENrkgo2kM/sFrMZQRdZo+CwzVvOTAjbA+37LRG0aQDsu3Il0bZ+VC3sWONtwCA6BSDOwImmC9WSWx0QOU3+PRWy2fKHe+EgVnJTSO0Dy86Y5IVIJR1J+8/9aWZs517JvaGmyWnixUp0Ywfmtbe8bMhlRqBgL6u/gC5wXDfplz7Ab3Yg+g4mnkE5Oo9dI6MYh5425ZiymGrdSSBbo+Zw2GbYBtKll9Owdfv0g8du49CjmSgKUD29gQs/udVBF5PTMzVJuxLdPXFjzIm5ApegC+Dm62KfWeMlj8lt65DoIUfHHupu5pLVvy3U/EVWWMPhUkJxb1iUp27SQ8jHBY6s/XgHHJARBB4OAAUCnlFJirUEER41xyQJ4+zhcniKIM5JI85kSLe5K25esJdsBe/yMmm8KKmUXPyuFTlfCjZbk2FMqI2RAOPHj8PqiYpRjpXM/F6qtjQ8cfVxFbR7bKym30Sa9mPjSlkq+ndy5eSNhCl3TvfeZrqtsiN8QWcCYsd4nFUt+1W1pUSD17rZHojdAcy/WDKcKMDumktbDPvOii+/LL3IUIWPDQuBep/Ot1T7rjXszQUbTrFW6YqDSn/8U5W6nxxJZvcptyaaHUETvNvXxA0IyTCbJ09fzlJqq8Ik0iqlGSWJkEBf5kIrFHnrMjGlnxneHeElmWTHfsijCOqnVnhKTu7Cg3rcfoMyTvORjrdnYtj/3+qxv1E5CkgdCeIahG9oMSVF+1hnEaN4fDPyBPHLEdeXB0jgEvklhH1d/Mf31l3UszpuFc27252YuIYjF4Qmb7VU6E0xp4LjmFr48HqK0eXiHUKztoq3ALEu9Dxg1OtpAdCKEfkwTUrMxHgHdjY3O7nom5alCjfetGjpofSzQ83+yaOPU8Ss+qpkVhFW5FRWep72eAK6r391Y3i1fboMxeNGZm/gR1RZjT6qlrbrJFcjnxeLiGn+EC1h2yDjmd9YUqvKnhb8t6BnxVaAcjI/0rc4wPUwFcrCuAadB3Cnm6myweCN0fflsEuf/lMXekvVs3jaRBo4Xz3z+t+l1IUfam05CIoBuWYYRiYIeOMAk0yql8BaPCfk2mMZOK/l2nfo/7EjCvJMDTxzNANj9+LPcMjZw272POJGrzkbZB24zHXFXr3WULRxybfSDxsdewnBMrvYubDgg7yOp0Wio3xme//aPOuDlKd4DbneuJIOvVD0FoPsMnSHKnE45TVw4iQFfTtRr2oTBuZZjMv4yMj5jQXjIQqpV3qjVDj6vjiQ+pQV9hm7hCWaNQBf0DOT+b7qxwo1Z6WQVTNF7KCdRF4mOtavTrbE16zmPHRv9FJuzXfjwP5QBTwOiyxfPgCIV8R1wV+zTHjOl41UtckFDTB4L+GKSBj3A2p08VJIBI8nBnWecU8BFvFf45HlXJZHgwQbwUPraMe190QfAE7pa3nykpDFf0YAQ==.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 40239,
+  "completion_tokens": 533,
+  "total_tokens": 40772,
+  "cost": 0.0042904,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0042904,
+   "upstream_inference_prompt_cost": 0.0040239,
+   "upstream_inference_completions_cost": 0.0002665
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 338,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

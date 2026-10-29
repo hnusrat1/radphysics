@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791826579-sNyYPWaKrdhfYR1SRcQe",
+ "object": "chat.completion",
+ "created": 1791826579,
+ "model": "qwen/qwen3.7-flash",
+ "provider": "Alibaba",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "ESTAR columns (guess):\n0: E_MeV\n1: collision stopping power (MeV cm^2/g) ? Wait, at 0.01 MeV, S_col = 2.256e+01? That seems high for water. Actually, stopping power is often in MeV cm^2/g or MeV cm^-1. Let's check units. \"MeV cm^2/g\" is typical. At 0.01 MeV (10 keV), water stopping power ~ 50-100 MeV cm^2/g? Maybe it's MeV/cm? No, says MeV cm^2/g. I'll assume col 1 is collision, col 2 radiative, col 3 total, col 4 CSDA range (g/cm^2), col 5 density effect parameter? col 6 radiation yield? The prompt says: \"electron collision, radiative and total stopping powers ... CSDA range ... radiation yield and density-effect parameter\". So:\n0: E\n1: S_col\n2: S_rad\n3: S_tot\n4: CSDA range\n5: Density effect parameter? Or Radiation yield?\nActually, standard ESTAR output format:\nEnergy | Stopping power collision | Radiative | Total | CSDA Range | dE/dx medium/air | Fraction of energy loss to brems | ...\nLet's print more rows to understand.\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_874260dd2fd544e0aa2b9e22",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"print(estar[::10])\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "ESTAR columns (guess):\n0: E_MeV\n1: collision stopping power (MeV cm^2/g) ? Wait, at 0.01 MeV, S_col = 2.256e+01? That seems high for water. Actually, stopping power is often in MeV cm^2/g or MeV cm^-1. Let's check units. \"MeV cm^2/g\" is typical. At 0.01 MeV (10 keV), water stopping power ~ 50-100 MeV cm^2/g? Maybe it's MeV/cm? No, says MeV cm^2/g. I'll assume col 1 is collision, col 2 radiative, col 3 total, col 4 CSDA range (g/cm^2), col 5 density effect parameter? col 6 radiation yield? The prompt says: \"electron collision, radiative and total stopping powers ... CSDA range ... radiation yield and density-effect parameter\". So:\n0: E\n1: S_col\n2: S_rad\n3: S_tot\n4: CSDA range\n5: Density effect parameter? Or Radiation yield?\nActually, standard ESTAR output format:\nEnergy | Stopping power collision | Radiative | Total | CSDA Range | dE/dx medium/air | Fraction of energy loss to brems | ...\nLet's print more rows to understand.\n",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 10379,
+  "completion_tokens": 344,
+  "total_tokens": 10723,
+  "cost": 0.00012569,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 9600,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00012569,
+   "upstream_inference_prompt_cost": 8.097e-05,
+   "upstream_inference_completions_cost": 4.472e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 309,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

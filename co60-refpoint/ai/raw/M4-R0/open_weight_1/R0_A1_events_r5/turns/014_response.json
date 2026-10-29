@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791830558-SqUWNboGmmT9uXSMnqAw",
+ "object": "chat.completion",
+ "created": 1791830558,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "OK, I keep having issues with multi-call setups. Let me write one big, complete, carefully checked script.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_b4350ac9abad487c8d98cdbd",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nfrom scipy.interpolate import interp1d\\nimport json\\n\\nnp.random.seed(42)\\n\\n# ============ CONSTANTS ============\\nm_e = 0.51099895\\nr_e = 2.8179403262e-13\\nNA = 6.02214076e23\\n\\n# ============ CROSS SECTIONS ============\\nea = np.array([1.0, 1.1, 1.1732, 1.2, 1.25, 1.3, 1.3325, 1.4, 1.5])\\nmt = np.array([0.07070, 0.06780, 0.06590, 0.06520, 0.06400, 0.06280, 0.06220, 0.06080, 0.05780])\\nmc = np.array([0.06950, 0.06650, 0.06430, 0.06350, 0.06200, 0.06060, 0.06000, 0.05850, 0.05550])\\nmph = np.array([0.00040, 0.00030, 0.00025, 0.00022, 0.00020, 0.00017, 0.00015, 0.00013, 0.00010])\\nmpp = np.array([0.0, 0.0, 0.00020, 0.00028, 0.00050, 0.00080, 0.00100, 0.00130, 0.00150])\\nmrl = np.array([0.00080, 0.00068, 0.00060, 0.00055, 0.00050, 0.00043, 0.00040, 0.00035, 0.00030])\\n\\nft = interp1d(ea, mt, kind='cubic', bounds_error=False, fill_value='extrapolate')\\nfc = interp1d(ea, mc, kind='cubic', bounds_error=False, fill_value='extrapolate')\\nfph = interp1d(ea, mph, kind='cubic', bounds_error=False, fill_value='extrapolate')\\nfpp = interp1d(ea, mpp, kind='cubic', bounds_error=False, fill_value='extrapolate')\\nfrl = interp1d(ea, mrl, kind='cubic', bounds_error=False, fill_value='extrapolate')\\n\\ndef mu_tot(E): return float(ft(np.clip(E, 0.01, 10.0)))\\ndef mu_comp(E): return float(fc(np.clip(E, 0.01, 10.0)))\\ndef mu_phot(E): return float(fph(np.clip(E, 0.01, 10.0)))\\ndef mu_pair(E): return float(fpp(np.clip(E, 0.01, 10.0)))\\ndef mu_rayl(E): return float(frl(np.clip(E, 0.01, 10.0)))\\n\\n# ============ GEOMETRY ============\\nSSD = 100.0\\nsrc = np.array([0.0, 0.0, -SSD])\\nfh = 5.0  # field half-width\\nzs = 0.0  # surface z\\nzc = 5.0  # scoring center\\nzh = 0.1  # half-thickness\\nzlo = zc - zh\\nzhi = zc + zh\\nRc = 1.0  # cylinder radius\\nctr = np.array([0.0, 0.0, zc])\\n\\nth = np.arctan(fh / SSD)\\nOpyr = 4 * np.arcsin(np.sin(th)**2)\\nne = 10.0 * NA / 18.015\\n\\nprint(f\\\"Opyr = {Opyr:.6f} sr\\\")\\nprint(f\\\"ne = {ne:.4e}\\\")\\n\\n# ============ PHYSICS ============\\ndef c_E(E, ct): return E / (1.0 + (E/m_e)*(1.0 - ct))\\n\\ndef KN(E, ct):\\n    th = np.arccos(np.clip(ct, -1.0, 1.0))\\n    Eo = c_E(E, ct)\\n    return (r_e**2/2.0) * (Eo/E)**2 * (E/Eo + Eo/E - np.sin(th)**2)\\n\\ndef sample_KN(E):\\n    mx = r_e**2 * 1.05\\n    while True:\\n        ct = np.random.uniform(-1.0, 1.0)\\n        if np.random.random() * mx < KN(E, ct):\\n            break\\n    Eo = c_E(E, ct)\\n    te = E - Eo\\n    num = E - Eo * ct\\n    den = np.sqrt(E**2 + Eo**2 - 2*E*Eo*ct)\\n    ce = num/den if den > 0 else 1.0\\n    return Eo, ct, te, ce\\n\\ndef rot(v, ct):\\n    u = v / np.linalg.norm(v)\\n    th = np.arccos(np.clip(ct, -1.0, 1.0))\\n    ph = np.random.uniform(0.0, 2.0*np.pi)\\n    if abs(u[2]) < 0.999:\\n        w = np.cross(u, np.array([0.0, 0.0, 1.0]))\\n    else:\\n        w = np.cross(u, np.array([1.0, 0.0, 0.0]))\\n    w = w / np.linalg.norm(w)\\n    vv = np.cross(w, u)\\n    return u*ct + w*np.sin(th)*np.cos(ph) + vv*np.sin(th)*np.sin(ph)\\n\\ndef src_samp():\\n    E = 1.1732 if np.random.random() < 0.5 else 1.3325\\n    x = np.random.uniform(-fh, fh)\\n    y = np.random.uniform(-fh, fh)\\n    d = np.array([x, y, SSD])\\n    d = d / np.linalg.norm(d)\\n    return E, d, x, y\\n\\ndef proc(E):\\n    t = mu_comp(E) + mu_phot(E) + mu_pair(E) + mu_rayl(E)\\n    r = np.random.random() * t\\n    if r < mu_comp(E):\\n        return 'compton'\\n    elif r < mu_comp(E) + mu_phot(E):\\n        return 'photoelectric'\\n    elif r < mu_comp(E) + mu_phot(E) + mu_pair(E):\\n        return 'pair'\\n    else:\\n        return 'rayleigh'\\n\\nprint(\\\"Testing source sampling...\\\")\\nNt = 10000\\nhits = 0\\nfor _ in range(Nt):\\n    E, d, x, y = src_samp()\\n    # Ray from source through (x,y,zs) at z=zs\\n    # At z=zlo, the position is:\\n    # x_ep = x * (SSD + zl) / SSD = x * (100 + 4.9) / 100 = x * 1.049\\n    x_ep = x * (SSD + zlo) / SSD\\n    y_ep = y * (SSD + zlo) / SSD\\n    if np.sqrt(x_ep**2 + y_ep**2) <= Rc:\\n        hits += 1\\n\\nprint(f\\\"Hit rate: {hits/Nt:.4f} (expected ~{np.pi*(Rc*SSD/(SSD+zlo))**2/(4*fh**2):.4f})\\\")\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "OK, I keep having issues with multi-call setups. Let me write one big, complete, carefully checked script.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 69214,
+  "completion_tokens": 1800,
+  "total_tokens": 71014,
+  "cost": 0.002447659368,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 57344,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.002447659368,
+   "upstream_inference_prompt_cost": 0.002120563368,
+   "upstream_inference_completions_cost": 0.000327096
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 24,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

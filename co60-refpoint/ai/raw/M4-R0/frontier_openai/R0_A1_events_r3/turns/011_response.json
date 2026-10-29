@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791823090-Ii8EJglqHX5mF9HgyPsM",
+ "object": "chat.completion",
+ "created": 1791823090,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_xfjZOTYohOipjThjFQ9mg5EK",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import json\\nprocmap={0:'compton',1:'photoelectric',2:'pair',3:'rayleigh'}\\nevents=[]\\nfor l in open('/tmp/sample.txt'):\\n a=l.split(); p=int(a[0]); Ein,Eout,cs,Te,ce,Tp=map(float,a[1:])\\n ev={'process':procmap[p], 'e_in_MeV':Ein, 'e_out_MeV':None if p in (1,2) else Eout, 'cos_scatter':None if p in (1,2) else cs, 't_e_MeV':Te, 'cos_electron':None if p==3 else ce, 't_positron_MeV':None if p!=2 else Tp}\\n events.append(ev)\\nprint(len(events),events[0],events[1]);\\nfrom collections import Counter\\nprint(Counter(e['process'] for e in events));\\nopen('/tmp/events.json','w').write(json.dumps(events,indent=2))\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzQz0bq_8m8uYdjTA_6JfQEPgzSD3A1oCcXX771lMAgsbSBShV8h5lD0dyvpAW8hGrDOuuLiVG1IGREQmXsOIU4Wg3Jf8uxxOB73xGb9F5IEeePnS-BijTwrIjScFqGRWQX6tNlqmgetws6ovsXFmroeJN_6i8yYRIcik-MpU7LfLL7RnuvmlJNflihWJSiW0D3kmaSQ85M4dV-uNg5p_j7TVbZ821yBa3vfeSodpIaJFnQNG0a_29ZGUVocrsIpTjBfF5Tlbi3kgSyBJZLZhpZp4eYsMzogI9bZbXNGVrDxH74m0b9QL7laNo4uVSW2t_Bz83Usn-OkXMTCxZE-GhVp1AH_LWtK3JVJ2VEmeOHCaXcP_8NAqPCJnfiK_g-M5g-22Doe5Vqh_ISRc38Xqwdgwk9zsUNlqhVQNOr69AiDWb1n8xMddbPGAzLVgj_jb1kLB2cyDWom-DgwEgTk1u5GSAgEkLq-D-x-viV7P5BeZOuqtf0I-yEz3ki2at7vNkTIgDFoDEHfor2kzvtcvwUEcoNDuW8i5N-bqD0pVLKjzrFMosrGVVI1ZzwwPW3ScxIqP4tlRPP_kwV5azuhyeGmc-NAKAJAT58agTxXvDzG0gq_p1RlbHlAPy7pbJTRC0JDRFn0fDxZ9DfYQXgVQhovUPNaxAs5H6kB6TozIsRM6VV-GMbmbPVRXj3oqPJXuVWzzm30aFplzYPCe2vvxATbIT-DAp_N6TdegoXrebO3Mc6FF5DLI_GmnllL6T4vpLj0PPA1p70-5HoPwrvW9TKkzsWa6DknXIpjUc46mvwtAWytvgZrr-oR8idDcIwOgymPoWoEOuCDGQu8v0E0hJwx58c5ym79nc2CYKcfdFZKVa78W-PB5Mg2J41bhbPsIjScbM5JlrJOAxsWySiySqr4ttpiJ8u5gJCvLxk9NhvbiIZsjUlNvQ9lVrbGsxpFxwi-g-sXOBnHM7ECSwtriMJTGw1D9y-lxx1JRGDv6aHDZFOLMKHLy1F3jdwx_4fmrvXRGuQt3VYijjMstuq-kLxnjW6BHSWl1lWDOg4e-tYf-0M-PejXOKTcPK22k7rF5bCryvw68WGYrLXf-2nOags_qCHkgD0wpkKxDlAPgjtUD_dqbYFjIgEkifUwJn9DpSS182RcpvAocgCyf3HH9bDxlUcADA-qZ_obw7zFZidOgopieSBIyTXrOFAcY6gFVfVlvxl1oTCqQrMDHiNvJouUe1S9pbovMmvgq8413zNVwzy_cd3JApFYMZQYbU8Zdh1uimt0mLhsLC4orKF-Duu1FdnSYQRajLVhVAPrkoRq8mP5S1jjLnCmSailIL_m8ogxR7kWX1gZaFyQDlwFY19MCMDXp6-jI1ciKvmBtD8ffWQYNrS23Fq7PJZs7ekJmriI-5qEnW7FsDyiHVUDzVHvufjhSbROQRSSKZNAB8CqdIolCUq2l0xU5HFsGWr8ocvJT3h_xol2MKelhGnl13eZTSB9KKOdhnAtfpPDh45rmLfWa-yKo2u6ur7XSMJMUXYHKuO3PYe49BgEqsDIqSVnJAym56ymnzCQjmP23bbhEPsRKo-eKBjwCnITDqQbZL8mLVJUXGVdxWU5rcYaQvDxd1YJFEC9rgTOPLOh0OykAWBuhWrvI2mG1IO6BcjAwpRtS.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_098c931a4059667c016acd0cf3c0a487d1a8e9cdc5eee06060",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 13112,
+  "completion_tokens": 247,
+  "total_tokens": 13359,
+  "cost": 0.000328145,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 12472,
+   "cache_write_tokens": 637,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000328145,
+   "upstream_inference_prompt_cost": 0.000204645,
+   "upstream_inference_completions_cost": 0.0001235
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 7,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

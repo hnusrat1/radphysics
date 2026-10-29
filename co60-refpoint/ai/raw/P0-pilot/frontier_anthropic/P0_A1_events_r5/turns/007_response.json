@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791817175-fZxnewxfKygaU6jGxRC3",
+ "object": "chat.completion",
+ "created": 1791817175,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I'm getting a scatter fraction of 58% with Rayleigh contributing about 2% to the near-edge events, and the pair production fraction checks out at 0.41% consistent with the pair production coefficient. I'm noting the photoelectric contribution to the near-edge events is 1.8%, and now I'm thinking through how to systematically sample 200 events from the combined list, since the ordering of primary and secondary collisions is effectively random so index-based selection should be fine.\n\nActually, fixed-order systematic sampling could still introduce bias if there's correlation with event type ordering, so I should shuffle the event list first before applying systematic sampling to guarantee unbiasedness.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01Uj8XiZto4NjdGTsmBkU7bM",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nallev={k:np.concatenate([prim[k],nev[k]]) for k in prim}\\nprint(\\\"all process frac\\\",summarize(allev))\\nperm=rng=np.random.default_rng(7).permutation(len(allev['W']))\\nW=allev['W'][perm]; cw=np.cumsum(W); tot=cw[-1]\\nstep=tot/200; start=np.random.default_rng(11).uniform(0,step)\\npts=start+step*np.arange(200)\\nidx=np.searchsorted(cw,pts)\\nsel=perm[idx]\\nprint(\\\"unique selected\\\",len(np.unique(sel)))\\nevents=[]\\ndef f(x):\\n    return None if (x is None or (isinstance(x,float) and np.isnan(x))) else float(x)\\nfor i in sel:\\n    p=str(allev['process'][i])\\n    e={\\\"process\\\":p,\\\"e_in_MeV\\\":round(float(allev['e_in'][i]),5),\\n       \\\"e_out_MeV\\\":None if np.isnan(allev['e_out'][i]) else round(float(allev['e_out'][i]),5),\\n       \\\"cos_scatter\\\":None if np.isnan(allev['cos_s'][i]) else round(float(allev['cos_s'][i]),5),\\n       \\\"t_e_MeV\\\":round(float(allev['t_e'][i]),5),\\n       \\\"cos_electron\\\":None if np.isnan(allev['cos_e'][i]) else round(float(np.clip(allev['cos_e'][i],-1,1)),5),\\n       \\\"t_positron_MeV\\\":None if np.isnan(allev['t_pos'][i]) else round(float(allev['t_pos'][i]),5)}\\n    if p=='rayleigh': e['cos_electron']=None; e['t_e_MeV']=0.0\\n    if p=='photoelectric': e['e_out_MeV']=None; e['cos_scatter']=None\\n    if p=='pair': e['e_out_MeV']=None; e['cos_scatter']=None\\n    if p=='compton' and e['cos_electron'] is None: pass\\n    events.append(e)\\nfrom collections import Counter\\nprint(Counter(e['process'] for e in events))\\nprint(\\\"primary-type (e_in=2.0):\\\",sum(1 for e in events if e['e_in_MeV']==2.0))\\nprint(events[:3])\\nprint(events[-3:])\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I'm getting a scatter fraction of 58% with Rayleigh contributing about 2% to the near-edge events, and the pair production fraction checks out at 0.41% consistent with the pair production coefficient. I'm noting the photoelectric contribution to the near-edge events is 1.8%, and now I'm thinking through how to systematically sample 200 events from the combined list, since the ordering of primary and secondary collisions is effectively random so index-based selection should be fine.\n\nActually, fixed-order systematic sampling could still introduce bias if there's correlation with event type ordering, so I should shuffle the event list first before applying systematic sampling to guarantee unbiasedness.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "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.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 77205,
+  "completion_tokens": 1100,
+  "total_tokens": 78305,
+  "cost": 0.0082705,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0082705,
+   "upstream_inference_prompt_cost": 0.0077205,
+   "upstream_inference_completions_cost": 0.00055
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 294,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

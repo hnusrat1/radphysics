@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791828449-zzb95EzxoQZABvV5XPvh",
+ "object": "chat.completion",
+ "created": 1791828449,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I need to switch to np.trapezoid since numpy 2.x deprecated the old name. I'll write the whole analysis progressively in one file, re-running it each time via exec since it's fast enough despite the fresh process overhead.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01VeWrcSkV9sDB4CeQtnR5UX",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\ns=open('/tmp/ana.py').read().replace('np.trapz','np.trapezoid')\\nopen('/tmp/ana.py','w').write(s)\\nexec(s)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I need to switch to np.trapezoid since numpy 2.x deprecated the old name. I'll write the whole analysis progressively in one file, re-running it each time via exec since it's fast enough despite the fresh process overhead.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSqQgKEAgSGAI4AUIIdGhpbmtpbmcSDE9a0dan34LGG7GpKxoMlASeJPV8KfZX+RwQIjCHou8ECJZdKRMINW15yL6rpoT+M8ePB3M9CMfoa5ci9Scv0vzFpZ67hFokRpa+fKEqxgfzM79eBzl1fcOIgORnt4Vxlc48TJQOnms8xlQyJscK6s9kbGn84ghNf0yoeatRkXAhAn2OKEJh/cnoWrMi8++GxEVuwwf+6B3URBPJfDGEAyEWli8gdHL18xNp7yqoaiJexk+axSm2PW2DGfkV2vfCmxMqLEHn82ux2Fp111t76BgybyZdJmGULVsmq0C9fwlsXSnDFZ9wEujhrd0DK5VRSo32Q4yL1BbJUzciRVM5T4AwBZw20I+K4NJY1jMXkxNAo4+emlpxLWF5o72d5vpQH+5RhNf8MHTDuk1u1YkqtM15ivo8Q1yp1Z2d6xCDe9EiVbUtvz3jd/HsBNzZoXtfGXRijI/ocyW8FmUPXI980E3X+Rc7JkDsZSwu2Qdky16upNMWYmFIHL7COb56quScNVH2tJEptAvksuR4nNKG/E7GbqPMhwplU09HAHE/rFASwN6vIuOPEVIOs/vVo8B+K3w6eW/KjTzcXr/ADOq+xT09N3uj9mVB8kjL915QcpoQTqccygZOhf5i9F/scEKzVzZtAYTKosLU5kxDvy6shj0rtQNsutwGdKfQbcjPvxMNf2GGpvsfC9gsgiC4dyxqWcX5gx6kcC4JtBewzSarmONnLahetY8EzytUaCMqlQFFDrmt5LgF9ei8qznco83b9TnkcEqY49o5wi+7C5r2k1pv8OBE6F0knH5X6/4giWIQr8rq6aswiHRS/55mq/HTGotjlQahcpuTQZ9d+hMgrlje9YyqnXUt24XfKLlFGBdu2WbwcR1tSEqkh8cofDsBR+D5FrXrWFzsLCQhUvq5AmDZu0M5NfYJsVsQbelf6gwh24E7VV4z6X9gXbUjGHZa9qfH+NPUrSUscSlpEBfTl9r1XVnJgnVYVHL1SbMz6UxeArj79E8RslASQLHV5nKQlQMdXks5Dvxtr6MuO1w1w8YIrDpiDqmo3AVMkkOTnlD8QLzxHJCbWXK3IyaCbSp266mVq58xljjH17/2tqvvXWUWZL50bFwFOHq9Fqacrw+Va/5N8kW2Uz8LorGUOB6lOmPDEGX+GJEPS/KTT9HxneLO33lqmVT/ntnqy2YDOVuJok42ilAebzDbr742sTy/JDOPLikTMcFNzTN5i+da0g35e3hI+QEY8jCI9M3L22jEFMc0dh74nupE2nOCrsEv2jJt+EhjVpeocEJKn821qwIYmcAhoYdZV4gfaCj1JqhYwAIrBToRk3S29AWU+lEtEKyacPewAwccdxKzUAIB4/EzmM6mrscX/Lczk5N8SGnNaHY25FkYAQ==.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 125451,
+  "completion_tokens": 191,
+  "total_tokens": 125642,
+  "cost": 0.007034425,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 124956,
+   "cache_write_tokens": 493,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.007034425,
+   "upstream_inference_prompt_cost": 0.006556925,
+   "upstream_inference_completions_cost": 0.0004775
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 86,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

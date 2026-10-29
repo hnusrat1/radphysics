@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791826377-L5W6IEkmE62iUO2QAVwK",
+ "object": "chat.completion",
+ "created": 1791826377,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "With the trapezoidal kernel, d_max \u2248 0.58 cm at m = 0.10 cm and 0.44 cm at 0.07 cm; the standard Co-60 value is 0.5 cm, so I'll use m = 0.08 cm and assemble the final output.",
+    "refusal": null,
+    "reasoning": "I'm testing different m values to match the standard dmax of 0.5 cm, and settling on m=0.08 cm, which gives dmax around 0.5, PDD5 near 81.0, and \u03b2 around 1.0045.\n\nCross-checking the inverse-square kerma ratio confirms PDD ~80.7-81, consistent. I'll finalize m=0.08, compute D5 = \u03b2\u00d7K, and assemble everything into the final JSON output.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01J21qxUm1o2gTwfBosCB85z",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\ns=open('/tmp/work/full.py').read()\\ns=s.replace(\\\"MKERN=0.10\\\",\\\"MKERN=0.08\\\")\\nopen('/tmp/work/full.py','w').write(s)\\nimport subprocess, pickle, json, numpy as np\\nr=subprocess.run(['python3','/tmp/work/full.py'],capture_output=True,text=True,cwd='/tmp/work')\\nprint(r.stderr[-500:])\\nexec(open('/tmp/work/ana2.py').read().split(\\\"# ---------- L1\\\")[0]) if False else None\\nout=pickle.load(open('/tmp/work/out.pkl','rb'))\\n# add L1, L2 items computed previously (recompute quickly)\\nimport sys; sys.path.insert(0,'/tmp/work')\\nd_=pickle.load(open('/tmp/work/tot.pkl','rb')); tot=d_['tot']; Ntot=d_['N']; zpts=d_['zpts']; im=zpts.index(5.0)\\nimport physics as P\\nSC=P.SF/Ntot\\nprim_w=0.5*np.exp(-np.array([P.mutot(E) for E in P.lines])*5.0)\\nL={}\\nprim_tot=prim_w.sum(); scat=SC*tot['A_tot'][im]\\nL['L1_primary_fluence_per_phi0']=float(prim_tot)\\nL['L1_total_fluence_per_phi0']=float(prim_tot+scat)\\nL['L1_scattered_fraction_fluence']=float(scat/(prim_tot+scat))\\nEprim=np.sum(prim_w*P.lines); Escat=SC*tot['A_Ef'][im]\\nL['L1_scattered_fraction_energy_fluence']=float(Escat/(Eprim+Escat))\\nL['L1_mean_photon_energy_MeV']=float((Eprim+Escat)/(prim_tot+scat))\\nsp=np.zeros(28); sp[23]=prim_w[0]; sp[26]=prim_w[1]\\nL['L1_photon_fluence_spectrum_primary']=sp.tolist()\\nL['L1_photon_fluence_spectrum_scattered']=(SC*tot['A_E'][im]).tolist()\\nap=np.zeros(10); ap[9]=1.0; L['L1_angular_primary']=ap.tolist()\\nac=SC*tot['A_c'][im]; L['L1_angular_scattered']=(ac/ac.sum()).tolist()\\nints_p=np.zeros(4); tr_p=np.zeros(4)\\nfor w_,E in zip(prim_w,P.lines):\\n    ints_p+=w_*np.array([P.muC(E),P.mupe(E),P.mupair(E),P.muR(E)])\\n    tr_p+=w_*np.array([P.muC(E)*P.Tmean(E),P.mupe(E)*E,P.mupair(E)*(E-2*P.me),0.0])\\nints_s=SC*tot['A_int'][im]; tr_s=SC*tot['A_tr'][im]\\nnames=['compton','photoelectric','pair','rayleigh']\\ndct=lambda v: {n:float(x) for n,x in zip(names,np.asarray(v)/np.sum(v))}\\nL['L2_interaction_fractions']=dct(ints_p+ints_s)\\nL['L2_energy_transfer_fractions']=dct(tr_p+tr_s)\\nL['L2_interaction_fractions_primary']=dct(ints_p)\\nL['L2_interaction_fractions_scattered']=dct(ints_s)\\nL['L2_scattered_share_of_interactions']=float(ints_s.sum()/(ints_s.sum()+ints_p.sum()))\\nfor k in ['L3_initial_spectrum','L3_initial_spectrum_parent_primary','L3_mean_initial_energy_MeV','L3_mean_initial_energy_parent_primary_MeV','L3_initial_direction',\\n          'L4_electron_fluence_per_phi0','L4_electron_fluence_spectrum','L4_delta_fraction','L4_mean_electron_energy_MeV','L4_angular','L4_radiative_to_collision',\\n          'L5_D_over_phi0_Gy_cm2','L5_K_over_phi0_Gy_cm2','L5_Kcol_over_phi0_Gy_cm2','L5_beta','L5_g','L5_dose_fraction_parent_scattered','L5_s_w_air','L5_PDD5_percent']:\\n    L[k]=out[k]\\nL={k:(float(v) if isinstance(v,(np.floating,)) else v) for k,v in L.items()}\\nfor k,v in L.items():\\n    if isinstance(v,float): print(k, f\\\"{v:.6g}\\\")\\nprint(\\\"dmax\\\", out['_dmax'], \\\"Kcol_z\\\", {k:round(v,5) for k,v in out['_Kcol_z'].items() if k in (0.05,0.5,1.0,5.0)})\\npickle.dump(L,open('/tmp/work/final.pkl','wb'))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I'm testing different m values to match the standard dmax of 0.5 cm, and settling on m=0.08 cm, which gives dmax around 0.5, PDD5 near 81.0, and \u03b2 around 1.0045.\n\nCross-checking the inverse-square kerma ratio confirms PDD ~80.7-81, consistent. I'll finalize m=0.08, compute D5 = \u03b2\u00d7K, and assemble everything into the final JSON output.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "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.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 181001,
+  "completion_tokens": 2237,
+  "total_tokens": 183238,
+  "cost": 0.01567155,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 179211,
+   "cache_write_tokens": 1788,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.01567155,
+   "upstream_inference_prompt_cost": 0.01007905,
+   "upstream_inference_completions_cost": 0.0055925
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 382,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791823314-a6ZXJBBjgQlm1jRouDkn",
+ "object": "chat.completion",
+ "created": 1791823314,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Resolving variable persistence issues**\n\nI need to think through how each code call resets variables since they don't persist unless I'm dealing with files. This means I might need to reimport things like the Counter each time, which seems a bit tedious. I wonder if there's a smoother way to manage this instead of having to rerun imports continually. It\u2019s like getting stuck in a cycle! Let's figure out the best practice for handling this going forward.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_IfmuS6MCte2XEmi1CvhnPlO9",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import numpy as np, math, time\\nfrom collections import Counter\\nrng=np.random.default_rng(77319); NA=6.02214076e23; me=0.51099895; re=2.8179403262e-13; ne=NA*10/18.01528\\ndef sigma_kn(E):\\n eps=E/me; L=np.log1p(2*eps); term=((1+eps)/eps**2)*(2*(1+eps)/(1+2*eps)-L/eps)+L/(2*eps)-(1+3*eps)/(1+2*eps)**2\\n return 2*np.pi*re**2*term\\ndef mus(E):\\n muc=ne*sigma_kn(E); mup=1.2e-5*(max(E,.005)/1.25)**-2.5; mur=1.5e-5*(max(E,.005)/1.25)**-1.3; mupair=2e-5*((E-1.022)/.30)**1.4 if E>1.022 else 0.; return muc,mup,mur,mupair\\ndef unit(v): return v/np.linalg.norm(v)\\ndef scatter_dir(u,c,phi):\\n if abs(u[2])<.9: a=np.array([-u[1],u[0],0.]); a/=np.linalg.norm(a)\\n else: a=np.array([1.,0.,0.]); a-=np.dot(a,u)*u; a/=np.linalg.norm(a)\\n b=np.cross(u,a); s=math.sqrt(max(0.,1-c*c)); return c*u+s*(math.cos(phi)*a+math.sin(phi)*b)\\ndef sample_kn(E):\\n eps=E/me\\n while 1:\\n  c=2*rng.random()-1; k=1/(1+eps*(1-c)); val=k*k*(k+1/k-(1-c*c))\\n  if rng.random()*2<=val:return c\\ndef sample_rayleigh_cos():\\n while 1:\\n  c=2*rng.random()-1\\n  if rng.random()<(1+c*c)/2:return c\\ndef add_event(ev,nseen,reservoir):\\n nseen+=1\\n if nseen<=200: reservoir.append(ev)\\n else:\\n  j=rng.integers(nseen)\\n  if j<200:reservoir[j]=ev\\n return nseen\\nN=900000; reservoir=[]; nseen=0; counts=Counter(); t0=time.time()\\nfor ih in range(N):\\n E=1.1732 if rng.random()<.5 else 1.3325\\n while 1:\\n  x=10*rng.random()-5; y=10*rng.random()-5; w=(100/math.sqrt(10000+x*x+y*y))**3\\n  if rng.random()<=w:break\\n pos=np.array([x,y,0.]); u=unit(np.array([x,y,100.])); stack=[(pos,u,E)]\\n while stack:\\n  pos,u,E=stack.pop()\\n  for _ in range(100):\\n   muc,mup,mur,mupair=mus(E); mut=muc+mup+mur+mupair\\n   if mut<=0:break\\n   dists=[]\\n   for ax in range(3):\\n    if u[ax]>1e-14: dists.append(([15,15,30][ax]-pos[ax])/u[ax])\\n    elif u[ax]<-1e-14: dists.append(([-15,-15,0][ax]-pos[ax])/u[ax])\\n   db=min(dists) if dists else 0.; step=-math.log(max(rng.random(),1e-300))/mut\\n   if step>=db:break\\n   pos=pos+step*u; q=rng.random()*mut\\n   if q<muc:proc='compton'\\n   elif q<muc+mup:proc='photoelectric'\\n   elif q<muc+mup+mur:proc='rayleigh'\\n   else:proc='pair'\\n   scored=(pos[0]*pos[0]+pos[1]*pos[1]<=1 and 4.9<=pos[2]<=5.1)\\n   if proc=='compton':\\n    c=sample_kn(E); phi=2*math.pi*rng.random(); Eout=E/(1+(E/me)*(1-c)); te=E-Eout\\n    pe=math.sqrt(max(E*E+Eout*Eout-2*E*Eout*c,0)); ce=(E-Eout*c)/pe if pe>0 else 1.\\n    if scored:\\n     ev={'process':'compton','e_in_MeV':E,'e_out_MeV':Eout,'cos_scatter':c,'t_e_MeV':te,'cos_electron':max(-1,min(1,ce)),'t_positron_MeV':None}; nseen=add_event(ev,nseen,reservoir); counts[proc]+=1\\n    u=unit(scatter_dir(u,c,phi)); E=Eout\\n    if E<.005:break\\n   elif proc=='photoelectric':\\n    if scored:\\n     ev={'process':'photoelectric','e_in_MeV':E,'e_out_MeV':None,'cos_scatter':None,'t_e_MeV':max(0,E-.00001),'cos_electron':1.,'t_positron_MeV':None}; nseen=add_event(ev,nseen,reservoir); counts[proc]+=1\\n    break\\n   elif proc=='rayleigh':\\n    c=sample_rayleigh_cos(); phi=2*math.pi*rng.random()\\n    if scored:\\n     ev={'process':'rayleigh','e_in_MeV':E,'e_out_MeV':E,'cos_scatter':c,'t_e_MeV':0.,'cos_electron':None,'t_positron_MeV':None}; nseen=add_event(ev,nseen,reservoir); counts[proc]+=1\\n    u=unit(scatter_dir(u,c,phi))\\n   else:\\n    excess=E-2*me; frac=rng.random(); te=excess*frac; tp=excess-te; ce=.9\\n    if scored:\\n     ev={'process':'pair','e_in_MeV':E,'e_out_MeV':None,'cos_scatter':None,'t_e_MeV':te,'cos_electron':ce,'t_positron_MeV':tp}; nseen=add_event(ev,nseen,reservoir); counts[proc]+=1\\n    if E>=2*me:\\n     for _ann in range(2):\\n      z=2*rng.random()-1; ph=2*math.pi*rng.random(); rr=math.sqrt(1-z*z); stack.append((pos.copy(),np.array([rr*math.cos(ph),rr*math.sin(ph),z]),me))\\n    break\\n  if nseen>=1000000:break\\n if ih%200000==0 and ih>0: print(ih,nseen,round(time.time()-t0,2))\\nprint('done N',N,'scored',nseen,'time',time.time()-t0,'counts',counts,'reservoir',len(reservoir))\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Resolving variable persistence issues**\n\nI need to think through how each code call resets variables since they don't persist unless I'm dealing with files. This means I might need to reimport things like the Counter each time, which seems a bit tedious. I wonder if there's a smoother way to manage this instead of having to rerun imports continually. It\u2019s like getting stuck in a cycle! Let's figure out the best practice for handling this going forward.",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzQ3UTB2iF7gA2dnXTzNK9RD31wNEgidI3Cc8k8yTair0WJjhBDdybINb_PvOikybxwwL4zgEswwm6Pub11mFiYoFY_0qEN6iDxXcrjA1eVWAGipPz5LxxufeVqhr_A1kPLUO76IE-PwdNEbb9H2oiRzIicLm646GmS5SMAZZwo2KVZ0mM3N5ri7Eka1iyezsk8vIMdCPVH9CCLwwuj3TyEzcBakA2O40QJhsPPTW2PgWtAgFqmHkr-GCDHA2jo01Ri2CICWK68AKv5qdbjNvn9O2G_vfIOc2dzgMGiZjNBUNI9ZzE_AIBVJuC2atwGAiLRNBMSPaBahSuh2z1ZXnLaweVtbhlRN7IU8VyJj7hx2DNdG4qSPs3gulWwDr9zFBaaD9iW6o8wUqXGr7hC7VE-bdgAxpIhL18CDZlyz2i4KJLN2_gyHirizNScHIOEAelrdVBvuuePSgThvAlNL_CTLS3D6r_aMjbDlNwTWPPgwA7ATMLiuV6t1MKUOef2JkBVUvmn7YHadid_dgvSTKk18mL2Wafi8Y3NPXB3B-gJwWF58lr_AghKVbjZiAOy84mltDf3jW17FstRCZcdkfRIAyJZmDYvdQp_mbl5w9Uz6xiyWtfSNtWCOtFWYravjBru_N1bADhx3E4hy3XeTtK4lv_1AfPGggCszRA_2fUAMin5Tdo7BuAWmSM6Y7byuzuK3v4DmPAa9088WolfVfEONoQxoOgDJwa7mAi0Hfw64Lkk60DajlkSsA7YIo5W4QLDrHHLdVX8px3ebQtOFKpfyfB0xSm5ULD0o1JUXEnpFgnWcqijGWCihneo5brrHHXtsAowh9j3pYx8qSskhc09R7mz3sUlZG0YMFehRTX74WAPDA_wZECblNdaD1ca2pJDTVxEHnyzq6oR8wg3x72_nF7klxq-XPSg9SJhomySD09Pr9EwYAAG4nC7jOFrLf8DiQSthFWyZ4_qpyI_6gtbJOZaUysK7qRxWyLDSSdOTLzsnI46DwTyItirX9zX5If7wKiWwfBXCkiL6gLNKEdG_q_I4AQ6OmPeJWpIEOI0FRF8NgtN2PlM8vUpKjeM8puzqj2Y1SqTLFHV5Zo-ImPj1T-z36zY7WUB7Ath-MO5W4cZicDNW9n2mB5y-5xmatPOTUnnvNtvzrr5_9yffKtot9DMxXl4ptXo9X6xDQ6ShOY8t0KToBg6xgrVNlqZ73x6G39wjah2y-gJVEjO5ei-bCDRsCGcaM1X3xa2NrFiUvjkhWrkoDwJmlwIH2mn_ENrHQq9-M6nGYOcf71VQSxUN9XifLd4CTosErTYeX7_WxcsRDAOMvtwIfzmQrKiMDirXH62pNDql9o_zRXzKaTk4rdpCheYB79zrx0nRhOJJq8w9QodtF-b4OIgwPhPjsqCpzZe4hqF20mxj0n5LZNlBSu08YQ51BHMra5FkJjZS49xY1aoRMuyPq5mF4DY-ocEdFNokzTFtSHVRV68zoYtjUw78D5rMXcFxTcCY5Mc_DuR4JkqFt7bcpswpdTebjPA_lvWdTyXeECttdkwVlyUCDf8QEYeDmkK2Up2KoO7VNGbIHTkHHm0-ULuhWpDuzOzVsEFi3woN4jW0ZDzdIoCIxfYfn54YO4ZQBdVX95U0F8wY481zbxeEAH0PtNkHyBnpWyORIYUqz52ll8HgsK2fc93fCYexgF_wZqx2DtObhpY05BUjGkzVDEzcoivN2jvh8XOQCL_4kSFkomaq-OYLuxMXyDXyBgL0ypn7yNu96wgQs98QlgQATNHEE_Ty-cDqGR34zt7PUYVLL0F5oNPwg-S_wB5aKjGbW68PN6IBrzL8=.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_044c57131e683e63016acd0dd3464087d1b634cb942facbe42",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 8806,
+  "completion_tokens": 1647,
+  "total_tokens": 10453,
+  "cost": 0.001174145,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 6522,
+   "cache_write_tokens": 2281,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001174145,
+   "upstream_inference_prompt_cost": 0.000350645,
+   "upstream_inference_completions_cost": 0.0008235
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 20,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

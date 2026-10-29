@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791826612-yXnJKcgf1HS1xHnTiXxG",
+ "object": "chat.completion",
+ "created": 1791826612,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "It seems state isn't persistent across calls since each one runs as a fresh process, so I should write a script to a file instead.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_0182g7Zxt8pEPLnRXDrrsDma",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\ncode = r'''\\nimport numpy as np, json\\nme=0.51099895\\nNE=6.022e23*10/18.015\\nre2=2.8179403e-13**2\\ndef sKN(E):\\n    a=E/me\\n    t1=(1+a)/a**2*(2*(1+a)/(1+2*a)-np.log(1+2*a)/a)\\n    t2=np.log(1+2*a)/(2*a)\\n    t3=(1+3*a)/(1+2*a)**2\\n    return 2*np.pi*re2*(t1+t2-t3)\\ndef mu_parts(E):\\n    E=np.asarray(E,float)\\n    inc=sKN(E)*NE\\n    pe=2.8e-3*(0.1/E)**3\\n    pair=np.where(E>1.022,0.0038*np.clip(E-1.022,0,None)**2,0.0)\\n    coh=2e-3*(0.1/E)**2\\n    return inc,pe,pair,coh\\n'''\\nopen('xs.py','w').write(code)\\nimport importlib, sys\\nsys.path.insert(0,'.')\\nimport xs, numpy as np\\nfor E in [0.1,0.2,0.5,1.0,1.1732,1.25,1.3325]:\\n    print(E,[float(np.round(x,6)) for x in xs.mu_parts(np.array(E))])\\nths=np.linspace(0,np.pi,2001)\\nfor E in [0.05,0.2,1.1732,1.3325]:\\n    a=E/xs.me; c=np.cos(ths); Ep=E/(1+a*(1-c)); eps=Ep/E\\n    f=eps**2*(eps+1/eps-np.sin(ths)**2)\\n    print(E,f.max())\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "It seems state isn't persistent across calls since each one runs as a fresh process, so I should write a script to a file instead.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSvgYKEAgSGAI4AUIIdGhpbmtpbmcSDNuTjUlt8C3XQoNlSRoM8j02OphxTNIxqI1yIjB+S0zCBrXJ9I28sNoaVokhUb9n4vSgMj3O7o+b6s7etAT0HcYqBUOX9GJh2iYHgQIq2wWruIhefem+RUeSLhWTSHA+53eJAQi2uyZdHxxUmwd2EmPlhRWx6gUOB78qAsjuVSsahVZCrBIU5PPyIsmCCXwx80pO39t6/Ksql2LC4x6vtWn/vY9KQWrsp09gWq9PcuJ4zb+cbeweRVoPm2H/PjT7sCjLiRRpXPAjwvbhABU03RFVWy7jmyoi8IY+TF2FW5VS3jDkeLiE2VzoqP6mzuzDvXoE+xk/QLxAf4uJSMhI+wVGtNv9G3+Vv1EfXz0C9NZRecIXnHBTXDR81aMDpfjxuN/GsLsXwF67Mc6Tr9EPFgZhXNKHfjAeZtc6N473I3dF/TogFzG7SLiEVmJaoihZPN6goksdn2em2y0f3BJJeGiFwinFKEaf0i15Rccr/5xL+x57tvya0BdYsKVLip/LhL9sxp236TU60nCsH0QGdV9rQiptLpWR+axE2XtLOqMZCd7DQYmiYdhiy6qMSsfVW5uJE5mu+2rMHqRK7Ri7eWOmC80uvgYcSlHqQNGGhyqs3+miZqIQvkGbsLqblgWDCQClCnjVPVD5GOs+3wSHB3qQk1H4H8c/EESro9xzAryrNbPcDKWLO+vO+RE4hPTyovLRkcWVCLzNFI2vCJZg1sMJWJDoPdV3H+5kt0+aeMg0pyVl1UYGIbLwvPaIw6rLa+QHAhUcdgspMa57+ZXg9BI59kVCeQX5OynB4YUlJTUnrVvMxlLcfSIsUUhs4Fl8pt/7mD7cHidVAuvPzo4C1kw8giUUML5pYf0s6eSdQWONM1N4x+v2j7lfU6Cr9jjmAODsbXkcPfcBSa29hxfp83j2Zte/J2Od5pzJ0NpKJgCq9miyw0WNfXaFFjOIHJJedaIk2OL/4ADpFgjXr4u1oqaDTGwOHKN6HwKC1T9JCKBv2rwf3gq4slMlZKK0d4Gb6bErKoPAC1uU94cMshkPyC2arSUuzxGUdBWToyMt8H1J1GQRa+NLsBHFsxgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 16865,
+  "completion_tokens": 640,
+  "total_tokens": 17505,
+  "cost": 0.000543225,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 16390,
+   "cache_write_tokens": 473,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000543225,
+   "upstream_inference_prompt_cost": 0.000223225,
+   "upstream_inference_completions_cost": 0.00032
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 30,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

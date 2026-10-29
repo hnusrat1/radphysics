@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791829749-bTsT1cUYB3BCd0qWt6aa",
+ "object": "chat.completion",
+ "created": 1791829749,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I should use np.trapezoid for numpy 2.x compatibility, and note that the normalization in _kn_avg doesn't need \u03c3-scaling since it cancels out when dividing by the norm.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_0185oA3PH7qcXYRiznT5VFf5",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\ns=open('/tmp/work/mcmod.py').read().replace('np.trapz','np.trapezoid')\\nopen('/tmp/work/mcmod.py','w').write(s)\\nimport importlib, mcmod\\nimportlib.reload(mcmod)\\nfrom mcmod import *\\nprint(Phi0_src, Omega)\\nrng=np.random.default_rng(0)\\nEp=np.full(200000,1.25)\\neps,cs=sample_kn(Ep,rng); print(\\\"mean eps\\\", eps.mean(), \\\"mean T/E\\\", (1-eps).mean())\\nprint(mu_tr_c(1.25), mu_en_c(1.25), mu_tr_c(1.0), mu_en_c(0.5))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I should use np.trapezoid for numpy 2.x compatibility, and note that the normalization in _kn_avg doesn't need \u03c3-scaling since it cancels out when dividing by the norm.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSvgcKEAgSGAI4AUIIdGhpbmtpbmcSDHlDLyITFLicl6LJCxoMkMjs0IOgcAFZ+ktuIjD04HNEweCqz0fXnndCVLkOgp9kpOVxHG89YL3ivp1ZJuWzNFw+V0uMXnvilwOKLQAq2waWSmCi02ESDPYMMbw9YzOnwH2rOVwLJhZ1mDUuXyHBL8XCj1cjlTlfHKMsebUMR4TShoY63P0cr2z1aysopm0Rd6EDAJX7+Abh7qjwOh3QUL9UFAp1YWrNUKXwHWVyj3PxGnLuhnXrE9bVU+dbujWxya8rOPiZp2x+VEZsppZJxEDBP0om+stb186smaEQ4ut+IY/kQRLquf68IXkf2POHuVCijRePqy02nczfqq4FxkfjaOmiaSUnAAaMB3p7hlRJTQ+/arATjhxm/6wXXOioV7eV6GOGvacTHk5A2K3/kWqyjCeFBZeNb0Z0TIpv/N4Id+i4FNfDRTijGnDyduhAehA43rclay+4DZJv8DydEpwWkDWUPuT3ycqXqNXNnJo48MSj+bc1LttXVTUqRvKeimJdUiPdjj3MF+0GG8fAhbPl1ODzFNL2C1ccSKMXYVt04u+0a59BM9GVU3uuVHzourwOs19u2X888SYQj6BI9YxwGoh10mQ/qd3myiuK8+1GJdSZPpW6xvoTVHGtCr2I3Id26/YIoIr9oSz7xfzGEdQOtzPKCcUQDydX68IcgXaeYqUQ28a7hJzc8zePWdYpRv5hKPdkpIXmnyCGm+hz4VG50G0qgzD5NekcNjVvFt+B3T0Q15Uv/Hhq3r4wOpk+n5NQSDFRPHD++Lu6Ls5lgPThz1+EpC9hzKzZzXeOtRn/5hqqxILmaj/liF6B1LmrHBKJjMilxAvysEn18sj6OIEH7P/9SfwglpM92w2/tlbFYiYitBQSgfcjL0rWqJiwLB5f3Fqa8JWIysexoRtvLo1EagzxF+mJC6rakzAMZT7kXX+jnXCZVLcYYN6/WcgmWx7p89of4wqTCmupluuzFJvTdVxtHDvOXVYOEWJKAcOGt1RY3cSJPELaeLjyYT8gZ/nB7qtsZF7f7gAwlbl9p7L4r80c7T9ioxU3ud9ht4xHmJS7l1KIqWmnbQ5J0h4KYhFSgAc73vrqJRIsAfGMJAAFS5m4J/gZlX4wpibXoxDb2otaYwf2EedJjDUIiEqMyuN0az+ZLrTk2YZEdRKl/qsuIxd1UGOr9RXv4oBhItKPNP/6Aoy35VJpbuDypI3JZWhtBE01Avcjvpsj8uofWZnS1LrXIyo/aYluGAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 109282,
+  "completion_tokens": 343,
+  "total_tokens": 109625,
+  "cost": 0.006673825,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 108669,
+   "cache_write_tokens": 611,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.006673825,
+   "upstream_inference_prompt_cost": 0.005816325,
+   "upstream_inference_completions_cost": 0.0008575
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 61,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

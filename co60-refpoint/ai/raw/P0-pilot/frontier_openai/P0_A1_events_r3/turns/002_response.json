@@ -1,0 +1,61 @@
+{
+ "id": "gen-1791813597-SvVFKyagyvlJF6uuZFXG",
+ "object": "chat.completion",
+ "created": 1791813597,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "stop",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": "```json\n{\n  \"method\": \"Unable to generate an unbiased sample without a validated coupled photon\u2013electron transport simulation and evaluated interaction data. Events are omitted rather than fabricated.\",\n  \"events\": []\n}\n```",
+    "refusal": null,
+    "reasoning": "**Considering JSON event structure**\n\nI need to determine if I should produce a JSON format with 200 events or a JSON object with an empty events array. It seems they expect a valid schema without needing to invent anything. Creating 200 fabricated entries poses issues, especially regarding null fields. I can\u2019t claim it's valid if empty, yet their request specifies 200 events. I must honor the limitation while adhering to their requirements, but it seems impossible to provide valid input.**Addressing JSON limitations**\n\nI\u2019m thinking about how to handle the user's request given the limitations. I can't provide an empty events list without conflicting with the minimum items requirement. Creating fake entries isn\u2019t an option either. I believe it would be better to return a JSON object with valid keys, like \u201cmethod\u201d and \u201cevents,\u201d with an empty array for events, stating that no data is available. This creates a parseable but honest response, which looks like: \"Unable to generate due to lack of validated data.\"",
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Considering JSON event structure**\n\nI need to determine if I should produce a JSON format with 200 events or a JSON object with an empty events array. It seems they expect a valid schema without needing to invent anything. Creating 200 fabricated entries poses issues, especially regarding null fields. I can\u2019t claim it's valid if empty, yet their request specifies 200 events. I must honor the limitation while adhering to their requirements, but it seems impossible to provide valid input.**Addressing JSON limitations**\n\nI\u2019m thinking about how to handle the user's request given the limitations. I can't provide an empty events list without conflicting with the minimum items requirement. Creating fake entries isn\u2019t an option either. I believe it would be better to return a JSON object with valid keys, like \u201cmethod\u201d and \u201cevents,\u201d with an empty array for events, stating that no data is available. This creates a parseable but honest response, which looks like: \"Unable to generate due to lack of validated data.\"",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzOfi9yc5c47BQW2PWlMc3Pp3L2cH8CHgtQOJP_mfCoj91-hRKvUdi2L8_imsUpm3xp3j5mPKa7l0QQQtyynZLlM_isW-zWto1xNBIa_QZxCmUIQZY5HJF1RaphkyCQBRZTUXaHqsKwXr5OFBrv140waPlsAoV3z2QMxZ42zc9-K4eyWgzRiyq8yT0aFMC9_CCcGrV4Nb5XKNvhT1tYomzGjIxNVXLIEXZ0izRIFAoTRloiBVgY76VDA0Cm1zMb-jolg4GmYhkhYaRXf5PvhzhRj_8OS3S6E00n-PXz9nxHJ9pihWpnzHhu7QnBbQLvogt1AwE6sQcMdz8fiEkuTfSVoJKuHpCfTPdU7ugVFe4yqJ3Yad_kTBpPU2YowvKZ0p0JXm6mtO5OyYTk5aCI9gF0TfzYzCSu4B5bHllfHiKI9siPzSww6XKaydVbPTmX2xnsynzgToo5nh_YqGoVVo9U_SsyRdfBYFvwoh25cnrD-iz5yprYZYJnfSNkT_gzJuTNPD4RFnNvNavNyDof3KUdguLQJP5fIObch7TnEEg0BSkiYA0mx9J1hOGT7dzhiuxVgZNiu8OBaq6zYFN3HhlansHO37nnrtI__DmyAZSoKa7YyL1S3WlqHb_mkhm65kvErHwSdSZGpFVWt2CZ0a0DMItn9zqJ-7YtnU8bv5I8Dg82bdCu6GbyuF7AH4rC502z-z44ZGTHjkTz72Slp_gQUesApHvOAoygQHj1ja73C9rwfJl_1ttJfsC3_ow1653obzrQjohQqPXXbWrzcZ3fUTHUYQ752O7vrCkeemzysggp7S8hulfkhjfS63tKmzmib48x1I_DJVvvsb6jvnX-Psk11luIPqQgoOLpyj2dQEPZ_5uh76iNB-WC0InQs3pu6miNtVOjk9458F3xikyDIr-O9XMdQyzAKnnN-K_QYFWjvdKYT-Ebj4uKCAtW_6cyc1ZSgR52O30foouj2Z3yeDmvW749JxKeZnyZVxsNwBJXno8B2y0ZwnQPBG3tiTlhm1B2_sa09uQd8xDnmi_XBYBVWRkMNOl8tZxezfne4xBZc-Ir3Tzx9iYBwWPtqd4hS0QoU6Yx4CSjXrvZ0bKdtib9tnE5Ua4fHhgBuPTM1HQfbfLS5qtwtq3877JWf3gd_Duv4NJTjvbG41Vih4RjBqpxV47bZhjSJKEb9eND3-irwStXMRoTMuOs2rW4zORGAJ8Wu4olONJqPXL8JfpK_RS9rVOSVVhZdyVJa2Pcc60pFnIkR3TeXECaiDSHl2Vg70Or2_W8yXDV2wNkHC7XSP9RQ_cq7bu0JmzmQom0DVCDj1bmKYq78EZ_T6zbsf9eDCX7NK8e4JYg75poZ-dNf-M3HijyOnxD-gbwVn1rA_LU1ljbOXvUp0Mynoiv8g5L5PJgpbdZCrZh5aXYTLl_RVoDDc5d5Mtt_NFKJyKA6wTqPwEt5zeDC72XYPkF63frU7Uqsnozu2UYl-KpnvlZOUFr6xPREaztG82dBmw_RWRqLskaQt5zf-bAc6tbv7aztLz4k8OjujmLtWxHSefEv2qnsKrZBmbPf5P9vGgt8T5QrS9M-nmKkjjWWlGQfFGQHb2eOG7L3SOnx1eY36LFheiyWsWVXlM-84AzvVZ0gPmRus9zTwGSn-BeW5rAtd9xZI8c_h7youk_PpCw_a7fxEO-SgL6VVGxhL7OeK_FyopE57trh3OtBTKPjI_2EtqS7_O9yog3vT48TXG0_t7UZ7f5fs7YJX48wrxkCKpnqoFn7iDZ4DU5DaC46Z38VoacNJuZNxewGxX464e8E8-zuoqVqBhAVimGWp6-TPDFbeos3WoG9nIUXEigYlIYSuIlSoQHzG9vN4MmqMmuhe59QIgkQ8mvciFzauN_W7cr_AA_5nYzFi2pfoCBVklX-CTrZCBskkKkQhDlODAH_IBDB0vPfb9ovbJ-1Syz-xBXtSkECwTkxL3z8dmF29cctEAO_vHFYfTkxMKQozQGgNUrg--peLF6DHu0APMTh1zTEP0m8CItbHm2mfKbW1xOSOr49Dt_fZV_ZFcN4qOtnBIzQk7HHA4JoD7-Ow84_Jl4PnAiV0UGOA9vorRo_gb9D31vxXsr3VqGR0lyEr6kbUSqyoSGt0Am-dSDHmvvgWVBnlawrYGw_VA-TjJLsg7CfV6DHFS1jmeFT4fU34hLhY-QvM98XOjay91uWy6dx9Hc_MaIH6of6B5djuuuIJO2pxikwcCBySe6hgW7MkNsjivnpu2plMNLv34dcbkY4hNiZlbmaq8R1gXNPLHENAr1yk54eTMSsm7ftsGw3DpaOT2BWJxgTrvxzpOeQxjcrj0yvAmMzjQZbRUckwcQLcNrmzCqNVCO9HTW5gjNx4sf5ZQqi1zN3WbvnOu2bTDLUOofg0QBMY5bJEDrdBA50zDPK-SUFBkEhn4siQH5BMpFy2WsNhG0wY5pw2UBEKJwIzW-BkXhUVEcS8w9br5Lpd6pDRts1tFCCJRwS_Na5hQwsSKArCNnvXnvR5aGanMEXHKO3HVjN1p3FEqGmkWyWLTSeupPtTQi4RzAh7xoTjzZL7ykC-0U6ttUpJSWUby9Fm_6WvNDP-BItmjvjF0i2Jiu7TBAPPZ3R5YUx9YxEF9p2XOxcSC1waZuKJPRWL8oF4aE_794ug0M_wI2c39jGyhgt3D9j7w2bR19kLPXQpi9imyOMGQzT99MduTtrfoGsLPgTc6B03cY3bZ7rYWelBd7g1vr5Wlx8p0TLVJ_TvwpK6cvaVafSvLJHN40CGjonGYG5XECue6gZDradxvVBPlcI1lvj7QJEFFNUEehK1e1QN6RHfMhL-ZRzZ-wxUr1n2-3PDQT_fU3U8r429LZjjR4SzP3TVZKvqpBRT-E5jF_tJywtsK2BT6FN-HNUYHQh_YI9G9-zs5hhjcg06H-CZMa-IVt7QfZR7NavnEehopUfzGcuGlyO6LtfGQdExT2Kp6hb_1PDr5Nws3y3cHhQqK7B1B3R6Q0a_OZUwLT7L_WmLE6KUXy750QkiEnKpRSackizmtn5sBYZiuLdasc7lokYGVIbmrYyO6HSJZx-xKEHJg7QAFF9ZtGNsXQFfj2mlCRgfGcF-g7aTQHF18gFKEJnLeSA9gWMw8Al2rwhRlhE9FeKSNRduQuLJm_fkOAwV8h_ahTQQildDM41kbWG6eqcbtMzJFU-ZCSeXpKLcd52t2v9Bm3BI9NUBDTz6YxHnmYtWywz-q6r1r1VDUpgRCUIEHK0xZ5_EiIFLrmyvDGXUM1Z9zANgMGFm8vwgi8jTIslQ_aEpPW1gtIMubDbMR3dbay2blYW5CZib4H0WBc5XLDhLc1H6BcJ4_-y-eIZ0bc_8Ng_nFOPaTvtmzabWmdq8D4pKTjJEulqW1rKm6aqXkynrwEKrdXwKAyObOdjRcWIJ9pyR7SUbvLOyqW1Tl3FwfM6kuAYwO-Tz1QfArPP3bqb-K3_LYGjIDCe-_h9UeR6UhGwXE5sQrTaWZHjyPJT2VuCwj2DRdnQPFDdl6qvis616yvtVllydAsz1PjGGzBfCCgcXhG8iyuI9ip5eF62tsr6xj5KVXQNFEgOTPrGXhtXqE5FIk3vfG5OLcMhEyBx5qbUMuPWpmQkMUoTk63u9a1Sb2JG-u21Xd8fv0kiyL6L-5zMhRzNo9d2fPCqHGzUJfLGB2iV-5yvLSDHHBXaPyv_Wzyy1Oik7Tq8HplNT4ry2p-Jjdv3GlOszheNBNLaofCTuAaAAPtK9Sk0gCwHpG11rj4JDKVRmMk_WUSUm7VWCKMM_G_WjGgut6Ide70haLHf9IfR3hABY1ALVudkf3QrTFn_9DWlrakg7JvyepZwOiPVxMZzObqzzxuDijQqFJYFt2CVjkhE7K2GReiCXcjRcTVFpi7QZ1rM5SOlf78DZQJX5v0K3iLaXqNkbeBrhRkWCvJnLY8AQCQWShEwuInU0zAaz6nOy38KlTuhL0As8jfaYDCidSjiujN7-k_J2nO0E-j6xfkdfPGqym5iIb3pa8DMIelWuDiVg7N7KFa2o1ryL68VK8g27DcFNpbUfoiobGuvP-NvYuAXRjaCqJvaDQDhnfHGdAH7zb_lpuZsMTaV39QVGtMqLk5GlkQn1BsmhQfXu2senKh1cs9_HRQ8-fStep-FI9rBk45e7g_Arh1r9V5xzCnRHeKlnvD3c0qtaMcg7Wmh8E59QlK4u6PJJyNHoxTzFgJbLSd9srb38IwMSMNTPmXOoV0orzqsI5ryUY4-krtO15hHraNq1YK-uCdyHcKRqQbwReow9VCprmEQpkSk_hw7MBc9rd9ws-1LCuF6p9RhgyffCkP5BDzbYOdQL7bSG7ZFSZm7sov8JtWGg2wG_nuB7V2ToBI3OUjFgHsE2up8dcCRcLrfFhEjOTE8efng-xERsg7mZHN7WO6NEseAS5r5SKRnz0ecv5nSn5LzFJiypDAzGSkkVbUDkPr6xUhmNUMEVXniaIksQ77e5wH-hCzuOZNxg0LWAKGCOEUAyqIq5CSSpSw9c1R0KmJJQ_lXCQAmKSjLpDD28F8pzQFRcMpLB_eHnZkfNXOKhNeYXkat3HdzD4ZpdQlqYLWXy8VjbiHOzwFRiZf45OU7s38I0er525NrnMWLs5boIh5oevcRFpOm5JCZLL05z68m7IVeDFQkrXVAGoIxjMzPCkwh3GWIRSmUaWWG8XXTu8lLfGz15IrTNq0EIvTKXUHjnz-hhJltC9E6CvCoxjvkzL7457f7X1muDNxhNT1U2DjtGIrOEe3Vx19s19CMCs56u8970CRq_So-SfIInhOQ_bwbCElsdKnd3GAB7eJY9oavF-TQrwLFjXKOgrvjec_VHxlmOFCdzIyAC3IbMS_0ideMPalztw-FVq9zkcHYiYojxlR66EI_4jxY0wVCbH3XG6HLAS0Wbkyxi5QYiY0NxNiorCt0KT9hljC9PGV9lscN42FP4BSSEuRlGG-Hh8B371kGov-0wJJD_rPl66h9fDnM37v0vgmUnjfIc_aFjrpBHQwM_jiFzkPcnJLG4EVatg89ZABBr5R7cjTMByswT79o4pex9MQIV_qtICgjLmYP2xJ6sSOHS6qGT97h8hPn46uGJSYzXhobMoQbN8C4v5-iM7iv8fEnfOfUEzstyxQb3FMRXZxC7bkeogUWXb3Dj6Nt7CjvMoBBFLbh9J5B2rblaEGXVBIIqPTx1KccB2epZ-qU94RletqTw-JMkF8VIo5Hf2ywce6YggWf8Rp6Qcwx0vjbp6OX7lBNlZ4dJzTA_P5Luzthktf9JiP8o98una4BNC2RLpbsxCv_J0OyCzZtBWeN1H6nU0NXosd9j3CvOKK7ARjTSvzbLyYfvJJZMRGoZCXt6xVlLmGOxN941aXskNxf1gR23E34XNKoGzgJ3ijijcEjmGRE9JMhsy3c6lEpUQ_kqol_k6ZqMdYPZXf74TDRv-ahmZQD28MJ8WUtH60zRPMi82RlZZejEfj-QCUiIqYmeIV34jCR9eXaWNXB_ttzVvAZaw5nW7SYNgp4OEMR2dG9n48PRN1_msrhQW9loQ0UalPRsgbA3cPKvLkGCKcoVIBCPsVnBKbA=.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_083a171a8432b073016acce7de1c8887d1b1e933afdabadeea",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 3285,
+  "completion_tokens": 355,
+  "total_tokens": 3640,
+  "cost": 0.00045005,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 1200,
+   "cache_write_tokens": 2082,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00045005,
+   "upstream_inference_prompt_cost": 0.00027255,
+   "upstream_inference_completions_cost": 0.0001775
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 306,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

@@ -1,0 +1,9 @@
+{
+ "stdout": "XCOM energies (first 10): [0.001  0.0015 0.002  0.003  0.004  0.005  0.006  0.008  0.01   0.015 ]\nXCOM energies (last 10): [ 9. 10. 11. 12. 13. 14. 15. 16. 18. 20.]\n\nESTAR energies (first 10): [0.01   0.0125 0.015  0.0175 0.02   0.025  0.03   0.035  0.04   0.045 ]\nESTAR energies (last 10): [ 5.5  6.   7.   8.   9.  10.  12.5 15.  17.5 20. ]\n\nXCOM at ~2.0 MeV:\nidx=28, E=2.000000, coherent=1.407400e-05, incoherent=4.890300e-02, photo=1.062700e-06, pair_nuc=3.907900e-04, pair_elec=0.000000e+00, total=4.930900e-02\n",
+ "stderr": "Traceback (most recent call last):\n  File \"/tmp/work/_call_002.py\", line 35, in <module>\n    print(f\"idx-1: E={xcom_energies[idx-1]:.6f}, coherent={xcom_coherent[idx-1]:.6e}, incoherent={xcom_incoherent[idx-1]:.6e}, photo={xcom_photoe[idx-1]:.6e}, pair_nuc={xcom_pair_nuc[idx-1]:.6e}, pair_elec={xcom_pair_elec[idx-1]:.6e}, total={xcom_total_with[idx-1]:.6e}\")\n                                                                                                                                      ^^^^^^^^^^^\nNameError: name 'xcom_photoe' is not defined. Did you mean: 'xcom_photo'?\n",
+ "exit_code": 1,
+ "timed_out": false,
+ "wall_s": 0.13,
+ "stdout_truncated": false,
+ "stderr_truncated": false
+}

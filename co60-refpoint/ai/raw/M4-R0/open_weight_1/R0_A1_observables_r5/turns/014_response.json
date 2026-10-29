@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791835996-bgzDSni5XsRONd9jo2vB",
+ "object": "chat.completion",
+ "created": 1791835996,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "SiliconFlow",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "mcbeam.py exists in /tmp/work. The import failed because the current call's cwd may be different? But os.getcwd() shows /tmp/work and file exists. Why did import fail? Perhaps between calls the sys.path didn't include cwd? Normally '' is in sys.path. Let me try importing again with explicit sys.path or check sys.path. Maybe the issue: the previous call (import) ran in a different cwd. Let me just add sys.path.insert(0,'/tmp/work').",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "01a131bfc33cccf9ea46aa8e2e94eedb",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import sys, os\\nsys.path.insert(0, '/tmp/work')\\nos.chdir('/tmp/work')\\nimport mcbeam as mb\\nprint('imported ok')\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "mcbeam.py exists in /tmp/work. The import failed because the current call's cwd may be different? But os.getcwd() shows /tmp/work and file exists. Why did import fail? Perhaps between calls the sys.path didn't include cwd? Normally '' is in sys.path. Let me try importing again with explicit sys.path or check sys.path. Maybe the issue: the previous call (import) ran in a different cwd. Let me just add sys.path.insert(0,'/tmp/work').",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 96107,
+  "completion_tokens": 183,
+  "total_tokens": 96290,
+  "cost": 0.002779262,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 95744,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.002779262,
+   "upstream_inference_prompt_cost": 0.002728022,
+   "upstream_inference_completions_cost": 5.124e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 107,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

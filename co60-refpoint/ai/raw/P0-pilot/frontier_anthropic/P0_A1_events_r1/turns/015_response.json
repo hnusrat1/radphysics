@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791815562-opszo4CY2IXesZqqKdvd",
+ "object": "chat.completion",
+ "created": 1791815562,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Right, state doesn't persist between calls, so I need to load everything fresh in a single call.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01Jx5UMfDF7jsoGuiFobEbBj",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport json,collections,numpy as np\\nev=[]\\nfor s in range(2,6): ev+=json.load(open(f'events_{s}.json'))\\nrng=np.random.default_rng(12345)\\nidx=rng.choice(len(ev),200,replace=False)\\nsub=[ev[i] for i in idx]\\ndef r6(x): return None if x is None else float(f\\\"{x:.6g}\\\")\\nout=[]\\nfor e in sub:\\n    out.append({\\\"process\\\":e['process'],\\\"e_in_MeV\\\":r6(e['e_in_MeV']),\\\"e_out_MeV\\\":r6(e['e_out_MeV']),\\\"cos_scatter\\\":r6(e['cos_scatter']),\\n       \\\"t_e_MeV\\\":r6(e['t_e_MeV']),\\\"cos_electron\\\":r6(e['cos_electron']),\\\"t_positron_MeV\\\":r6(e['t_positron_MeV'])})\\nprint(collections.Counter(d['process'] for d in out), sum(d['e_in_MeV']==2.0 for d in out))\\nmethod=(\\\"Own Monte Carlo (no transport code available): 10^7 source photons from a point source at 100 cm SSD, \\\"\\n \\\"directions sampled uniformly in solid angle within the 10x10 cm2 pyramid; photons tracked through the 30 cm water cube \\\"\\n \\\"(rho 1, vacuum outside) with exponential free paths and approximate water coefficients: Klein-Nishina Compton (free electron, no binding), \\\"\\n \\\"approximate photoelectric (~E^-3), coherent (~E^-1.2, crude form-factor angles), pair production (interpolated). \\\"\\n \\\"Every interaction whose point lies in the 1 cm radius, 0.2 cm thick cylinder at 10 cm depth was recorded (3708-event pool); 200 drawn uniformly without replacement. \\\"\\n \\\"Pair energy shared uniformly; annihilation photons tracked as secondaries at the pair point; positron range and bremsstrahlung neglected.\\\")\\nprint(len(method.split()))\\njson.dump({\\\"method\\\":method,\\\"events\\\":out},open('answer.json','w'))\\nprint(json.dumps({\\\"method\\\":method,\\\"events\\\":out}))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Right, state doesn't persist between calls, so I need to load everything fresh in a single call.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS2QYKEAgSGAI4AUIIdGhpbmtpbmcSDNTsXp9+Pbj9z49d6RoMnJ8cFa2q4hYqWF6dIjD6IC1S0YrP+l+4mEyYiSDz4BXaE/9P6S6mgu2xFZV3byO61UFFphrMKJWIKy9tgbsq9gW42n5gimTB31r2iI5t84uxOE+yWBuLvu9bbB9ivbmCLJMIxZcriuazAjVzzfEBQIy2EbZfaNShZUm1R+Yl0d9jzSesMz/AMHRXa/T0Lm/G7NRQ2h4GJAU7Nc5WP+ehgsUThzGfcwVD/HMBttGKqnYH/fBl4RiBrtixaxj1rihWRIhl7eCkiRQqepUnCLkt9tQCo8zEpDb1tYpYh+mhprQdwI0Y7j06BT+of+Kh2ZRg2OxdHlA8Cat3brLI2OL6sof2lfuozdUB1iIXCbkOAU3RyN0Kfoz4rWRg30ZZx6CdE0JsUDCDwqe8s2dEcHFv2m7KlNuwtv/+vencVO3prWtS+pBFflzJssbvRxI8SuX46zxMIH7741eUIU/tcNflJom4C1Nke2KLAmWOnI+6jid59pJw0H9+qQnKdvlAebBWj+aFec921LhPs5thbpWXDjQ/i8W+VNFEoqfG3LaNtcv2W2ynOvY3it2d8CySxYtW4pDh2y+7esIifP+IPj/Z/oXMuhHTIm+JPFTkTRxZAIweCl/PiYWjZ1BagCNODaRUv0ZQc80Zt8t+KNKhzQTCQa3+tVAn6f1huAOLmHNwznJNdIL+epbOqMl9oWPjaAuBcXCPuhdLJT89yvoXO7aYmY7Nar10d5+ksuZjCrq5o5QdOCz0F1SSXdBWs52XbhXa9vsJvMEAOAvptaY+4qRdV9q1Sb+nCT3klV+T98ytuLiFiPLGC/8Awl7X+J3sXNoranxk/HAeIaf2jOgpgYdyrQFKQ9EBDprgsrrWSr5DLnuQKs7F1ZQx7xr2j79bcWTMuZzeavAdzbb5l2gEauVy9RajqbmFu62eZtMKzxqq/+A8LskRH0CGtXa/Z5eC5+qe2HBpD0waBSWuXUYhLBi8e3tbg9FdldCwRxQR/qhX5d6k8sMiVDgnu8uVO2HvkwxooD6Gxt040lTMyX/UnjqrcsLVxXraPDcwKnvNqQm+VjF5S8UR1XUWhTKcpmbRR87KYlHvKMjRWBgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 45649,
+  "completion_tokens": 780,
+  "total_tokens": 46429,
+  "cost": 0.0049549,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0049549,
+   "upstream_inference_prompt_cost": 0.0045649,
+   "upstream_inference_completions_cost": 0.00039
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 24,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791817695-eiaE11nzb0lnxM3MTDr1",
+ "object": "chat.completion",
+ "created": 1791817695,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I realize each call likely runs in a fresh process, but the working directory and files persist between calls, so I need to insert the path into sys.path for imports to resolve correctly.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01TU4WdKtnukY3u5yjytg1Ds",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport sys, time, importlib\\nsys.path.insert(0,'/tmp/work')\\nimport phys, photon\\nt=time.time()\\nres=photon.run_photons(100000, seed=1)\\nprint(time.time()-t, len(res['E']), res['nproc'], res['iters'], res['f'].mean())\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I realize each call likely runs in a fresh process, but the working directory and files persist between calls, so I need to insert the path into sys.path for imports to resolve correctly.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSkAgKEAgSGAI4AUIIdGhpbmtpbmcSDCbHlurIFn2/tBwMCBoMEu/vKcreu+xZ8fYUIjC+5WP62MPf2pVD4XQjosclT4Q3pa4EwhS8r8cmoY/ydLXCKxZbfFHQQeil8foETuEqrQe0/b/WbjpuHwQWSJZ7k4vlAVLFgQjPEOkoQbrRGsBkIjv6otZX0RKvQFBdgr1styO4uSOUljSlQRcIGcM0VEZpqIhd5pv7c4DOPH9VCaQ6EnfmgiV1537/yIN2UoSNHIu7XsVZxWHBkgP4jg9GMl3EC/J3dDyeo2FiH66zo/yVoPp8/+EeMAyccN7iJMum1pdzTtXD561iqRJc02LmFJSweLmJ7bW8dtYeFG6yj+QwtO8azNadhlwKeVaOkm/fTMb9wMupsE/MhRZ7otW+tcu1CYzUmh4GYAE/XoeL5THtocw1S6ni7xusQ2Zk9HHjNaq1/QTOoSk+u0VIWys98cHyDrH0XhoSYuDDZrli7iu3s8gxgRkz/V/qR5JMY+QgWNB5FJrVBAnD8AcjtWUfk2JHKpVCWutxkQefbN3cuOQNFteZLEwTarTHc340ZOF76oSrZBbiPwBa07qWMsuoQe51IEVkLkp+qhbI9eZ8bHLI9zZhEvHaYIFSBi507Y5nYME5fwdL6zTD2FM8ammGFtZBSj/ax+GNuNjM5DDabnnux/HFf78e3sPWBxPTgEaueH+lVwHRAx83+c8b1gGdJj0Ins9cxu4mII6xtXMQ4as08FTi2aQvGHsgjziWYSEkOgdcfP6vV5wc1zVwUNOmu7U6PLD1MXb7qUW2xIccQpImSsLR/7EH+tmbi7p9m3w+/XR0IBRrPJaSqKEijMlgZhj+Zx4J0iMhnpXooVUUz5iyQqwKEGGif7EL11jX+PcTI2s9445TH/M508kL6xr6wCUap59nksyDEAS7+ikuG5KdupDPmx2v+kN64vWBdiOOaF51JzGsnfqOFkSfvnh7iCXXDm7gDkpbjEWd7vGr3i7tlxmD8vHCCp/3dzxam+JjgNROJp5jk+fEM9EPesSQQ+Jut2KPIcHl/P1QymrpvYq14Okw1RmG7v5hJXGhCs8GTnHnWnQhJTLBhfC0lBcCxtjIidy1I5DO5qogvNSydRjgDIfRiOmECuyBxwYeYRQnzW5Jn1ANeuvEvmMRzpuWkDWhfw34BPuVGCMm2dgHOFfWFFxgpfJOsHHg7UDFhXOZ5lW8e8gqAePQhqzwpZhi7OldeY9xs9tmtiXWmZsHjULSYAmHQ4kVRKgllLSlZ2f0DOsfI6Nyt1XdKTzr33gisVqNTQOH1Uff1U6KN4AinraQj8vCkiS5LIaQfTrBmVAJJhD+5Z7qquEpAEXdGoaX9Qu1HO9ImlYUPxU6KSpmGxgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 98606,
+  "completion_tokens": 242,
+  "total_tokens": 98848,
+  "cost": 0.0099816,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0099816,
+   "upstream_inference_prompt_cost": 0.0098606,
+   "upstream_inference_completions_cost": 0.000121
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 96,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791816024-xZzi7BoiyfnahQuSYQfO",
+ "object": "chat.completion",
+ "created": 1791816024,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Subtracting coherent and photoelectric contributions from the residual leaves pair production \u03ba at about 0.00048 cm\u00b2/g for 2 MeV, which checks out reasonably well against expectations. Now I'll move on to writing out the Monte Carlo component.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01TDjbaTwddREuxVMoeqwTF1",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nrng=np.random.default_rng(12345)\\nZE=8  # water\\ndef mu_comp(E): return ne*sigKN(E)\\ndef mu_pair(E): return np.where(E>2*me, 0.00048*np.clip((E-2*me)/(2-2*me),0,None)**1.0*0+0.00048*(E>2*me)*np.minimum(1,(E-2*me)/(2-2*me)),0.0)\\ndef mu_coh(E): return 0.0051*(0.1/E)**2\\ndef mu_pe(E): return 2.76e-3*(0.1/E)**3\\ndef mu_tot_parts(E):\\n    return mu_comp(E), mu_pair(E), mu_coh(E), mu_pe(E)\\n\\ndef sample_KN(E,n):\\n    # rejection on mu uniform in [-1,1]\\n    k=E/me\\n    out=np.empty(n); \\n    todo=np.arange(n)\\n    mu_grid=np.linspace(-1,1,20001)\\n    eps=1/(1+k*(1-mu_grid)); f=eps**2*(eps+1/eps-(1-mu_grid**2))\\n    fmax=f.max()*1.02\\n    while todo.size:\\n        m=rng.uniform(-1,1,todo.size)\\n        e=1/(1+k*(1-m))\\n        f=e**2*(e+1/e-(1-m**2))\\n        acc=rng.uniform(0,fmax,todo.size)<f\\n        out[todo[acc]]=m[acc]\\n        todo=todo[~acc]\\n    return out\\n\\ndef sample_rayleigh_mu(n):\\n    out=np.empty(n); todo=np.arange(n)\\n    while todo.size:\\n        m=rng.uniform(-1,1,todo.size)\\n        acc=rng.uniform(0,1,todo.size)<(1+m**2)/2\\n        out[todo[acc]]=m[acc]; todo=todo[~acc]\\n    return out\\n\\ndef rotate(d, mu, phi):\\n    # d: (n,3) unit; returns new directions with cos=mu relative to d and azimuth phi\\n    n=d.shape[0]\\n    a=np.where(np.abs(d[:,0:1])<0.9, np.array([[1.,0,0]]), np.array([[0,1.,0]]))\\n    e1=np.cross(d,a); e1/=np.linalg.norm(e1,axis=1)[:,None]\\n    e2=np.cross(d,e1)\\n    s=np.sqrt(np.clip(1-mu**2,0,None))\\n    return d*mu[:,None]+s[:,None]*(np.cos(phi)[:,None]*e1+np.sin(phi)[:,None]*e2)\\n\\ndef iso_dirs(n):\\n    c=rng.uniform(-1,1,n); p=rng.uniform(0,2*np.pi,n); s=np.sqrt(1-c*c)\\n    return np.stack([s*np.cos(p),s*np.sin(p),c],1)\\n\\ndef angle_dir_from_axis(d, theta):\\n    # electron direction with polar angle theta about d, random azimuth\\n    phi=rng.uniform(0,2*np.pi,d.shape[0])\\n    return rotate(d,np.cos(theta),phi)\\n\\n# geometry\\nL_src=100.0; HALF=5.0\\nLO=np.array([-15.,-15.,0.]); HI=np.array([15.,15.,30.])\\ndef start_photons(N):\\n    # uniform in solid angle within pyramid: sample plane point uniformly, accept with cos^3\\n    pts=[]; cnt=0\\n    xs=[]\\n    while cnt<N:\\n        m=int(2*N)\\n        x=rng.uniform(-HALF,HALF,m); y=rng.uniform(-HALF,HALF,m)\\n        r=np.sqrt(L_src**2+x*x+y*y)\\n        acc=rng.uniform(0,1,m)< (L_src/r)**3\\n        xs.append(np.stack([x[acc],y[acc],np.full(acc.sum(),L_src)],1)); cnt+=acc.sum()\\n    v=np.concatenate(xs)[:N]\\n    d=v/np.linalg.norm(v,axis=1)[:,None]\\n    # source at (0,0,-100): plane hits at z=0 after t=100/uz\\n    src=np.array([0,0,-L_src])\\n    t=(0-src[2])/d[:,2]\\n    p=src+t[:,None]*d\\n    return p,d\\nprint(\\\"ok\\\")\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Subtracting coherent and photoelectric contributions from the residual leaves pair production \u03ba at about 0.00048 cm\u00b2/g for 2 MeV, which checks out reasonably well against expectations. Now I'll move on to writing out the Monte Carlo component.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSwAYKEAgSGAI4AUIIdGhpbmtpbmcSDIZoCm845MMHCSJdVRoMUqluzrod3dRUjCQnIjCX//QB480ne2Poh9j2tm3WPx8GZUST/j0QGDGeQWzCwFdTBsWdAke5K9LOmkXgXAUq3QUS9qiDpzK23+8f1DVJ0qfTDhJeAOguxKbln8fmPNUWxDR37A78hPIr63Fpstjl8CFb2JZ9NUqKVoOFPPTiGPELmVJortGjs+poMlIqEF200R3x8PA+m6te1d9z/WSyA7tZW7rgOceS5tA2JbaRLhEyEzkjSZd5UvlTKNBSaHTwxKvS0qW9bh5RJTZko8tgTQcMR1mN24FzQtKHmd2+HLN4G5kCX4XjdymJsJZS2UWWPIOPadZXQX8+RWcWebQz9zVh184ZfXAD1P1cXNDJSdrmLHnnXhKkNVm2Ki464Tvczkan4ZrF4jrD5Ia+iNlm8p7c63Ykler4sL1+q/8+WjuJYZWg3Vm1GzNBwvNXamayttepin90kp/pLz+3nH2e77sq0iRpD5XaOA0oyiHwIUIqbX/02gvsfUEc5FWL9xhv3NTvC9Aj+luVSsm+ETynzLfjiDzijcuY3M6r00d6zJHEi/5QrNjbDAc4JZC9N0r7hbw3hCNl17YXtYIPfVHGRu87YNZWomg9Lzd7rPAgePH21E1/SPijTi3HSDukCYPxIHxS4q8JJN2Iez7vbfvU3UPAxVMxDpHqgBtrwLiSlnALfbgV4TI4ll4LLeFnJQUtT3fGvZ/KrcDZx13oe1Rl3mQOAs/G+N/6odw37LZSQMIr2up651GplU+5VX6zs0RdTtXrXP9VjMRXBfFHC9kbW2E0lG9+4BSJCgk8okHpTlOtNMUzmNrKzJtGpOc9orE8KptarAIXSh7ArTW77BU09TY8hdzdT6cEpRu1ZZvSiOtVus7TYmfjx0PWY1hO6q+IoPwmo0XeMQF5cKxMuQBiddwt6V1lgRVvGNn+uNQimQ+asyiPOmULO4JWOIey1wQg7JRsQhkVmeSFSoUgi6pxyvBuu4YzuWU9VeeEgoGEChwUx4PGF7dNZ9HE6ry0FfdXidRqVOBzUpL5czigBk+GPa38zaUYRGRoCT/GDg6jGAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 18323,
+  "completion_tokens": 1634,
+  "total_tokens": 19957,
+  "cost": 0.0026493,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0026493,
+   "upstream_inference_prompt_cost": 0.0018323,
+   "upstream_inference_completions_cost": 0.000817
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 87,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

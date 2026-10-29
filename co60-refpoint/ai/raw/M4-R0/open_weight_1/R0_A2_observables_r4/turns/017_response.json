@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791829887-HLBqgWZsjOwurJiyx3vp",
+ "object": "chat.completion",
+ "created": 1791829887,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "GMICloud",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "pair_spawn still 7386 = 3693 events/500000 = 0.74%. Still too high. So the pair bug isn't fixed by the threshold mask. Let me test pair_xs at representative energies:\npair_xs(1.3325) = 3.2e-5 \u2192 fraction/mut 0.00053. Expected events \u2248 500000 \u00d7 interactions \u00d7 0.0005 \u2248 500000\u00d71.5\u00d70.0005=375. We see 3693 \u2014 about 10\u00d7.\n\nHmm. Let me actually test the process sampling logic and count ipair events for a fixed scenario. Maybe the issue is rp values: `rng.uniform(0,1,ni)` \u2014 if ni is large... Let me print pcoh+pinc+ppe+ppair for a sample of Ei_i in the run. Or maybe the pb/pinc/ppe arrays are fine but `ipair=rp>=pcoh+pinc+ppe` \u2014 since pcoh+pinc+ppe \u2248 0.9995, ipair\u22480.0005. Should be small.\n\nWait\u2014maybe the counts are inflated because the `it` loop reprocesses photons that should be dead? No.\n\nLet me test with a standalone small run counting all interactions by process and comparing to expected. Let me also double-check xs_lookup for TOT at low energies: mut_i at low E is large (e.g., at 0.01, TOT=4.9 cm\u00b2/g \u2192 mean free path 0.2 cm). Interpolations fine.\n\nHmm \u2014 actually maybe the issue: `pair_xs(Ei_i)/mut_i` \u2014 for scattered photons with E just above 1.022 (many Compton-scattered photons from 1.33 have E' > 1.022? Compton can scatter down to E_min=1.33/(1+2\u00d71.33/0.511)=1.33/6.2=0.21; plenty of scattered photons have E'\u2208[1.022,1.33] \u2014 and those are the ones near the source before scattering... but scattered photons with E'=1.05: pair fraction = pair_xs(1.05)/mut(1.05). pair_xs at 1.05: interpolating log between 1.0 (0) and 1.1732 (1e-6): tiny. Fine.\n\nLet me just directly measure the pair event rate in a standalone sampling test: generate energies from the source lines + one Compton scatter and count ipair. Actually, let me just add counters in a quick modified run. Alternatively \u2014 maybe the issue is that `pair_spawn` counts pairs spawned from the FIRST interaction of primary photons at 1.3325! Primary 1.3325 photons: fraction at 1.3325 = 0.5 of source. Pair fraction at 1.3325 = 0.00053. 250000\u00d70.00053 = 132. Still small.\n\nWait, maybe the bug is the `escaped` logic! `escaped=~inter; Al[idx[escaped]]=False`. And before: `Al[iidx]=False; if cont.any(): Al[iidx[cont]]=True`. But `Al[idx[escaped]]` \u2014 `idx[escaped]` are the photons that did NOT interact (escaped the phantom). OK. But what about photons that DID interact and got killed (ipe/ipair)? They are set False via Al[iidx]=False. And cont re-enabled. Fine.\n\nHmm, but what about photons where s_int < tb but the interaction location pi is OUTSIDE the phantom? If s_int < tb then pi is inside (tb is distance to boundary). OK.\n\nLet me just instrument the exact number of ipair events and their energies in a debug version of this run. Quick approach: modify the run to accumulate ipe/ipair counts and energy histograms. Let me do a fast small run (N=30000) with counters.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_4ee0a4ff7d614ff8b6c49fb3",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"# Quick diagnostic: count process selections in the fixed MC\\nimport numpy as np, time\\nfrom scipy.interpolate import interp1d\\nph = np.loadtxt('/tmp/data/xcom_water.txt', comments='#')\\nEph=ph[:,0]; coh=ph[:,1]; inc=ph[:,2]; pe=ph[:,3]; pn=ph[:,4]; pel=ph[:,5]; tot=ph[:,6]\\nElg=np.logspace(np.log10(0.01),np.log10(2.0),2500)\\ndef interp_log(x,y,xq):\\n    ok=(y>0)&(x>0); fi=interp1d(np.log(x[ok]),np.log(y[ok]),kind='linear',bounds_error=False,fill_value='extrapolate')\\n    return np.exp(fi(np.log(xq)))\\nCOH=interp_log(Eph,coh,Elg); INC_i=interp_log(Eph,inc,Elg); PE=interp_log(Eph,pe,Elg)\\nPN0=interp_log(Eph,pn,Elg); PEL0=interp_log(Eph,pel,Elg); TOT=interp_log(Eph,tot,Elg)\\nlogElg=np.log(Elg)\\ndef xs_lookup(arr,E): return np.exp(np.interp(np.log(np.maximum(E,2e-3)),logElg,np.log(arr)))\\ndef pair_xs(E):\\n    E=np.maximum(E,0)\\n    return np.where(E>1.022, xs_lookup(PN0,E)+xs_lookup(PEL0,E), 0.0)\\n\\n# Check: at a batch of energies spanning the transport, what fractions?\\nEtest=np.array([1.3325,1.1732,1.05,1.023,0.7,0.5,0.2,0.1,0.05,0.02,1.28,1.1])\\nfor E in Etest:\\n    mut=xs_lookup(TOT,np.array([E]))[0]\\n    pc=xs_lookup(COH,np.array([E]))[0]/mut\\n    pi_=xs_lookup(INC_i,np.array([E]))[0]/mut\\n    ppe=xs_lookup(PE,np.array([E]))[0]/mut\\n    pp=pair_xs(np.array([E]))[0]/mut\\n    print(f\\\"E={E:.4f}: pc={pc:.2e} pinc={pi_:.4f} ppe={ppe:.2e} ppair={pp:.2e} sum={pc+pi_+ppe+pp:.5f}\\\")\\n\\n# Now a tiny run counting process selections\\nimport sys\\nrng=np.random.default_rng(1)\\nN=20000\\na=0.05; u=rng.uniform(-a,a,N); v=rng.uniform(-a,a,N)\\nE=np.where(rng.uniform(0,1,N)<0.5,1.1732,1.3325)\\npos=np.stack([u*100.,v*100.,np.full(N,100.)],axis=1)\\nd=np.stack([u,v,np.ones(N)],axis=1); d/=np.sqrt(np.sum(d*d,axis=1,keepdims=True))\\nmaxN=N+50000\\nP=np.zeros((maxN,3)); Dd=np.zeros((maxN,3)); En=np.zeros(maxN); Pr=np.zeros(maxN,bool); Al=np.zeros(maxN,bool)\\nP[:N]=pos; Dd[:N]=d; En[:N]=E; Pr[:N]=True; Al[:N]=True\\nnactive=N; free=list(range(N,maxN))\\ncnt={'ray':0,'inc':0,'pe':0,'pair':0,'esc':0}; pairE=[]\\nmec2=0.5109989461\\ndef rotate_vec(d,cost,sint,cosphi,sinphi):\\n    aux=np.broadcast_to(np.array([0.,0.,1.]),(len(d),3)).copy()\\n    aux[np.abs(d[:,2])>0.9]=np.array([1.,0.,0.])\\n    e1=np.cross(aux,d); e1=e1/np.maximum(np.sqrt(np.sum(e1*e1,axis=1,keepdims=True)),1e-12)\\n    e2=np.cross(d,e1)\\n    return cost[:,None]*d+sint[:,None]*(cosphi[:,None]*e1+sinphi[:,None]*e2)\\ndef KN_weight(c,E):\\n    a=E/mec2; Ep=E/(1+a*(1-c)); rr=Ep/E\\n    return rr*rr*(rr+1/rr-(1-c*c))\\ndef sample_KN(Earr,rng):\\n    n=len(Earr); c=np.empty(n); got=np.zeros(n,bool); fmax=KN_weight(-np.ones(n),Earr)\\n    while not got.all():\\n        cc=rng.uniform(-1,1,n)\\n        acc=(rng.uniform(0,1,n)*fmax)<KN_weight(cc,Earr)\\n        new=(~got)&acc; c[new]=cc[new]; got[new]=True\\n    a=Earr/mec2; Ep=Earr/(1+a*(1-c)); return c,Ep\\nit=0\\nwhile np.any(Al) and it<200:\\n    idx=np.nonzero(Al)[0]\\n    Ei=En[idx]; mut=xs_lookup(TOT,Ei)\\n    s_int=-np.log(np.maximum(rng.uniform(1e-300,1,len(idx)),1e-300))/np.maximum(mut,1e-6)\\n    p0=P[idx]; dd=Dd[idx]\\n    t1=(np.array([-15.,-15.,100.])-p0)/dd; t2=(np.array([15.,15.,130.])-p0)/dd\\n    tb=np.min(np.maximum(t1,t2),axis=1)\\n    s=np.minimum(s_int,tb); p1=p0+dd*s[:,None]\\n    inter=s_int<tb\\n    if inter.any():\\n        iidx=idx[inter]; Ei_i=Ei[inter]; pi=p1[inter]; di=dd[inter]; mut_i=mut[inter]\\n        pcoh=xs_lookup(COH,Ei_i)/mut_i; pinc=xs_lookup(INC_i,Ei_i)/mut_i; ppe=xs_lookup(PE,Ei_i)/mut_i; ppair=pair_xs(Ei_i)/mut_i\\n        rp=rng.uniform(0,1,len(iidx))\\n        isc=rp<pcoh; iin=(rp>=pcoh)&(rp<pcoh+pinc); ipe=(rp>=pcoh+pinc)&(rp<pcoh+pinc+ppe); ipair=rp>=pcoh+pinc+ppe\\n        cnt['ray']+=isc.sum(); cnt['inc']+=iin.sum(); cnt['pe']+=ipe.sum(); cnt['pair']+=ipair.sum()\\n        pairE.extend(list(Ei_i[ipair]))\\n        cont=isc|iin\\n        if cont.any():\\n            cidx=np.nonzero(cont)[0]; Econt=Ei_i[cont]; dcont=di[cont]; isinc=iin[cont]\\n            nE=Econt.copy(); c_all=np.empty(len(cidx))\\n            if isinc.sum()>0:\\n                ckn,Epkn=sample_KN(Econt[isinc],rng); c_all[isinc]=ckn; nE[isinc]=Epkn\\n            if (~isinc).sum()>0:\\n                nray=(~isinc).sum(); cR=np.empty(nray); got=np.zeros(nray,bool)\\n                while not got.all():\\n                    cc=rng.uniform(-1,1,nray)\\n                    acc=rng.uniform(0,1,nray)*2.0<(1+cc*cc)\\n                    new=(~got)&acc; cR[new]=cc[new]; got[new]=True\\n                c_all[~isinc]=cR\\n            sint=np.sqrt(np.maximum(0,1-c_all*c_all)); phi=rng.uniform(0,2*np.pi,len(cidx))\\n            dnew=rotate_vec(dcont,c_all,sint,np.cos(phi),np.sin(phi))\\n            Dd[iidx[cont]]=dnew; En[iidx[cont]]=nE; Pr[iidx[cont]]=False\\n        P[iidx]=pi; Al[iidx]=False\\n        if cont.any(): Al[iidx[cont]]=True\\n        if ipair.any():\\n            for sgn in (1,-1):\\n                if not free:\\n                    ext=10000; P=np.vstack([P,np.zeros((ext,3))]); Dd=np.vstack([Dd,np.zeros((ext,3))])\\n                    En=np.concatenate([En,np.zeros(ext)]); Pr=np.concatenate([Pr,np.zeros(ext,bool)]); Al=np.concatenate([Al,np.zeros(ext,bool)])\\n                    free.extend(range(maxN,maxN+ext)); maxN+=ext\\n                fi=free.pop(); P[fi]=pi[0 if False else 0]; Dd[fi]=np.array([1.,0.,0.]); En[fi]=0.511; Pr[fi]=False; Al[fi]=True\\n    cnt['esc']+=(~inter).sum()\\n    Al[idx[~inter]]=False\\n    it+=1\\nprint(\\\"counts:\\\",cnt,\\\"total interactions:\\\",cnt['ray']+cnt['inc']+cnt['pe']+cnt['pair'])\\nprint(\\\"pair E histogram:\\\",np.histogram(np.array(pairE),bins=[0.5,1.02,1.1,1.2,1.3,1.4])[0] if pairE else None)\\nprint(\\\"pair energies:\\\",np.sort(np.array(pairE))[:20] if pairE else None)\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "pair_spawn still 7386 = 3693 events/500000 = 0.74%. Still too high. So the pair bug isn't fixed by the threshold mask. Let me test pair_xs at representative energies:\npair_xs(1.3325) = 3.2e-5 \u2192 fraction/mut 0.00053. Expected events \u2248 500000 \u00d7 interactions \u00d7 0.0005 \u2248 500000\u00d71.5\u00d70.0005=375. We see 3693 \u2014 about 10\u00d7.\n\nHmm. Let me actually test the process sampling logic and count ipair events for a fixed scenario. Maybe the issue is rp values: `rng.uniform(0,1,ni)` \u2014 if ni is large... Let me print pcoh+pinc+ppe+ppair for a sample of Ei_i in the run. Or maybe the pb/pinc/ppe arrays are fine but `ipair=rp>=pcoh+pinc+ppe` \u2014 since pcoh+pinc+ppe \u2248 0.9995, ipair\u22480.0005. Should be small.\n\nWait\u2014maybe the counts are inflated because the `it` loop reprocesses photons that should be dead? No.\n\nLet me test with a standalone small run counting all interactions by process and comparing to expected. Let me also double-check xs_lookup for TOT at low energies: mut_i at low E is large (e.g., at 0.01, TOT=4.9 cm\u00b2/g \u2192 mean free path 0.2 cm). Interpolations fine.\n\nHmm \u2014 actually maybe the issue: `pair_xs(Ei_i)/mut_i` \u2014 for scattered photons with E just above 1.022 (many Compton-scattered photons from 1.33 have E' > 1.022? Compton can scatter down to E_min=1.33/(1+2\u00d71.33/0.511)=1.33/6.2=0.21; plenty of scattered photons have E'\u2208[1.022,1.33] \u2014 and those are the ones near the source before scattering... but scattered photons with E'=1.05: pair fraction = pair_xs(1.05)/mut(1.05). pair_xs at 1.05: interpolating log between 1.0 (0) and 1.1732 (1e-6): tiny. Fine.\n\nLet me just directly measure the pair event rate in a standalone sampling test: generate energies from the source lines + one Compton scatter and count ipair. Actually, let me just add counters in a quick modified run. Alternatively \u2014 maybe the issue is that `pair_spawn` counts pairs spawned from the FIRST interaction of primary photons at 1.3325! Primary 1.3325 photons: fraction at 1.3325 = 0.5 of source. Pair fraction at 1.3325 = 0.00053. 250000\u00d70.00053 = 132. Still small.\n\nWait, maybe the bug is the `escaped` logic! `escaped=~inter; Al[idx[escaped]]=False`. And before: `Al[iidx]=False; if cont.any(): Al[iidx[cont]]=True`. But `Al[idx[escaped]]` \u2014 `idx[escaped]` are the photons that did NOT interact (escaped the phantom). OK. But what about photons that DID interact and got killed (ipe/ipair)? They are set False via Al[iidx]=False. And cont re-enabled. Fine.\n\nHmm, but what about photons where s_int < tb but the interaction location pi is OUTSIDE the phantom? If s_int < tb then pi is inside (tb is distance to boundary). OK.\n\nLet me just instrument the exact number of ipair events and their energies in a debug version of this run. Quick approach: modify the run to accumulate ipe/ipair counts and energy histograms. Let me do a fast small run (N=30000) with counters.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 105825,
+  "completion_tokens": 3096,
+  "total_tokens": 108921,
+  "cost": 0.0037221366,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 88893,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0037221366,
+   "upstream_inference_prompt_cost": 0.0031586646,
+   "upstream_inference_completions_cost": 0.000563472
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 856,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

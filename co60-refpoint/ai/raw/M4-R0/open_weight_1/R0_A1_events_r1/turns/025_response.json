@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791827080-QKE6bjag1SJ6OpItrylX",
+ "object": "chat.completion",
+ "created": 1791827080,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Now I have all the functions working. Let me write the main simulation loop. I'll be very careful with syntax and indentation.\n\nThe algorithm:\n1. For each source photon:\n   a. Sample energy and direction\n   b. Find entry point on phantom surface\n   c. Track through phantom:\n      - Sample distance to next interaction\n      - If beyond phantom exit, stop\n      - Move to interaction point\n      - If in scoring volume, record\n      - Process interaction (absorb or scatter)\n2. Continue until we have 200 events\n\nLet me write the main loop.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_8a06ee8a0e39420cb543b67c",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nfrom numpy.random import default_rng\\nimport time\\n\\nrng = default_rng(42)\\n\\n# === All functions from previous cell are available ===\\n# (Rerun everything in one cell to be safe)\\n\\n# Cross sections\\nmec2 = 0.5110034\\nre = 2.8179403262e-13\\nnel_cm3 = 6.02214076e23 * 10 / 18.01528\\n\\ndef sigma_KN(E):\\n    a = E / mec2\\n    term = ((1+a)/a**2 * (2*(1+a)/(1+2*a) - np.log(1+2*a)/a) +\\n            np.log(1+2*a)/(2*a) - (1+3*a)/(1+2*a)**2)\\n    return 2 * np.pi * re**2 * term\\n\\ndef mu_c(E): return nel_cm3 * sigma_KN(E)\\ndef mu_p(E): return 0.00057 * (1.0/E)**3.5\\ndef mu_pp(E):\\n    if E <= 1.022: return 0.0\\n    return 0.00035 * (E-1.022)/(1.3325-1.022)\\ndef mu_r(E): return 0.00033 * (1.0/E)**2\\ndef mu_t(E): return mu_c(E)+mu_p(E)+mu_pp(E)+mu_r(E)\\n\\n# Geometry\\nsrc = np.array([0.0, 0.0, -100.0])\\nSCZMIN, SCZMAX = 4.9, 5.1\\nPHZMIN, PHZMAX = 0.0, 30.0\\nPHHALF = 15.0\\n\\ndef in_scoring(p):\\n    return SCZMIN <= p[2] <= SCZMAX and (p[0]**2 + p[1]**2) <= 1.0\\n\\ndef dist_exit(pos, dir):\\n    eps = 1e-12\\n    tmin = float('inf')\\n    for zval in [PHZMIN, PHZMAX]:\\n        dz = zval - pos[2]\\n        if abs(dir[2]) > eps and dz/dir[2] > 0:\\n            t = dz / dir[2]\\n            if t > eps:\\n                cp = pos + t * dir\\n                if abs(cp[0]) <= PHHALF+eps and abs(cp[1]) <= PHHALF+eps:\\n                    tmin = min(tmin, t)\\n    for xval in [-PHHALF, PHHALF]:\\n        dx = xval - pos[0]\\n        if abs(dir[0]) > eps and dx/dir[0] > 0:\\n            t = dx / dir[0]\\n            if t > eps:\\n                cp = pos + t * dir\\n                if -eps <= cp[2] <= PHZMAX+eps and abs(cp[1]) <= PHHALF+eps:\\n                    tmin = min(tmin, t)\\n    for yval in [-PHHALF, PHHALF]:\\n        dy = yval - pos[1]\\n        if abs(dir[1]) > eps and dy/dir[1] > 0:\\n            t = dy / dir[1]\\n            if t > eps:\\n                cp = pos + t * dir\\n                if -eps <= cp[2] <= PHZMAX+eps and abs(cp[0]) <= PHHALF+eps:\\n                    tmin = min(tmin, t)\\n    return tmin\\n\\n# Source\\ndef source_E():\\n    return .,1732 if rng.random() < 0.5 else 1.3325\\n\\ndef source_dir():\\n    x = rng.uniform(-5.0, 5.0)\\n    y = rng.uniform(-5.0, 5.0)\\n    v = np.array([x, y, 0.0]) - src\\n    return v / np.linalg.norm(v)\\n\\n# Processes\\ndef choose_pro(E):\\n    mt = m_t(E)\\n    r = rng.random() * mt\\n    if r < mu_c(E): return 'compton'\\n    r -= mu_c(E)\\n    if r < mu_p(E): return 'photoelectric'\\n    r -= mu_p(E)\\n    if r < mu_pp(E): return 'pair'\\n    return 'rayleigh'\\n\\ndef comp_scat(E_in):\\n    a = E_in / mec2\\n    while True:\\n        ct = rng.uniform(-1.0, 1.0)\\n        E_out = E_in / (1.0 + a*(1.0-ct))\\n        if E_out <= 0 or E_out > E_in: continue\\n        r = E_out / E_in\\n        kn = r**2 * (r + 1.0/r - (1.0 - ct**2))\\n        if rng.random() * 2.0 < kn:\\n            te = E_in - E_out\\n            psq = te * (te + 2.0 * mec2)\\n            if psq <= 0: ce = 1.0\\n            else:\\n                ce = (E_in - E_out*ct) / np.sqrt(psq)\\n                ce = np.clip(ce -1.0, 1.0)\\n            return E_out, ct, te, ce\\n\\ndef ray_scat(E_in):\\n    while True:\\n        ct = rng.uniform(-1.0, 1.)\\n        if rng.andom() < 0.5*(1.0+ct**2):\\n            return E_in, ct, 0.0, None\\n\\ndef pair_proc(E_in):\\n    exc = max(0.0, E_in-1.022)\\n    te = rng.uniform(0.0, exc)\\n    tp = exc - te\\n    ce = rng.uniform(0.9, 1.0)\\n    return None, None, te, ce, tp, None\\n\\ndef perp_basis(v):\\n    v = v / np.linalg.norm(v)\\n    ex = np.array([1.0, 0.0, 0.0])\\n    if abs(np.dot(ex v)) > 0.9:\\n        ex = np.array([0.0, 1.0, 0.0])\\n    ex = ex - np.dot(ex v) * v    ex = ex / np.linalg.nrm(ex)\\n    ey = np.cross(v, ex)\\n    return ex, ey\\n\\ndef scatter_dir(dir_in, ct):\\n    st = np.sqrt(1.0 - ct**2)\\n    phi = rng.random() * 2 * np.pi\\n    ex, ey = perp_bais(dir_in)\\n    dir_out = st * np.cos(phi) * ex + st * np.sin(phi) * ey + ct * dir_in\\n    return dir_out / np.linalg.norm(dir_ut)\\n\\nprint(\\\"All defined\\\")\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Now I have all the functions working. Let me write the main simulation loop. I'll be very careful with syntax and indentation.\n\nThe algorithm:\n1. For each source photon:\n   a. Sample energy and direction\n   b. Find entry point on phantom surface\n   c. Track through phantom:\n      - Sample distance to next interaction\n      - If beyond phantom exit, stop\n      - Move to interaction point\n      - If in scoring volume, record\n      - Process interaction (absorb or scatter)\n2. Continue until we have 200 events\n\nLet me write the main loop.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 60068,
+  "completion_tokens": 1687,
+  "total_tokens": 61755,
+  "cost": 0.001596119448,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 57344,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001596119448,
+   "upstream_inference_prompt_cost": 0.001289557808,
+   "upstream_inference_completions_cost": 0.00030656164
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 121,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

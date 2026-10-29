@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791827735-k78pi2sBA2EmHLKN7CL0",
+ "object": "chat.completion",
+ "created": 1791827735,
+ "model": "qwen/qwen3.7-flash",
+ "provider": "Alibaba",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Good. Now let me parse the ESTAR data for electron stopping powers.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_6e3a7036d8e14d4e820b515c",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\n\\n# Re-read ESTAR data\\nwith open('/tmp/data/estar_water.txt', 'r') as f:\\n    estar_lines = f.readlines()\\n\\nestar_data = []\\nfor line in estar_lines[4:]:  # Skip header\\n    parts = line.split()\\n    if len(parts) >= 8:\\n        try:\\n            energy = float(parts[0])\\n            collision_sp = float(parts[1])\\n            radiative_sp = float(parts[2])\\n            total_sp = float(parts[3])\\n            csda_range = float(parts[4])\\n            radiation_yield = float(parts[5])\\n            density_effect = float(parts[6])\\n            delta_ray_cutoff = float(parts[7])\\n            estar_data.append([energy, collision_sp, radiative_sp, total_sp, \\n                             csda_range, radiation_yield, density_effect, delta_ray_cutoff])\\n        except:\\n            pass\\n\\nestar_array = np.array(estar_data)\\nprint(f\\\"ESTAR entries: {len(estar_array)}\\\")\\nprint(f\\\"Energy range: {estar_array[0,0]:.6f} to {estar_array[-1,0]:.6f} MeV\\\")\\nprint(f\\\"\\\\nColumns: Energy, Coll SP, Rad SP, Total SP, CSDA Range, Rad Yield, Delta Effect, Delta Ray Cutoff\\\")\\nprint(f\\\"\\\\nFirst few rows:\\\")\\nfor row in estar_array[:5]:\\n    print(row)\\n\\n# Interpolate for electron energies around 1 MeV (typical for Co-60 Compton electrons)\\ndef interpolate_estar_log(E):\\n    energies = estar_array[:, 0]\\n    idx = np.searchsorted(energies, E)\\n    if idx == 0 or idx >= len(energies):\\n        return None\\n    \\n    log_E = np.log10(max(E, 1e-20))\\n    log_E_low = np.log10(energies[idx-1])\\n    log_E_high = np.log10(energies[idx])\\n    \\n    t = (log_E - log_E_low) / (log_E_high - log_E_low)\\n    \\n    result = {}\\n    cols = ['collision', 'radiative', 'total', 'csda']\\n    col_indices = [1, 2, 3, 4]\\n    \\n    for name, idx_col in zip(cols, col_indices):\\n        val_low = estar_array[idx-1, idx_col]\\n        val_high = estar_array[idx, idx_col]\\n        \\n        if val_low > 0 and val_high > 0:\\n            result[name] = val_low * (val_high/val_low)**t\\n        elif val_high > 0:\\n            result[name] = val_high\\n        else:\\n            result[name] = 0.0\\n    \\n    result['density_effect'] =estar_array[idx, 6]  # Linear interp ok for this\\n    result['cutoff'] = estar_array[idx, 7]\\n    return result\\n\\n# Test at some energies\\nfor E_test in [0.5, 1.0, 1.2, 1.5]:\\n    est = interpolate_estar_log(E_test)\\n    if est:\\n        print(f\\\"\\\\n{E_test} MeV:\\\")\\n        print(f\\\"  Collision SP: {est['collision']:.4f} MeV cm^2/g\\\")\\n        print(f\\\"  Radiative SP: {est['radiative']:.6f} MeV cm^2/g\\\")\\n        print(f\\\"  Ratio radiative/collision: {est['radiative']/est['collision']:.4f}\\\")\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Good. Now let me parse the ESTAR data for electron stopping powers.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 8035,
+  "completion_tokens": 831,
+  "total_tokens": 8866,
+  "cost": 0.000189336,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 6656,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000189336,
+   "upstream_inference_prompt_cost": 8.1306e-05,
+   "upstream_inference_completions_cost": 0.00010803
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 15,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791828309-guZzLSyrCVyw5ue71B61",
+ "object": "chat.completion",
+ "created": 1791828309,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I need to re-run the build code each time, so I'll make a single call that prints lines 60-100 using the builder.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01PGnkRrSXSVk4grV7erGW1h",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport numpy as np, json\\nd=np.load('sample_99.npz')\\nnames=['compton','rayleigh','photoelectric','pair']\\nlines=[]\\nfor i in range(len(d['proc'])):\\n    p=names[int(d['proc'][i])]\\n    eo=float(d['Eout'][i]); cs=float(d['cosS'][i]); te=float(d['te'][i]); ce=float(d['cose'][i]); tp=float(d['tpos'][i]); e_in=float(d['Ein'][i])\\n    ev={'process':p,'e_in_MeV':round(e_in,6),'e_out_MeV':None if np.isnan(eo) else round(eo,6),\\n        'cos_scatter':None if np.isnan(cs) else round(cs,5),'t_e_MeV':round(te,6),\\n        'cos_electron':None if np.isnan(ce) else round(ce,5),'t_positron_MeV':None if np.isnan(tp) else round(tp,6)}\\n    if p=='rayleigh':\\n        ev['e_out_MeV']=round(e_in,6); ev['t_e_MeV']=0.0; ev['cos_electron']=None\\n    lines.append(json.dumps(ev,separators=(',',':')))\\nprint(',\\\\n'.join(lines[60:100]))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I need to re-run the build code each time, so I'll make a single call that prints lines 60-100 using the builder.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSqgcKEAgSGAI4AUIIdGhpbmtpbmcSDHjPNwzSledpNq+EBRoMBxvnMGffvTB2PDrfIjCTzKxQZ0AY2O3oCNiK6/X+tLWGIkEpuL3ucYD7JCT+XOfbj6qGD2+j9VSz7YLWRlMqxwY6JQoAH2NM7jCapOCokV6DZzjjVp9g76zrVNFU/N25asXMdjGRcZGiqxfx2UwadbyoY0qfGTAVjgMpgrJDAjHtdo7pEUj0L77l1WQD8k3L1Hi1hnWUAVab3zhT+03UrGuMW9G9H1qRnsS1at/7yc+f1oid68vHeF5LYvchT/Uuahil7j1butAQB4ciULPK2QjZRT62BWxLyZByR6TE3gI9gEfLscqQ3COaXKnZC3cHooXAaEwigeU9r6spqDhLSCuCnH0q7IkcJjMgK8oP9JIfjX3AyC65sD8kcHxsJerXX9t4wICmzSb89YuBr4d/jQnZw2WwXRH+i2PRmqF6S7BfA/TZuyrnDRaAlMEesoaU0WdASeCZ1BhGQNw+YA3mKMdpm6p8KbKSJutOk0lRVexEJ3xaIwYyb7wALL3UqfNqAMoE2UG3yl3fdyvZrSAZqOyZKnKsUv0mql52npH1RbgdwtgsjSeta4oCp3BrdT1TUhVv/Nb/fC2wtV82E5WvkYAN8xXzXmw7yLxYcdSaLcyJLO61dHixkIMWopf3Q12xiu8DQR38I8l4XpR2IapHIJap74PK5PavHpS2gxxH2KX07sfL5ctjxL2TUtOt4Ft0THdWGICwi7HXKKarNXgMLCSWo/9MJDp6IhIMIfa1b+uEe54zEg8TUnI8uZVksXwKGzfT4hOVZBSQnBsg26vdApBG7/GbewMGft7xs40AOc1M/O4D6x/vQVxmziEzT9nBfMXAQKFVZN/pk3ph3VaO/uUV1wzPDsyDDQKK2No8I3rcsSNZViXFEOq37P5YJ9dNvSmx9AbjkSN8U0Qn+X34r+Mu2vbJIw/T2Y79bOvU4aWismGOjtnvsYV1o/tEyg5j3h6zxTYhS3lgm5aaLsESvMMyLzh7GGZ4lDFg1n9lb+q8OAEzAXtHRLoetpYOje6V6S74/R90bm/AFLP4EANO8Vt/QQSBJja1XQ28ux+XCEbOS9HVXzcGENWkZmt6Fa3vjOxkWAQC1PO/amRajiw1TU0hgcD57UzW1TDClJ52Q3TrRiPhr99JvxP+SfmGblSpDR/++VIgCFoA+NYgmLqvu4sEZLAr5RUjwvWWRnnn/vWo5nQbjTvxKRgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 113576,
+  "completion_tokens": 513,
+  "total_tokens": 114089,
+  "cost": 0.00708985,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 113352,
+   "cache_write_tokens": 222,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00708985,
+   "upstream_inference_prompt_cost": 0.00580735,
+   "upstream_inference_completions_cost": 0.0012825
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 34,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791831048-lEsQEQk4dU62bpBBeY6i",
+ "object": "chat.completion",
+ "created": 1791831048,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "GMICloud",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Now the scattered track length (109 cm) is ~0.53\u00d7 primary (205.8 cm). Scattered fluence fraction ~ 0.35 of total. That's much more reasonable for a 10x10 Co-60 beam at 5 cm depth.\n\nNow let me verify correctness of Layer 1 quantities for the 50k run:\n- fl_prim sum = 205.8 cm. Primary fluence per emitted photon = 205.8/(50000*0.6283) = 0.00655 cm^-2. Analytic: exp(-\u03bc\u0304*5)/(\u03a9 d\u00b2). Let me compute analytic to compare.\n- fl_scat = 109.2.\n- Interactions in scoring volume: int_all = [1 coherent, 27 incoherent, 0 pe, 0 pair] for 50k. Scaled to 10M: ~5600 interactions in scoring volume \u2014 great stats.\n- src = 30787 electron sources in region for 50k photons \u2192 for 10M, ~6M sources. Might subsample.\n\nLet me now verify the primary fluence per phi0 matches exp(-\u03bc*5) and compute \u03a9.\n\n\u03a9_field = 4*arcsin(sin \u03b1 sin \u03b2) with \u03b1=\u03b2=arctan(5/100). Let me compute. Also Phi0 per emitted photon = 1/(\u03a9*105\u00b2).\n\nThen L1_primary_fluence_per_phi0 = fl_prim/(N*V)/Phi0_per_emitted.\n\nLet me compute.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_fa2812ffc21f44cab6bde296",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\n# solid angle of pyramid with square cross-section 10x10 at distance 100 (half-angle alpha=beta)\\nalpha = np.arctan(5.0/100.0)\\nOmega = 4*np.arcsin(np.sin(alpha)*np.sin(alpha))\\nprint('Omega', Omega, 'approx 0.01', Omega-0.01)\\nd = 105.0\\nPhi0_per_emitted = 1.0/(Omega*d*d)\\nprint('Phi0 per emitted (cm^-2)', Phi0_per_emitted)\\n# analytic primary fluence ratio\\nxcom = np.loadtxt('/tmp/data/xcom_water.txt', comments='#')\\nE_x=xcom[:,0]; mu_tot=xcom[:,6]; LE=np.log(E_x)\\ndef mut(E):\\n    return np.exp(np.interp(np.log(E), LE, np.log(mu_tot)))\\nmu1=mut(1.1732); mu2=mut(1.3325)\\nprint('mu1,mu2', mu1, mu2)\\nratio = 0.5*(np.exp(-mu1*5)+np.exp(-mu2*5))\\nprint('analytic L1_primary_fluence_per_phi0=', ratio)\\nV = np.pi*1.0**2*0.2\\nfl_prim=205.793368478072; N=50000\\nsimratio = fl_prim/(N*V)/Phi0_per_emitted\\nprint('sim ratio =', simratio)\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Now the scattered track length (109 cm) is ~0.53\u00d7 primary (205.8 cm). Scattered fluence fraction ~ 0.35 of total. That's much more reasonable for a 10x10 Co-60 beam at 5 cm depth.\n\nNow let me verify correctness of Layer 1 quantities for the 50k run:\n- fl_prim sum = 205.8 cm. Primary fluence per emitted photon = 205.8/(50000*0.6283) = 0.00655 cm^-2. Analytic: exp(-\u03bc\u0304*5)/(\u03a9 d\u00b2). Let me compute analytic to compare.\n- fl_scat = 109.2.\n- Interactions in scoring volume: int_all = [1 coherent, 27 incoherent, 0 pe, 0 pair] for 50k. Scaled to 10M: ~5600 interactions in scoring volume \u2014 great stats.\n- src = 30787 electron sources in region for 50k photons \u2192 for 10M, ~6M sources. Might subsample.\n\nLet me now verify the primary fluence per phi0 matches exp(-\u03bc*5) and compute \u03a9.\n\n\u03a9_field = 4*arcsin(sin \u03b1 sin \u03b2) with \u03b1=\u03b2=arctan(5/100). Let me compute. Also Phi0 per emitted photon = 1/(\u03a9*105\u00b2).\n\nThen L1_primary_fluence_per_phi0 = fl_prim/(N*V)/Phi0_per_emitted.\n\nLet me compute.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 92272,
+  "completion_tokens": 689,
+  "total_tokens": 92961,
+  "cost": 0.0026780572,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 80276,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0026780572,
+   "upstream_inference_prompt_cost": 0.0025526592,
+   "upstream_inference_completions_cost": 0.000125398
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 322,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

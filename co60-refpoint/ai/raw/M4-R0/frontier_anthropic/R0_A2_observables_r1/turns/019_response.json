@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791827242-ukEDYLqeBlA1h7uAB6zp",
+ "object": "chat.completion",
+ "created": 1791827242,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I should check if those simulations are still running with ps, since the earlier process handles might have already terminated once the call finished.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01KwityycENXvqJssYRTWGxT",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport subprocess\\nprint(subprocess.run(['bash','-lc','ps aux | grep sim.py | head; nproc; uptime'],capture_output=True,text=True).stdout)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I should check if those simulations are still running with ps, since the earlier process handles might have already terminated once the call finished.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSwAcKEAgSGAI4AUIIdGhpbmtpbmcSDD0i1vSvytUxvEr/oxoMm7UW1O3HXu0nobeQIjBFlz3KQmmj7vm6AUjTyxitKgROSqrMsqU0us49nISUL1ZoC3hGu6+LRCJxpy8nZS8q3Qb7I97j1MioLHzAH/kmxC+4l7luRnxl9O4YwDabwIZOpocUEPAUvkBzC8PysEq3RSN/RPFjYVHRcOdLqsPOdad3FAGQJHNB0yQwcES8uVImFG0FboX1XtZMYF/1vFnQIxpd7y1VVoNNPcH7n8n5+REaqYKKGcFB163QZ8bGCMKE8teX/6eVa5mdp1k8L5po17BCfmVaCzifA/4YlPJc1Uy5OwS87Z1SwMMMRCQGFTw4/OoXhzkESi+meNJmLW7uMxMFVeriszuCLoUfDRcFXqg5cdKjoGe4e4rMn7mYyVVnK1SVx+Q/bSA7KMfj9Fbn8u4PYJy2bgJwXWYVyeGFXmrKUh5fXpNDV35ggye1hYlFR3Axtx9XHyjgxfISdABlqX567sHCQk+nzyADazF0/C6Y4GuQ0ASKHHDuDDT5ymY/eetbYnAqR3n5owfWhnwheUG12plTQVK2j9MTEPXpB81BRbS/vnZJzzwak/W8yzUQrTa6RS8RLq90b3w6APbGUwcYDT9WoJksFp5+6V7+COYJ8DfxMRNuTJ9+x2B4aJQkOeIu3bzVtwJZL+wZWpEnoJlw/NJgHvvZB8i3ArNV48Wca9VRHD3Jq0nkXBk47zEN4XumfYC0AFHFLWJNrFxI3+JP1NOGAuk4v7qdU29xUsoUtZcgIxukdwdiz10DiE+ytT51uXGPqHpyvHCICoTkWx65Soxyb3jncripa4htmkIoTUpPvA1rvDkwOYTBslbRDl+yPT7ZsSqlyHDhW4JZQ6r/5Zloz4sl63pJXjuCCEOYv+8/4weKgZTnG9lVT3RNT+VJRV/FhOHZO6GmFgI5GIEZ+Mmq0oiMrED1wRqmbaqAbQUbvzspJgZbxn740++TzJjFrJqMjZ9hEzsrtjIzVcNcHC3ZMufq38zVGcVcU2sf9hGeB31DLSXsRl4LeC5yX6iWYZGrYvdmuntPFjBh43qNNAiFzBxBwWhKA+mnZ5o3MD5iGDviwqkc3bsbZN6W+VBjYfki45BWKNFX5VH9a/49SF+lMxquM4guLyza/DRrIqEz+iKDPtgPnUhVvMThIRppZoKIIZMQvctc/zS957Mb86v8a3j38lqDV6/qPl5OBhmkvSA/2inbgwhCsrkkzdgERbByaT2FhI9JOr8YAQ==.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 138295,
+  "completion_tokens": 154,
+  "total_tokens": 138449,
+  "cost": 0.0074352,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 138059,
+   "cache_write_tokens": 234,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0074352,
+   "upstream_inference_prompt_cost": 0.0070502,
+   "upstream_inference_completions_cost": 0.000385
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 46,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

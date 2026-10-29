@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791816357-cnB6pGrbG1AauNK5Z50M",
+ "object": "chat.completion",
+ "created": 1791816357,
+ "model": "qwen/qwen3.7-flash",
+ "provider": "Alibaba",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I've generated 200 events with the right mix of processes. Now I need to verify that:\n1. The JSON format is correct\n2. All null values are properly represented (not as strings \"None\")\n3. Check for any schema compliance issues\n\nLet me read back the file and verify, then present the final output.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_32b9ed1f6eb04dcaa7c6209e",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import json\\n\\n# Read and verify the JSON\\nwith open('photon_events.json', 'r') as f:\\n    data = json.load(f)\\n\\nprint(\\\"JSON loaded successfully\\\")\\nprint(f\\\"Number of events: {len(data['events'])}\\\")\\nprint(f\\\"Method string length: {len(data['method'])}\\\")\\n\\n# Check first event structure\\nfirst_event = data['events'][0]\\nprint(\\\"\\\\nFirst event keys:\\\", list(first_event.keys()))\\nprint(\\\"First event values:\\\")\\nfor k, v in first_event.items():\\n    print(f\\\"  {k}: {v} (type: {type(v).__name__})\\\")\\n\\n# Verify null handling\\ncompton_event = [e for e in data['events'] if e['process'] == 'compton'][0]\\nprint(\\\"\\\\nCompton event example:\\\")\\nfor k, v in compton_event.items():\\n    print(f\\\"  {k}: {v} ({type(v).__name__})\\\")\\n\\npair_event = [e for e in data['events'] if e['process'] == 'pair'][0]\\nprint(\\\"\\\\nPair event example:\\\")\\nfor k, v in pair_event.items():\\n    print(f\\\"  {k}: {v} ({type(v).__name__})\\\")\\n\\nphoto_event = [e for e in data['events'] if e['process'] == 'photoelectric'][0]\\nprint(\\\"\\\\nPhotoelectric event example:\\\")\\nfor k, v in photo_event.items():\\n    print(f\\\"  {k}: {v} ({type(v).__name__})\\\")\\n\\nrayleigh_event = [e for e in data['events'] if e['process'] == 'rayleigh'][0]\\nprint(\\\"\\\\nRayleigh event example:\\\")\\nfor k, v in rayleigh_event.items():\\n    print(f\\\"  {k}: {v} ({type(v).__name__})\\\")\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I've generated 200 events with the right mix of processes. Now I need to verify that:\n1. The JSON format is correct\n2. All null values are properly represented (not as strings \"None\")\n3. Check for any schema compliance issues\n\nLet me read back the file and verify, then present the final output.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 18830,
+  "completion_tokens": 499,
+  "total_tokens": 19329,
+  "cost": 0.00029185,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 14080,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00029185,
+   "upstream_inference_prompt_cost": 0.00022698,
+   "upstream_inference_completions_cost": 6.487e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 71,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

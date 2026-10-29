@@ -1,0 +1,57 @@
+{
+ "id": "gen-1791829032-Kxx6VM71WwGJ6cHk5yM7",
+ "object": "chat.completion",
+ "created": 1791829032,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "GMICloud",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_f3e54edb70a14da29485d437",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np, pickle\\nwith open('mc_results.pkl','rb') as f:\\n    d=pickle.load(f)\\nfine5=d['fine5']; score28_at5=d['score28_at5']\\ndef load_xcom():\\n    with open('/tmp/data/xcom_water.txt') as f:\\n        lines=[l for l in f if not l.startswith('#') and l.strip()]\\n    x=np.loadtxt(lines); return x[:,0],x[:,1],x[:,2],x[:,3],x[:,4],x[:,5],x[:,6]\\nE_x,mu_coh,mu_incoh,mu_pe,mu_pairn,mu_paire,mu_tot=load_xcom()\\ndef mu_interp(E,col): return np.exp(np.interp(np.log(E),np.log(E_x),np.log(col)))\\ndef mup(E): return dict(compton=mu_interp(E,mu_incoh), pe=mu_interp(E,mu_pe), pair=mu_interp(E,mu_pairn+mu_paire), rayleigh=mu_interp(E,mu_coh), total=mu_interp(E,mu_tot))\\ndef load_estar():\\n    with open('/tmp/data/estar_water.txt') as f:\\n        lines=[l for l in f if not l.startswith('#') and l.strip()]\\n    est=np.loadtxt(lines); return est[:,0],est[:,1],est[:,2],est[:,3],est[:,4],est[:,5],est[:,6]\\nEe,Scol,Srad,Stot,csda,yld,den=load_estar()\\ndef interp_e(E,col): return np.exp(np.interp(np.log(E),np.log(Ee),np.log(col)))\\ndef scol_w(E): return interp_e(E,Scol)\\nmc2=0.51099895; re2=7.9408e-26\\ndef kn_dsig(E0,cosT):\\n    a=E0/mc2; Ep=E0/(1.0+a*(1.0-cosT)); r=Ep/E0\\n    return 0.5*re2*r**2*(r+1.0/r-(1.0-cosT**2))\\ndef compton_Ep(E0,cosT):\\n    a=E0/mc2; return E0/(1.0+a*(1.0-cosT))\\nfine_edges=np.arange(0.01,1.405,0.005); nf=len(fine_edges)-1\\nfine_mid=(fine_edges[:-1]+fine_edges[1:])/2\\nsc_fine=fine5[:,:,1].sum(axis=1)\\nw1=score28_at5[23,0,:].sum(); w2=score28_at5[26,0,:].sum(); wlines=np.array([w1,w2]); Elines=np.array([1.1732,1.3325])\\nTg=np.load('L4_Tg.npy')\\nq=np.zeros(Tg.size)\\ndef add_photon_fine(E,w,qarr):\\n    d=mup(E)\\n    th=np.linspace(1e-5,np.pi,20000); c=np.cos(th); st=np.sin(th)\\n    T=E-compton_Ep(E,c); dsdo=kn_dsig(E,c)*2*np.pi*st; dTdth=np.gradient(T,th)\\n    pT=dsdo/np.abs(dTdth); sig=np.trapezoid(dsdo,th); pT=pT/sig\\n    order=np.argsort(T); Ts=T[order]; Ps=pT[order]\\n    qarr += w*d['compton']*np.interp(Tg,Ts,Ps,left=0,right=0)\\n    idx=np.argmin(np.abs(Tg-E)); qarr[idx]+=w*d['pe']/(Tg[1]-Tg[0])\\n    Tp=(E-1.022)/2\\n    if Tp>0.01:\\n        idx=np.argmin(np.abs(Tg-Tp)); qarr[idx]+=2*w*d['pair']/(Tg[1]-Tg[0])\\nfor E,w in zip(Elines,wlines): add_photon_fine(E,w,q)\\nfor E,w in zip(fine_mid,sc_fine):\\n    if w>0: add_photon_fine(E,w,q)\\nS=scol_w(Tg); Ne_g=3.343e23\\ndef moller(Tp_,T):\\n    gamma=1+Tp_/mc2; beta2=1-1/gamma**2\\n    A=(2*np.pi*re2*mc2)/(beta2*Tp_)\\n    return np.maximum(A*(1.0/T**2+1.0/(Tp_-T)**2-(2*gamma-1)/gamma**2/(T*(Tp_-T))),0.0)\\nQ=np.array([np.trapezoid(q[Tg>=t],Tg[Tg>=t]) if (Tg>=t).any() else 0.0 for t in Tg])\\nPhi_nd=Q/S\\nq_sec=np.zeros(Tg.size); nT=Tg.size\\nfor i,Ti in enumerate(Tg):\\n    j0=np.searchsorted(Tg,2*Ti,side='left')\\n    if j0<nT:\\n        Tj=Tg[j0:]; q_sec[i]=np.trapezoid(Phi_nd[j0:]*Ne_g*moller(Tj,Ti),Tj)\\nQ_sec=np.array([np.trapezoid(q_sec[Tg>=t],Tg[Tg>=t]) if (Tg>=t).any() else 0.0 for t in Tg])\\nPhi_delta=Q_sec/S\\nPhi_onergen=Phi_nd+Phi_delta\\nel_edges=np.array([0.01,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1,1.05,1.1,1.15,1.2,1.4])\\ndef binf(Ph):\\n    out=np.zeros(len(el_edges)-1)\\n    for i in range(len(el_edges)-1):\\n        lo,hi=el_edges[i],el_edges[i+1]; sel=(Tg>=lo)&(Tg<hi)\\n        out[i]=np.trapezoid(Ph[sel],Tg[sel]) if sel.sum()>1 else 0\\n    return out\\nb_nd=binf(Phi_nd); b_dl=binf(Phi_delta); b_tot=binf(Phi_onergen)\\nprint(\\\"bin   no-delta   delta    total\\\")\\nfor i in range(25):\\n    if b_tot[i]>1e-6:\\n        print(f\\\"{el_edges[i]:.2f}-{el_edges[i+1]:.2f}: {b_nd[i]:.6f} {b_dl[i]:.6f} {b_tot[i]:.6f}\\\")\\nprint(\\\"totals:\\\",b_nd.sum(),b_dl.sum(),b_tot.sum(),\\\"delta fraction:\\\",b_dl.sum()/b_tot.sum())\\nprint(\\\"int(Phi_tot*S):\\\", np.trapezoid(Phi_onergen*S,Tg),\\\"Kcol:\\\",np.trapezoid(q*Tg,Tg))\\nnp.save('L4_Phi_tot.npy',Phi_onergen); np.save('L4_spec.npy',b_tot); np.save('L4_Phi_nd.npy',Phi_nd); np.save('L4_delta_spec.npy',b_dl)\"}"
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 164931,
+  "completion_tokens": 1766,
+  "total_tokens": 166697,
+  "cost": 0.0057246098,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 131944,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0057246098,
+   "upstream_inference_prompt_cost": 0.0054031978,
+   "upstream_inference_completions_cost": 0.000321412
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 0,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

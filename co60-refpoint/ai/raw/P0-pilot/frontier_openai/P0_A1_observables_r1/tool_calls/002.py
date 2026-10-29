@@ -1,0 +1,1 @@
+print(np.sum(kn*T)/np.sum(kn)); print(np.sum(kn[T>1.4])/np.sum(kn))

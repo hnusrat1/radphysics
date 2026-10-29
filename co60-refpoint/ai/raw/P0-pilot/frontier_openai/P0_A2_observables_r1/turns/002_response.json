@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791813937-fzbbZ8Gx1LGMveGrmaxe",
+ "object": "chat.completion",
+ "created": 1791813937,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Exploring precision in data**\n\nI\u2019m considering how to approach the request. While layered approximations could offer insights, the user is looking for a precise output. I need to ensure I\u2019m consistent with my data arrays. It seems important to analyze physical coefficients at 2 MeV accurately to meet their expectations. Let\u2019s focus on getting the best estimates achievable without compromising on precision!",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_HGaQEW212epg4Mn9JQ3cHc5u",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import numpy as np\\nD=np.loadtxt('/tmp/data/xcom_water.txt'); e=D[:,0]; i=np.argmin(abs(e-2)); print(D[i]); print(D[i-1:i+2])\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Exploring precision in data**\n\nI\u2019m considering how to approach the request. While layered approximations could offer insights, the user is looking for a precise output. I need to ensure I\u2019m consistent with my data arrays. It seems important to analyze physical coefficients at 2 MeV accurately to meet their expectations. Let\u2019s focus on getting the best estimates achievable without compromising on precision!",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzOkzKUZc1DOb2-b8bZy5Ll3w58Y5jhoAfZFUhqW03FQEJPSH3ZR7zzcjopdBW0JAeIaqeKKBQi_cYIKbR_aoAHLYXKA5oqemmUFVufd1M_GKDLozpSsrGp-xkL0PDd3wEIRZyvyySm1Kp451mCpUYVHkY4h_FPaJ9LlW7KJ38KZFQbhEdikUQbwkfh1UntVBaGf11PoehRST_RX_YWZYwTISCj0XNWRN-SY3qbmNlAnZ2QkKpasd1Av8iMQLfn1O9dETfdS3OXds-iggE92_ImIM1xi2LLV6ji3upAl1imfjId1AGx7Mu2nyX2mgypKqs4KWFwbW1gSReryGuVHR60UrGq5xQc9ePwCeresIF-Azwt9UY-g-g2CG1Aoiw402FRqH-2w3CLgCzID-6k4ui3dwhc44nQjakAMd0JVddp02vwxnr_mk7TvHcYCMhai5k4fBP8z-yl0vAtMW3pUkFwFJMQabCbqxabbUeoHc_XjPTdiCR-eUbjyudg2wWt8bejcDaD9brpncZRc7yABiD74cu2LY8dCdpH8-Sf8r5TBHo6BUmKwwoC8DD84HOSrJ18i-X4vBqGXvUHUK669Mg0M4JI2J8eekS10hUJSO6mqC1awmnN3bYyqUayx7I7GHsSKMRMiCjsrnQuLR8Sp5FaQII9Ex3TGD7pgQX5oQvRLPNdMGLSzIG-UvXcjsjgDwp46hiQFM2iLWxZtkv4-u8GbNJ__CbYXirvnGhchh-HANaJvlrxvGLMVAlUfluLIfCLurjslrcYm86-tno4hssdlOYyddl0Jbq4cdrhHN5DklOg-yd1GHmOFxNTjeS-_2E5iQLeDrgChOESLDNBN6WWOozwCZDe7jqKOk0tqy9-KHhqCPBabb16sfA1Zgs06OHWiEGQt9jYvuzQmm17u7dMSkJ7NHpgBHRt20IgCV8-OpU6qOH8jyXCLEoXhgF9Z6gQfTruod_sA0YxDKdxBeq56kTHvYNmlf8rcqRRFrL0GxmsyKEOYWtoSZL3_5IGHFh63ww16pigPuf4qMNELoijZUb8icCzExHBbw83icX-_L0fx18mR2ROpyt732qf0MB5uVXzPv3mDryp9GtbYn4-vCHGYt3d7lGUbxEYauV2QMMsfRmlp0LV662TODZktJ933_3lvNQk1IRgeR8JdRTSME4fPipREmhIr-QjeUOYUdPxr5IbeSqXZ-3tTToFXqiMcttNSgJLmT2PtCn82LDh7GwfXdoc7s4SQ9G_UfC1zONyDD8vpHBkcXm6MG3ihOcCwhQ6tdp1jIxaKSVopnxhjBTGZ4R2Z30luIYiEi6b2id1b-50hS7874VM-4ukLRhgkrlkxP5Ee4P8HRdcqxesIHZkFjIX0rJsOaom3icBBfiem0tridWSaFuu5ZW_TiXqK1GEbg0luEcur00uswRbHv2wOYMOn0XDYXFOuO0PikFgnRxHsqqs4oatS27MlxS6jYRON5O7EkmaHEy__KIl-JGOtHULvzeZoBPhfhxw2r9McgMrxVuzmB7rKj2Cp5AYORGkTfbvKAiCRyHa5BPvE-4zo35ScfI2Bx9I6kFkp1PmG8cpYt9nDncTPlyYXDF9iK-A2qQCqGyFYvLNVNUtaxcx8yBy23X0YUW7-1BnikS8zeP6SVM8ne5jym9XSlOclAe6tzoDIsQ6cSgYfeJUwHQjwDSbRzFOlqKJipHasOgzI8XCOINSjabVmO7tqpDtUPoSdfBuTr2ouYUsnA8wgmrVm6C0naxmukQ0ny_60rVVYidFl_hhUzJVJ9FiL90rvqGWR6RmsCvpr65YT1vix9jiujR78fnv8i2wELTJDyn4X6BK5vdXXJC7qPpRKiofH8TU3tm91Hn8acLIdpoYPbD-hXRr5q3FrRlT0Imu5Xyojhgy_VmwvUQsW0kOQ4IjbsI2Zogi1PqMUT1PoeCCVJiNLx0Uls7bCSZOoGbQF_0eWh4VcAiSo7de3RIr8P97dqJ4lwTo7jsyVXtN30Z3h2XQ==.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_01093ad1e47df242016acce932460087d1abfc064184d2a20a",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 6268,
+  "completion_tokens": 93,
+  "total_tokens": 6361,
+  "cost": 0.00033554,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 4299,
+   "cache_write_tokens": 1966,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00033554,
+   "upstream_inference_prompt_cost": 0.00028904,
+   "upstream_inference_completions_cost": 4.65e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 31,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

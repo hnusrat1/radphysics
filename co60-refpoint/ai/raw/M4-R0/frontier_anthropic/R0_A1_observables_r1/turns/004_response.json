@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791824346-cAZP6d5QTlwxpskhWPHY",
+ "object": "chat.completion",
+ "created": 1791824346,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Since state isn't persisted across calls but files in the working directory are, I should save my work as a module file like physics.py that I can import later.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01WzQCmCqsq5aWfaTwd21b6Q",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\ncode = r'''\\nimport numpy as np\\nfrom numpy.polynomial.legendre import leggauss\\nre=2.8179403e-13; mc2=0.51099895; ne=3.3428e23\\nLines=np.array([1.1732,1.3325])\\ndef sigKN(E):\\n    e=np.asarray(E,float); L=np.log(1+2*e)\\n    return 2*np.pi*re**2*((1+e)/e**2*(2*(1+e)/(1+2*e)-L/e)+L/(2*e)-(1+3*e)/(1+2*e)**2)\\ndef fKN(E,c):\\n    Ep=1/(1+E/mc2*(1-c)); s2=1-c*c\\n    return re**2/2*Ep**2*(Ep+1/Ep-s2)\\ndef mu_pe(E): return 0.0022*(0.1/np.asarray(E,float))**3\\ndef mu_coh(E): return 0.0030*(0.1/np.asarray(E,float))**2\\ndef mu_pair(E):\\n    x=np.clip((np.asarray(E,float)-1.022)/0.308,0,None); return 0.0002*x**2\\ndef mu_c(E): return ne*sigKN(E)\\ndef mu_tot(E): return mu_c(E)+mu_coh(E)+mu_pe(E)+mu_pair(E)\\n_x,_w=leggauss(200)\\ndef mu_tr_c(E):\\n    E=np.atleast_1d(np.asarray(E,float))\\n    out=np.zeros(E.shape)\\n    for i,e in enumerate(E):\\n        Ep=1/(1+e/mc2*(1-_x))\\n        out[i]=ne*2*np.pi*np.sum(_w*(e-e*Ep)*fKN(e,_x))\\n    return out\\nOMEGA=4*np.arcsin(25/10025.)\\n'''\\nopen('phys.py','w').write(code)\\nimport phys\\nprint(phys.mu_tot(phys.Lines), phys.mu_tr_c(phys.Lines), phys.mu_pair(phys.Lines), phys.OMEGA)\\nprint(phys.mu_tot(np.array([0.1,0.5,1.0])), phys.mu_tr_c(np.array([0.1,0.5,1.0])))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Since state isn't persisted across calls but files in the working directory are, I should save my work as a module file like physics.py that I can import later.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSvAcKEAgSGAI4AUIIdGhpbmtpbmcSDD4DqJN10L6y8RSo7xoMkLEhYX1HNAvPlFQHIjAfuGjgjU+0vV+Xv6ZK2r14bl0WEI0ZbLs404+uxbpyYdTZk6vEaSbcsljsZcefVj8q2QYxoXg8cSnGN2UzL+STHkoOVZm3pfSl4gQhK76ohIXpW6CyRsvEurLc7BgY5xb6HT2o26mcpekzDu4E27v4WB9wp6LofQy8PWbhEiMEmX7dUHoYfg3NGENbbgE9y/h1+JUO19e/n0PE3aZ0Tvk1MRzhRZMW5d9AwOdKz+5cS9tGv1TLGuLtsjr2dH2OJJ4o0/aLTxwpN9EOCzmFNo5Tq6LSiIwNOjQnoz2LVnJ8ThFA3lK0YOE3r5Wy9uyHxcqXyo+KnZEpeRm3lvrDK1vFhwJbY9ZzGZ/X6mzXgFZLuaLXaLsD3a9Zed1zJyZnZ4bkeU4nuQQeCTxm5DvgQVAQCccGLNEKN5w1M2CW4+aC+c0C94XmKKSn1Uy4HP57lXxMwjyTHzLjaap1NGHAkT4r3bAizIYHDZbTi5Fn6/s0Ld1DeMPV0j0vn7HrR9qLJasTIRikQCh0k/9HX0kIuJAcJ/fs159cxU9fsK4tHdRle0EreGOBwbIRY4lhl+UssN2F+Mbm25okQ7k1WeBB+osUWVDFCabkOwbtv2BM4U2LkWejfHPLde58gGUYZRSkK4UrYnzHU7GSIZMBcSFWaR7214w0pRG57pXKDPU//cUHdszPIl8Qp91yropTMxtO6/KtVVCZMPnp2HMSClrxjtkn4UZT+gdXl5bjY2KWhNTiafxA49PmTeTgkrVfkMzZcxA6bASwMKJd18YTaME8F2GOHsDT9qMYDYnyisR8mz8lbrrp3c8WCVxhP8fRkf0pWf3Yg9l/akirGZk4EwE8WMf1RXW91gBjQmeya7UpWz5gxDxKkLnxuHKXkKjD09KHJ5lrfHhkf8xCDX0NW2Al4qdNCBgnaffSxXuCUS5GXnfopsPoEdsZRoHwvDsUw3MFnc5Zmu5v+m3VKNOljJ4DaHvqNgK1eJ7pikFTOZ185W4Nw5YN4fZyfC6CgeKAWgxoJXcuM8vf4r8DuYwSoPS4/5yPTm8UEZN6kl98Pw871QehKQPb/uQ9dX3CZt7QBSrwEPGaTMGLnipDBgMYjWyW73757hxBPgkzgOLOMefuK2I+eJg1aPDfWSNe6PE1Q7vgD926armMTlwGnmOFCXprX99dGHxJeRBGdM1GM+Xf7P/sepl5Y5eMFT4FXNHQUhgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 82654,
+  "completion_tokens": 861,
+  "total_tokens": 83515,
+  "cost": 0.00143961,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 81066,
+   "cache_write_tokens": 1586,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00143961,
+   "upstream_inference_prompt_cost": 0.00100911,
+   "upstream_inference_completions_cost": 0.0004305
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 58,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

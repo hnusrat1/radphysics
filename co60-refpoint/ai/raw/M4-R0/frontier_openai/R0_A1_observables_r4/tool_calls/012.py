@@ -1,0 +1,2 @@
+import numpy as np
+w=np.array([.02,.035,.045,.05,.055,.06,.065,.07,.07,.07,.07,.065,.06,.055,.05,.045,.04,.03,.02,.012,.006,.003,.001,.0005,.0005]); centers=np.array([.03]+[.075+i*.05 for i in range(23)]+[1.3]);print(len(w),w.sum(),np.dot(w,centers)/w.sum(),w/w.sum())

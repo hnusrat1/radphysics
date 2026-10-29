@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791828306-JXNeV8xFM26GTB6RTNbH",
+ "object": "chat.completion",
+ "created": 1791828306,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I notice the python tool environment resets between calls, so I'll need to re-import subprocess each time I use it.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_015YEPiXXnW1zUj4m93AMe5d",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport subprocess\\nr=subprocess.run(['python','sample.py'],capture_output=True,text=True); print(r.stdout, r.stderr[-2000:])\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I notice the python tool environment resets between calls, so I'll need to re-import subprocess each time I use it.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS+wYKEAgSGAI4AUIIdGhpbmtpbmcSDOcmGOWk2eMWJiA/JhoMxda+1/VpxSyK9ScRIjCFHJWNrX0xbSX00bSIrhhzM3BGdUvPAiVRXuR3KkbJRPbPjc/C5AIzEjx6okbW1h8qmAbLzGeS/+5KMA4d5OV2mtnAKpN70zpcsMveUivmTDT6bDJryq3usbk26UeT75cELASIR49dji3LWohPFM9JcTkK4sEwjz4USnl63tOUmaEv/d4x7WJShP3kMB42elyLysmBketfL2IjOUTmW8gwCDjPJZwo10ZtdcCO84hYqK2jciA33KgqUdwB6wW1WdAAhUAc5o9ikLpQS0pupS3CrflRsse9Mw8p3ulVjLsWxpodmnWJvEYaOK/m+3TO/c4YSxnSlueyivnPY3Unte56PcShzSJ7KVa2I/tLXb2poAMpeQ2/ZGn5vVNO5U/hJoioAajr3ycDuzmUSKuGWaALG9/hrIa4M7XcwfKCvjxDpFT4Lj235KZRttc9bpZ30ZdVeT41mwIciDd7wdber5ssmsTpo2tVTnE5WY56oO2i9thEsWrgoGhTtxr7dSTKtLKOMUPfmce+rRa/QKENwzaYXOlIXEnMFur6UFdkO3UPV1kI9XaemdpIJuAGqKmXKdMKESFyr44+tzn4fr/ABzDIGfavGvLhABDBdXc6h/3Llru9TF3fBOoRyPJq20qvhIqCCJXX6EGAQwBmjgclXdZQoUlki2qNTJ00yVpV27ykUbdM/CVTjwqFAGkFmGhz3ZTWB9+Uqfbr6Nvchp/SDKAabVqzKiRH3RjPZ5FO6fqKuCyKcVqHD2BeQ9CSMTZ6BqgMSG1jW75zzXSDG4SoWsULRJUS4kmFDSDyfETs16ByyI/mCK6tdIqNVJxuE+4VNPuci+zGoV28FXjmk0Egw1ver2FLUcGwI5cFZCL1XmDITTGYD4zjSJwlLWQdTyoways8riswUxyX4v1JwbPc+SYvjKSLTU9zSmP7GvSfEt/7ATJhEXioQB5kl7DPAwtLJrT++bsgjR8bazT4JFdkmwUEI9Vj2Z861Ikg5FY17YTgf9BO25ev0A2pw3zP3TUmY7t1Qjeps2seaFI5/zANmD1emg0OQtuZ80buImAt1ive6tCrRO+CoYB8cbKGhQsBhYjgfJnEWaTj2Ia6rGoPaQsMDeEvvOHHtazDKQoYAQ==.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 40754,
+  "completion_tokens": 125,
+  "total_tokens": 40879,
+  "cost": 0.00057096,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 39876,
+   "cache_write_tokens": 876,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00057096,
+   "upstream_inference_prompt_cost": 0.00050846,
+   "upstream_inference_completions_cost": 6.25e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 24,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791827949-1fFnDWikCaHLrr6xU3HR",
+ "object": "chat.completion",
+ "created": 1791827949,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "The Python state doesn't persist between calls, so I'll write the code to a module file and load it each time.",
+    "refusal": null,
+    "reasoning": "It seems state isn't persistent between calls since my earlier module load didn't carry over, so I'll just write everything into a single file and run it that way each time.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01UL9t3T2ytcQtZd8nHu87Mg",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\ncode = r'''\\nimport numpy as np\\nfrom scipy.interpolate import interp1d\\nmec2=0.51099895\\nre=2.8179403e-13  # cm\\nNA=6.02214076e23\\nxc=np.loadtxt('/tmp/data/xcom_water.txt'); es=np.loadtxt('/tmp/data/estar_water.txt')\\nEx=xc[:,0]\\ndef lli(col):\\n    f=interp1d(np.log(Ex),np.log(np.maximum(col,1e-30)),kind='linear',fill_value='extrapolate')\\n    return lambda E: np.exp(f(np.log(E)))\\nmu_coh=lli(xc[:,1]); mu_inc=lli(xc[:,2]); mu_pe=lli(xc[:,3]); mu_pn=lli(xc[:,4]); mu_pe_=lli(xc[:,5])\\ndef mu_pair(E): return mu_pn(E)+mu_pe_(E)\\ndef mu_tot_fn(E): return mu_coh(E)+mu_inc(E)+mu_pe(E)+mu_pair(E)\\ndef kn_eps_sample(E,rng):\\n    k=E/mec2\\n    n=len(E); out=np.empty(n); todo=np.arange(n)\\n    emin=1/(1+2*k)\\n    while todo.size:\\n        kk=k[todo]; em=emin[todo]\\n        e=em+(1-em)*rng.random(todo.size)\\n        cost=1-(1/e-1)/kk; sin2=1-cost**2\\n        f=e+1/e-sin2\\n        fmax=em+1/em\\n        acc=rng.random(todo.size)*fmax<f\\n        out[todo[acc]]=e[acc]\\n        todo=todo[~acc]\\n    return out\\n'''\\nopen('/tmp/work_base.py','w').write(code)\\nimport sys; sys.path.insert(0,'/tmp')\\nimport work_base as wb, numpy as np\\nE0=np.array([0.5,1.1732,1.3325])\\nprint(wb.mu_coh(E0)+wb.mu_inc(E0)+wb.mu_pe(E0)+wb.mu_pair(E0), wb.mu_tot_fn(E0))\\nrng=np.random.default_rng(1)\\nfor E in [0.1,0.5,1.1732,1.3325]:\\n    e=wb.kn_eps_sample(np.full(200000,E),rng)\\n    print(E, 'mean T/E', 1-e.mean())\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "It seems state isn't persistent between calls since my earlier module load didn't carry over, so I'll just write everything into a single file and run it that way each time.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSxwcKEAgSGAI4AUIIdGhpbmtpbmcSDOe+FY/pPDDs/ZMaIxoM9aVjOzslTUikQHB+IjAU7pmr/moQaIJR6fL9NmcbHZYTHEpPRmfFxpLMbYm+YqczLns/iXyuPlcyGKxdXFoq5AZxzsewchXo7/4LMctO4gOQTalpig2qVkydH5PsxVhVUGX+GlYIpoAr8vBiCNQq/10zKobyxmrEgJL9reMnaKaycsSM1GBGDKB49sgAYI+a3IK22l8YHnAYmEGujh99vbsHcqe/RfUmxTzA7N2yjOxkWmkwRhupwvF12R4nnaK58gG6W67R7YkxGqsR7gL1TfE4H/S79EtmIqrwqlESAx6E4UjNyod77ikmkw46gI8Leyr3ni8DLpXmXVeicZOTLMGOkaIvDZK6ZvlGusrHLU7s88PTyQR5GXK39siVfyx9KV7qq2WiIvadD3ekkk3uPkYUcVwuAMqMPWJBR0uCR+BuUHLA0e3jvYWblxo7xpypGTzi1SnISNIiP8hc9TQRtOq6aL011L1QjKO52h0mnCXPs0IyF55mup/HD7YUzl3pnHpmYSNEPWxkYZ0auTl6RgONT9iX1oLmith5Je1FMJcZvia3JKGwHV4xX26SMCztm8c/YYZyz7GM9z9Df+ZMm2IfRM+n1rwHMhP4oYWQEVwaUVwsvSAVWGBVOji+kxitTSOYBhwNA1f0rz7/tTzPDTtCDq6sf/0OM65jr5ruJLCfv6e90jmioSN+ug2MvvRYqoIAKda7EuExPeN1qXiC0TXDxGafu9vHk51AgzTirg4xgei4SA6aUL5ZyJiJ6vKSLF+202Ybw9Ogu80A8svWuxpIy+O9gJ26V0NHhV4gzHVc0cFCLEB6B5EVCi78P5wMbntYnMHcenfPBmOpCBPBtWNsMqQfDGcnx2aUY5MqGAsxMc/CxP0yZyYI/2h2xn1d1heuYukT9IUHPthe3Qa/SPlDnVrVO0E1sZecd79fvXb3VKpKa81W4dO2d8TynykW/UTTWM32vCGaFAYcnzq+9sKdfb3a6+p7Q1vuTVbA4iLwL/rx070oPyjqDg1z0fchWpDK+0zVGeYp18EXcPfFrRUQ0f5LPZuplW5eEFWDv/xvgqYQYZeGFG/p0dBYURa6qBr4YJw8ltzhk4CGcMfRfhwMaFyCCMYu8745sNcljs4D8U72BV1dtBNhzJrx+gOMazhwF/hhJiRcDITJusVwqJNJRVzIpcVeROTsy8PYRGrz+OPwpcF+2I6LaqC2W3IpkgIojstp0EpQLtZGL+WXXvsCYa87GAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 56612,
+  "completion_tokens": 977,
+  "total_tokens": 57589,
+  "cost": 0.001905455,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 49213,
+   "cache_write_tokens": 7397,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001905455,
+   "upstream_inference_prompt_cost": 0.001416955,
+   "upstream_inference_completions_cost": 0.0004885
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 66,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

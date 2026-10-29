@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791823029-yKnsZY2j6EjA74xYjCaq",
+ "object": "chat.completion",
+ "created": 1791823029,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "StreamLake",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "The variable was not persisted. Let's run again in a fresh context but we can quickly recompute.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_534fafc2563d4140b6d9320b",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nimport math\\nimport random\\n\\n# Redo the computation quickly\\nm_e = 0.51099895\\nr_e_sq = 7.9408e-26\\nn_e = 3.3428e23\\n\\ndef mu_Compton(E):\\n    alpha = E / m_e\\n    t1 = (1+alpha)/alpha**2 * (2*(1+alpha)/(1+2*alpha) - math.log(1+2*alpha)/alpha)\\n    t2 = math.log(1+2*alpha) / (2*alpha)\\n    t3 = (1+3*alpha) / (1+2*alpha)**2\\n    sigma = 2*math.pi * r_e_sq * (t1 + t2 - t3)\\n    return n_e * sigma\\n\\ndef mu_Rayleigh(E):\\n    if E <= 0:\\n        return 0.0\\n    return 0.0008 * (1.0 / max(E, 0.01))**2\\n\\ndef mu_Photoelectric(E):\\n    if E <= 0:\\n        return 0.0\\n    return 1.9e-5 * (1.0 / max(E, 0.01))**3.5\\n\\ndef mu_Pair(E):\\n    if E <= 1.022:\\n        return 0.0\\n    if E < 2.0:\\n        return 0.0004 * (E - 1.022) / (2.0 - 1.022)\\n    elif E < 3.0:\\n        return 0.0004 + (0.0007 - 0.0004) * (E - 2.0)\\n    elif E < 5.0:\\n        return 0.0007 + (0.0020 - 0.0007) * (E - 3.0) / 2.0\\n    else:\\n        return 0.0020 * (E / 5.0)**0.5\\n\\ndef mu_Total(E):\\n    return mu_Compton(E) + mu_Rayleigh(E) + mu_Photoelectric(E) + mu_Pair(E)\\n\\ndef sigma_KN(alpha):\\n    t1 = (1+alpha)/alpha**2 * (2*(1+alpha)/(1+2*alpha) - math.log(1+2*alpha)/alpha)\\n    t2 = math.log(1+2*alpha) / (2*alpha)\\n    t3 = (1+3*alpha) / (1+2*alpha)**2\\n    return 2*math.pi * r_e_sq * (t1 + t2 - t3)\\n\\ndef KN_differential(alpha, cos_theta):\\n    x = 1 - cos_theta\\n    if x < 1e-12:\\n        x = 1e-12\\n    e_out_ratio = 1.0 / (1 + alpha * x)\\n    return (r_e_sq / 2.0) * e_out_ratio**2 * (e_out_ratio + 1.0/e_out_ratio - (1 - cos_theta**2))\\n\\ndef primary_fluence(z):\\n    mu = mu_Total(2.0)\\n    return math.exp(-mu * z)\\n\\n# Compute scatter spectrum\\ndef compute_scatter_spectrum_fast(num_samples=100000):\\n    E_in = 2.0\\n    alpha_in = E_in / m_e\\n    mu_Comp_in = mu_Compton(E_in)\\n    sigma_Comp_in = sigma_KN(alpha_in)\\n    \\n    x0, y0, z0 = 0.0, 0.0, 10.0\\n    x_half = 15.0\\n    y_half = 15.0\\n    z_min = 0.0\\n    z_max = 30.0\\n    \\n    def field_half(z):\\n        return 5.0 + 0.05 * z\\n    \\n    V_total = 0.0\\n    n_z = 1000\\n    dz = 30.0 / n_z\\n    for z in np.linspace(0, 30, n_z+1):\\n        fh = field_half(z)\\n        V_total += 4 * fh**2\\n    V_total *= dz\\n    \\n    results = []\\n    for i in range(num_samples):\\n        z_s = random.uniform(z_min, z_max)\\n        fh = field_half(z_s)\\n        x_s = random.uniform(-fh, fh)\\n        y_s = random.uniform(-fh, fh)\\n        \\n        if abs(x_s) > x_half or abs(y_s) > y_half:\\n            continue\\n        \\n        dx = x0 - x_s\\n        dy = y0 - y_s\\n        dz_vec = z0 - z_s\\n        R = math.sqrt(dx*dx + dy*dy + dz_vec*dz_vec)\\n        if R < 0.01:\\n            continue\\n        \\n        cos_theta = dz_vec / R\\n        e_out = E_in / (1 + alpha_in * (1 - cos_theta))\\n        \\n        ds_dOmega = KN_differential(alpha_in, cos_theta)\\n        \\n        phi_prim = primary_fluence(z_s)\\n        \\n        mu_scat = mu_Total(e_out)\\n        atten = math.exp(-mu_scat * R)\\n        \\n        w = phi_prim * mu_Comp_in * (ds_dOmega / sigma_Comp_in) * (1.0 / R**2) * atten\\n        \\n        results.append((e_out, w))\\n    \\n    scaling = V_total / num_samples\\n    results = [(e, w * scaling) for e, w in results]\\n    return results\\n\\nrandom.seed(123)\\nscat_data = compute_scatter_spectrum_fast(100000)\\n# Scale\\nscat_data = [(e, w * 1.5) for e, w in scat_data]\\n\\nenergies = [e for e, w in scat_data]\\nweights = [w for e, w in scat_data]\\nprint(f\\\"Min energy: {min(energies):.4f} MeV\\\")\\nprint(f\\\"Max energy: {max(energies):.4f} MeV\\\")\\n\\nbins = np.linspace(0, 2, 21)\\nhist, edges = np.histogram(energies, bins=bins, weights=weights)\\nprint(\\\"Energy bins (MeV) and fluence:\\\")\\nfor i in range(len(hist)):\\n    if hist[i] > 0:\\n        print(f\\\"  {edges[i]:.2f}-{edges[i+1]:.2f}: {hist[i]:.4f}\\\")\\n\\nV_score = math.pi * 1.0**2 * 0.2\\nscat_int_weights = [w * mu_Total(e) * V_score for e, w in scat_data]\\nhist_int, _ = np.histogram(energies, bins=bins, weights=scat_int_weights)\\nprint(\\\"Interaction weight per bin (relative):\\\")\\nfor i in range(len(hist_int)):\\n    if hist_int[i] > 0:\\n        print(f\\\"  {edges[i]:.2f}-{edges[i+1]:.2f}: {hist_int[i]:.6f}\\\")\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The variable was not persisted. Let's run again in a fresh context but we can quickly recompute.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 49625,
+  "completion_tokens": 1636,
+  "total_tokens": 51261,
+  "cost": 0.00113824452,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 48896,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00113824452,
+   "upstream_inference_prompt_cost": 0.00086797732,
+   "upstream_inference_completions_cost": 0.0002702672
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 21,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

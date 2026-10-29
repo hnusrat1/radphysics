@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791824627-LPtwaHmzrNRQw0fN1cNb",
+ "object": "chat.completion",
+ "created": 1791824627,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Computing attenuation values**\n\nI'm focusing on the primary attenuation and average \u03bc values. I calculate the total L1 value as 0.86948, and I need to find the scattered fraction fluence. So, I divide 0.140 by 0.86948, which gives me approximately 0.160, and then reconfirming that, it checks out at 0.161. Now, I want to compute the energy scatter fraction, using the mean photon energy of 1.1372 and the primary mean values. Let's dig deeper into those calculations!",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_Xlvw4r2eOr2RrrMk88qjlrzW",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import numpy as np\\np=np.zeros(28);p[23]=.36100766556309516;p[26]=.3684740301595249\\ns=np.array([0.004697987,0.005637584,0.007516779,0.008456376,0.008456376,0.008456376,0.008456376,0.007516779,0.007516779,0.006577181,0.006577181,0.005637584,0.005637584,0.004697987,0.004697987,0.004697987,0.003758389,0.003758389,0.003758389,0.003758389,0.002818792,0.002818792,0.002818792,0.002818792,0.002818792,0.001879195,0.001879195,0.001879195])\\nE=np.arange(.025,1.4,.05)\\nprim_energy=.36100766556309516*1.1732+.3684740301595249*1.3325\\nsc_energy=s@E\\nprint(prim_energy,sc_energy, sc_energy/(prim_energy+sc_energy), sc_energy/s.sum(),(prim_energy+sc_energy)/(p.sum()+s.sum()),s.sum()/(p.sum()+s.sum()))\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Computing attenuation values**\n\nI'm focusing on the primary attenuation and average \u03bc values. I calculate the total L1 value as 0.86948, and I need to find the scattered fraction fluence. So, I divide 0.140 by 0.86948, which gives me approximately 0.160, and then reconfirming that, it checks out at 0.161. Now, I want to compute the energy scatter fraction, using the mean photon energy of 1.1372 and the primary mean values. Let's dig deeper into those calculations!",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzRL4KMZ88YkDbZSuHq8SXSTJfQOhTrdltp2lCQR4mANjLQqf4mTgQA4MeU0Xp-azLXWrYSKRzx3peVvQIxw2J5k2Ln5R87BB7FZM5SttgRNFsrQxXkyNJlQK3zeo8bSgQ2UpLTQUuJCJLq2acPz2kZzDaHbg6g7QPzc0dhFmpsB8oOEByWjvzv4kJF_Qbtw46Nx8u0C-rSFPAndObdZIhvdRH82t_j8RjgzQdNxCJsGftKUZHnjty_rqYNOBJnPWm0jJjWltZs9ZWQCsYMNvaB4oOQisX0dHtvCkaqaGbnJMvbX_PLG9ahx6dNFUmSB1DdEW17ZExeWy5Zo9bQDfMjxPpi04BpVmA00xVg4JOYb7nu4T-_OoINWLKpWT_MGIqfc4LR4unsZoXt6N6MwQRELFAVGgPHbabZKRjuCJcoFZoBVzCHMIgDMeVQVM_JyR-bZorwozNB0UYjM_FxWGVb_bsi8jf9nvOMLXxkhk-xNM3esHmgTYLQxBwpSn_ATHxTspwwzJgYn77jghA20Tfyfx6prm2gVQEudWp_OLN8MDq-cFYug_zUxv5A2M6IG1wnhRiwkKQdoF1ESRrQJu9xiIE8cSdgfCCIjfrvmRhpnRQpNWaoLSfVaOtj8OU6VPmOnCYW7_NAOj9qew5w3qbBxdVuSUF11cwlGStBI9BLjTLAOXawRRQqM_ogEhGbmUYOI2s--8ER9T-VfNBAFM1CoSoHxOeoT5G3BrdnjVo5RGSd3xEnRkw2BkiHH_3DK6V-8ZkWG4ore69lzjFUPRBYuxD21RoMTLcoRc0wJYavX2pFkkTlc4L6B2F5K5eSQEYy4z70Sp0pwJFCWHCy9XFDaDQzKLvHNgItpA4pN38BynoBG5rWNkaDOoGDyUQRQ4q7oV8LPvXZ_agKaO5wAcNEa0rcRvSyzSmCLVoG18W5y0wDu0_S8Tk4Zg76mTZDg2FJbfgbrqMucmv-8RNTOsNSr597HzmiIRrQwaIWT80LW1ho-1fXsZ03RjwXKHmlqXoyx5Ui39GoL8Y27tvZCIUPOkFR4yVk6crFpVF_7sOjUryhu7psWkDC_yp550wU9VQ7kKmJ8h8fqa6P3dsJrWTL0Ud8Ab_NzNWat-HUQ6v9l5P39tBNLKk9tZtDDVFhZ6FWHhDHX17YGU6ag7qOV-md5sSSWWaLpJ5OU_11fuVESXQi2YyeEHokRBZ7xg5-EQMUAgoREb7_KhGvJ78G7e3v-wrp_5jXTMrq0xXDsJNtALFd8aqRfZN4zaRKKsaqn2xrf7iAVcU0-zyaYbP6T0hYBhVVW79wRjvG8oo-B2HJ-dW07_vhe54sXd1s_WD0MWvzZM2zk_mYC2t74yamSqrBCjgjpjqQTqTmYDqvDX0Z1yA5p-ZqGak2HQB-B3e3AxQfgjnpWHQ6-n-DuDwrujE_dEEwO6wrDrQ3KHOGAPD74qleXFwirgBbyp5ZvTjLJvgJqlod6rchBnLvHbjOmCqOLLNpCnS0XdOrHJgSHQWCa9n9vCuFj0peB1S2vqHzP5MBmHsQcCsxbYtzTxLsYBViKi7KNcA1fjevGMrEFC22gzhs_BpzL_uChRz28s1EOD9DXuQfR-ZvSq3WCDbJu6zlUkCpqpWYqPFvqNvD34C_nr63V5iKXMDIY6Om-z1FR45XRF-fepOZ-nHRTJ_gqiOCL-YFsIupCMqSjXSkh0RL6oOyofRyjOFogOQDCZ7fFAsY05_5CqtvobD1vnfXVJ6OrHeHM2-ivlXHE6NrYzqrndYLBfe4idPVbY9uaR2zySlkDOrOgTIKsDdWqowo6MBNSOTvx6IwQP6rBqdBYO4lMTOM1RKxn0LNFyqhcLpnQaHPzna_0s6wd07jawkJUf_Q_X4KP92fXKuh58a730vw31iqpBxxJcHXfPY0dcNUcPm4tA2mz5GYoYjqT9UCdUtconoNQaywPKiDhEk0g8FvEjZBn5YXk8dmY3wZ6Fa1wJhPodpHNv8fQhytOdf0Dv392we-2TaeXErRovi72HZeBmTA-DVgPa_o4Mdl5U712sMY-YoTC8G8yOY7CCDy1ZIYEwdFwvM92NObPmtyV_3lbDdShxNc5BYukuQ7yFkku_UZ2ARPupT1nHD_1Q_4H3bSL8X1PV6T8eEms-zGjLpvq-_ElXSV-Srwo4_KhXRjopwct1AmwnwSLmSkdw647Bsv9CB5f3XaXjrm_kw79vFF4Id1aIg0AXnu2WQ2FWVr2ibW_PaNgXDEk6bEhyl6RV8xChkV9IwXSLWuxGY6P2-2e3sbUZOwHABycOEAMdI9GCxPLUQtsiyiWf-7c6DtBtBylcx1s8H1uUa8Ypa6lcGXC50uuWAG6tm896AXTa1tD5rmgZiQY2wgXKJzhldOftUBcDFnSpWEwG57y0aCbTYOcVm9yehpcP_JaC33CEF5nu5OHsLTll1rEu_eZSsPjdEsh05Q==.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_0c995b1150585540016acd12f6bde887d1a9f546e24242bf33",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 30578,
+  "completion_tokens": 394,
+  "total_tokens": 30972,
+  "cost": 0.000844025,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 27610,
+   "cache_write_tokens": 2965,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000844025,
+   "upstream_inference_prompt_cost": 0.000647025,
+   "upstream_inference_completions_cost": 0.000197
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 77,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

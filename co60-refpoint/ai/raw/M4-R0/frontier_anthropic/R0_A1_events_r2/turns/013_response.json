@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791827305-QkRRv4Bww2ha67Pzstd0",
+ "object": "chat.completion",
+ "created": 1791827305,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Odd that scipy isn't available in the subprocess even though numpy worked fine there earlier\u2014I'll just drop the scipy import to avoid the issue.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01XrJrE4S7E9adDFZsGhgFC9",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport subprocess\\nt=open('t5.py').read().replace(\\\"from scipy.integrate import quad, dblquad\\\\n\\\",\\\"\\\")\\nopen('t5.py','w').write(t)\\nr=subprocess.run(['python','t5.py'],capture_output=True,text=True,cwd='.'); print(r.stdout,r.stderr[-2000:])\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Odd that scipy isn't available in the subprocess even though numpy worked fine there earlier\u2014I'll just drop the scipy import to avoid the issue.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS2wcKEAgSGAI4AUIIdGhpbmtpbmcSDIveZhKC5KFOv1UxORoMKFfjLJCDYsd648e4IjBwF2QGk1qPlqE/XktJAyZsk0U+6hGmdQ0QmBtt4IpJfmBBd1jD6KgxkIvqDbpc2VEq+AZsYc0+gn8ouynSVyfLuugyKOs2M1KOmyVy2hiPlyYc+Vuxbkv0J0Kp/rMXCqxPjm9MjaKlt4dCLec4PkH/7bzXCHIMLSg7Pf2EOQMaj5q1oh4SOJVG+V6uIvBeLNI+Dyvc8Taj9TSpB3xI2wOjElD84ZJH5VS/r1RoxqBaJRZKPeJIpnvBx/Qqpg66KfD89pIHhM4SMoCL2cfGDYje/RalS7z1YdeXZUFWmbl+v1GoYOE6Q3RZQPD6TAmXVC5EKwUIHdyRPzPkU+GhP0HISJTjpJlS8E8QmvVetAykJhsRuMQlWn9sU2SNq5eEKsPeBWrny5u4v9Pie97AeRD8xcu5fCFogcUHyaUfXYcwXPjQXFQdyniSDzna2yi4i75a/K473cc3TyOKF/DNn1OCX7YvnR7ztY1+fbytvALjVnB7SYSlUkTPthJNo+8L7HcqpY+XDEKzGd3VzHjyhYYP0P0R4n+A8MFVCK4ILFBhqH543Suos05V5MXHy51nk+8EFQK4OXMFr01CgK5k4kFwPOPuKbACuyV/iKZS1hGDTwVMl6+5mVt/5pHnQv3twCqZgsFwSnPur+zJsQJSbr9b3ZwXp4yEz8WYlBvbrFCvq9Xt2TBMCQ2jpLpjY5eHfJm45nkVKa+t5y7DsEVfyxfGxRuwN7SA7oc9MhLiBK+x7XNIArjeGxYmxOZQ/jVGazGCePnjeG57Q0nd9iei3R3FP9WYpA3yA3vfD23McOgKCVcoozkUXlcklDpWJ56xwgLgocGJb/pBwDnq7Pe+HDbVbobDYQYTH8LxQCSKZroowcV9Pr4QXPZ2XwCgqN3eiMnjAqTXJ2PzaGlyRcSzIlFLGSxeN3LTq4mBkfpkNnqwzD8M6bxf0N64jvkz7R0PIs8K4aeDXWdNMaoBu+EDo2XC+Dj9x+vXQmcL6QnHahRUPSUVPmQCsVs2V+K832Xe4XakIFLNhhFl/xqwnx0FEmH68lfCn1kiIKDDHkZx9xHbiv0Tz19Ek/cKATaHnq4ZKVrIblJRTnZE7w1M1yF5FeD866OWXwCOxbyeR6Er+eN9uPsn6HWSq/E6FxjnC9WHpMrEZsNUsYD4fSDrX2+z0y7E6pOUNp+TF7Q6hblg6pb7cQWZIaMzHlHwctUGb9EfsAh13ty6y4xgR+9VYovKXalhw6XHUTuiltSbIHMYAQ==.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 91930,
+  "completion_tokens": 218,
+  "total_tokens": 92148,
+  "cost": 0.002124545,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 82397,
+   "cache_write_tokens": 9531,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.002124545,
+   "upstream_inference_prompt_cost": 0.002015545,
+   "upstream_inference_completions_cost": 0.000109
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 61,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

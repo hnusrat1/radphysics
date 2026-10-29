@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791829794-b4ibp1tMBFn57YOclsCa",
+ "object": "chat.completion",
+ "created": 1791829794,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I need to make sure each call includes the path setup, and I'm verifying that electrons_from_arrivals still accepts the tag parameter correctly with its call signature intact. I'm also confirming the weighting logic works out\u2014weights are kept per-history and only normalized by N_total at the final tally step, not earlier.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01Vhrr7To4nPKrmU1AcdM6tM",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport sys; sys.path.insert(0,'/tmp/work')\\nimport importlib, mcmod, mcrun\\nimportlib.reload(mcmod); importlib.reload(mcrun)\\nfrom mcrun import *\\nimport time\\nt0=time.time()\\ntal=new_tally(); rng=np.random.default_rng(1)\\ntal=chunk(20000, rng, tal)\\nprint(\\\"time\\\", time.time()-t0, \\\"ncoll\\\", tal['ncoll'], \\\"nh\\\", tal['nh'])\\nprint(\\\"arr_tot per src\\\", tal['arr_tot']/tal['nh'], \\\"Phi0 src\\\", Phi0_src)\\nprint(\\\"scattered/Phi0 =\\\", tal['arr_tot']/tal['nh']/Phi0_src)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I need to make sure each call includes the path setup, and I'm verifying that electrons_from_arrivals still accepts the tag parameter correctly with its call signature intact. I'm also confirming the weighting logic works out\u2014weights are kept per-history and only normalized by N_total at the final tally step, not earlier.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSwQkKEAgSGAI4AUIIdGhpbmtpbmcSDA0ogE4OwalKCsgkmhoM+tN0HHL4n7BFLPKcIjBysvsVpQUyQtt04+Otefh7pxBZSCDIQeUQRBEEwhDI07X/DzMUjKTQGBWI5N5oHKMq3ghEvYbMQGFkwAPy9Eyv4dIfajAWr/ifwCk956eeTiP2aYeNyq9LcpdNzsRc3l9l/lA6RkfHDfAr5MOqugalhML6N69V2AdQHGa5dMqszjLRGFCZIidNwA63Hu96rNsAFe7QnrZpvmghYc1PVImOWj+LRKcAZIgcwhmr/IElwvAfO3oapvFIIdV+el59mWTxOvi94xad1KRNZ69vjAlB46PpKrr4AYhatjI3RIEEUKhDAZRzW19cm3bQYy2OF52kybxYRTKpV2WlhutA9qwXIFkqMg7sxS97GvJ/FgZZ9mbO3rauvof+q5Bd8s7IB2nDZ4zCQkWsJtJd1TtSbDF5QvlokPGuFMN+9cCes+4w+ECvYYxlGVzyawy2AbJXJaRN13WSEtNhX7bz5gKQY9AM3DRPi7kQdQsr9TI4PMBGkAdc2zOAM2O1dMFuAPhUPXgfbImTt88NLuBzBBUFsjmd7/tlNiyiuLKmT64mikNmjw3VWBbczoBJguJPWop+VP6JViEBtCQ/JhL8SbkrOy5T1E+SRXwZ44P4kqUIiF+qSALI1nd5tEUJo2hd3miB/8bRtIjmKYbbkVldBXXwU/z+qSlN6Xoux2QZlnQ4i5MsKJHFGv+kBI/0izxRiWga5PBaevS1xehcjg1Jj0UredY170YwpAYv5brXkj6lBCJE/FQFzXcI21zbfEp04KFh6+aMYKg1cNfIS6VCBYWoPADAxqB3KZ3qC90k/jcsaA4xHwB6W+xqmZrRbwdlbRUQy/yNOhOkPbbOO1YPd8w06FD0z7wMIW0XU1EH6BLLkXlkeAhoDv69aDY8VrkDVjeBPd5ZZ8vxfR2H73fRj46sPYR9xi993mT1NnKr/GZZpzqqbd9ew5hxZwRuCIzt5TsiTtkfEFeLWVopPAfJwUJmb5mBXPGbgIK78tLhK2GNO/sgGQ5aTxZsPvnUb657uLXXh870zyrpz2x5c0LnqP2XrsAERRuj9c8eNheUwDHaIGbFAbUJMBoOmsqmsFRCpgc8h7cEU2+PuwsteUJpgxk36T7vmsuI+fUgCwbBz1DpA1/cyQ7r4xVUc6+X3tkjzl4hyWg7H5QLD176C9tsbDRECSKPxytEGHmQxJU/6gms2Zsa4HH0QrCm+FEMigYOyV7OPZC9jMflulrYmdGyosvJvvRR16WzVeUWB5dYZSzpSJF/Jj5oK9AMyzjpHpwn8U8sSgm5QEua2xsaeYoMd61BRWHrXz4M1dK43c+zyebfY73EEysnDRZiAY+YKAI1+6EDrA+0AYAqr1eFZtAlc7680f+v4XrLDvQ8UkQFBR83ohBMYvBbhgQTk6P2y4ingjnvvomTQt0WkiyBisnnd8kRid1x/JQ222CTQjz0WGZQzVTWWVwArrf+0vDSfeaDZGoMLUG7t6txYmFdlJqsQeikTyD4aEwxWDUL3dSjuDieSQlKluP3oQd1New8duNOx/iAM2YMGkFrHKLvzX+QGMef5OEJsRgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 121614,
+  "completion_tokens": 448,
+  "total_tokens": 122062,
+  "cost": 0.010741875,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 115455,
+   "cache_write_tokens": 6157,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.010741875,
+   "upstream_inference_prompt_cost": 0.009621875,
+   "upstream_inference_completions_cost": 0.00112
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 159,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

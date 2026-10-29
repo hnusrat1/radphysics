@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791830872-QncbRpKzcXl9c48ndfV2",
+ "object": "chat.completion",
+ "created": 1791830872,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "GMICloud",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Let me write the complete script carefully in one go.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_4fbe8f0899e44f2fa5cb743f",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np, time\\n\\nxcom = np.loadtxt('/tmp/data/xcom_water.txt', comments='#')\\nE_x = xcom[:,0]; mu_coh=xcom[:,1]; mu_inc=xcom[:,2]; mu_pe=xcom[:,3]\\nmu_pair=xcom[:,4]+xcom[:,5]; mu_tot=xcom[:,6]\\nLE = np.log(E_x)\\ndef mut_at(E, mu):\\n    return np.exp(np.interp(np.log(np.clip(E,1e-6,20.)), LE, np.log(mu)))\\n\\nm_e = 0.5109989461\\n\\ndef sample_compton(E, rng):\\n    E = np.asarray(E, dtype=np.float64); n=E.size\\n    alpha = E/m_e\\n    K=10\\n    mu_c = rng.uniform(-1,1,(n,K)); u_c = rng.random((n,K))\\n    d = 1.0 + alpha[:,None]*(1.0-mu_c)\\n    p = ((1+mu_c*mu_c)/2.0 + (alpha[:,None]**2*(1-mu_c)**2)/(2.0*d)) / (d*d)\\n    accept = u_c < p; has = accept.any(axis=1)\\n    mu = mu_c[np.arange(n), np.argmax(accept,axis=1)]\\n    bad = ~has; cnt=0\\n    while bad.any() and cnt<50:\\n        nb=bad.sum()\\n        mc=rng.uniform(-1,1,(nb,K)); uc=rng.random((nb,K))\\n        dd=1.0+alpha[bad][:,None]*(1.0-mc)\\n        pp=((1+mc*mc)/2.0+(alpha[bad][:,None]**2*(1-mc)**2)/(2.0*dd))/(dd*dd)\\n        acc=uc<pp; h2=acc.any(axis=1)\\n        mu[bad]=mc[np.arange(nb), np.argmax(acc,axis=1)]\\n        bad[bad]=~h2; cnt+=1\\n    if bad.any(): mu[bad]=rng.uniform(-1,1,bad.sum())\\n    Ep = E/(1.0+alpha*(1.0-mu))\\n    pe = np.sqrt(np.maximum(E*E+Ep*Ep-2*E*Ep*mu,0))\\n    cos_e = (E-Ep*mu)/pe\\n    return mu, Ep, cos_e, E-Ep\\n\\ndef cyl_seg_length(p0, d, s, z0=4.9, z1=5.1, R=1.0):\\n    x0=p0[:,0]; y0=p0[:,1]; z0v=p0[:,2]\\n    dx=d[:,0]; dy=d[:,1]; dz=d[:,2]\\n    dzs = np.where(dz==0, 1e-12, dz)\\n    t1=(z0-z0v)/dzs; t2=(z1-z0v)/dzs\\n    tmin=np.minimum(t1,t2); tmax=np.maximum(t1,t2)\\n    tin=np.maximum(0.0,tmin); tout=np.minimum(s,tmax)\\n    a=dx*dx+dy*dy; a=np.maximum(a,1e-16)\\n    b=2*(x0*dx+y0*dy); c=x0*x0+y0*y0-R*R\\n    disc=b*b-4*a*c\\n    ok=disc>0\\n    sq=np.sqrt(np.where(ok,disc,0.0))\\n    t1c=(-b-sq)/(2*a); t2c=(-b+sq)/(2*a)\\n    tinc=np.maximum(np.where(ok,t1c,0.0),0.0)\\n    toutc=np.minimum(np.where(ok,t2c,s),s)\\n    tin_=np.maximum(tin,tinc); tout_=np.minimum(tout,toutc)\\n    L=np.maximum(0.0,tout_-tin_)\\n    return L\\n\\ndef photon_mc(N, seed=42, region=4.5, region_zmax=13.0, verbose=True):\\n    rng = np.random.default_rng(seed)\\n    # energies: half each line\\n    E = np.where(rng.random(N)<0.5, 1.1732, 1.3325).astype(np.float64)\\n    u = rng.uniform(-5,5,N); v = rng.uniform(-5,5,N)\\n    L = np.sqrt(u*u+v*v+100.0*100.0)\\n    dx = u/L; dy=v/L; dz=100.0/L\\n    dirv = np.column_stack([dx,dy,dz])\\n    # start at surface z=0\\n    pos = np.zeros((N,3)); pos[:,0]=u; pos[:,1]=v  # x,y at surface, z=0\\n    interact = np.zeros(N, dtype=np.int32)\\n    alive = np.ones(N, dtype=bool)\\n    \\n    # tally arrays\\n    nb_ph=28; ph_edges=np.arange(0,1.401,0.05)\\n    fl_prim=np.zeros(nb_ph); fl_scat=np.zeros(nb_ph)\\n    ang_prim=np.zeros(10); ang_scat=np.zeros(10)\\n    cos_edges=np.linspace(-1,1,11)\\n    \\n    # interaction tallies at 5-cm scoring cylinder\\n    # process: 0 coherent,1 incoherent,2 photo,3 pair\\n    int_all=np.zeros(4); int_prim=np.zeros(4); int_scat=np.zeros(4)\\n    etr_all=np.zeros(4); etr_prim=np.zeros(4); etr_scat=np.zeros(4)\\n    # Layer3 lists\\n    L3_Te=[]; L3_cos=[]; L3_parent=[]  # parent 1=primary photon,0=scattered\\n    # electron source lists (region)\\n    src_pos=[]; src_dir=[]; src_T=[]; src_par=[]; src_kind=[]\\n    \\n    tstart=time.time()\\n    generation=0\\n    while alive.any() and generation<40:\\n        generation+=1\\n        n = alive.sum()\\n        Ea = E[alive]; pa = pos[alive]; da = dirv[alive]; ic = interact[alive]\\n        mu = mut_at(Ea, mu_tot)\\n        s = -np.log(np.maximum(rng.random(n),1e-30))/mu\\n        # distance to cube boundary\\n        # z: +30, 0\\n        tzp = np.where(da[:,2]>0, (30-pa[:,2])/np.where(da[:,2]>0,da[:,2],1), 1e30)\\n        tzn = np.where(da[:,2]<0, (0-pa[:,2])/np.where(da[:,2]<0,da[:,2],-1), 1e30)\\n        txn = np.where(da[:,0]<0, (-15-pa[:,0])/np.where(da[:,0]<0,da[:,0],-1), 1e30)\\n        txp = np.where(da[:,0]>0, (15-pa[:,0])/np.where(da[:,0]>0,da[:,0],1), 1e30)\\n        tyn = np.where(da[:,1]<0, (-15-pa[:,1])/np.where(da[:,1]<0,da[:,1],-1), 1e30)\\n        typ = np.where(da[:,1]>0, (15-pa[:,1])/np.where(da[:,1]>0,da[:,1],1), 1e30)\\n        db = np.minimum.reduce([tzp,tzn,txn,txp,tyn,typ])\\n        # segment length inside phantom for scoring/interaction\\n        seg_ok = s <= db   # interacts inside\\n        # tally photon fluence in scoring cylinder for all segments (length min(s,db))\\n        segL = np.minimum(s, db)\\n        Lcyl = cyl_seg_length(pa, da, segL)\\n        # energy bin\\n        binidx = np.searchsorted(ph_edges, Ea, 'right')-1\\n        binidx = np.clip(binidx, 0, nb_ph-1)\\n        cosb = np.searchsorted(cos_edges, da[:,2], 'right')-1\\n        cosb = np.clip(cosb,0,9)\\n        prim = (ic==0)\\n        # add totals\\n        np.add.at(fl_prim, binidx[prim], Lcyl[prim])\\n        np.add.at(fl_scat, binidx[~prim], Lcyl[~prim])\\n        np.add.at(ang_prim, cosb[prim], Lcyl[prim])\\n        np.add.at(ang_scat, cosb[~prim], Lcyl[~prim])\\n        \\n        # interactions\\n        if seg_ok.any():\\n            idx_int = np.where(alive)[0][seg_ok]\\n            ii = np.where(seg_ok)[0]\\n            # interaction point\\n            p_int = pa[ii] + da[ii]*s[ii]\\n            E_int = Ea[ii]; ic_int = ic[ii]\\n            mu_i = mu[ii]\\n            # sample process\\n            rp = rng.random(len(ii))*mu_i\\n            muc = mut_at(E_int, mu_coh); mui = mut_at(E_int, mu_inc); mup = mut_at(E_int, mu_pe); mupair = mut_at(E_int, mu_pair)\\n            c1 = muc; c2=c1+mui; c3=c2+mup; c4=c3+mupair\\n            proc = np.zeros(len(ii), dtype=np.int32)\\n            proc[rp>=c3] = 2  # photoelectric (for rp in [c2,c3)) -> wait order\\n            # digitize properly:\\n            proc = np.digitize(rp, [c1,c2,c3])  # 0 coh,1 inc,2 pe,3 pair\\n            proc = np.where(rp>=c4, 3, proc)\\n            prim_part = (ic_int==0)\\n            # tally interactions in 5-cm scoring cylinder\\n            in_sc = (p_int[:,2]>=4.9)&(p_int[:,2]<=5.1)&(p_int[:,0]**2+p_int[:,1]**2<=1.0)\\n            if in_sc.any():\\n                psub = proc[in_sc]; prsub = prim_part[in_sc]\\n                np.add.at(int_all, psub, 1)\\n                np.add.at(int_prim, psub[prsub], 1)\\n                np.add.at(int_scat, psub[~prsub], 1)\\n                # energy transfer\\n                Etr = np.where(psub==1, E_int[in_sc]-mut_at(E_int[in_sc],0)*0+ (E_int[in_sc] - E_int[in_sc]/(1+(E_int[in_sc]/m_e)*(1-sample_compton(E_int[in_sc],rng)[0]))), 0.0)\\n                # simpler: compute below properly\\n            # electron sources for region (also for Layer3 when in scoring cylinder)\\n            in_reg = (p_int[:,2]>=0)&(p_int[:,2]<=region_zmax)&(p_int[:,0]**2+p_int[:,1]**2<=region**2)\\n            # Compton recoil direction/energy\\n            # (compute for all interacting)\\n            # handle processes\\n            # Compton\\n            m_coh = proc==0; m_inc = proc==1; m_pe = proc==2; m_pair = proc==3\\n            if m_inc.any():\\n                mu_c, Ep, cos_e, Te = sample_compton(E_int[m_inc], rng)\\n                # new photon state for continuing photons\\n                # store continuing photon info (will set below)\\n            # This temp approach needs restructuring: collect continuation arrays\\n        break  # placeholder\\n    \\n    print('placeholder ok')\\n    return\\n\\nphoton_mc(1000)\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Let me write the complete script carefully in one go.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 58797,
+  "completion_tokens": 2745,
+  "total_tokens": 61542,
+  "cost": 0.0022117914,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 49977,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0022117914,
+   "upstream_inference_prompt_cost": 0.0017122014,
+   "upstream_inference_completions_cost": 0.00049959
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 8,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

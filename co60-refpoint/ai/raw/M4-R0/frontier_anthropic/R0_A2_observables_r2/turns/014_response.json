@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791828133-TQAmrdsDXA2dg4Dl0UZJ",
+ "object": "chat.completion",
+ "created": 1791828133,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "The primary track-length check matches the analytic value (4.23e-3 per photon). Next I'll run a large batch and save the tallies.",
+    "refusal": null,
+    "reasoning": "I'm sanity-checking the primary track-length sum against the analytical expectation, computing the per-photon tally (84.6/20000 = 4.23e-3) and comparing it to the expected fraction of photons reaching depth z through the primary path.\n\nNow I'm checking the ratio for the scattered fluence (43.9/20000), and thinking about runtime scaling \u2014 at 20000 photons in 0.11s, I'd need roughly 25s to simulate 4 million, possibly splitting into chunks for efficiency.\n\nMemory-wise, running 2e7 photons in 1e6 chunks should take around 2 minutes and keep flagged segment counts (~4e5 per chunk) manageable as float64 arrays. I'll also double-check the Rayleigh and pair-production tallies, then accumulate results across chunks, converting records to arrays as I go to control memory, before saving final tallies including the slab PDD data to an npz file.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01LAYwobG3eD3vFfGeNLeXTE",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport sys, time, pickle\\nsys.path.insert(0,'/tmp')\\nimport numpy as np\\nimport mc as M\\ndef new_tallies():\\n    return dict(fl_E=np.zeros((2,M.NEB)), fl_cos=np.zeros((2,10)), W_int=np.zeros((2,4)), W_etr=np.zeros((2,4)),\\n                slab_TL=np.zeros((2,M.NSLAB)), slab_K=np.zeros((2,M.NSLAB)),\\n                recs=dict(T=[],cos=[],w=[],flag=[],proc=[]))\\nt=new_tallies()\\nt0=time.time()\\nNTOT=0\\nfor c in range(12):\\n    M.run(1000000,100+c,t); NTOT+=1000000\\n    if time.time()-t0>400: break\\nprint('N',NTOT,'time',time.time()-t0)\\n# compact records\\nrec={k:np.concatenate(v) for k,v in t['recs'].items()}\\nt['recs']=rec\\nt['N']=NTOT\\npickle.dump(t,open('/tmp/tallies.pkl','wb'))\\nprint(t['fl_E'].sum(axis=1), t['W_int'].sum(axis=0), t['fl_cos'].sum(axis=1))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I'm sanity-checking the primary track-length sum against the analytical expectation, computing the per-photon tally (84.6/20000 = 4.23e-3) and comparing it to the expected fraction of photons reaching depth z through the primary path.\n\nNow I'm checking the ratio for the scattered fluence (43.9/20000), and thinking about runtime scaling \u2014 at 20000 photons in 0.11s, I'd need roughly 25s to simulate 4 million, possibly splitting into chunks for efficiency.\n\nMemory-wise, running 2e7 photons in 1e6 chunks should take around 2 minutes and keep flagged segment counts (~4e5 per chunk) manageable as float64 arrays. I'll also double-check the Rayleigh and pair-production tallies, then accumulate results across chunks, converting records to arrays as I go to control memory, before saving final tallies including the slab PDD data to an npz file.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "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.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 99060,
+  "completion_tokens": 1432,
+  "total_tokens": 100492,
+  "cost": 0.00182155,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 98060,
+   "cache_write_tokens": 998,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00182155,
+   "upstream_inference_prompt_cost": 0.00110555,
+   "upstream_inference_completions_cost": 0.000716
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 917,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

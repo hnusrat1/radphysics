@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791814823-g4uafCJ8TqsgzvFG7tHg",
+ "object": "chat.completion",
+ "created": 1791814823,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "Event recording works. Now I'll run four independent 1e7-history jobs in parallel to get the statistics.",
+    "refusal": null,
+    "reasoning": "I'm double-checking the pair production and photoelectric event handling to make sure positions and directions are indexed correctly before updating, then planning to run four parallel jobs with 10 million particles each.\n\nGiven that 2 million particles took about 8 seconds, I estimate 10 million will take roughly 45 seconds plus some memory overhead, so I'll launch these as parallel subprocesses using Popen.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01Buz8nyCHXj1vHgUojVNAUJ",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport subprocess,time\\nt=time.time()\\nprocs=[subprocess.Popen(['python','mc.py',str(s),'10000000'],stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True) for s in [11,12,13,14]]\\nfor p in procs:\\n    o,e=p.communicate(); print(o[-200:],e[-800:])\\nprint(time.time()-t)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I'm double-checking the pair production and photoelectric event handling to make sure positions and directions are indexed correctly before updating, then planning to run four parallel jobs with 10 million particles each.\n\nGiven that 2 million particles took about 8 seconds, I estimate 10 million will take roughly 45 seconds plus some memory overhead, so I'll launch these as parallel subprocesses using Popen.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS+wkKEAgSGAI4AUIIdGhpbmtpbmcSDL8U9Cq3nyTjmFRw8hoMbdJTrMqHc3Fsk9OtIjB4ayACMtKGZ9TtsCGtgKzkMaOBtW54/eZl4CssvohOeNjwmMMIUvWNsTjt3iA3JWcqmAm2aQqMWbOnm6GayUwCmAdX47HHjAWMUFrAhu9o6YNSmey/ZgKVMrsJR6YbcvpDibQ0ho7O06gjlcGVSonFHEIlBiXOnbPjmtjzHAXG+TBvKr4ciZp6P8dihwanIv7bDsEblLBqnXEXaCrmWqEdbzCe3afuyiJvfvuWxieoKrvgA2R7regJ+m/pid4grv1zUkNnS3f6WzfFzCuRH8buG4/c3hZDmQMS4LU6e9sxpxLW8x0gUOIujgp6J9HXk/4KSlJ3yt3hxfO4N1QUZLKF4cpvM13KHxreF4xTLxeZZNfXTBAOpEar6+++1a2zrQ/zuQYwb7cXuc6QXW36pbc4MsGrXka59rLqdmkkZVjXP9+2ptcM9ciK5jtFzvzV8z5Ifiz9Yl0KFtd/m7n4uRRdOc2T/BMUZBuJaCcu5w43V8qu6tvXlrDxivMBUv9Uno9sP9O/Bd0SSOHflA9uQu395S5uymnTMfPSZ7peZUJGEavqJ9ODqgvCcgxaScWH6eoDnxa3eUacMvn5WkaDIv7hQD0Ql+XQToct/qBigDgb2jpTZ719PduDTo578EszeIsP90l8f6XcEm5l0WWc2sllvLT5Cp6DmGEUSwNV3f2jJvdG9W98lQDPzYT1LxAd2IaLpjnXOVo1sp8cFF0gGjvXOz40bkbeD82eVRqAJHk0+AHVUK8xeWOgMvIlT87Y2QzjYojg0pAGd+KwFeEsC6ecxcAHUYCG7tWNWMf6+GpI1fbrx3zit5dSq9Mc3tXB202bPCHZ0sDFoPysLJcaxoQD36CoaASmQ5Kz44taOzjjtd5zOWEnNDBXkFnENiGJFFeRTi1bCO+dorwg8tk4BS8niFvY/FpnmCVxor1USjtGAXinlVveLCM3+u19aER6xYi+Lsz4e0c/Pk4CxxxIDGngicK/LE+dLt6L55u4bQe+7gM8zmqGNUlbxrQz79rca16wXFbQvROyA6wdUcMojCHQrJ5/UCGM1IAZtXAvM/fODDBkEe0lSvnCKLbcEJKO/+nS0csdc6urwL8+pMwsW+MUjGsRsc8m3HZiTX2s9EpiOxih4zRAgKNN9X3Mth6wI4tjszT6VjQki5DDYi3qxX3GAMaXcLGYMYWOt8373hxhB648oP04JzYixgrXBiBRYJt4rc5THIHSO30pCsjvbWqIVz+U6FarT9jaXo4yKho21VWi5xbOpnOYmndEMXB5SIV0r5+UEN9hIxcitK9H+djszhiKL2uT6wfTaV3pmiyL/3NoKTnPMTNUcvcbrTafOkMg5McJVkIXBquDNoxd9q6kCT4IO5Sg/iBVbypoNOwa3D543MgMbr2343Tpw6v92G69cCLDr0SkGBeK3O3NklyMS1KAPNEjf2a2xnuTg174eFkKVYhF5zTGRjEZzgtjEVcy3BdWu7eY1GpSZA/wLX48TAEUn1dlINb0wwrN7a7VCO6Ome7pYViitpn66PeumomwSCU2h6I+aXm7OLmx72I8JVV1nDY6Fe4/y6T2/3spAW74GHYgoLCbHgqMYmAv1PdY6BL5ONvPeyvu9vBlY2noOj8RRG9ErPfLB2EYAQ==.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 85792,
+  "completion_tokens": 436,
+  "total_tokens": 86228,
+  "cost": 0.0087972,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0087972,
+   "upstream_inference_prompt_cost": 0.0085792,
+   "upstream_inference_completions_cost": 0.000218
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 219,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

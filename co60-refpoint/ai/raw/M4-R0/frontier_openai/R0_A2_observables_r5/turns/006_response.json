@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791824755-UuDC1NoRGhFVJ2m3YV5S",
+ "object": "chat.completion",
+ "created": 1791824755,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Reviewing string replacement**\n\nI need to check why the replacement didn\u2019t apply. It seems like the original string line has a vector, which could be the issue. I\u2019ll inspect that first to understand what\u2019s going on. It\u2019s interesting how these details can really affect the outcome, right? So, I\u2019m curious to see how the original string is structured and why it\u2019s causing the replacement to fail. I\u2019ll make sure to clarify things as I go!",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_yKExZdE3Hk0i9GqN8yxK3Tfn",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"print(open('/tmp/mc.cpp').read()[:350])\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Reviewing string replacement**\n\nI need to check why the replacement didn\u2019t apply. It seems like the original string line has a vector, which could be the issue. I\u2019ll inspect that first to understand what\u2019s going on. It\u2019s interesting how these details can really affect the outcome, right? So, I\u2019m curious to see how the original string is structured and why it\u2019s causing the replacement to fail. I\u2019ll make sure to clarify things as I go!",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzRN1WPhhanZwpC2afwX2h9gC8AeK_yF9_i5AQlcG_V1KjmBNRBCmz0ol1_c_hWFaeT9Ys0G2qIuaMcqnZP4IaR8Jia72wBI040VvrITHlrpK_Y-ECUYjqB2uvUBGpTPVlQF2o9RJJbY7KhMusrop7S3e0ZLFgnSYH-RV5RzNg4fpYgwRHY_YldHM1KVh5vd757S8FdMqwlRmKGd791FVLH05gr6UK2cdGNac8IJUvGFpfGlcVDf4rGkIBpPP8a_ja4332N3VtwkO2GbeobIHzKaDCTD5lGwsnxXutWA2VnGPmGtKBq7alwtDdcJD4T-9Ffr7jjDOtLGWb90Ig_q4VDiRhtnIl8QN6TpkbNScxO6-2jt0HSoDKcjpuRYwKu7PEXM9qbuZcsg2uyHO5nJ2nybvnKJNLJkreAu2W2brFfw9eQcUB4SUB4re4b8an40Jq2R6af1gou09FnM28VSLmpMwUQu4jR9wnbEwCR6iGtRMPKcJf-eJUbyMji2szhlQ8-0gwYRWFNT87NMNGJzK9rz07zdqNa-YjddiY1QDiNs4T98NsNcwpvqwKs0m8OCmmsSDMlDKp2XeTzbEUA5Hbl2X-vIZ9SyIVXgpD9GVx2wYsdfBuTXWtPzfMeAJ4kbNOJ_iOrCyk2l3OAiEgPvRVw5mW4Tgxjw4jbSCd80kD6e_B2J31_ygNIZuUv7matmv8p7BvafPHTUydJ-od5n9xNtMucUCTCx_ZgofG_9bwMVymiigJdvodzqFMa_IBRCLswAPuerQjvLNk11W4AZhc7jATWmnimjjrlFIGKnJ8cXxq0SY6iPyrwNc2sTRDVBqEUSOSgP0uHh4UdUWIyEwS2HvDl3rMIg7nDT1t5yczsAT5jpWyqmicjuHnVRRjbfbnSMWmDj2YKEKCcIXTzB7J4G1y2wNIuewWxYX_APjtO7oN_lmBMCZhMjjFNe2o3cDKbnBn7dScDE6OAmgFJQd-qBozF2rL9kZOH6eXZJl2DM7KkTp7jMncNWSsFh-rQoA1HM8Jzn9LyUeQXbUmSAU-tNecKhQhEYmF3D5sPG-o2Y6qMc2mKrk0pow49pIueFgBiojwaTH0lS5HzmCKJmLUuM-ksGBQIhwbgPwn31VmoI-kLSnqV_cGHiouNFsLqu2Zq2nZog1M9T6IDiOxeVdBKK-NZbMWHWAF9N2XiX7UYg-vnlGCemPssJYRM0xYPPR13n9loyYK9jtRcf7m9Zx7MjJW9wxBnbY_TDlJjxJTDYy9lasICqdfBm7WpiDZNZyraZzT_QAbBD414urgarajgUydB1_-H0mRUOMRCCv0KgyaVE0Rs-wZ3j9JXzAFLGTqMIcRM6K2BmMx0dGm7Tms5_FdkVNmgSCV6H-DKsbMxmwh8q_hxXA6oOroQ0l6AcjluicEnKvfne6fYuFgLptq4ZvK1VYAqLkoK2h4LxS6da0KeuJR4jnSMqUG8k0HIOoZY8N54e2sAZ0YJmX4HtjzqzzKK-HI6PzudJD57olULX2LBtHAanQv6rKQb0Ssx7ktbIzsJ_kC7yxtfEnQFQNDhYsDbQqf8gyUfuNRbRoDeKv5ozNwWEUAL-aVe81Rdij0Stq2-589_9anGiRKxIgZWqbe7-n9gvSey4AgzLjh-8o40UpVWJSeCdPHUDJDsF8qu2eWqEHT9I1_rZdlowp97H2qYduxr2TCHOw5HsrHjdT6ma2QBDcYpbTWp0rIvtroz7S4KupC3ve4dRPQlEtTp_OLYvkXDAxGRrnVf6zAlfhY3dfSftOd4b3OBeP_Y_pul_qQgycck4n6dGoh7Br8JAQjg==.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_0e30cfb0b80b823e016acd13740e5887d1a6ca7753782c8ff9",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 23055,
+  "completion_tokens": 48,
+  "total_tokens": 23103,
+  "cost": 0.000703665,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 19149,
+   "cache_write_tokens": 3903,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000703665,
+   "upstream_inference_prompt_cost": 0.000679665,
+   "upstream_inference_completions_cost": 2.4e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 17,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

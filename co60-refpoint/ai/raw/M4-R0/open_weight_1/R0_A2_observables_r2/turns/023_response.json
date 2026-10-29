@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791828853-oKqYtlZACsuudgI6WTSV",
+ "object": "chat.completion",
+ "created": 1791828853,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "GMICloud",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "c0, s0 are arrays (over \u03b8). Need elementwise. Let me fix with np.maximum/np.minimum and compute overlap fraction per \u03b8 element, then sum wgt*frac. Let me rewrite.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_fa3463f11c8f4ee6980e0aeb",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np, pickle\\n\\nwith open('mc_results.pkl','rb') as f:\\n    d=pickle.load(f)\\nfine5=d['fine5']; score28_at5=d['score28_at5']\\n\\ndef load_xcom():\\n    with open('/tmp/data/xcom_water.txt') as f:\\n        lines=[l for l in f if not l.startswith('#') and l.strip()]\\n    x=np.loadtxt(lines); return x[:,0],x[:,1],x[:,2],x[:,3],x[:,4],x[:,5],x[:,6]\\nE_x,mu_coh,mu_incoh,mu_pe,mu_pairn,mu_paire,mu_tot=load_xcom()\\ndef mu_interp(E,col): return np.exp(np.interp(np.log(E),np.log(E_x),np.log(col)))\\ndef mup(E): return dict(compton=mu_interp(E,mu_incoh), pe=mu_interp(E,mu_pe), pair=mu_interp(E,mu_pairn+mu_paire), rayleigh=mu_interp(E,mu_coh), total=mu_interp(E,mu_tot))\\n\\nmc2=0.51099895; re2=7.9408e-26\\ndef kn_dsig(E0,cosT):\\n    a=E0/mc2; Ep=E0/(1.0+a*(1.0-cosT)); r=Ep/E0\\n    return 0.5*re2*r**2*(r+1.0/r-(1.0-cosT**2))\\n\\nct_edges=np.array([-1,-0.8,-0.6,-0.4,-0.2,0,0.2,0.4,0.6,0.8,1])\\nw1=score28_at5[23,0,:].sum(); w2=score28_at5[26,0,:].sum(); wlines=np.array([w1,w2]); Elines=np.array([1.1732,1.3325])\\n\\ndir_hist=np.zeros(10)\\ndef add_electron_dir_primary(E, w, dirarr):\\n    d=mup(E)\\n    th=np.linspace(1e-5,np.pi,10000); c=np.cos(th)\\n    dsdo=kn_dsig(E,c)*2*np.pi*np.sin(th)\\n    a=E/mc2\\n    cotp=(1.0+a)*np.tan(th/2.0)\\n    phi=np.arctan2(1.0,cotp)\\n    cose=np.cos(phi)\\n    wgt=dsdo/dsdo.sum()\\n    for i in range(10):\\n        lo,hi=ct_edges[i],ct_edges[i+1]\\n        sel=(cose>=lo)&(cose<hi)\\n        dirarr[i]+= w*d['compton']*wgt[sel].sum()\\n    dirarr[9]+=w*d['pe']+2*w*d['pair']\\n\\nfor E,w in zip(Elines,wlines):\\n    add_electron_dir_primary(E,w,dir_hist)\\n\\nfine_edges=np.arange(0.01,1.405,0.005); nf=len(fine_edges)-1\\nfine_mid=(fine_edges[:-1]+fine_edges[1:])/2\\nsc_2d=fine5[:,:,1]\\nfor jk in range(10):\\n    mug=(ct_edges[jk]+ct_edges[jk+1])/2\\n    spec=sc_2d[:,jk]\\n    sg=np.sqrt(max(0,1-mug**2))\\n    for j,E in enumerate(fine_mid):\\n        w=spec[j]\\n        if w<=0: continue\\n        d=mup(E)\\n        th=np.linspace(1e-5,np.pi,3000); c=np.cos(th)\\n        dsdo=kn_dsig(E,c)*2*np.pi*np.sin(th)\\n        a=E/mc2\\n        cotp=(1.0+a)*np.tan(th/2.0)\\n        phi=np.arctan2(1.0,cotp)\\n        co=np.cos(phi); so=np.sin(phi)\\n        c0=mug*co; s0=so*sg\\n        wgt=dsdo/dsdo.sum()\\n        for i in range(10):\\n            lo,hi=ct_edges[i],ct_edges[i+1]\\n            lo_=np.maximum(lo,c0-s0); hi_=np.minimum(hi,c0+s0)\\n            frac=np.maximum(hi_-lo_,0.0)/(2*s0+1e-30)\\n            dir_hist[i]+= w*d['compton']*np.sum(wgt*frac)\\n\\ntot=dir_hist.sum()\\nL3_dir=dir_hist/tot\\nprint(\\\"L3 initial direction frac:\\\", np.round(L3_dir,6))\\nprint(\\\"sum:\\\", L3_dir.sum())\\n# include also the direction of PE/pair electrons from scattered photons? tiny, skip.\\n\\n# Save L3 values\\nnp.save('L3_dir.npy', L3_dir)\\nprint(\\\"dir_hist raw:\\\", dir_hist)\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "c0, s0 are arrays (over \u03b8). Need elementwise. Let me fix with np.maximum/np.minimum and compute overlap fraction per \u03b8 element, then sum wgt*frac. Let me rewrite.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 138147,
+  "completion_tokens": 1204,
+  "total_tokens": 139351,
+  "cost": 0.0042420378,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 117424,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0042420378,
+   "upstream_inference_prompt_cost": 0.0040229098,
+   "upstream_inference_completions_cost": 0.000219128
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 42,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

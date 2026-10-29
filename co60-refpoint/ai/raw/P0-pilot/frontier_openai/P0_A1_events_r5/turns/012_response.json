@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791813814-qt01E2bTh7v6FTVrWNGd",
+ "object": "chat.completion",
+ "created": 1791813814,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Generating random samples**\n\nI need to regenerate random samples while keeping the scoring list consistent, particularly with the serialized values from the ray events. The selection process needs to remain the same, and I should ensure the samples are organized into chunks. My plan is to generate files in chunks of 0, potentially using a tool to return exactly 25 samples each, with each being around 5k in size. First, I\u2019ll store the JSON in a compact line for each event.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_FV1Ivr9Vag5vEMVYr08VEghj",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import numpy as np, random, json, collections\\narr=np.loadtxt('/tmp/e.csv'); random.seed(930214); ix=random.sample(range(len(arr)),200); samp=arr[ix]\\nnames={0:'compton',1:'photoelectric',2:'pair',3:'rayleigh'}\\nevents=[]\\nfor r in samp:\\n p=int(r[0]); Ein,Eout,cs,Te,ce,Tp=r[1:]\\n rd=lambda x:round(float(x),8)\\n events.append({'process':names[p],'e_in_MeV':rd(Ein),'e_out_MeV':None if p in (1,2) else rd(Eout),'cos_scatter':None if p in (1,2) else rd(cs),'t_e_MeV':rd(Te),'cos_electron':None if p==3 else rd(ce),'t_positron_MeV':None if p!=2 else rd(Tp)})\\nopen('/tmp/events.json','w').write(json.dumps(events,separators=(',',':')))\\nprint(collections.Counter(e['process'] for e in events),len(events))\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Generating random samples**\n\nI need to regenerate random samples while keeping the scoring list consistent, particularly with the serialized values from the ray events. The selection process needs to remain the same, and I should ensure the samples are organized into chunks. My plan is to generate files in chunks of 0, potentially using a tool to return exactly 25 samples each, with each being around 5k in size. First, I\u2019ll store the JSON in a compact line for each event.",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzOi5AYhuTPATv3IIGWZp3lFLi-xMnmCNAUTisy8R6bgzls3SUzL42AUGNwg0eZkKmBHSJBGEXoXV1afHSq3NRs-G8KDlUhe6r-baBRtH5EoLih9b5b4257qQpOw1y3zuTOiIbvyTNqgjAhY3GYeaAZwsTFCurZAFH8k_pckdeEFzKJNKzROTpkrrV6MV6ChpI36OsSzYtnKNiQ4p9_9lWq4RhNPrf52lieKNQy9FwetALPNhXtMNQutZjLVyrQCzf3CEVZR5IEQ-Nx07UDCV71Nj-kLJcRXBtzmZKi7dWolgLdZAXiv5fqE9KcTaXs11eq93mlV3uKjBpfPI1pf0-7AO5IENiCSl7IitQqcWdUsYGoxBb_gGndmN_kBUT_YpZ7EiTyCf9EaqSN3sG2uJmZ5pc6h08F2f-07kI1t54UW9yTBvCqSWWRpkSlppdN_HobzOXeoeZiUDQy1cuOkshEjmOYjIBv1K8WzFShe1syn_RKsaGzz8s9LnHbGcepPt2Zo7ijkpZN3PtnQLC7zalzrIBqrXG-2aVCDW4rzq9h3rgLej9pySQZmHZE4emTJPK8J-hLUCRwsQwGFu-O2gWWe1n_rMz3A9zpVlOiieAC7byRpzdhONPNm5SFCHns2spfkb9MQQuP-xREuOoGi5tQ0-sLFq9TP4V0XnMbcyRf8TOpA9I4FDE6YI2RGGYQoVWj5hi6-Sm_PuXdkwOsu6BXhxcyKrYKE1U0ZQB6F8iL5S6JI3BKVOW6cs3OiT_P0Iv7PqQduwfN7bkaeYxFnJc3cW6UdaErcSWqNDnxUDWI8r0nfhv55ptEYd19I4IjLzRUVCxJ-XOWSauYotoXmV1FEJY_oDvOrmsxLxUO-3o7intAk_6KSyUeJpVv6VZG9sSL3b_pm88KQmGW-3T587Pjo2dnHyYv3PG3sJbCSp_DBWCPWhvadx6IY_lfwFvkVuew68wzzwB3m2D9WyXtlax5F2D76YVGGsuWS_ppRYCZm7lQ9-lREis85pe4Llt0R6DH4i7Wr99hOZ0ECbescTvSsY4wiH36h_UeoElOFga5faFKLuTc1Ncw9CwZNLVQO2nlEVtQNQ12TcjmuyhUlqoZgyqpfhPCD4ItygkQyiW12VVB0RY76wpIIDKLKtJZkOb-qaAQnZBXZKzTG4Rvmn39gR8uYS1Sa10ZgrOeSVpWyac4Zt6-Ur8w_Sz9hWZRLR1qzoIavoGGVi5NvY_ChXOzqZCWIQuoRJUDywKuCbX8Gk9F6DI8NTrEV6uf1fCHw4RuMWyKwfXNKn4ajfRJ4L5ZYD-ljNg8ZSkxhDCgkty5oSAW5QI2pEXVKBuu-L_sdOAwW7S-PPZD4VbhJk2wjluyaiYyGFcynm5h8fEhM5fiyACNxAWm2sUmgB3Mjixu8IwbPMq-OaBmUs9M3A7O2LiZzBjn-rUr1nuoM0cjtqzMQTwyVbk31-Qa_oEGPyNrfuuMRUiDNHmJv4OYziZoLqTAPPH_aLkb9TTLHLc5HjuFPVcehXoejxaPFh54axTCAM_He7nnLa5h3mc_u-D8greJXd94gXNrJOTymieR9oWXTzxESRIawRm2TJ01OeBj934ABG9CYgL2y_hhgpOtur7G4Y4D_MrrJAAf-Lr0RqZN-UIJJVcR4kM7DGRliblTTekzNIlRKy50sSypugYxh8QulgGVva0M4FORQ4Qgi2FrIJSvbawjM8eBRHF0bfOXio7iyl1mQx27ZY2bRWS4IyXHTZttocN3uNwgyifNb_zAhMBw23aj0uwIekohFaMvNdmk8dqglJsdTnOllNlNuj5dqXujdGaa9naT_AWeZma0VvnpojqdbmaxfeEu4NEDbEsLG74_4TwU2DNhITqhulaBuMSdexC2lp7j2ttSkyFq7LGZ6YttDEy6bDSWqW5EleQcn6iRbT5K3iJM5j8SouYnfAdO6Tu1reGlNyBveNW-gXd8_la4tiQGCRONjK9UXboWG8l7crbajR-G4zMcs71fvK3LHhe6oFtjOlkc8-bmFkiUVPn-Yn8Jcmmj42XtbwW9_Idrr3_6M_WiBWKG3lYQXSDoMWekX8joWzGEJhyAYZGuKCrOQLqMMdNyz9LF_jVRFhd_H1XPsxCPYIbUSwG6bpv35NyNWVX45gKKW2p7jQZPi9O2QF5rG7YdKH6gn7YelSfvTR5HHo69H9Ta7lW8Udce2TP3o_QJIegkoXKxajSnBpIDj12t-aS51yQhFTi0ehQmkeY_laYRIc1RwJ7X3nTbOZjmIqv9sv8vJU5dieyN-gF1AQ9yNnrU7_cVznNMDDgDMriXm5jMDuOxW-A3aeXQ==.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_007c8b4144af0c0c016acce8b7ae0087d1894e38a38d0284b7",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 33668,
+  "completion_tokens": 322,
+  "total_tokens": 33990,
+  "cost": 0.00051658,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 33503,
+   "cache_write_tokens": 162,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00051658,
+   "upstream_inference_prompt_cost": 0.00035558,
+   "upstream_inference_completions_cost": 0.000161
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 59,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791815571-Abbco6XBcqR499Fb3OGl",
+ "object": "chat.completion",
+ "created": 1791815571,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "The output got truncated partway through, so I'll need to print the remaining data in chunks of around 12000 characters each to get all 200 events through, keeping the JSON compact without extra spaces.\n\nI'm worried about transcription errors copying 200 events by hand, so I'll reduce numeric precision to 4 significant figures to shrink the total size to roughly 20k characters, then print it in chunks of about 9000 characters.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01TF7ALYe71hMZUBRFiwtpK7",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport json\\nd=json.load(open('answer.json'))\\ndef r4(x): return None if x is None else float(f\\\"{x:.4g}\\\")\\nev2=[{k:(v if k=='process' else r4(v)) for k,v in e.items()} for e in d['events']]\\njson.dump({\\\"method\\\":d['method'],\\\"events\\\":ev2},open('answer4.json','w'))\\nlines=[json.dumps(e,separators=(',',':')) for e in ev2]\\n# compact form: process abbreviations kept for readability in reasoning only\\ns=\\\",\\\\n\\\".join(lines)\\nprint(len(s))\\nprint(s[8000:17000])\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The output got truncated partway through, so I'll need to print the remaining data in chunks of around 12000 characters each to get all 200 events through, keeping the JSON compact without extra spaces.\n\nI'm worried about transcription errors copying 200 events by hand, so I'll reduce numeric precision to 4 significant figures to shrink the total size to roughly 20k characters, then print it in chunks of about 9000 characters.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "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.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 68648,
+  "completion_tokens": 526,
+  "total_tokens": 69174,
+  "cost": 0.0071278,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0071278,
+   "upstream_inference_prompt_cost": 0.0068648,
+   "upstream_inference_completions_cost": 0.000263
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 280,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

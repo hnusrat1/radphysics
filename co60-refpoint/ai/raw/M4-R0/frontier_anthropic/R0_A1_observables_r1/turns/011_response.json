@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791824389-fnOwCprNAzxn9hiL39ll",
+ "object": "chat.completion",
+ "created": 1791824389,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I'm checking that mu_tr_c is accessible via the wildcard import from phys, and confirming numpy is already imported as np in that module, so I just need to fix the call itself.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_015K3wmAe7JD9bFvEtFPnmVh",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport sys, time, numpy as np\\nsys.path.insert(0,'/tmp/work')\\nimport mc\\nt=time.time()\\nres=mc.run(20000, [0.5,5.0], np.random.default_rng(2), store_for=5.0)\\nprint(time.time()-t, res['arr']['E'].size, res['dscat'])\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I'm checking that mu_tr_c is accessible via the wildcard import from phys, and confirming numpy is already imported as np in that module, so I just need to fix the call itself.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSoAgKEAgSGAI4AUIIdGhpbmtpbmcSDLCTATkqHPRL1CH4mxoMOOcD98cBPloKvH++IjDOSvU0NZMohp3tNt1QB5WPYkoUGX6JTX0Bv6krS+Y2c7UuRNIXj13TxlLBRUV2c9YqvQdgxt7PQrVLihGB5nnk3MTtLfmUjsu0uFKTvteIfccYEDB+YtaYJOKbTqQB86f1k/SkTg9bU9YhIQmZa4TGA3u49JPoLN5UUe292AcRfi3O68OZ6nVN1NinW9jMOCOi9sj4eUs3YcTnpsLVSmYOZ0WBbN8oCtor2JIJWor25VjWk/q9QYhELd67EyoiJLeZHpHuBKHC0LwJXiukDuFcXkRHexS+jcBeHxWe02fNsnO01zPIfDBlCHKwAEAsEJKEuF/3kisDSEd/n9//dHHf5UCIDlcZfki7sHMuGMQPf/bbyd7SMp7vYh8SCP23nCNIBull2sC2d2Rt3bLDDqtOmkb27tU3vJ2zDkfEu36u3RNEugrNvLZrTqf77L7LSyMRHlSUuul/84WfKSqchMDuaZ71FxxVlvu77KTMP1b2g2pYzP8FbRTl+2zynW7k/pt5oLAxWGsiaYZrISYb5gBFuLqkcu5q5O4CnJZnJ6dlG8W3UKyKF2QML683TmpRw5phxq0M58fSkyKKhiG0tmryDMqWaitENn9n9XyS3bJC70T0M1HnEi5OKWJR+a5IYqxAhqQPANI61P69IGJllKSCXt5UgZfkU6mQnlS1Q+ZQ3pjpw0AKpOxAw8ThGJhsIgCDNC81OyGT4aEuE6ciifrSeZyPwXikBghim6Xo8heRpCpiHCA7BVvVraas+iyEVGPjoFuqFI/fmTm3jKf0x1qhHbZDLR2tfWr8b2WU04U8h9u8EZ+IZsrdgGv2bH5QovVykzrwVZlr56jb5t15zbCJIxdYEEeHj3ZXr/T18aXUFzBl1Atij4B46ONaFUpHDvHxNDFUqpxqbmZc4mpqHLg8orQhxloanXWQ0GILU1jSNaBOlgXgzLVCVGcFGO2TYNIZUvxfA6XqffAJC1fPd4B/hWy6qlYhySkrG+a6NC2czeM1D3lAp/1ba9Rlt4tuPI/fU4sL9DiOiyp+l4+mSCFpCmiQ01gXXXSPXpY5LZTtOrImOTLyvKxii7WiIgOOyGUqphBJ+ofOp2UyPMTQiXW9K5F6rOAthBg0/Nuorcy2AQ3npGpmByln+7MrYiaRH8TGjCd700Q9FI28axjHmAcPS60aSgHp2PV0HZwR5r01JYf1KQ9MnjxugUQQVhv45G/SuN1Gqe37HTnA9/vpHFo1rGsA6U51nmeoEgFSPzpdL7ia2v3I7yUcNvtp8WNkqddPO2YzYdujEpJZTxdZGYvkom5J6nQhQyRcSkr3N4XpSN/eP2nxqTmBrQgvNUP7vyIYAQ==.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 92830,
+  "completion_tokens": 251,
+  "total_tokens": 93081,
+  "cost": 0.001382765,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 89969,
+   "cache_write_tokens": 2859,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001382765,
+   "upstream_inference_prompt_cost": 0.001257265,
+   "upstream_inference_completions_cost": 0.0001255
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 96,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

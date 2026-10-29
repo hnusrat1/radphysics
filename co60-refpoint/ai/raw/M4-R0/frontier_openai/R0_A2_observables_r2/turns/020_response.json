@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791824099-mNtXQAGyIlSP2wjevofD",
+ "object": "chat.completion",
+ "created": 1791824099,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_2Ecln0v9O5Twr2njOzEEh2oj",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import numpy as np\\narr=np.array([711,733,675,709,719,876,1238,1717,2558,5953],float)\\nprint(arr.sum(),(arr+np.array([0,0,0,0,0,0,0,0,50,80]))/16019)\\na=np.array([.0324718060529,.0292838586899,.0277365387778,.0280404018912,.0290877538384,.0304328382065,.0346506745416,.0441518050091,.062730334304,.101856643085])\\nprint(a.sum(),a/a.sum())\\n# bins hist normalized\\nbp=np.array([272,356,322,342,301,306,288,314,321,308,303,287,288,355,324,383,417,456,636,395,293,363,156,0,0],float)\\nbs=np.array([2473,1313,652,430,331,242,195,164,146,113,107,75,84,71,48,47,37,23,20,13,8,3,0,0,0],float)\\nprint(bp.sum(),bs.sum(), (bp+bs).sum())\\nprint((bp/bp.sum()).tolist())\\nprint(( (bp+bs)/(bp+bs).sum()).tolist())\\nprint((4636.81080734+1065.18145327)/(7855+8164),4636.81080734/7855)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzRDk9dhOeZVcBAHHdDfOgXqPaOjP8yQkKtzDs76cP_UnlTrCIul9JSCceG2WlXDnIiSWd_OHlsgweqaVDZehm0BbnSQTFVe8dv9PdlqOo6YPX_PVRblnfOEcrPkBzyJ3UZF3xzdu6ebTEzZPmYGLZr3LmjvqOo0nUI37mRzKu7SVTXBaWU_DPxwsfA5EccmpXpwP3hHebYCqd7GB9qahhKf1EJK1mKUCr3vgU8uw-iHDTlg6kNewh4ES6PMp0qtJaZBTJTtF4H9AQUInnrl8fNOaLPOQC6Nd_nW7njCeBxeswEhldEZ4JiCHitfC2f0f89Il2p3Mmgby4fNUa4tBoKDXohQ8VOgrOa6QbKhc79f6vm9tlImGG4BM2_Ptxo4Q2GmED4m8-amgnvzI5q7YThKiLvMNkbEh_wcv8F2jkt0ekayBzLUxyTiQMeSbDYDpuWgjcJGNnZXdS-PI0MnKggYbq6FNuTLbczEAR2rw5gPXwoIdpd6009nKZIu8xI0ooTfFaRg41mb9I7JYgKIV8u0qnQ0QU96zT53nFisEtFqU9aZuhUkNY1evj6NmdFZalWI-dQC2ySHIl8XN8LMynRTbki4bf7FxNDDkrUBlcsum3lAplKRTDDbGyNBtLuMfHLnyRgpgi3CkmqSYFBqxDexuDU2ftYJLw559uoimsqmdUocFHQhU6CVph2HM_ZEI9VbIQDbTt9CQHTK4OQXwdU4yBmbXjZwF4VLRvo_ziv3R7sQHYYBA5qHZyou_H3110McKh69XqphFsOBYC4PGKkuuL1-T9jl9sn7uGhudZuEbN9YSajKDku3r0KYwDW4ZtHDmOGFqEFZ6Zox0w5nU4Bqq1Z3OpgH_ao2JSy3_JuVdrg1bmyl4WdwnX5e63mCZHn5wKrW6v8aeFJoQ-ZW9AzMlk5G9htmE9qzovL89VVQaZJxgEyN2yVOUEote4uH-eB8fKT24eRvo4rQNbxHCAf1azGaXk587AwMPejsEbnlHw5DseBPUwwxjmf850BtyRry6O6Y88Etn49hj-b3OOo1lKjbsZHEbiq5RZQv0peyw3Ypyyqzdj_JUA9f4FYNXlCzdzEPg5ShXJIqJWwC37AubAzvglzkVWlpjqPkLHetHEN0s8Pn01Vhnql52QvKjKNbw8XXhBjXnfUuuPyeKUpiOWf6EOYPHYiCROiC9oRm8IfvKIHwh2CRtaefLuCTHJ-x6i6FHfuUQfD70Q68IbDOtCNsvcYN5mGGHGF3TA-1oPIJS4OsKF0A4PlAkS9XR8QFo9KrZDzTdR2Wzkg4j6LVhyTiSsPZ_ICoy7cxU4LybCMJsdPpmFtqjEVq-od3mGJhT0r-n9mzKS52sfWN5n-PXMg3w57midxicVlUkEhABm55iQBoH2MReJfVv94wPfl7SBDfyV-O7e0qggwyp_JNESAa907zlY03Nz6g4BllXZWf87wc1BT42UM_rWmc94qeLzopgDtjHPDUJ_QzXD0tEGvnHBHzfPGTtRV7PvG6knRbF6ZU-dBfOgLBfhAjUX9wZQqUemEmkdA__8mmKGXhbHfBYbb3MsaY-dLKmgggWSHqwCzB9xLWiBQEdIWGTKnHkwA7wSJeHI9nu4DT54EyFNh3rhRscgM2WVKLe-xjs6sHeI-jTGdqlGlJPcVieouBawXFsxYVghGwyWKtdlV6jihluvLcTnaK_IU2gD-H-YzWQWHXqsxUY76dNfOZgRue9h8APskHB-WUsizvGIbCtqw==.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_042c9b3ec933c71f016acd10e42c1487d19486fcc64925c41e",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 35477,
+  "completion_tokens": 374,
+  "total_tokens": 35851,
+  "cost": 0.00064025,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 34620,
+   "cache_write_tokens": 854,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00064025,
+   "upstream_inference_prompt_cost": 0.00045325,
+   "upstream_inference_completions_cost": 0.000187
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 13,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

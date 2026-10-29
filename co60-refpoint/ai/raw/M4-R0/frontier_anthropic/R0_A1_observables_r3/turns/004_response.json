@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791825790-dcq1EQ5GRwQbD6YfNgLf",
+ "object": "chat.completion",
+ "created": 1791825790,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "Bethe stopping powers agree with ESTAR at 10 keV and 0.1 MeV. Now the KN tables, radiative yield, and the photon Monte Carlo.",
+    "refusal": null,
+    "reasoning": "The Bethe values check out well against ESTAR across the tested energies, with density effect corrections accounting for the small discrepancies at higher energies. Now I'm moving to Klein-Nishina tables and the Monte Carlo comparison, setting up g(T) and the associated tables.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01HSFbJwj4t1jN3reLm5rE2w",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\n# radiative yield g(T)\\nTg=np.logspace(-3,np.log10(1.5),600)\\ndef Sratio(T): return rad_S(T)/(rad_S(T)+Scol_bethe(T,Iw,neg_w))\\ngT=np.zeros_like(Tg)\\nfor i,T in enumerate(Tg):\\n    x=np.logspace(-4,np.log10(T),400) if T>1e-4 else np.array([1e-5,1e-4])\\n    I=np.trapezoid(Sratio(x),x)\\n    gT[i]=I/T\\ndef g_of_T(T): return np.interp(np.log(np.maximum(T,1e-3)),np.log(Tg),gT)\\n# KN tables\\nxg,wg=np.polynomial.legendre.leggauss(300)\\ndef KN_table(E):\\n    k=E/me; eps=1/(1+k*(1-xg))\\n    f=0.5*re**2*eps**2*(eps+1/eps-(1-xg**2))\\n    T=E*(1-eps)\\n    s=2*np.pi*np.sum(wg*f)\\n    Tm=np.sum(wg*f*T)/np.sum(wg*f)\\n    TgT=np.sum(wg*f*T*(1-g_of_T(T)))/np.sum(wg*f)\\n    return s,Tm,TgT\\nEtab=np.logspace(-3,np.log10(1.5),400)\\ntab=np.array([KN_table(E) for E in Etab])\\ndef interpE(arr,E): return np.interp(np.log(np.maximum(E,1e-3)),np.log(Etab),arr)\\nTmean_tab=tab[:,1]; TgT_tab=tab[:,2]\\nprint(KN_table(1.1732), KN_sigma(1.1732))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The Bethe values check out well against ESTAR across the tested energies, with density effect corrections accounting for the small discrepancies at higher energies. Now I'm moving to Klein-Nishina tables and the Monte Carlo comparison, setting up g(T) and the associated tables.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSywcKEAgSGAI4AUIIdGhpbmtpbmcSDNuSsjuh+on0AwJLeRoM5ENN2eOhM592vsKvIjBLO/wAwz4nWNO9vgNQDYezlRB4L4pkjylUXO2urjbE3A/72L+ekGVcTxOP63/cn2Iq6AbIFPG6xDL7hFIkphsBL8c8rNblEgV3oNMhDHAZRr9WX/MsZVacZfghKLJx9wecnZJzsvRfCMc8ItgytS5v/x74603tJ7CTORvB6M+9fJoKx4D99XKWYTqPXIyOa0fRviUoiuGsk315mab2kYfXcIGspRb1orX9PtUk5lVBKs3XoySprfdyY9rd+6OtTNIWANS3KWatYWi2OekwujDSK2W9YSxTREKqt4gwKDzfpYef8SSG3FF99+pqdwSeiu6QQBRjlSVu4ETN8/UxMBQjfH9VQ83iE+Y4hawXeDGzLRucxLDqJil3RbPUlcHV9qWDrUcb3ZmjV5KBobkZ0fXPDiPxzpVxZW45t6ulJCY7phO5j3m/Fq/eKLKHwxmdh/VtcwnBNk12HKOxF/JUiK1Nyd82eEnEaN7FLHFsyumzs5TKvWrtTdh8Lnj1dzXTzCD3j6sZ+sW5R7Qs5gBwHe1nNgAKYn5PrG8b7jV9fFyfmUWsiR0Ot65v09l57f8CktqUFLdlzJpFG1dqeL0jxHdwngewGcH62g2M9ihOZKMs4IJnAQFSQIVyGR09ZvislbFsBpU1AIKs8iBIijOP2VjkSiF/ckphRDU7EquFwc8XXyRvYCcCQgUCjFX0QUT2pCOiwUwubkrldWpxRTl9nJ8dE35dqGuoRt5mUeuYE8W9HRIYaYI7LWy+WPQrRyTz7QrP5NYrpdMMZF90F/njur+LYdCRqKpAjZIf1FFr2yf6zjgDryURthulMo28pzGJOdgv+uz3mtso2oTQKgDjxcUXPvKuG8/U3d6OMoKdZMbPP0ZC1ftOJiZV/DSOkwK4d9ZpQfo8r0nXvdoE0BK14KscpdMX3QyhdPK1HJl1nktXnKUDq5cGu9jrgiDfSE0fDT2Ct7/PJLPRmccNLymqn/X2IYKaF5mdDfyu41fdJh1HqyQ/hEWC1GlfHIcp581dgm3ajMpVg2ffIbd8MQfx7B1/e38M1wjF5qIq99RGycT5uu8Aw4ufXPZd5ClCPa6l7wmAbefkgUh0CpBtKoqK3Ajc+5/uum6Re3l1agDVWtXnbwvFSZsyaj51WKFlSyP2wmeT7XeB7a4Ec7dGALe6k5ls3QxKmrGeed4fNgjyghY3XlU2cQqj7J/3KTyNwfwPp0ic61oMmJTUk8f6SRgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 99931,
+  "completion_tokens": 823,
+  "total_tokens": 100754,
+  "cost": 0.001566585,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 98576,
+   "cache_write_tokens": 1353,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001566585,
+   "upstream_inference_prompt_cost": 0.001155085,
+   "upstream_inference_completions_cost": 0.0004115
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 121,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

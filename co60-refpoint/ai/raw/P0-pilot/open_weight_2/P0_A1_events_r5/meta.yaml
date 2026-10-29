@@ -1,0 +1,153 @@
+slot: open_weight_2
+provider: open-weight via OpenRouter (pinned weights)
+api: openai_compatible
+model_requested: qwen/qwen3.7-flash
+settings:
+  reasoning:
+    effort: high
+  usage:
+    include: true
+condition: A1
+task: events
+config: P0
+prompt_version: v1
+prompt_sha256:
+  system_A1.txt: e06e9a5ea06c2f5ca29739818f324713f2dbbf775f019c11018d1aa7ef5416b8
+  task_events_P0.txt: 994719c1edf5944e6dac9acaa42f55a5117a6c605f5bcfb8316e676dfdbbc913
+started_utc: '2026-10-12T14:54:46Z'
+turns:
+- n: 1
+  usage:
+    input_tokens: 1551
+    output_tokens: 8762
+    reasoning_tokens: 7069
+  stop: tool_calls
+  wall_s: 97.83
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 1
+- n: 2
+  usage:
+    input_tokens: 10592
+    output_tokens: 1764
+    reasoning_tokens: 235
+  stop: tool_calls
+  wall_s: 16.29
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 1
+- n: 3
+  usage:
+    input_tokens: 12493
+    output_tokens: 1568
+    reasoning_tokens: 59
+  stop: tool_calls
+  wall_s: 12.54
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 1
+- n: 4
+  usage:
+    input_tokens: 24810
+    output_tokens: 1195
+    reasoning_tokens: 752
+  stop: stop
+  wall_s: 17.37
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 0
+- n: 5
+  usage:
+    input_tokens: 17949
+    output_tokens: 4410
+    reasoning_tokens: 2251
+  stop: tool_calls
+  wall_s: 55.81
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 1
+- n: 6
+  usage:
+    input_tokens: 22431
+    output_tokens: 87
+    reasoning_tokens: 27
+  stop: tool_calls
+  wall_s: 3.32
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 1
+- n: 7
+  usage:
+    input_tokens: 33261
+    output_tokens: 1319
+    reasoning_tokens: 1203
+  stop: tool_calls
+  wall_s: 13.93
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 1
+- n: 8
+  usage:
+    input_tokens: 34652
+    output_tokens: 294
+    reasoning_tokens: 249
+  stop: tool_calls
+  wall_s: 4.07
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 1
+- n: 9
+  usage:
+    input_tokens: 46212
+    output_tokens: 5107
+    reasoning_tokens: 3502
+  stop: tool_calls
+  wall_s: 38.51
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 1
+- n: 10
+  usage:
+    input_tokens: 63163
+    output_tokens: 3249
+    reasoning_tokens: 1625
+  stop: tool_calls
+  wall_s: 25.82
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 1
+- n: 11
+  usage:
+    input_tokens: 76912
+    output_tokens: 2723
+    reasoning_tokens: 2280
+  stop: stop
+  wall_s: 26.16
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 0
+tool_calls: 9
+retries: 1
+outcome: parse_failure
+model_reported: qwen/qwen3.7-flash
+first_parse_errors:
+- '$.method: missing'
+- '$.events: missing'
+- '$.$schema: not in schema'
+- '$.type: not in schema'
+- '$.required: not in schema'
+- '$.additionalProperties: not in schema'
+- '$.properties: not in schema'
+parse_errors:
+- '$.method: missing'
+- '$.events: missing'
+- '$.$schema: not in schema'
+- '$.type: not in schema'
+- '$.required: not in schema'
+- '$.additionalProperties: not in schema'
+- '$.properties: not in schema'
+finished_utc: '2026-10-12T15:01:00Z'
+usage_total:
+  input_tokens: 344026
+  output_tokens: 30478
+  reasoning_tokens: 19252

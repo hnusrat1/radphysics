@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791822652-OdwtMpkqxhXM84GRsfV1",
+ "object": "chat.completion",
+ "created": 1791822652,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Analyzing electron spectra**\n\nI'm working with a mean value of 0.503, which signifies a 17% lower energy scatter component \u2014 that seems promising! I've got initial spectrum data derived from exact integrals, and I need to ensure the sums round up correctly. Everything checks out, except for a small numerical discrepancy. The L4 electron fluence spectrum array has 25 values, and I should create a histogram. I\u2019ve noticed that the bins for 1.2-1.4 keV show zero tracks, as most electrons peak around 1.1 MeV. It looks like there are no tracks greater than 1.15 MeV.**Evaluating delta rays and electron energies**\n\nI'm considering that delta rays can have energies up to about half the parent energy, which is intriguing! An electron collisional knock-on can carry around 0.5E, meaning an electron's energy could be below the maximum of 1.2 MeV. It seems that the last bins show zero values, but the electron fluence spectrum might indicate small bins just above 1.1. I need to ensure the L4 mean is energy-weighted across the electron fluence array, so I\u2019m thinking of creating a per-bin probability distribution to derive the mean from bin centers. I'll normalize those as needed.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_Rz2XpvhAjPmjc4kKWCbZyH8R",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import numpy as np\\nw=np.array([.02,.035,.045,.05,.055,.06,.065,.07,.07,.07,.07,.065,.06,.055,.05,.045,.04,.03,.02,.012,.006,.003,.001,.0005,.0005]); centers=np.array([.03]+[.075+i*.05 for i in range(23)]+[1.3]);print(len(w),w.sum(),np.dot(w,centers)/w.sum(),w/w.sum())\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Analyzing electron spectra**\n\nI'm working with a mean value of 0.503, which signifies a 17% lower energy scatter component \u2014 that seems promising! I've got initial spectrum data derived from exact integrals, and I need to ensure the sums round up correctly. Everything checks out, except for a small numerical discrepancy. The L4 electron fluence spectrum array has 25 values, and I should create a histogram. I\u2019ve noticed that the bins for 1.2-1.4 keV show zero tracks, as most electrons peak around 1.1 MeV. It looks like there are no tracks greater than 1.15 MeV.**Evaluating delta rays and electron energies**\n\nI'm considering that delta rays can have energies up to about half the parent energy, which is intriguing! An electron collisional knock-on can carry around 0.5E, meaning an electron's energy could be below the maximum of 1.2 MeV. It seems that the last bins show zero values, but the electron fluence spectrum might indicate small bins just above 1.1. I need to ensure the L4 mean is energy-weighted across the electron fluence array, so I\u2019m thinking of creating a per-bin probability distribution to derive the mean from bin centers. I'll normalize those as needed.",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzQtDwvodd7pKOdV6Qphi_LlL2cgytLn70sOIefrEqsz2keTUfzTBw4sQP03pJd5Jga5Qu2Knu8drCph0-K_tsJOQciGGAjeBFzRH_j93ZDjmnhTfAm_lgR6tX30aR6yAJNkqRIA_8Cwc0dplVNr35FBa3wKOm9HMF9JETsjHCdm4joQms1lleubVBOJZRfw9YfQvmqk5Nt1LpfeO6R2I9JmZ4kzUFVCNdEgdSHOCZksd6mJjVUNGg7JTYZD_QnO6TN8rJxyDlXuqTG96E96RVgDvzyngZKnnNtqlttKbypx-5hLDPYsVNpUxwbqDGr-kHDgvKDO2kDKltUE2Uef6pepifMigMamRdNITyO45A4-Ro_o620r27zbH8rCF7lsFUpLlbbJ7BADxsy4chNqLf7DipC1DEifEkECTOmOclw0bFI8eMNRN2CSJr6zHzXw5LngIlWw140vlizE4QeI4ZGEj4I29pskdSVKclfVUMjyFuuf9A7AM-5JhcCLsN5aEFHClB7H7WJazP1ZHFEmD7qy7AfvvEtj5PP3ta-9k9Y2IACCc5NiU886V1ugSsIxVpEcWFWLx1rJMl7U9lwma26A9SSac_3slRoRMAjJORJVB9Aesx4Gs62W4gUBO69aO4OHQUXZf8PkTvuzYvEewAfSZvbstPW7TxJqZu3yklI-DjAx-1uLlctwhSgDBtJawzgmMVBg31mzJTXVNod-BVlaVJyoBQ1xUVpJCxVbT269L1vSUgh80ya95bKYsfR9xNUSq3E_6ybFF4xmSRZSgWMN2aeiHO5rrzZ-NdM3NJ4uuV2-gdWkePzRz-LKTolTN06YPaMt6dTPWuCZSmyC9u6LB2J4_K_rejwRTz4JgkgG5K-tqctW6T8cvAKOfeiE02e9s1puBtKvlKiBAiVLGcVyj78YJ4GXZ6LJD4cH5iEVEdN8nNtOgSPo-FnMQFKUdG8qJZs2RxsIZPoNrgJtpDDWAA_DGoTcYkagOkQ_sIHIQcAMbT1ZGAjTNs68D3V1ysvF3sa4gHE1ssmBLVdpXLRDg1IxEqiEWSVx4mTt7n0oISRoWVBQ0qmexmv1SbF5aFmwNvs9PyBPRKDmr9fgy4zwesXtzO9FJSlpd86kPWJxi2WSoKrND26M__sIZ9_0z-aGR0SNu97y5Zu6XPyoGH8dsqSn7vjEuO3V-SCrZQqYP_NhbdKuUznWRTrTXDX5A8mgsIBTtXbWizft_iIYJElcG3iGZxuLBzDQQhdjNbOUO4tKuzi-gCCPIf2i46Tqdu6C7SbVr6xOYoPwlk3EWOtUvlZbI9VyH6VZ_V7WMEWp9bsPcaQY487jbIX48jpyN6nHtUfEVE0UM6o2ED-DT6dD75rapSrC_WXsemEF77Mp7QCY1MYSv_SwV-aj14oRbS7-fdRxacUOev18fAFYuQ5bvkPdN-ynJXEZkjX3iyQ8S1o9LkJcXLayd3cNSW2sKqf2JM8ffdhTb_dRFE7FPMDPKPaV5657u8Byr76HOuBwBotk3eal3neu0lzwsW0x9dKKOeNFt4Coa7feJPrDmjnyxH7WKInHp11NWIJXmlBMoL8aVkdLeiqJ98bUWKtbGGV7sGWYVI49UIpOdM2wk6lOyTIC6KBA0hpGChv6uOCI8DtrDV_u-2zYRq71PKkLu8s3KFhiZ4V3ogP44d8WEXIszldf36VIduQnePVGit5imAs9Rt8y3cudbZjWgYnDgyzpZSUPsIlcRfSUw9nNiXQqh-WWbgN6KVrUP54htXcPolJ61Ikb90Fr0IR9X2erg1w-UiMlXErpgSJUR-hgLRk0goE-SIYy-uDoVoZI84PXHNAgtecOlI7qygMPzx_QdcYippNOeFbGv3H7RJn7KgGrukz1l6aENnVHtWGrN7yR7zmplv0KGvVe6iFC5ZhC3Ixv-Co_-I-AUro_-Av-6DddtsUmel_hRcbO7d3yXZGQnSKOEaTxqv2SdyjARzHq0FlR0jPPtMaH2ooycJkfON1OyYrdjy4_d-HzZU5Nh8vsFQolbQAI0QvOSIHC6rcz8xD1hMysq9PXzUm-MKczu-UyRu1SGE7GnsvMA26_Y3Q0FHGAR1HHfZq1VAgeXJwfGEtaWsw9jcA-GIGAyQwp_xUchYcVO0vKGs3cYbHn2Rz6dqDr5Lx4xZo70f5sVi0lF-k9tkJ-A9HZjfUJ3ykxjwKEK4dBI5u3VUDkDseGeVMBvLvdIvg0YDQxmR3BtHTU_jkO15j97y77PtPXNvDz4UXINCb9tH1D_er8YZRrFjb_466vnDsyZwJWUOSONXMAk21j_Bp7ipRzsumFBXpC9S4_2skCex2NOdavXb10TgBzqnN-ZDvXuQ3hwtxhC5t7EVaVO-QVqktyIwC1C9RKR_ZzOzrQFVzIR9A_QOzx244XvBojHqwzqd6hAc7ygNOpX1GCWWWI7gz0Ss5yNi8n7I5XW31Z5feWF6c2cvWp701e8OV5kBFsP9irey_YjZZ6vaDD-8OjyZmGS1FbWoGH5Kl2qNxI_46qWAYsVYGznBhh-sn3IHlSPt5jScN6ZbMxhPRQtEoFeG7O8HKk3ZrG3Co10TRX3dJ1uOaH0KYN4uN0mjlQloX7PWPW_6hJgDdGpU3EQ_BQYKcwodfHHBdhPst15LQ7cur06ZWPqTYAXFOCuhM67ChjlxUEx5C5LkEGEUpZd4dR-S8vBG6q3rJTC0fwtlZEAqswJfV_nPT3YowyK0fNoPB0iqu9HXfq-BkHGwTene22o2K0Ul0f3s8rlWfj_TG5KhFBWXjfN1bg5w7HLmdVyqHJUNLUTvxj_-zC0d5LqhjLQ26mz4UZZABGKKL6XLJaE-iGF1sEbV5JHHNVHzOvQhEJvhvKZbOtTgNaJ9zoa-GJws_nqVmN2A35sTHnGtFfucV6TroaR7kzCqESbDUcG02nWyy3AJLxlp6bk57fCxZ1-MjFus1h0re8WB4zbAsFIV-c3_4Gb-vryE-XIBRQr4MfIotRjYLGLTUIV87bjHc8R0tpzVadvq8T7dWU5Ytq9pQgMMkAlqlv4fNYzF7kr9Vgzyy8BDYsUkY9RmdI6ghrRgxdRE9ZcKHMvmJzWXSr2wJ2m9XbJaG1NX_C48scjNrm_tjnNzbwAccTu1VZoObsMqso_O44L78GuLvVUP17Ha4Jh7WW1r64Oyt1WIAiQemv0aa_PV7WpVb4aelIPtuv6VvE0n9V8emHMYENcg3ohYZo3YqUmRpyUhRiCxRhRU_it43-cXFzyXlaqsiWzA9uTa8LfnmsBzg3wrXBjJlwSEpxK8fiAn_5kamhLhbKbZ8fewx36fAiLwu3ajfz-Lv77fa2EPHigBp0yOplaIp5dVisV5P5tRTIKNO_odPC5Lg3atsoipWwqrezTr85ukgDhSZcS6D3ZBPFOhYbyAgl4520AHOOJTaCuL4qCfvEIc3f3O45M6cHvcHmu5k8UgNR-Y4YcN5kYsED8iezs2WK-gZeXgCay-DFlJVUMpaT42HXT8alTRLI1VFeMSe784OpyZx-2w2TFan3WnfG1JmrUq1dMttPzCJdVJdL7CxyfnvWqIQuHJo6SwSQsYdEnL8muz-ywumO8ay0PfLUB4_lxmtb2b88BB_LqlvJELgNXgOO7qya_FjwhSU6yLRYUvO51SNLYWWa1U9oqQx8-Frt41uq3Vk-NMbbDCcgmOFmw1cAB7GMY3_6nTtx0bbsFrj1IJyfbYO_9tr0oL9YjZtTTaSKiFkjzi1NT8TMh54X9WSUFj6vM1q-NLYuRFo2-JtwiS0KWY_qCAABBl7Vl6CyaGakvEVaLSGhsbUTOvn2jGm4ryU1Knebbvzn0dm6rA2F7U-KWR-dfWjaD2dWDkyQtZgV82KKw9j3XaaPlXZgDHQ1wgEcxmbDDswymRmuaxIa9K7HquJI_oItcPZjoC-_e39ToxAafYzzMlurPgXEjIYcaibGxQ-4Ex0K8vU9lU5IKBTXmnFsimAkLlHsDqA3iev0er_7RXOFMW9VWcD7AmZDC-9Qc-wcsLNoCIrkyAlvwkrQ4JtvpKqmC02WUnEEOiA55iMPygGMXGMobn_XHMdjfCj0ww5EGEmNWkfgIE8hhCaicWPZC7xpDknORdgoU3Oben3mQ_RmIKQm9NE9eT8QRageT-3HXpWJr8iW1l7Yl9wZe4IS7hOIZOnx3uRq3yJdl1ZVWuXmI59VDfR5mXGbSZWRTim7rzQk1KJUNHYTzQ5M8QUok_yU0CZAtznku6-uaU3bht7yOTC0QQuEn-dOsnFFNzTV79RTpMuszdkTc1WWd6FrxkBdOJRrpMcV_mv3IYlOzwvPPIsbTW8_OR7QCPxrvAPQod2ksHaW61mPW4AdxMBWftCYLeJ4iats1iXjKvyIbg3H7WBK2zg7fb5768d2l0hwig7ioDVXBr3px-Kzllxvv5urd3uKyjt_CmmLlfsXdOVsmtU_m4RCjTsMPlci4Jdy0oUhuSJsPDd_dgwNJ5KgcHWpT23qy5OPZIVMkCGODmTc1cGVvAa0H7krMJLZmNYr2Z-KPtXcSFu086LhFqVJ-fx5Lm_CHNnho3h7kb9T_T8MoQ5NS-71Z7zK6TQ18yyuJJx1rXhovXwBEISG4Phg0Xn1vI7SMiiTON4zNO6gFqPD969p1IJ9sSM3MCfTGC71Vzcw7G3_yQE5gT50nVEKRFTo__gPLlwOqsTsAhj1elF-xJ-ubr_LLCaGxWuO9RZWNXNuCCCSvbVPmHLv5oKP5TBASBpzJN8bw21iBDhUrLZly4JdcWKds0Lg2IXqaoj2H3K-ryCDacy_Rgn9vc0saN5nK_FoQeQuHrmHAm0uUchasXXF4T-7x_KNFc_O7vgZgkU7XzfhLD6hz_LS4t2F1fwod0DAH4rcgvpRXuTDtZjqFF1i8wC63iQwBd1tNn2w3Yq80cEQ7ztfQJL4BPeJjoBBu_XWn2PoJT1ekYYxdCkVpByNYoxJnDtnavWfRbYw0VfgW-rv2MNRQVhDUKYVluDW5_6ARvgdc5-eDd8vC3hS-XG_yT5wqiDzCjHDDfvEoMid1NZn5JNWh_cwGjA-yOh9Q9h1VwsXzzQBe8UgKNxpLl7BwCXHb_Tjep9zIM8znBvvFWpTenjCPfXWVxK7fpvr7HH54vk-1UhFjJ34nA3DDmPm2bS4f8rCQlMQmoDLmngHuzsa2pMrx-Dxz9mNHfksgC-HiLOQ2lJQ_Sax7_7tZGR8H8FiTj1BDDbr-vY5Ewf24vwuKVtTy98vOo5G9Gs6uDhYGRH5obccZ_bI0rmh7IhkNLiYJnVxvNhtz_ws2Vn_PyIVdRMnGGTs2FR6jxSqGAh7yf30dJ1ZNNZFgBzT7U20ofDInroGwoAd6dYfyqZhA2pAy2xQQayf-HuIiZI8l36UPCg7TB6j3hZrpKDpv9l184EcCFeQCS00lXzFUs1K8bcPqa9N_YQYnvEMafpT0FLO6dKPffaLsjnGIMitaYMhMEPghOdSmPDUyhA2HaLH8SpvNooIhdYirLTFDy30AV_58qK6SZVrVjHWp1eGRv1fuxU7AVABr0AV-nnhoYIW-dxKNV5iLwpaYnAO4c66iO0h4HYKpzXjq25AFqpLprqqjhrlCHW7g4v8-cl-VAGu3uMivwWwBijGzbJ11oGKfovylXeAq_kCjDN73-3ZFwUOPwQab4n0a1hhEIlhxF51Vf4bZ2e8FMvW0kwB2P89j5p1exrH3nKE_cGj3Go1qmtyponE9eEeLa1JR-b9DK2obK2Wa7hGYX1NuPW3ESzEIEFLKH-hExDlznE-U4UIv_kL9R09gbR7GrKmoL_PHvjkxO-bqVe8YpQfbudpsRvvqi4naXSiQ_LHVdlBB3PQeOTXLLCyRdvX7i6n6KHxoVSP8Z5ztoPIRi_KgqvzoPb1VeyubrGbxF2gl2x-S5Uy8q2PVo3XkBABGrt98M9LkoL9oxaxffVz03GJOrcR87ixIlBZhirGG49ArO_sVVecQeNltwf5XS1jfwbtRTDnQXYmOKwJKnN1UpbIthD1R_bfkhP8ouKg_MBT9mjZvByVufkY-sIs=.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_0489e75b4db6a3f8016acd0b3e056887d187f324a1b18b143b",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 18119,
+  "completion_tokens": 498,
+  "total_tokens": 18617,
+  "cost": 0.000506705,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 17453,
+   "cache_write_tokens": 663,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000506705,
+   "upstream_inference_prompt_cost": 0.000257705,
+   "upstream_inference_completions_cost": 0.000249
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 371,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

@@ -1,0 +1,23 @@
+```json
+{
+  "method": "Custom Monte Carlo simulation of photon transport in a water phantom. Cross sections for Compton (Klein-Nishina), pair production, photoelectric and Rayleigh scattering are interpolated from NIST data. Source photons (1.1732 and 1.3325 MeV, equal probability) are emitted from a point at SSD 100 cm into a 10x10 cm^2 field. Photons are tracked through the phantom; free paths follow exponential distributions. After each interaction, Compton and Rayleigh photons are followed further. Interactions in the scoring cylinder (r=1 cm, thickness 0.2 cm at 5 cm depth) are recorded. Sampling uses random numbers (Mersenne Twister). 200 events were collected from 385,291 histories.",
+  "events": [
+    {"process": "compton", "e_in_MeV": 1.3325, "e_out_MeV": 1.10519271, "cos_scatter": 0.92112688, "t_e_MeV": 0.22730729, "cos_electron": 0.59013038, "t_positron_MeV": null},
+    {"process": "compton", "e_in_MeV": 1.3325, "e_out_MeV": 0.24054653, "cos_scatter": -0.74083944, "t_e_MeV": 1.09195347, "cos_electron": 0.9943294, "t_positron_MeV": null},
+    {"process": "compton", "e_in_MeV": 1.3325, "e_out_MeV": 0.31690455, "cos_scatter": -0.2289832, "t_e_MeV": 1.01559545, "cos_electron": 0.97673627, "t_positron_MeV": null},
+    {"process": "pair", "e_in_MeV": 1.1732, "e_out_MeV": null, "cos_scatter": null, "t_e_MeV": 0.10139779, "cos_electron": 0.72878918, "t_positron_MeV": 0.04980221},
+    {"process": "compton", "e_in_MeV": 0.64569495, "e_out_MeV": 0.4779031, "cos_scatter": 0.72214096, "t_e_MeV": 0.16779185, "cos_electron": 0.67273092, "t_positron_MeV": null},
+    {"process": "photoelectric", "e_in_MeV": 1.1732, "e_out_MeV": null, "cos_scatter": null, "t_e_MeV": 1.1732, "cos_electron": 0.98929622, "t_positron_MeV": null},
+    {"process": "compton", "e_in_MeV": 0.32319581, "e_out_MeV": 0.28413571, "cos_scatter": 0.78264848, "t_e_MeV": 0.0390601, "cos_electron": 0.49522089, "t_positron_MeV": null},
+    {"process": "compton", "e_in_MeV": 0.05827152, "e_out_MeV": 0.05655056, "cos_scatter": 0.73313091, "t_e_MeV": 0.00172096, "cos_electron": 0.40055083, "t_positron_MeV": null},
+    {"process": "compton", "e_in_MeV": 0.16354399, "e_out_MeV": 0.11057008, "cos_scatter": -0.49696166, "t_e_MeV": 0.05297391, "cos_electron": 0.9156041, "t_positron_MeV": null},
+    {"process": "compton", "e_in_MeV": 1.3325, "e_out_MeV": 1.22330904, "cos_scatter": 0.96577021, "t_e_MeV": 0.10919096, "cos_electron": 0.42983454, "t_positron_MeV": null},
+    {"process": "compton", "e_in_MeV": 1.3325, "e_out_MeV": 0.30242423, "cos_scatter": -0.30618977, "t_e_MeV": 1.03007577, "cos_electron": 0.980198, "t_positron_MeV": null},
+    {"process": "compton", "e_in_MeV": 0.58669372, "e_out_MeV": 0.38811943, "cos_scatter": 0.55437753, "t_e_MeV": 0.19857428, "cos_electron": 0.75465618, "t_positron_MeV": null},
+    {"process": "compton", "e_in_MeV": 1.20661027, "e_out_MeV": 0.86949391, "cos_scatter": 0.83580226, "t_e_MeV": 0.33711637, "cos_electron": 0.70895588, "t_positron_MeV": null},
+    {"process": "compton", "e_in_MeV": 0.38477079, "e_out_MeV": 0.32424807, "cos_scatter": 0.75210951, "t_e_MeV": 0.06052272, "cos_electron": 0.55047237, "t_positron_MeV": null},
+    {"process": "compton", "e_in_MeV": 0.11629932, "e_out_MeV": 0.09043801, "cos_scatter": -0.25644438, "t_e_MeV": 0.02586131, "cos_electron": 0.84736595, "t_positron_MeV": null},
+    {"process": "compton", "e_in_MeV": 1.1732, "e_out_MeV": 1.12374968, "cos_scatter": 0.98083326, "t_e_MeV": 0.04945032, "cos_electron": 0.30840409, "t_positron_MeV": null}
+  ]
+}
+```

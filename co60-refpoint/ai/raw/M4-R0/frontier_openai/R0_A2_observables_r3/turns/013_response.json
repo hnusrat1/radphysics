@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791824319-TlWiECoGZDX3JpCt9MMg",
+ "object": "chat.completion",
+ "created": 1791824319,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Analyzing photon scattering and energies**\n\nI'm exploring how low-energy photons might scatter and influence photoelectrons. I need to blend 88% primary spectrum with 12% scattered photons. I should approximate scattered electron energies using integration of KN for spectrum events, considering the photoelectric effect. It seems like I could compute energy bins while sampling KN electrons. There are details like adding primary lines, considering Compton electrons, and factoring in binding energy at oxygen. This is complex but fascinating!**Calculating scattered photon direction**\n\nI need to determine the direction of scattered photons while integrating isotropic angles from the L1 angular distribution, which feels a bit challenging. For the energy spectrum, I should use a script to calculate counts for the histogram and process it with mean values for each bin. I'll compute electron event counts based on photon fluence and mu_incoh while normalizing the electron recoil distribution. Eventually, I want to create a spectrum reflecting the contributions from electron emissions. Let's see how this unfolds!",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_19MfIqiDy69N1Ch5QIAMbFPe",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import numpy as np\\nm=.51099895\\n# edges reused, photon v and Ebin from above\\nhist_all=np.zeros(25);hist_p=np.zeros(25); hist_sc=np.zeros(25); meanp=meant=0;countp=countsc=0\\n# numerical electron response normalized KN and estimated incoherent cross section from XCOM\\ncs_interp=lambda E,j: np.exp(np.interp(np.log(E),logx,np.log(np.maximum(x[:,j],1e-300))))\\ncc=np.linspace(-1,1,20001); dcc=cc[1]-cc[0]\\ndef recoil_hist(E, weight, hist):\\n ep=1/(1+E/m*(1-cc)); ds=ep**2*(ep+1/ep-(1-cc**2))/2\\n T=E*(1-ep); ww=ds*dcc; ww[[0,-1]]*=.5\\n norm=np.sum(ww)\\n mask=T>=.01\\n hist+=np.histogram(T[mask],bins=edges,weights=weight*ww[mask]/norm)[0]\\n return weight*np.sum(T[mask]*ww[mask])/norm, weight*np.sum(ww[mask])/norm\\nfor E in [1.1732,1.3325]:\\n w=.3645*cs_interp(E,2)\\n mm,ct=recoil_hist(E,w,hist_p);meanp+=mm;countp+=ct\\nfor E,f in zip(Ebin,v):\\n w=f*cs_interp(E,2)\\n mm,ct=recoil_hist(E,w,hist_sc);meant+=mm;countsc+=ct\\n# primary sources hist counts are weighted actual interactions, scatter interaction rates; normalized overall\\nprint('counts',countp,countsc,'scatter parent fraction',countsc/(countp+countsc))\\nprint('mean p',meanp/countp,'mean sc',meant/countsc)\\nqall=hist_p+hist_sc\\nprint('means',qall@((edges[:-1]+edges[1:])/2)/qall.sum())\\nprint((qall/qall.sum()).tolist())\\nprint('p norm',(hist_p/hist_p.sum()).tolist())\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Analyzing photon scattering and energies**\n\nI'm exploring how low-energy photons might scatter and influence photoelectrons. I need to blend 88% primary spectrum with 12% scattered photons. I should approximate scattered electron energies using integration of KN for spectrum events, considering the photoelectric effect. It seems like I could compute energy bins while sampling KN electrons. There are details like adding primary lines, considering Compton electrons, and factoring in binding energy at oxygen. This is complex but fascinating!**Calculating scattered photon direction**\n\nI need to determine the direction of scattered photons while integrating isotropic angles from the L1 angular distribution, which feels a bit challenging. For the energy spectrum, I should use a script to calculate counts for the histogram and process it with mean values for each bin. I'll compute electron event counts based on photon fluence and mu_incoh while normalizing the electron recoil distribution. Eventually, I want to create a spectrum reflecting the contributions from electron emissions. Let's see how this unfolds!",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzRHGCE_5aL6-KCn_JlVLExuMnk6-ILRCDJRaMIsGHRmicGeVkGK6o3yMPiJmthEPYC5_EmwlnU-RqaQgxj9_2rCfMy0S16-BcEcUkVmBnUKwznddhIyX8n4IyupreBJzhLdkmLWIg2UmAjYCoXNPnO9p5PM81svoIzDK9QAxDI039LiSYyQ4rFTwzSfaZfHe4eepXSN28UqhGNEID9QVbTamNq9gxXHCs7aZv6qWzudoBlorFZp-EP220QzFG1uh--JBGcFQNFtvgJkbJAqx5eS3sMvGAaCk4Cw-MWjW9P0cBv_M6TaJMmSS7_GNI7F3E5kJDU9tiw6M_-xlETbcIoYhj-GRd5XxdmjiP8Kr9sxymgP04-DhnlN74-0Aq0z8XcnHw9k6BfIFPGh5ZAQn1Nq66vO2h3swc2cxM4rY3ID5XKZUa1D9n9Y6rB2wRKeH3m835OxIu3cHnL92RTDBmtO5GbSzGpMTi4sm-l1KDULVSVa9dHahEhFweGTpSSr17kfF5hQfaU4jQcM059Jxn-LNBPqg8YODKML0RXx7fsY8BALd5Pc4xJ-W_xCz69dmT6Eov_92xMfBhG4SodrGIPxqS0NThfX6fxhntl6auL0kH0GjdKbW2bv7aoUkYJne790lmlmm6-d2DgfvdgWo8HmsVFypRYyuQ6fLsbLAEEe56g0wF7ATrm3cd8JP8mlc6lQaAwV0A7fsQipl__taGnRTfAs2cyTKDF9kiCdHViS1DHKajiuJHaZmiMXToD4qnOjRXWuNmffSsZ1cscCgJzCfSWXmUYfLV40ux1JVvIYSuVUk4ccpeq0UnmpeRF63816mobLIOlrRpxD6-vaWdZrFNq4YgtKS9x9YcLVpCzrLYb-m8D8oi9vtrwP7T6ae8p0mVSSeCOPM6_mUdrDPn-1wnQ7i3yI_0u6HUBYGfOfqlNxu_Vnx3j1uDR_v9eUseBwdwmS8SG0rUbuMyBHKGu2zSkfn_8T5yjq3-0FTctO394hn0LmeUVLCfm9sgMLv7UyKnjuu-BeKvDHYonmiMz7kz2WB8WqTnMdiLscAWw7WZPzdFjS9W5mzMpTHwAncahxevlU3xmVxANMiGiPRQoGEsbeChHAZDdcC5SFCsQtcbGQWo7yIJPa5fNcygIV1SJx7g1_nZK3cH1DLM8l23D85xP_aC1x16SIeZDCUNBHQ3U8qCLA3nzwfbMUf_Mz4Aj624fWlsITEbZiyQSZcJyxTllWaygrPI0vVOU7TekdDzB_fjSpJukqBahTIUrlyZZb5HAb2yTjlaWM7HnxoLRhCSDlPAT2QCuKWhY6kHf9kcgbvb6_yC97XoUpX3HLnJ7u38dzNcZZkTArm0WhEcnLx3my8pZccZRr0fqxwsL8rIKbalh2sLojyn8IK6cBK1V3v7YR3vjCj41INEJmJdodN1XNtfMW4Lxob1PNgGxWkHkDcix1ExmxPlm8yYLa6afqEQfM7AOvbeJaWP2MZn3KjvYiKRvCdOssMt-qbHfiY8h_qR0GJ33AacVp-G50_VRVygtddCt9K5VsdACt5SEWHpKYmBoyHqIUeoxB1skCYhFYDiL1_j2VFWwmnK_lVuZOCKrx06Rl8TremNMuk2dDKFMsuwFhPuMGEpjvRF-VFyLx22hk_Rpao5Vo5vOYEgafcUWTzZOYtF6VUz6ZFgm7VBtHcvELrPM9ijwpoKDd0O_24CNopbxeNQ9jIJ9wGzUEhmh2RGSa7wBos2vtDp-t9LpTkIhgZ20ihIToESimPjPU43zHzkKY6To5r3m4Tp6v3zSHy64r_a63i_bkK55SgWnegl32kiYdsMWBbptnttVXRx1grGqhPYMzKNyXU6PrANwO7szdutPAYDFtXL5hcSoDClrcHYNJ9AcHTlOYl9XPrxe0DpMpywWpxovXlf0OB1jTDDoCguKZTlvfOqwHyVtxLOJ4O88P1OTqtbISZoxLAxdOZ9EA6UlgJhJYKoUuZ3ejCbcaz8wtx-mq9dE_nwh0-Ala4wrOCgU9GDocpN4nUV9Vl2aIelJ2J5ELeJ-nybwhlBJU34RWoute2dxIauF7ddu1TI2d0k-iu_LMDIi26Ptos63nVbgert4YQv4bu3t7lVEsBR_KS55ZudlSK_kEKlpBK6yhLaQ4jZqZnhpFh5lufeyQQd0LETCo-1hiGvEv3EitoA0dYHzf9gICGnip8c3cT9KJdIXMAGvPueP3AIkcy8lL5yM0VwoNVWV2Mg1ICvxSACamYIJzhVRxdl3g2zVS3WikuAiz2gCYapAvdLS8lwwXiEBCyDuEVqH9OOiapgsPB2LwyUdC_cJ1Yqi-gI9UzwMs8asBusjlPIuhBiqyazSGjiicom2UlDL2NaaQqZjp1aqRd_3AgHlcIh9vhSrNLQ7fJVZimM8mEJAvGTig6VvBNyRGIweyCWECISOV7oLufs_tVkEMe4EkqQObMBYqCzvs6wyanM00_921CAdfwxun0kXbjWQGXTQFM_O1HbTwx7uNcRQkoeqgR6OIQ35lMVR16PyJA9-unwtKZ6OvFrrr02FYbPsKxNgaqgMetoau25QNORdE1H-5wxnQOwAMLkA_sO0FMMgS1lbTygFcJ5xOc-xpF1VQkkm7pp9xzKi_5C9skQ0vRIJ0O0vi85gFdO3LjMzBpVouqVNr8UZASYKYv-k3Ev1ObfC9VBi2rJVhAzyEfYdz9QdYV3e3g4sw7LlFzEGg-IPMfLdtRzb0-uLjfBnEZNQJGAw7Dcd1U9dSHF8QcctQnEpFVP7R1ag9gwgmZX2KHofwvV3a-9E4qiXiMr-HMa8QB7tXPd3MZGH2jZE6NglKcTGcdAC_1_fnutQ2dlvQi7m6dq6Ag8WhRSf_FIj6hkOLM0T0TXgy8TK7aGKsJRIiW68zjmPZSgvzVr9XOu31djQPZkYR2Jzb-m3avu5s1XC-OMxbZF-W51003cmec9VRtpQrC6JkseAUrNTtuBR8YziCPbS874hPVuJ82o7pPkldb30ZH11IslJ2ODE4QzlMOz0Fg5VkLLDw0kw5JM3JbzqAKKty3OBmC_jK7HYn7CUrnD8vbeUBz7KdYA7SpXID_vLfA736JL3j0OdanRnQciepCJBVod_hXvd1H_nLF41S0hN5GUr75YMl-tKgkpWoJ4-kvxjj8l1kO2mJHuIC1NtuZEESEFKH-W6m2fsQTGY1ObSZRlu3MliLVzdE2sQWr7_r9xMdB7iLPgOHCKyj4h_OnZcfMJjEWFV8_tHcluU-okqYikOcGJO3XteaedB4lcxYReVblFWr9r3PSsXCHNbpTSMx0q9uDERit2r6ENfnJ2WmihZpBTvMtZ4EABZZg1oyktwilNInDHmOhd6s77HB8FNXz7bYrclWUgN5fcMKuuR6hlg_hqKzPcDKKHgOzuUQ1tq-XhlULIqxx-7g1RgD39U1pSJC8Rj57Z9EzgZomeUSzIihY5-VkjtisEFPzFQ1yzHlNUaSay1EccUIBZe_YaoRxVsURiWyg1K4HnS6hcn67R9T1k4M42s2oFWCrjpc-TMqbzh5qvGMGr67CA1QVYZ0yepD79qAi2Fvxsyk34vEkKsR6yCxknuh-EIbWNHXyFCggENwyOAmhanhJ5iH_s8u_G-KwX2e-02OBgsxMLKK63h1gB4Fv_P2Yp_zuRSWiQyj5tqSld2zTBD6FUSNrkHxmjsfHN9bQ8zNsqy7KIXw_Bt76tqxutYXIFwv_oibGOnKumIF63Xs5wNwohzOhf-jPjuZ-A18szPJ6OsT5POCeUJVdw9TE545AgWDYKLxp-gzur6rUFyWlNX9CbjHAM0XVmXWLAZTQ3Ln5bd3AVd80lyLA4a8p-MIwgrFI6u-hGHKzMW-Whf2IsaShG-V6aLWHPwv9fCKjG5secEccA7ewQfYVIDX740N34fVOYpGkEDbSzyy-Fmixj9Ig5QXv-yhbzrVxRazOXca6pot530RgaFGQQO-4Wpbe-V62QZDxorN8s88ZOENgtKBOmaSu61YrJO0Pu6c-UhMEwGEF1YJxSQdFkj6k8jkXBhMk49-CVTLbdtzzxMGMc0L9E3AAEZpAJWNWIwjmpF5XuSTzSTQgWjvUCzpbGjHWVp5gEcI6xGWiz5A66Jt7JYZJMGCKbwuQYnYgP8VZwDLvnL5RBqD6xUmA1GPn_oplvV4mll22eXyhJCg6g336M02yFS88ZG15RktjbH3-PPq2alFcSWV4yIamA4OW2rbDzmqXXw3T97BOBSWPkg0yR6KtB8zUchEkg-lKCwFtAdaTAdjf6QQBf60jtgUYBADgAALYxcxb_eWEoJ6qS2eQ1AmxcvRwf0MzZ8uk95M1G9bGdppTJ6WYxtiuCjkTAOw_jpCsADHA9_iMtszw_QjLRuhE0geCvCZ9A51OheqCkriYFmT1IPbkJ5J79uXDf7kM-jUv1wcj1LPNgT1tcR91qJaKEbduq8RU0Nda0QLZD7PopXcF4nIpGzhf1DniAcU0qxUP_GrJyZqn33BPi-Q6mkmv7LTZsfo4OeIY_o7I0jwq8frQazu3IM6fGFvBMknrSZ2DGY-Tf9_jpQSTiyi3n18etaCmqJ45wbM5_VZjYQvh4oWgXaLSi5KeKY3zsWQ_D22aRsLfdGsokdNs7QGCaBJvxPBKY72wNeorjy6FQUJ7Aca2s2Lj2G3MBeVSngFmMZAD8S7Q4Rq5NSsH5TsVKptlpGpYMoqjG0E-Di3qa3P96J1f3AT3RflViTbE32HIFlxMoMFO84OEkNNp-61Rx6xzgUbuUHYntHdxoJFqs7_jCwzYE0W3cBy-6g4uXv8FwE8s4vQ6nj1ANutGsnNMhOX7kGwWiglcND-Fr8RSq-V_f62kLW-vZ-hkGps0S0pU74Ahq9IAce-8yvrnsLjfmuHkWDl2-3XzQ4wJqTtl01f-Ziw0qj--LbDLncJBesLgCCvS1nHc7-FQb9564kOFPbuNCVbAVjMPmUXnYAnozhTW44qVREpJDZOWDneRVwMHFzV9UR0LbVnqyyJ6wNsPPJunAit7xPeYQxq40smg--6ulmNc3tGpgOQUUXB5MMf58xS96abYqqntNl48fY93cGTOEiKKGf4jRdmNyeLq65PS9LlElG12xNF1zpZkIsw9n2JBxIxQgIAJyU3ARJsKIUE75sk27WL-CRpOHEz8Z64b-qhduz3JVn2LCvSqqs1gZoRKw1yLJYnhjaEyG2Nt3PzeO39Q9mcLgeVsXrKml3UC1qE6po0UNJk4jnYDryBShF9iaa0BFdeBu2he5dJxQFGOx90-FnzwZFLLsoF2W0CbZR8nlL-AwLsMc47DMjRlaWkqe1TaPKsUwQalS9obEHuYLh8rlxEOhJ1rU8pzpZOk8ETFoKO4RVj1DKJikIn0XCGfzLaV7YSAwBSrs4jIa0DcO2CTSgxbjVdpy9dzjcfL-69b2PLAgUiMh3wfb7dDokCBTb2ZwPjWDwfD-7kAT6eVVVOpneXsd0xvYGMhLIeTYSNr-hHojy_Fv37WYl2DR-u1EPc6UnGNa14gXt65yrep5hiXaCyS5SOH9fWBY7VwroP1lj0uVP0PGwIOBfyguYATwbIJgCplfCnbNbP2q0hhvjcXytXM8XLA21nl4RnNuwLJ-l3JCgmXM4X-tZSCy1o52IF2tuWz7QvwxGkMAUW9Fz29_G2npqZYBXwGZNLVDqLJ3hIDXJfwCUVTQ4sHh2hkWV50q5YMn8cIaCjOYFo1bdhH9Jk-xqiE3QUssdGDpmDSHg3zyKYO1DswR9QsTGDp1t36PrjyjL3Lm81XQcy9WpFq9pEQhzaTbFyll5LWD8DUZy0aMNl-nQrcLfry_lepMlGr0t8WyuwD-vsUYN4XFND_capczwQ9KIUWSXDI3wwpd2a-Whtl91_EXXrzX5aZ7y9lCpjLsrf-ugV07eUAi9fzLbR2kNMPAXSuxsH_yQVeTn1H2tBASLNmhPVMNY7vk9P3WmzAv8RyeTTNwroLTE8ZSEPucY8ltLnCg9pGj0YUbpLCWUflc1wLCoqzlhweJyklF3qF3V3otrmdBb6-oNBJb1kIy7kUh4sdYltcJghl1JU4KMicQKHL7MTdQ8BjZLIf29fAPH7eZIuIq_4IIxSOpf__fl6NkhS-4nyzUDTenQs7gsBHgRIW8_uIZE8crxZ4czkFtRjtkAwM2ccZrQnOTM0Nz8pPX3A3IF8gbkTQMiAZmohNn1qkRMy_9cqzcQ83zr9AuXDBNx9PaeTkOIOyTvbi0FLQX4oShp1FsHVDTZAdiO12ZhGX_9dp22tJZaq-G2QtTe34ewDCEcFe4bpDrX_mwGUMlEZmRLoCEPJCOgyw6TuhaExLVvyprdABRQ6DkVI2e2vWc89tjByyMvMGe_1CnmTm_ZxveXAj1afrN_6usAzJVlzFXlRxwPs0T2r7ZTyeiDLDp4vGNmC0QXb3DLIrmnesUtDoI8_lbBJhv7iQcX10PcEu5yDEw0URa00v9QHQCNLVoYd8q9n712LEKg8e2NmHsfBGcaTB9OpS5wMxwQBXkiYc8Q3udJY8Do4m-kNdifqsoRLAkj8Fr3nsHtI84C05Cjoer6kXOxco4-VGNSvt11EqxFFQrYtKaD9VBhTPjgz6Kas7fzCFeGubGFYUcxeMX_iu2nE0uKEGSLA3iizGlUXXOVbBSjcL_Qh0x23zK4s6XA2An01brhHHcVdXesq90uRw_POf66Kh1X5bLxnTc3xlEou0p8gjMcw7qLkO3jLxpaHtaQX0-cT7kf25uCHCCLTBjBRvBM1FYg0CHFoGkEZUwbYe_S4xNqtLPP4CFJPH81_4yisfRSdzjf2I12ajwW9l5eEjw5A_tc8E8WjCx0YGAZU9s45R9SdYjXpC3y2I7CHe3VrRpHcUdum2GOuYF3LfJTJ2VYM7VPJoE2JxhNDtp22xiF75elMa6hCPhGtw5b6pntXMmB6z_cl0VZvta8TkNAEOfd1yIFVA6LC-OaCL4O3z5FTFZ6-EJT_LO3a5XtZGH1YDA4mkt_jR8wd6raPSrY1ouRse3W85YskvsjbPmAkJ_BtTDQ0vIvxpush7guVHvyXhegetJnfruZ863pIYwUyKc0ZY8xIQg_jWXcPy1Il1NAwq2iNtxlZFgnOzyCv2CymXO0qgK0Q0BghDs9_f8B1eyA64_vLnY9fd0Wx4E5z5EqZjja_H6AuOw7m2t__pGvtmps_v2q4NPSVa5iPEEHcdFTw0vdSNG7dFkPZ9OBNr6XnyBmRJJs4aznt3YkS4Bt3HRf5OzjHULiqKy4NBgOvJ68PWX3VTTP_Eb7xJW6ksLZ6bifJn3XONfQcafN4rdw0nwqmJbU91j8HQxX-rKDpY-wQ4xmUXfdKeEoGtAaNaCFuBqXVzow6KfP6foYG6L0aQBVClgetRF6MxJDXVr2n4dOj7Z2cY1Sut9Xa8SxcKrvJE_6eftb-b7VvQ4b4uC9NwEsOgRiZ3YWXtuecFfiXOmCmRR5SqIA0b8wf8Tr2ZHZ-sSy3CP1P3uDN7cTVizq-vtmWNxK9xbSL6ZFE5izUgfhX5G1aTZvS6mOJ5A7fMR1g7tTozlGC6fbc2pZ1w3f0W6ho3hldp-DwTr32GD3Vt2a-onWx-4xjt-THDU9GMWSG41RhtqXRfBfUglJgFAhPa4vBxj3bV_uQEvSQsFgvFXDcRBWOZaE8SJQE_ZxnrJsuEP1fpu_bgbf1FeOvV93UE4H5fEuqRZ4-uZ6VM48B1A4CtFjVx3yhEk7mcwTa07LkaIrzKAGvkevJ4ZlOckQiD7kHnNWMWNEsCmyyfbijFWNk1VJeh5KGFV_L4mQ8Y0hQzqWPloPco_wrjjaYKP4EhTma4jMd6blXahhD4e3kCtOIOrxoY1mq5vQx88jikNvjmRvajhJKazzeuxZInah4tBzy7soZboq21WRUtQjt5oHYjGYWAVV6CsZIgjXNbrlMHLjGlEP3uP024eoZREJBr73YRtQuxIvwGNZtshgaOAi_TY6ZW_0IrziTTuVEI1C7p-xwc5cML2YaIr85NeGZZ-ZeqWW8oPeL1TbKsuqusGvpkhtBGLt6m-Il5WXjUxSCDAwHfN9uEbcGLR90V108J7c_SZfanHQDeXgcC9YCy6MNfwkCBFidMT5qKTV0ofRINOESxZwXrLs9OVzNKObBQi6uRp9GuSvv4SxhZQvLJgtWQktL64u4WVJiB13j99g5txx7nUeEzWmTdX7lU62Qaokz8jIQXmosuGhMjLpOB8rIi4bJYDOL3C-jSWZ9AJxTxC5_AvECmXOUp7jbZJhkPn2UsPGO_O8RrSO-_-XFA3XpqECYog0vluIpk4y3uJDbi7Ll1j2T_rSMXi0-wDyxo0qu2usXDtLLeDwWqd8DEdKgWYmM5-hkE_riHztnWfyrB70oKfrWyrofotiaDcLDB2i1QgOSgtWFqXQ20zvsuBmw9k3zNJRWZPyFaTnafdqRLPPMMioO7AfQ5bnZrdhif7guFwEck54PKtfc4FHYFqmTamLdmJxxZoH9Ks31ORG_qyKPPLWpe4wE3OGBKBfDTGSIuKMI6d8psAudiV1yAQDFRdAvN.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_0b98880d2ebb4a4d016acd11c0143487d1b91831934989dc19",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 21848,
+  "completion_tokens": 1000,
+  "total_tokens": 22848,
+  "cost": 0.00091057,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 20177,
+   "cache_write_tokens": 1668,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00091057,
+   "upstream_inference_prompt_cost": 0.00041057,
+   "upstream_inference_completions_cost": 0.0005
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 509,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

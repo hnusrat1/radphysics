@@ -1,0 +1,40 @@
+slot: open_weight_1
+provider: open-weight via OpenRouter (pinned weights)
+api: openai_compatible
+model_requested: deepseek/deepseek-v4-flash
+settings:
+  reasoning:
+    effort: high
+  usage:
+    include: true
+  provider:
+    quantizations:
+    - fp8
+condition: A0
+task: events
+config: R0
+prompt_version: v1
+prompt_sha256:
+  system_A0.txt: 5d02a4bcfaa7d02c9202ab1c5e6dc263196bda4fd973c7421a5a87ac29d0777b
+  task_events_R0.txt: 871cffaf3fb764b91cfda15169f125951e9eb985bfe79f27e1ac8bc6b710cf73
+started_utc: '2026-10-12T16:27:14Z'
+turns:
+- n: 1
+  usage:
+    input_tokens: 1165
+    output_tokens: 54893
+    reasoning_tokens: 41619
+  stop: stop
+  wall_s: 267.1
+  http_attempts: 1
+  model_reported: deepseek/deepseek-v4-flash
+  tool_calls: 0
+tool_calls: 0
+retries: 0
+outcome: ok
+model_reported: deepseek/deepseek-v4-flash
+finished_utc: '2026-10-12T16:31:41Z'
+usage_total:
+  input_tokens: 1165
+  output_tokens: 54893
+  reasoning_tokens: 41619

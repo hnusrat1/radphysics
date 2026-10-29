@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791827737-HARIlvYQLbUvwUD3HMBJ",
+ "object": "chat.completion",
+ "created": 1791827737,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "The four batches agree (total expected interactions per source photon \u2248 4.8\u00d710\u207b\u2074). Next I'll check the process mix and resample 200 events in proportion to their weights.",
+    "refusal": null,
+    "reasoning": "The per-run weight sums look consistent, so I want to check process fractions, weight distribution, and the energy-in spectrum before resampling 200 events, plus compare the expected interaction count against the analytic primary estimate as a sanity check.\n\nComputing the primary fraction analytically gives roughly 2.66e-4, with scatter contributing comparably, implying about 45% of interactions come from scatter -- which seems plausible for a 10\u00d710 Co-60 field at 5 cm depth. That's close enough, so I'll move on to resampling.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_013oWkWuxgCQzWcGTTwSbtyi",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport numpy as np, collections, random as pyr\\nev=[]\\nfor s in range(1,5):\\n    ev+=json.load(open(f\\\"run{s}.json\\\"))\\nW=np.array([e[\\\"w\\\"] for e in ev]); print(len(ev), W.sum(), W.min(), W.max())\\nprocs_=collections.Counter(e[\\\"process\\\"] for e in ev)\\nprint({k:(v, round(sum(e[\\\"w\\\"] for e in ev if e[\\\"process\\\"]==k)/W.sum(),5)) for k,v in procs_.items()})\\nrng=np.random.default_rng(2024)\\nidx=rng.choice(len(ev), size=200, replace=True, p=W/W.sum())\\nprint(\\\"unique\\\", len(set(idx)))\\nsample=[{k:v for k,v in ev[i].items() if k!=\\\"w\\\"} for i in idx]\\nc=collections.Counter(e[\\\"process\\\"] for e in sample); print(c)\\nprint(collections.Counter(e[\\\"e_in_MeV\\\"] for e in sample))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The per-run weight sums look consistent, so I want to check process fractions, weight distribution, and the energy-in spectrum before resampling 200 events, plus compare the expected interaction count against the analytic primary estimate as a sanity check.\n\nComputing the primary fraction analytically gives roughly 2.66e-4, with scatter contributing comparably, implying about 45% of interactions come from scatter -- which seems plausible for a 10\u00d710 Co-60 field at 5 cm depth. That's close enough, so I'll move on to resampling.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "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.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 45760,
+  "completion_tokens": 861,
+  "total_tokens": 46621,
+  "cost": 0.001133,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 43630,
+   "cache_write_tokens": 2128,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001133,
+   "upstream_inference_prompt_cost": 0.0007025,
+   "upstream_inference_completions_cost": 0.0004305
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 434,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

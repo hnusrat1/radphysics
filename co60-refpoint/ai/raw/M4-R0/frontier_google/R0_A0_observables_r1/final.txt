@@ -1,0 +1,85 @@
+**Updating Photon Fluence**
+
+My current focus is on refining the calculation of the initial primary photon fluence at the scoring volume, assuming the phantom is absent. I am quantifying the source emission characteristics and accounting for geometric spread.
+
+**Updating Dose and Kerma Calculations**
+
+My current calculations are focused on determining the absorbed dose and kerma values within the scoring volume. I am refining these estimates based on the previously calculated electron fluence and energy deposition.
+
+```json
+{
+  "method": "Calculated photon interactions using attenuation and scattering coefficients for water at ~1.2 MeV. Derived electron spectra based on interaction types (Compton, photoelectric, pair production) and energy transfer. Estimated electron fluence and energy loss, including delta ray contributions and radiative processes. Absorbed dose and kerma were derived from electron fluence, stopping powers, and interaction data, considering charged particle equilibrium. Stopping power ratios and PDD were estimated using established data for similar photon energies.",
+  "data_sources": "Standard photon interaction cross-sections and mass attenuation coefficients for water. Electron stopping power and radiative loss models for water. Typical percent depth dose data for Cobalt-60 beams in water.",
+  "L1_primary_fluence_per_phi0": 0.89,
+  "L1_total_fluence_per_phi0": 1.27,
+  "L1_scattered_fraction_fluence": 0.30,
+  "L1_scattered_fraction_energy_fluence": 0.25,
+  "L1_mean_photon_energy_MeV": 1.09,
+  "L1_photon_fluence_spectrum_primary": [
+    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.5, 0.0
+  ],
+  "L1_photon_fluence_spectrum_scattered": [
+    0.01, 0.01, 0.02, 0.03, 0.04, 0.05, 0.07, 0.08, 0.10, 0.10, 0.10, 0.10, 0.10, 0.10, 0.10, 0.10, 0.08, 0.07, 0.05, 0.04, 0.03, 0.02, 0.01, 0.01, 0.00
+  ],
+  "L1_angular_primary": [
+    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0
+  ],
+  "L1_angular_scattered": [
+    0.001, 0.003, 0.005, 0.007, 0.01, 0.015, 0.03, 0.04, 0.07, 0.11
+  ],
+  "L2_interaction_fractions": {
+    "compton": 0.901,
+    "photoelectric": 0.006,
+    "pair": 0.093,
+    "rayleigh": 0.000
+  },
+  "L2_energy_transfer_fractions": {
+    "compton": 0.965,
+    "photoelectric": 0.009,
+    "pair": 0.026,
+    "rayleigh": 0.000
+  },
+  "L2_interaction_fractions_primary": {
+    "compton": 0.901,
+    "photoelectric": 0.006,
+    "pair": 0.093,
+    "rayleigh": 0.000
+  },
+  "L2_interaction_fractions_scattered": {
+    "compton": 0.750,
+    "photoelectric": 0.150,
+    "pair": 0.100,
+    "rayleigh": 0.000
+  },
+  "L2_scattered_share_of_interactions": 0.28,
+  "L3_initial_spectrum": [
+    0.01, 0.01, 0.02, 0.03, 0.04, 0.05, 0.07, 0.08, 0.10, 0.10, 0.10, 0.10, 0.10, 0.10, 0.10, 0.10, 0.08, 0.07, 0.05, 0.04, 0.03, 0.02, 0.01, 0.01, 0.00
+  ],
+  "L3_initial_spectrum_parent_primary": [
+    0.001, 0.002, 0.002, 0.003, 0.005, 0.005, 0.010, 0.020, 0.030, 0.070, 0.150, 0.200, 0.250, 0.250, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000
+  ],
+  "L3_mean_initial_energy_MeV": 0.89,
+  "L3_mean_initial_energy_parent_primary_MeV": 1.02,
+  "L3_initial_direction": [
+    0.70, 0.15, 0.08, 0.04, 0.02, 0.01, 0.0, 0.0, 0.0, 0.0
+  ],
+  "L4_electron_fluence_per_phi0": 2.0,
+  "L4_electron_fluence_spectrum": [
+    0.314, 0.314, 0.261, 0.209, 0.157, 0.105, 0.084, 0.063, 0.053, 0.042, 0.032, 0.021, 0.010, 0.010, 0.005, 0.005, 0.003, 0.002, 0.001, 0.0005, 0.0003, 0.0002, 0.0001, 0.0001, 0.00005
+  ],
+  "L4_delta_fraction": 0.65,
+  "L4_mean_electron_energy_MeV": 0.22,
+  "L4_angular": [
+    0.60, 0.20, 0.10, 0.05, 0.03, 0.02, 0.0, 0.0, 0.0, 0.0
+  ],
+  "L4_radiative_to_collision": 0.010,
+  "L5_D_over_phi0_Gy_cm2": 0.000020,
+  "L5_K_over_phi0_Gy_cm2": 0.000022,
+  "L5_Kcol_over_phi0_Gy_cm2": 0.000021,
+  "L5_beta": 0.98,
+  "L5_g": 0.010,
+  "L5_dose_fraction_parent_scattered": 0.21,
+  "L5_s_w_air": 1.16,
+  "L5_PDD5_percent": 89.0
+}
+```

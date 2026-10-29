@@ -1,0 +1,57 @@
+{
+ "id": "gen-1791827784-m0nvBtJRrxQSG3hd9yrF",
+ "object": "chat.completion",
+ "created": 1791827784,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01SeT62GsJL99mYRKbgcoGLC",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import json\\nd=json.load(open(\\\"answer.json\\\"))\\nprint(json.dumps(d, separators=(\\\",\\\",\\\":\\\")))\"}"
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 69946,
+  "completion_tokens": 81,
+  "total_tokens": 70027,
+  "cost": 0.000780505,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 69593,
+   "cache_write_tokens": 351,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000780505,
+   "upstream_inference_prompt_cost": 0.000740005,
+   "upstream_inference_completions_cost": 4.05e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 0,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

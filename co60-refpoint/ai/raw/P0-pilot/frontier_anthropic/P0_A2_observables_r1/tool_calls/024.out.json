@@ -1,0 +1,9 @@
+{
+ "stdout": "K/Phi0 6.503473681997687e-12 Kcol/Phi0 6.475303644850037e-12 g 0.004331537040832112 dose frac scat 0.21311256953560553\nKcol prim: sources 5.095335046572774e-12 analytic 5.093091195520193e-12\nKcol scat at 10cm: tally 1.3715696861581846e-12 sources 1.3799685982772635e-12\nK analytic total at 10cm approx: prim tr 5.117427536192399e-12 scat tr tally 1.3753449770544532e-12\nBethe water check [4.1152, 2.0341, 1.8725, 1.8967] ESTAR [4.1153, 2.0342, 1.8491, 1.8237]\n Traceback (most recent call last):\n  File \"/tmp/work/final2.py\", line 73, in <module>\n    Lw=np.array([restricted(t,ZA_w,75.0,0.0) for t in Ebin_mid])\n                 ~~~~~~~~~~^^^^^^^^^^^^^^^^^\n  File \"/tmp/work/final2.py\", line 63, in restricted\n    loss=0.153536*ZA/b2*np.trapz(ee*f,ee)\n                        ^^^^^^^^\n  File \"/usr/local/lib/python3.13/dist-packages/numpy/__init__.py\", line 769, in __getattr__\n    raise AttributeError(f\"module {__name__!r} has no attribute {attr!r}\")\nAttributeError: module 'numpy' has no attribute 'trapz'. Did you mean: 'trace'?\n\n",
+ "stderr": "",
+ "exit_code": 0,
+ "timed_out": false,
+ "wall_s": 0.92,
+ "stdout_truncated": false,
+ "stderr_truncated": false
+}

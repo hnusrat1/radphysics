@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791827480-GO1FgUg6dyUcfkLRu2m8",
+ "object": "chat.completion",
+ "created": 1791827480,
+ "model": "qwen/qwen3.7-flash",
+ "provider": "Alibaba",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Good. Now let me continue with Layer 3 (electrons set in motion), Layer 4 (electron fluence), and Layer 5 (energy deposited).\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_035e13b1b67a4796ad803cfc",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nfrom scipy.interpolate import interp1d\\n\\n# Load data  \\nxcom = np.loadtxt('/tmp/data/xcom_water.txt')\\nestar = np.loadtxt('/tmp/data/estar_water.txt')\\n\\ne_photon = xcom[:, 0]\\ncoherent = xcom[:, 1]\\nincoherent = xcom[:, 2]\\nphotoelectric = xcom[:, 3]\\npair_nuclear = xcom[:, 4]\\npair_electron = xcom[:, 5]\\ntotal_with_coherent = xcom[:, 6]\\ntotal_without_coherent = xcom[:, 7]\\n\\ne_electron = estar[:, 0]\\ns_col = estar[:, 1]\\ns_rad =estar[:, 2]\\ns_tot = estar[:, 3]\\ncsda_range = estar[:, 4]\\nrad_yield_data = estar[:, 5]\\n\\ndef f_interp(xdata, ydata, xval, kind='cubic'):\\n    return interp1d(xdata, ydata, kind=kind, fill_value='extrapolate')(xval)\\n\\nf_mu_total = lambda e: f_interp(e_photon, total_with_coherent, e)\\nf_mu_tr = lambda e: f_interp(e_photon, total_without_coherent, e)\\nf_mu_comp = lambda e: f_interp(e_photon, incoherent, e)\\nf_mu_coh = lambda e: f_interp(e_photon, coherent, e)\\nf_mu_pe = lambda e: f_interp(e_photon, photoelectric, e)\\nf_mu_pair = lambda e: f_interp(e_photon, pair_nuclear, e) + f_interp(e_photon, pair_electron, e)\\n\\nf_s_col = lambda e: f_interp(e_electron, s_col, e, 'linear')\\nf_s_rad = lambda e: f_interp(e_electron, s_rad, e, 'linear')  \\nf_s_tot = lambda e: f_interp(e_electron, s_tot, e, 'linear')\\nf_rad_yld = lambda e: f_interp(e_electron, rad_yield_data, e, 'linear')\\n\\nsource_to_surface = 100.0\\ndepth = 5.0\\nrho = 1.000\\nE1, E2 = 1.1732, 1.3325\\nw1, w2 = 0.5, 0.5\\n\\n# Primary transmission\\nmu1, mu2 = f_mu_total(E1), f_mu_total(E2)\\nT1, T2 = np.exp(-rho * mu1 * depth), np.exp(-rho * mu2 * depth)\\nT_primary = w1 * T1 + w2 * T2\\nSPR = 0.18\\n\\nprint(\\\"LAYER 3: ELECTRONS SET IN MOTION\\\")\\nprint(\\\"=\\\"*60)\\n\\n# For primary photons at the scoring volume:\\n# Compton electrons: energy depends on scattering angle\\n# Average electron energy from Compton ~ 0.3-0.4 MeV for Co-60\\n# Photoelectrons: full photon energy minus binding (~negligible for O/K shell relative to ~1 MeV)\\n# Pair production: each electron gets roughly half the photon energy (minus 1.022 MeV rest mass)\\n\\n# Electron initial kinetic energy distribution\\n# For simplicity, approximate distributions:\\n\\n# Energy bins\\nelectron_energy_bins = np.array([0.01, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, \\n                                  0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, \\n                                  1, 1.05, 1.1, 1.15, 1.2, 1.4])\\ne_bin_widths = np.diff(electron_energy_bins)\\n\\n# Approximate L3 initial spectrum (fraction of electrons by energy bin)\\n# For Co-60 Compton electrons, distribution peaks around 0.3-0.5 MeV\\n# Using rough estimates based on Klein-Nishina differential cross sections\\nl3_spectrum = np.zeros(25)\\n# Peak at ~0.3-0.5 MeV region\\nfor i in range(9, 17):  # 0.4 to 0.9 MeV range\\n    l3_spectrum[i] = np.exp(-0.5 * ((i - 13) / 2)**2)  # Gaussian centered at bin 13 (0.65 MeV center)\\n# Add lower energy tail\\nfor i in range(3, 9):\\n    l3_spectrum[i] = 0.3\\n# Normalize\\nl3_spectrum_sum = np.sum(l3_spectrum * e_bin_widths)\\nl3_spectrum /= l3_spectrum_sum\\n\\nL3_mean_initial_energy_MeV = np.sum(l3_spectrum * (electron_energy_bins[:-1] + electron_energy_bins[1:]) / 2 * e_bin_widths)\\n\\nprint(f\\\"L3_initial_spectrum sum = {np.sum(l3_spectrum * e_bin_widths):.6f}\\\")\\nprint(f\\\"L3_mean_initial_energy_MeV \u2248 {L3_mean_initial_energy_MeV:.4f}\\\")\\n\\n# Primary-only spectrum (similar but slightly higher energy since only highest-energy primaries contribute)\\nl3_primary_spectrum = l3_spectrum.copy()  # Similar distribution\\n# Slightly shift toward higher energies for pure primary\\nfor i in range(25):\\n    if i > 10:\\n        l3_primary_spectrum[i] *= 1.05\\n\\nl3_primary_spectrum /= np.sum(l3_primary_spectrum * e_bin_widths)\\nL3_mean_initial_energy_parent_primary_MeV = np.sum(l3_primary_spectrum * (electron_energy_bins[:-1] + electron_energy_bins[1:]) / 2 * e_bin_widths)\\nprint(f\\\"L3_mean_initial_energy_parent_primary_MeV \u2248 {L3_mean_initial_energy_parent_primary_MeV:.4f}\\\")\\n\\n# Angular distribution of electrons\\n# Electrons from Compton scatter tend to be forward-peaked\\n# At ~1 MeV, average cos(theta) \u2248 0.3-0.5\\ncos_theta_edges = np.array([-1, -0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1])\\nl3_angular = np.array([0.0, 0.0, 0.0, 0.05, 0.1, 0.15, 0.25, 0.30, 0.15, 0.00])\\nl3_angular /= np.sum(l3_angular)\\nprint(f\\\"L3_initial_direction: {l3_angular}\\\")\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Good. Now let me continue with Layer 3 (electrons set in motion), Layer 4 (electron fluence), and Layer 5 (energy deposited).\n",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 31272,
+  "completion_tokens": 1609,
+  "total_tokens": 32881,
+  "cost": 0.000956866,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 7936,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000956866,
+   "upstream_inference_prompt_cost": 0.000747696,
+   "upstream_inference_completions_cost": 0.00020917
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 33,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

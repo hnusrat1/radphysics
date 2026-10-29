@@ -1,0 +1,41 @@
+The previous reply gave the primary photon spectrum as 16 values; the schema needs 28, one per photon energy bin. The corrected list keeps the same values, with zeros outside the two photon lines (bins 23 and 26).
+
+```json
+{
+ "method": "Photon track-length Monte Carlo (12e6 histories, 50/50 Co-60 lines) through the 30 cm water cube with Klein-Nishina Compton (no binding/S(q)), approximate photoelectric (E^-3 scaling), pair (threshold-onset approximation, two 0.511 MeV annihilation photons) and small coherent term. Fluences, spectra, angles and interaction fractions are track-length tallies in the 1 cm radius, 0.2 cm thick cylinder at 5 cm depth (Phi0 = 1/(Omega r^2) at 105 cm). Compton electron sources from sampled KN kinematics, weighted by track length times interaction coefficient. Electron fluence from continuous slowing down with Bethe-Berger-Seltzer collision stopping power (I=75 eV water, 85.7 eV air), radiative yield ~0.0069 T, and iterated delta-ray production (Rossi-type spectrum). Dose = K_col (CPE, beta=1); K = K_col/(1-g). Spencer-Attix s_w,air uses restricted stopping powers (Delta=10 keV) with track-end term. PDD5 uses Kcol(5 cm)/Kcol(0.5 cm) at fixed Phi0. Electron angular L4 is an approximate blend (not transport). Estimated uncertainty: photon-level quantities a few %; electron-layer quantities roughly 10-20%.",
+ "data_sources": "No internet or transport code: all cross sections are analytic/approximate. Klein-Nishina formula (free-electron, no binding) for water electron density 3.343e23 e/g (checked against NIST total mu/rho at 1.0 and 1.25 MeV from memory); photoelectric and coherent cross sections approximated by power-law scalings; pair cross section approximated near threshold. Electron collision stopping power: Berger-Seltzer Bethe formula without density-effect correction (agrees with ESTAR water collision 4.115 MeV cm2/g at 0.1 MeV; ~1% high at 1 MeV). Radiative yield approximated as 0.0069*T (MeV). Air: Z/A=0.49919, I=85.7 eV. No ESTAR/XCOM tables were actually read; values are reconstructed approximations.",
+ "L1_primary_fluence_per_phi0": 0.7289,
+ "L1_total_fluence_per_phi0": 1.1824,
+ "L1_scattered_fraction_fluence": 0.3836,
+ "L1_scattered_fraction_energy_fluence": 0.1824,
+ "L1_mean_photon_energy_MeV": 0.9449,
+ "L1_photon_fluence_spectrum_primary": [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.36187,0,0,0.36699,0],
+ "L1_photon_fluence_spectrum_scattered": [0.022869,0.045392,0.041932,0.034236,0.042938,0.028290,0.020860,0.017250,0.014946,0.014515,0.015637,0.013295,0.013045,0.012798,0.011912,0.011501,0.011381,0.011161,0.010393,0.010076,0.010436,0.010234,0.009736,0.006812,0.004402,0.004466,0.003079,0.0],
+ "L1_angular_primary": [0,0,0,0,0,0,0,0,0,1],
+ "L1_angular_scattered": [0.07789,0.07254,0.06750,0.06612,0.06671,0.07367,0.08372,0.10817,0.14886,0.23483],
+ "L2_interaction_fractions": {"compton": 0.9877, "photoelectric": 0.003645, "pair": 0.001846, "rayleigh": 0.006789},
+ "L2_energy_transfer_fractions": {"compton": 0.99799, "photoelectric": 0.000464, "pair": 0.001550, "rayleigh": 0.0},
+ "L2_interaction_fractions_primary": {"compton": 0.99587, "photoelectric": 0.0000035, "pair": 0.003934, "rayleigh": 0.000193},
+ "L2_interaction_fractions_scattered": {"compton": 0.98082, "photoelectric": 0.006730, "pair": 0.0000783, "rayleigh": 0.012376},
+ "L2_scattered_share_of_interactions": 0.5414,
+ "L3_initial_spectrum": [0.20005,0.11135,0.06784,0.05516,0.04317,0.03847,0.03485,0.03243,0.03033,0.02956,0.02775,0.02702,0.02723,0.02708,0.02774,0.02874,0.03118,0.03557,0.04390,0.02552,0.01924,0.02471,0.01110,0.0000012,0.0000008],
+ "L3_initial_spectrum_parent_primary": [0.03455,0.04348,0.04167,0.04818,0.04105,0.04012,0.03969,0.03948,0.03882,0.03943,0.03875,0.03921,0.04117,0.04209,0.04436,0.04750,0.05303,0.06224,0.07882,0.04590,0.03457,0.04532,0.02056,0.0000021,0.0000015],
+ "L3_mean_initial_energy_MeV": 0.3338,
+ "L3_mean_initial_energy_parent_primary_MeV": 0.5848,
+ "L3_initial_direction": [0.04846,0.04561,0.04609,0.04637,0.04748,0.05802,0.08045,0.10945,0.15922,0.35884],
+ "L4_electron_fluence_per_phi0": 0.01284,
+ "L4_electron_fluence_spectrum": [0.000488,0.000734,0.000825,0.000871,0.000890,0.000888,0.000871,0.000844,0.000810,0.000769,0.000725,0.000678,0.000628,0.000575,0.000518,0.000458,0.000395,0.000321,0.000232,0.000152,0.000105,0.0000514,0.0000111,0.0000000036,0.0000000049],
+ "L4_delta_fraction": 0.0311,
+ "L4_mean_electron_energy_MeV": 0.4286,
+ "L4_angular": [0.08454,0.08368,0.08383,0.08391,0.08424,0.08741,0.09413,0.10284,0.11777,0.17765],
+ "L4_radiative_to_collision": 0.00229,
+ "L5_D_over_phi0_Gy_cm2": 5.360e-12,
+ "L5_K_over_phi0_Gy_cm2": 5.370e-12,
+ "L5_Kcol_over_phi0_Gy_cm2": 5.360e-12,
+ "L5_beta": 1.00,
+ "L5_g": 0.00198,
+ "L5_dose_fraction_parent_scattered": 0.190,
+ "L5_s_w_air": 1.134,
+ "L5_PDD5_percent": 80.5
+}
+```

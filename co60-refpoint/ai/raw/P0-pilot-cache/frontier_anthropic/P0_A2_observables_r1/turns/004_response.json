@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791820203-hQt22fQvYNMvq2Hq9Fge",
+ "object": "chat.completion",
+ "created": 1791820203,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Since state isn't persisted between calls, I'll need to write a module file to the working directory and import it each time instead of relying on memory.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_011YnQ16eUMWasYP7gwF3VVi",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\ncode = r'''\\nimport numpy as np\\nxc=np.loadtxt('/tmp/data/xcom_water.txt'); es=np.loadtxt('/tmp/data/estar_water.txt')\\nME=0.51099895\\nE_x=xc[:,0]\\nTAB={'coh':xc[:,1],'inc':xc[:,2],'pe':xc[:,3],'pr':xc[:,4]+xc[:,5]}\\ndef mu(E,which):\\n    E=np.atleast_1d(np.asarray(E,float))\\n    col=TAB[which]\\n    out=np.zeros_like(E)\\n    m=(E>=0.001)&(E<=20)\\n    if which=='pr': m=m&(E>1.022)\\n    lc=np.log(np.maximum(col,1e-30))\\n    if which=='pr':\\n        # pair table has zeros below threshold; use log interp on positive entries\\n        pos=col>0\\n        out[m]=np.exp(np.interp(np.log(E[m]),np.log(E_x[pos]),lc[pos]))\\n    else:\\n        out[m]=np.exp(np.interp(np.log(E[m]),np.log(E_x),lc))\\n    return out\\ndef mut(E): return mu(E,'coh')+mu(E,'inc')+mu(E,'pe')+mu(E,'pr')\\n# ESTAR\\nET=es[:,0]; SCOL=es[:,1]; SRAD=es[:,2]; STOT=es[:,3]; RANGE=es[:,4]; YLD=es[:,5]\\ndef interpE(T,arr,lin=False):\\n    T=np.atleast_1d(np.asarray(T,float))\\n    return np.exp(np.interp(np.log(np.clip(T,ET[0],ET[-1])),np.log(ET),np.log(np.maximum(arr,1e-30))))\\ndef Scol(T): return interpE(T,SCOL)\\ndef Srad(T): return interpE(T,np.maximum(SRAD,1e-10))\\ndef Stot(T): return interpE(T,STOT)\\ndef Yld(T): return np.interp(np.log(np.clip(T,ET[0],ET[-1])),np.log(ET),YLD)\\n'''\\nopen('/tmp/work/xs.py','w').write(code) if __import__('os').path.isdir('/tmp/work') else None\\nimport os; os.makedirs('/tmp/work',exist_ok=True); open('/tmp/work/xs.py','w').write(code)\\nimport sys; sys.path.insert(0,'/tmp/work')\\nimport xs, numpy as np\\nprint(xs.mu(2.0,'coh'),xs.mu(2.0,'inc'),xs.mu(2.0,'pe'),xs.mu(2.0,'pr'),xs.mut(2.0))\\nprint(xs.mut(0.5),xs.mu(1.0,'pr'), xs.Scol(1.0), xs.Yld(1.0), xs.Yld(0.01), xs.Stot(0.0101))\\nprint(xs.es[:3,5], xs.es[-3:,0])\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Since state isn't persisted between calls, I'll need to write a module file to the working directory and import it each time instead of relying on memory.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS/wYKEAgSGAI4AUIIdGhpbmtpbmcSDPEjfL+WenbteVFGvhoMs87vqlXDdfeG4qYnIjBX9/YbPRtip4iTb5VCpb4SmYumTi06aHq2Dy0lKKXO+OA9o3YjvFYNyoSot0fFbJEqnAYgldsmWKaDnvX7ARqu+0j40pOwLYCgUSdZpEoJAgKtdZ2St3Z13BMIq2mntp+os06CV891cnLt813JUSMFLLDsf5i3gU3uBevtZGWm8Y8vvSx6xT5LtsaN7zk43uK+eMfQ0BpaVbz/VY8xJ8LU3LP01IAkBmK7kDhgyKNK7QQDhWvn+D7XzTYqUdzFSBiyyKKig5RfrkFBanZfFGbSNZ4AUtwo4YSJgaQDKnUhEg4WZFbiruz8nFtcuDQhG1uiWSbtnvHuOsiMMwA2VHcs9IpLKbcko4LdwneCOFsfAWrvGLA6SoLrTrjIBpiCh/aYFpuk/wUzG2+VRY4jVBzXFD0xnye+9kUa5GQTfbv1cON2GUrcabrk2H5JOfwpUkNPDsRHrRHVUjLZRvSbg0lvyusoYBrc0c2OrXzTo5nrecymAeYScGfzuW4EbnuQXPbpr0/IAMvB+27xcAjfZz2UvariFAyDyqJdii7ukBQEsZGEISd3om8yWlmoRT1qD+PipaE5pVRT5xiOcwkjUoeISdkHulEKT4ScvEjqKXtBOxrl937c7Ib2D5ZlZR9C17tNN3h0qeMAtXi27qCcGjohWg967nJ1qzQcqU/UGrIFKoFgJVSVqTVbAYLHuo50h4UeTdW27Rs16QDfEG/1OdYITYQIfbkHGw6RD4Zmt2vO5BLWLgG0NYvZUeJhJYtNVIy2s1YhLN2aUMEnGyz6AsSMmcDWeLX2GjWPymciL0Wbw8wNY/wfaEVO76P/q6vOhpFbM2L3Fp4mGrMZ5uuUrnHa+Gmu//W8ef5PDNgWje9sTVZT65NMgegW2b7wJlT5ST64Fr2wVzAUZLElYT2FtAI1v60/flMNCyOgrEvOZ3wEX3i5Rmlcrr5yBVBndRt8EfX6OAZco4LmsoTArqWPQYxpcj1MEuNkV6d3MKKxbMtTv6Csdck1X4dz6h/CLt5a8SOh+fVHpLBeYCaUDQ3HQw7vVsrL9nTRi02Yeebv9+J3IeugQX8f39XdzWDFnYg/kLvBSGWUEthaD+HzXYMfJ4BrDXfVFz7upqlLXdaKz+qOGAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 74219,
+  "completion_tokens": 1118,
+  "total_tokens": 75337,
+  "cost": 0.007948485,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 16416,
+   "cache_write_tokens": 57801,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.007948485,
+   "upstream_inference_prompt_cost": 0.007389485,
+   "upstream_inference_completions_cost": 0.000559
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 42,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

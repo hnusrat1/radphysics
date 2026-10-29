@@ -1,0 +1,2 @@
+import numpy as np
+a=np.loadtxt('/tmp/data/estar_water.txt'); ed=np.array([.01,.05,.1,.15,.2,.25,.3,.35,.4,.45,.5,.55,.6,.65,.7,.75,.8,.85,.9,.95,1,1.05,1.1,1.15,1.2,1.4]); m=(ed[:-1]+ed[1:])/2; wids=np.diff(ed); sc=np.interp(m,a[:,0],a[:,1]); sr=np.interp(m,a[:,0],a[:,2]); cum=np.maximum(1-m/1.6,0); w=wids*cum/sc; w=w/w.sum(); print(np.sum(w*sr)/np.sum(w*sc),np.sum(w*m))

@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791827490-SnRosyisvzRVdo7d4ev9",
+ "object": "chat.completion",
+ "created": 1791827490,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I'm verifying the photon tracking logic: the keep mask correctly copies the interaction flags so photons that didn't interact get marked as not kept (they exit), while interacting photons stay alive with updated positions. The Compton scattering update for energy and position indexing also looks correct.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_015tuRiSneBmo5Sc8ewqyG4a",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport sys, os, time\\nsys.path.insert(0,'/tmp/work')\\nimport sim\\nt=time.time()\\nseg,dep=sim.run(20000,1)\\nprint(time.time()-t, seg['tl'].size, dep['z'].size)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I'm verifying the photon tracking logic: the keep mask correctly copies the interaction flags so photons that didn't interact get marked as not kept (they exit), while interacting photons stay alive with updated positions. The Compton scattering update for energy and position indexing also looks correct.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS7AgKEAgSGAI4AUIIdGhpbmtpbmcSDFxuDNCJMeAKKHnDthoMclDXy51PN236zMQ8IjB9OffOaTmbEN44n8I4G+eX4xRfPqztsvTA3qc/JsMLfDanAN7ntjV15isgIAxS4MIqiQhHl7NsUbbGFHTUrjlOJSQaVpqu0azJK0PePNkXoGPuYSfx8B67dw4j5Nk6tCtQSj4hYdBKVNgbuaaQCCYrL1S0Zsg1Vp5zc3RsngPpFqoCdV+5g4vqJ80h2Nb+M2m7mX5Xl9+qBu23IPgyyR/e5/I9HZXONdHw/kDaVAU2Hqf6Q40G58pBBoTTUd+6FmxUj1GJFESqoaU1/ranOq+u5aw0jf54C/I+TGQW3v89a6t1naRUcUgZPMWInKH4GP1+feHHlFBWb2MLq2wabzy15aYRgAqO0/PpWMOesERF8vcBoWysu5NM/dC6uttu18VMtxEA095yv0QueS1o6Gjw/SNHga0oK59xncs6Lc7zD+9ZD+Qa3P66xTSX25AD5wZ/DzdG1dyT1c+yPsox2gaaS3gm4DnqziV//WniYDG8MWtcqldMi5pfR8APyW1fdYsoQpiKwE5W2EFggf4gF0WWerJ8SZ7FYyU3dc7yajCuKU2r6P1xypyUfk6oOcFUdL9aIV3KId0VHQsilFIUC61UUfLe9SBELlCfGBxyrONwvKZ5i1pzEtEsdFzQvujY2IsKOjuP7/Sz+A5mj2ZGmAeC8cVppBA+c1xjV0hVtjiXyEqp3XQhR3qu+QEGKg72fs04Jn9ObB7OUljOrmjg20DDwSOblDwhjJinFlintZpmfNU4zUkl0tIi0SuwPtqVl9UJpmA7z8b96esy5ai838jwgKp5bV/v1hFYeVAgh+dLJF1btSEfm3pxdgtm2RC9wYb9lQJA5SL+zitc+41TAuqqjgndum5C24TIIafLGGsw596wMHPpn/Y82Jig+UG1cLB83GNncSTIwMOZ/BXX4b5AZXEcw0mYyx1Xw/ig9E+PlKJ+f9V3s7DFOEl9ydgibgOpJnvQns9gCcJxdL463pyEmuTn8s2Ib2Ne7sr4ebSn2++l0LrHpVD9PrO46agw+r4Q8X2bNK18FAgsJW8WWTHyAOCU5UpfEF591GJFANzmwxELhhZh1AHpJ5t3u3oP3gRMSAaPiEuGJCw2cgrilYAU1UObP6IpV2mbADBsUuFNbrQisQl5uxb7yTH+0LVz8GdPMltNLRH/f6weZXpr5lEi8nVAkhKtH10VBZezb5bGodWHxOlsQcQqO+KamS06h+4S53FhcJsUWq4ffp0q+vnqPXEhykzGnuhB/xWgkWQch8XdYIm8eGX06ZEsHrekUQgEVYjzUuEVF0cb1SQT64U5q7Yu2ML/cKUW/vfju9yBtOmrqiDeNgLLUDXJEkiNDQquum735EUItw0hGoS/SdQWAdmZ/oNNgcObeAFqwsm4J9BpO13daxcAp8oKaqwWbaFtVZE6BGo4bomBR/0ivQBr28t2eZyulkoNDUpwGAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 66113,
+  "completion_tokens": 263,
+  "total_tokens": 66376,
+  "cost": 0.00104995,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 63875,
+   "cache_write_tokens": 2236,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00104995,
+   "upstream_inference_prompt_cost": 0.00091845,
+   "upstream_inference_completions_cost": 0.0001315
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 135,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

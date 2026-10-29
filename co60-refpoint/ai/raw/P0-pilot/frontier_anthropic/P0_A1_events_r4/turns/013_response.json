@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791816726-ATDINtFHDV1ZbW095aoM",
+ "object": "chat.completion",
+ "created": 1791816726,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I notice the method description runs over the 100-word limit and the \"triplet-free\" phrasing is awkward, so I need to tighten that text down.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01Rk7Y49PQEGyRdpc2AJxJY4",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nmethod=(\\\"Analog Monte Carlo written in numpy (no transport package). Point source 100 cm from surface; directions sampled uniformly in solid angle \\\"\\n        \\\"inside the 10x10 cm^2 pyramid. 2 MeV photons traced through the 30 cm water cube with exponential free paths and water cross sections \\\"\\n        \\\"(Klein-Nishina Compton, Rayleigh, photoelectric, pair). Compton by Klein-Nishina rejection; annihilation photons tracked. \\\"\\n        \\\"All interactions inside the 1 cm radius, 0.2 cm slab at 10 cm depth were recorded from ~1.2e8 histories (~44,600 events); 200 drawn at random without replacement.\\\")\\nprint(len(method.split()))\\nout={\\\"method\\\":method,\\\"events\\\":events}\\nprint(json.dumps(out)[:200])\\njson.dumps(out)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I notice the method description runs over the 100-word limit and the \"triplet-free\" phrasing is awkward, so I need to tighten that text down.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS7QYKEAgSGAI4AUIIdGhpbmtpbmcSDHzY+yLmXXhI6cTQixoMu8PqcULrkoTi7zv9IjDC8HWyyOES+SroHaGYJklPZPPD8x/DYXUUuJoPs6XH4ACizl069th2rerDjb1X504qigZ87aiqAhSoeVJupvzrpim9owAFHnMlun0tUFYdjD2JlLo7qtEvo/rtCIZWwmm5XTn55zqhHlBnkZtFiiKxRz1VvWLiaZDi+YejBcJ6j+MryCVGfsyh4ZQdBXVeYW9WgfmbcMf6Par6Dczr32bsYAfA+E4PFfmiE2OLHlEs20Z++wZyyG06cPK75cYJXjN59Jb6cICBqrMLHauiwYc9F2X3ufXyeV+vJNrP3SrwuwLrRFD2xlrh9Fftz+QcjS/Rsgeq+/Z4Pl6xmfQMq7Mo4HVQukS5uVJhlhBVrDUOayQnOXQoDx/0pzxcIUYMDrwnDl6UqAYrE1D6Zy3QONacbmAM2UeMjvsm+5uOaA9IF+oYakh8H/eyEGhxBqXImw2GsgRhdRNifPid2b/e0xT2OnhmWrYzMbZVOEbU3HdbLJMEqp+kS5DU63oCK43Omg3SW93BxB7G5+Ms7TTcBCdC6EsvbDlTZjQCTglx8ekjpJ0e8/+67rWaUzqVjPTjvMvgMG/RrbPMZDudAdKG2+bpE5sYW2Ci7QIUt4gRXLlKo2kQUrVE5BL7apTVqty4oTqnHJz/vCaKlOTZY2/cNfkz6BHm+VoivjkItlk0B0jvB2wNWw2xlDbsFCiSxaV8RKW22yKi5bS6itix3nCpBnEWydfhytNtI6708K7kjdiZDApAJMDYCWFSoa88HHOhsFkG6oma4zlhQabMJpuRE+nzNcCH/F4dkFIrMWi7A1fsd6KtE+L5GloaeY5Hh66mZnXOiz9UivftM6yPCNsq1SMyzAWb3qYp0X2KvSbb5+VICTKY0Vf6jmiquoEmxI3HpQmdQxWRLiUyDBnyuRC5xWlNcE4L5ESRVyU2V8BfZceC7L2S9c53xt9blGMhv8nF0BMLrGhKVqchecoeS3rH+kkbeMS14HRNu3pDNzfgqaA+IIxEidrm/KNrNqdwv4heGrqzisrvd6pwQIIfFWy81tFDHe5kjuaHIKao3yLAKy635o61Qq3mPS2W+7TYYoogbb9v41fphOhbz8uT5fISGAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 42872,
+  "completion_tokens": 372,
+  "total_tokens": 43244,
+  "cost": 0.0044732,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0044732,
+   "upstream_inference_prompt_cost": 0.0042872,
+   "upstream_inference_completions_cost": 0.000186
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 41,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791827882-gdo5roW9bDfwgGlODEoG",
+ "object": "chat.completion",
+ "created": 1791827882,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "It looks like state doesn't persist between calls\u2014each one runs as a fresh process\u2014so I'll need to redefine things every time instead of relying on earlier definitions.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_018NfbwY72isR8uEQC2R98Po",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport subprocess, sys\\ndef runpy(path):\\n    r=subprocess.run([sys.executable,path],capture_output=True,text=True,cwd='/tmp/work')\\n    return r.stdout, r.stderr[-3000:]\\no,e=runpy('/tmp/work/dbg.py'); print(o,e)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "It looks like state doesn't persist between calls\u2014each one runs as a fresh process\u2014so I'll need to redefine things every time instead of relying on earlier definitions.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSrwgKEAgSGAI4AUIIdGhpbmtpbmcSDKe5wQ3CR7xcoA7ufhoM9Q1fsS2vfH3H2NydIjAoKThPcfmR4ARIEKUEcoLSBYqYuD2w5O7/yZNh7MtMeGNMjykzbQEdeMjF5B5j2H8qzAdVHxRjviTcGNyODwMsE8yBZMV6DxP2BFLbpTlCpoSLpouUBuuTY0eNrHHyQWO/HwBtRMhIPoBBOSLXsM4oA3kqzs9XAmpD4/rsoloqawdLCFWn406ugA19PTnHfP5fMAyUjPgxeEK9D8AXW/durioG3FRarhSp8ye2n2GMNwHMRKJXvziynULSVFepvUFn9Urukj5wnBw0aKaLsNojWnSzequCtsHamgi8fWTTymWkgtUDgpYBFmen8UskmtQDW8WpUduTWxWYFjTbDgmY1x9GEONEa0nt1JTFAgjrcgpF9um69fIDVlq+ftoAwRoqRJzVe2CpJO9thr57ZuTbDA61zSaYko4nvLr4Z28DK9WVWtVjBm4EZwW8FIXVrcm+uyzZKhnw1/SB/CfJmKyFxJLuaA3hFC3yxGe0NykgVrW7g2Aei93YfPv/rMwu3dLQu8JbULWH40gWUAxv7GuCq1f0/szvLMVMWfSes24RKu1R93x7Podp1o3U07qMHW2pqntpnjUmjEGoA1etjdl603cCVxknnK+C40jxVqfc3zMyoIDMUntBwBad33K88376L5L3cJzIdq2lrFoYlG697jXEy+R6QAYOQxC2A6i83+EIvkG3mC0RrwipkCX2TmGkRjYzahofvJ3aSdX6pbqqnm+ahbyYOxeoeFNPTcWveIgJOgHAByUmaTG8du+Z073D0jRqo6OK/KQ4EN15M3Qv2PJ8jY+XncEWchOXbSV2434wcdLjtXZ4MsofWX1Fih9tSTBD+RoBaErJDJJoMYO6NLLIAKtaGWAlRBVTEdft9MYVk88VFU53Kac9bN/aSGmrlFLhvN2n4fTKigU7wt1DpEWNjBgjCZFAjyOuodnOJ9HI5RDZY1t8zx0M5xYFcRbn88jEI4CVG6GiuQ7qpEhSJBDrZVrA4rJVHoKvz3zPMyPBiin32BX+8G4sAHjzj+qMZ3k6xSgNQ76hQrA/QwIJFt991kj+siG/umNRwejueNVgnXpRbgmGBpgqxQvCk29+qfxg5KkCtSb5YWe3qyD/Fd9gcaiuqHg1inssO4AlmS6kB5iKDqR/rhTm3tDJTGVRiNMUQ665u5d8QM74lgNC3EpuRh7DgaT7Ek10CLsUI5d3Jx9Eq6d8gNS8Et9mXocFEouMjsVlHbqDCpEke7rqEjuvygZ3nyRcOYXTAOPNzKw3YzM8eiT18iR9J4iRajaBaRavar//beHnxd1cngRPBCZdNZly+Flh18q0Dv04XuBJGOkWgp5OYS8ZEbRGzTNoPrNqmKyOzJTrhXl+NLwYAQ==.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 121550,
+  "completion_tokens": 222,
+  "total_tokens": 121772,
+  "cost": 0.006817975,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 121227,
+   "cache_write_tokens": 321,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.006817975,
+   "upstream_inference_prompt_cost": 0.006262975,
+   "upstream_inference_completions_cost": 0.000555
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 69,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

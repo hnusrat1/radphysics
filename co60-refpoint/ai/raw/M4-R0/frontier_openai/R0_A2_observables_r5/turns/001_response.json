@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791824682-wwVFqCT0tiixcdCzSRRe",
+ "object": "chat.completion",
+ "created": 1791824682,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Considering transport modeling**\n\nI need to find a suitable solution for a complex MC-like problem, but it looks like I don't have the transport installed. I could derive some values and create an approximate physically plausible model using analytical approximations. The user is expecting every value. I think Monte Carlo custom photon/electron transport might work via Python, but I need to keep the computational budget in mind: 10 minutes on four cores for full interaction with photons, and using CSDA for electron transport. I\u2019ll need to inspect some files.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_vsmPlhTo9IAa20F0p5jscITk",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"print(open('/tmp/data/xcom_water.txt').read()[:4000]); print('\\\\nESTAR\\\\n',open('/tmp/data/estar_water.txt').read()[:2500])\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Considering transport modeling**\n\nI need to find a suitable solution for a complex MC-like problem, but it looks like I don't have the transport installed. I could derive some values and create an approximate physically plausible model using analytical approximations. The user is expecting every value. I think Monte Carlo custom photon/electron transport might work via Python, but I need to keep the computational budget in mind: 10 minutes on four cores for full interaction with photons, and using CSDA for electron transport. I\u2019ll need to inspect some files.",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzRMsgnX0Q41DzuR24J4ymXsnQK8U5FLgOEyMc7que6vm11qLlFkWD0xFex9Pgu8duVG2907AeZikmRlqsqZ_DVC00QLIEhSut5EwpiFYVuFdVfFxKd-hRUl2MxYET8f6EwXY4UoyGaEU0bWqCGS5TY-tRB4imXh9NFxBNwGVor4oppgNGvVrhjcV2mkuJHBFVDyIHodaSe7yo3fj-DGhcME_MQh2S1WxRJ-9rh1mSQ-9HoB43GkHmXffAdvFeE7C7zn-EMRQV87VYNnZ4idivypCy8ocZAM8KbTyKwRaDfNulQRm85VkStukq3bWoNHEnuoYOce8JXzk6zNfMdrGD86Jx3I9KX8wV3hKovmLfgb4B7uXHFrzGyhsbH7MsVQW_utmm4UxCrTw3xqqd9NtRTnQH4jagmZXkcIvPez31W5c4-9FMfrzLUd1DUM6JH5Od1MuP9YHTdZx44P8RvB8caQ60diHOWkIwjicE-8isuD0FRT4YmCj9EofnJscBqZNsyBOjZaJ6o4x-TSZ_xVV4WYMugGruBOUH7tcaNSg_98wo85y7bgz99pyXMU0-9AH0zZeqZ0URlraO5uDvM1juB59fTkM_WiDdNe8ly--voK2YUxljkOu_T-OOA3rKgALO9kbGIUQfZoyFb4ZfpQ9rR_KJ-zmURewnc3dt917IpisveIem2juCpbF71H9IqlzpxQbrSZLHsADY9Ti7RdAs11D-plGsSm7glSctl0aLNEowQELvx0_P9XWHxLk8-tko2w46ImQQa1msqyHCl0nXYsMk3p1vd92yfB3cufAkW5zWwy3QI0Lx00TekhifWE6kVk3tiFLmbMjxIvaIGhOA5WhnDY7ENZLytnVF1pjB_3FA4sNhTfFL6ZCpQh5Ro1s_LZRh34J8ZD0LsiAakwfrhu04O7eOc06Ye7XHehzHwZRZNcdwqndwKpmL_Dyf9Br3CwSho0zSLZAiC_3Q2Av_kJt9I6ZZJMgN-JRIKEM9bV7ZY5pwGGYLRenCsxUADjgg_NeshSuQZ_-pWRwGUy_xI27mGjyuHF9Vztr5xnmsQfJuOW6Ht9EszDB0V2HfAwkPFXZkgkSJ6ColvQnqQ4nekgiRawjoRcZ21RsvUer6ap0ZDQp7y_DYM6Q45ZqtauQv10MqSZl3C9ARPBSqT5KrLMXsznuu7t7GrMcp-KLq49DN_ULrfSIDbr4SmDUsCLdZasfJt_RMVDE89xUNPWT1GD3kjNS_8vjs9xJrsiYpZnzbev2qaL5n_Fk-xLv1NXnHknxrKz09nsfnpbMgGfxkCZzo3drVnM_Wdd-wVCiTDUAPZBCophz9DXM3XBRoWrSLLl3vZAU6O1ioHQpVuZsX4tc0s7ZwkDtIWOxKLW63AhWhRA6JfohwIiJ3v2eRLfogoEH3Ann2KI0_4FiyWR0C3UbFXaZELjFvTOLEaXeU3rfud-hFDn0dR_MJZ2WpTTix2iXt0KjzmTKgOORLyiXfbNEuJCDqVXyIVKlfhIy6qIhJJ3uqRdjvJIZu6-oJpa6O38pasdoR1ctT4zduzVLZqKd5jhrHtG1CsOxJN6muse5iOHKrCQBO2WzIesn3kZv6RdjiJfpPlfJ_jRe15CYvEYP0lort62sD6q37xPdEO_LodZ3mXu5NSbl0s8BkQRUjytiMtwGyN6q0JCxhHNjBVN8e1YJ3dL4AnKN5ydqrBd9SKJFrGpNwms61K28oAGn1ATUza1ohClUwvG6QknUYAVUfT4MWErgvcMLHtOqUQvy6kLMaDK0MdHikjq3IcVMQq82OvyeZVtSVj5aYfgAKEVpY-dWLsWgC6l0Aj4W6GzfgpyeqFYXohX93aBzvZ3CJOlGpELfVZQWsK-anPzDJ_QbymejZBNcWJmBaLvtMbQnqEldJcf3VRC7t_ud5Ytcb3UKvd74sB2ijLq3gtDbgXGEMnZHpUAxh3oU7nSIBjiUkjhSQpOMw57b4FqLIS7kUHa-lVwo4r_XCHtrXLai0Cj7zQs-CgYDdtKy-lP_rUE-PxicV90e841I2w7nVi_BDpfceOkpov7b5aa9S3JCGQxhxcLP-jdgeTzryjuikYGezemZ_EL7NkJRspf0xzesw6aVarPuO96j9DAPQsgyYvpiPsY8O6NUVHBTpeOczQfyamyYxMgg3O34F6Cy5UZ37REKTWOXrtuXfkLT_Z_nWwwy3EWcVWxWjiZdJafKard2uDlj1yMvQfhmYiceb_3tVFA0wgUwpsaGimjdHs8bhff3hFogV8dPmPfTbgRYUi-96F7ElRyvkS28NJcbDY8l9dF_evnuvcJH_5Do9q592r-DfRaOk61EIkbathuEIgTJfr3zF-Vruj_x2hPghMSHF4PftN2Q3b3aFWnJ-gVthpRsGaLhqwAYkPl5wIJwkxWux1JIXLprIfeZgpry3UGsLlW4brXVZFeAnLApULo0y2DM6FthDDXlchDcBCiPdhhX-nqK3aX0A5OraBP923Hn1_eQT-Y4PkXVN6Z2QeHBopRqheVG0t1LXEodfa7L5u2C2TUN7iAz5iAvpAR77sj6687fN1P7cYxiA0Oa1ZkArFpHsEF07-mIndGf1AMIZmHppauBGced1Msuy7V0iKcfBaE93zOpA5G6R1ExX4-i7u3Q1o_NEydAWKEhFTcVj0g3trjEFhTtJ-A4mougCaLk8Z5vqTT7NUGzpf5CMR3vwNNQDGLd67_mMn-MHUEnQagtKnHpLoEI4Jz5h1Or04uCSTlOFzlbDTJaeao6vG2FIH3iIA==.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_0e30cfb0b80b823e016acd132af3e887d1a9d07beaa10ac514",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 4319,
+  "completion_tokens": 142,
+  "total_tokens": 4461,
+  "cost": 0.00011446,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 4316,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00011446,
+   "upstream_inference_prompt_cost": 4.346e-05,
+   "upstream_inference_completions_cost": 7.1e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 85,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

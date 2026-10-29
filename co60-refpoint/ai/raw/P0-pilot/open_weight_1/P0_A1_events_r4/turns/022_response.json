@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791825926-l5yZ95lvQyZeN78WaHJm",
+ "object": "chat.completion",
+ "created": 1791825926,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "The file doesn't exist. Let me write a proper Python script that generates the events and saves them to a file. I'll be very careful with the formatting.\n\nActually, let me write the script in smaller pieces to avoid the formatting issue.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_d6e9978e32364a56929bbf9f",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import json\\nfrom math import sqrt, log, cos, sin, pi\\nfrom collections import Counter\\nimport random\\n\\n# Constants\\nm_e = 0.510998950\\nr_e = 2.8179403262e-13\\nN_A = 6.02214076e23\\nN_e_per_g = N_A * 10 / 18.01528\\n\\n# Cross sections\\ndef mu_total_fast(E):\\n    alpha = E / m_e\\n    if alpha <= 0:\\n        return 0.0, 0.0, 0.0, 0.0, 0.0\\n    term1 = (1+alpha)/alpha**2 * (2*(1+alpha)/(1+2*alpha) - log(1+2*alpha)/alpha)\\n    term2 = log(1+2*alpha) / (2*alpha)\\n    term3 = (1+3*alpha) / (1+2*alpha)**2\\n    sigma = 2*pi * r_e**2 * (term1 + term2 - term3)\\n    mu_c = sigma * N_e_per_g\\n    if E < 0.01:\\n        mu_pe = 4.89 * (E/0.01)**(-3.5)\\n    elif E < 0.1:\\n        mu_pe = 4.89 * (E/0.01)**(-3.5)\\n    elif E < 1.0:\\n        mu_pe = 0.0017 * (E/0.1)**(-3.2)\\n    else:\\n        mu_pe = 7e-6 * (E/1.0)**(-3.5)\\n    if E <= 2*m_e:\\n        mu_pp = 0.0\\n    elif E < 2.0:\\n        mu_pp = 0.00013 * (E - 2*m_e) / (2.0 - 2*m_e)\\n    elif E < 5.0:\\n        mu_pp = 0.00013 + (0.0015-0.00013)*(E-2)/3\\n    elif E < 10.0:\\n        mu_pp = 0.0015 + (0.0048-0.0015)*(E-5)/5\\n    else:\\n        mu_pp = 0.0048 + (0.0077-0.0048)*(E-10)/10\\n    if E < 0.01:\\n        mu_r = 0.16\\n    elif E < 0.1:\\n        mu_r = 0.16 * (E/0.01)**(-3.5)\\n    elif E < 0.5:\\n        mu_r = 0.0002 * (E/0.1)**(-4)\\n    else:\\n        mu_r = 0.0\\n    mu_t = mu_c + mu_pe + mu_pp + mu_r\\n    return mu_t, mu_c, mu_pe, mu_pp, mu_r\\n\\n# Compton sampling\\ndef sample_compton_fast(E, rng):\\n    alpha = E / m_e\\n    while True:\\n        xi1 = rng.random()\\n        xi2 = rng.random()\\n        mu = 2.0 * xi1 - 1.0\\n        ratio = 1.0 / (1.0 + alpha * (1.0 - mu))\\n        f_kn = ratio**2 * (ratio + 1.0/ratio - (1.0 - mu**2))\\n        if xi2 <= f_kn * 0.5:\\n            e_out = E * ratio\\n            cos_scatter = mu\\n            break\\n    t_e = E - e_out\\n    denom = sqrt(E**2 + e_out**2 - 2.0 * E * e_out * cos_scatter)\\n    cos_electron = (E - e_out * cos_scatter) / denom if denom > 0 else 1.0\\n    return e_out, cos_scatter, t_e, cos_electron\\n\\n# Rotation\\ndef rotate_dir_fast(dx, dy, dz, cos_theta, azimuth):\\n    if abs(dz) < 0.9:\\n        norm = sqrt(dx*dx + dy*dy)\\n        ux = -dy / norm\\n        uy = dx / norm\\n        uz = 0.0\\n    else:\\n        norm = sqrt(dy*dy + dz*dz)\\n        ux = 0.0\\n        u = -dz / norm\\n        uz = dy / norm\\n    \\n    vx = dy*uz - dz*uy\\n    vy = dz*ux - dx*uz\\n    vz = dx*uy - dy*ux\\n    \\n    sin_theta = sqrt(max(0.0, 1.0 - cos_theta*cos_theta))\\n    ca = cos(azimuth)\\n    sa = sin(azimuth)\\n    \\n    new_dx = sin_theta * ca * ux + sin_theta * sa * vx + cos_theta * dx\\n    new_dy = sin_theta * ca * uy + sin_theta * sa * vy + cos_theta * dy\\n    new_dz = sin_theta * ca * uz + sin_theta * sa * vz + cos_theta * dz\\n    \\n    return new_dx, new_dy, new_dz\\n\\n# Geometry\\nZ_SURFACE = 100.0\\nZ_EXIT = 130.0\\nFIELD_HALF = 5.0\\nSV_Z_MIN = 109.9\\nSV_Z_MAX = 110.1\\nSV_RADIUS_SQ = 1.0\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The file doesn't exist. Let me write a proper Python script that generates the events and saves them to a file. I'll be very careful with the formatting.\n\nActually, let me write the script in smaller pieces to avoid the formatting issue.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 72802,
+  "completion_tokens": 1314,
+  "total_tokens": 74116,
+  "cost": 0.001792158984,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 69632,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001792158984,
+   "upstream_inference_prompt_cost": 0.001553378904,
+   "upstream_inference_completions_cost": 0.00023878008
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 49,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

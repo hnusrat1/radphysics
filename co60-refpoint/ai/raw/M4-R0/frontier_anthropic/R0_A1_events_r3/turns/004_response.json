@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791827665-14lt5E3pkis2ZgtUaM3j",
+ "object": "chat.completion",
+ "created": 1791827665,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "The Klein-Nishina cross section checks out (0.0967 cm\u00b2/g at 0.5 MeV matches NIST). Next, the full transport and scoring code.",
+    "refusal": null,
+    "reasoning": "The formula checks out against NIST values, confirming my coefficient at 1.25 MeV is 0.0632, correcting my earlier error. Now I'll write the full simulation file.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01GUVFrnjdqfgoPPAHCXw97G",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\ncode = r'''\\nimport math, random, json, sys\\nimport numpy as np\\nMEC2 = 0.51099895; RE = 2.8179403e-13; NE_WATER = 3.3428e23\\nECUT = 0.10\\ndef sigma_KN(E):\\n    k = E/MEC2\\n    t1 = (1+k)/k**2*(2*(1+k)/(1+2*k) - math.log(1+2*k)/k)\\n    t2 = math.log(1+2*k)/(2*k)\\n    t3 = -(1+3*k)/(1+2*k)**2\\n    return 2*math.pi*RE**2*(t1+t2+t3)\\ndef mu_C(E):  return NE_WATER*sigma_KN(E)\\ndef mu_R(E):  return 3.0e-4*(0.5/E)**2\\ndef mu_PE(E): return 3.0e-6*(1.17/E)**3\\ndef kappa(E): return 6.5e-4*(E-2*MEC2) if E > 2*MEC2 else 0.0\\n\\nrnd = random.random\\ndef sample_compton(E):\\n    k = E/MEC2; le0 = math.log(1/(1+2*k))\\n    while True:\\n        eps = math.exp(le0*rnd())\\n        cost = 1 - (1-eps)/(k*eps)\\n        s2 = 1-cost*cost\\n        if rnd()*2 < 1+eps*eps-eps*s2:\\n            return eps*E, cost\\ndef orthobasis(u):\\n    ux,uy,uz = u\\n    if abs(ux) < 0.9: a = (0.0, -uz, uy)\\n    else: a = (uz, 0.0, -ux)\\n    n = math.sqrt(a[0]**2+a[1]**2+a[2]**2)\\n    e1 = (a[0]/n, a[1]/n, a[2]/n)\\n    e2 = (uy*e1[2]-uz*e1[1], uz*e1[0]-ux*e1[2], ux*e1[1]-uy*e1[0])\\n    return e1, e2\\ndef rotate(u, cost, phi):\\n    sint = math.sqrt(max(0.0, 1-cost*cost))\\n    e1,e2 = orthobasis(u)\\n    c, s = math.cos(phi), math.sin(phi)\\n    return tuple(cost*u[i] + sint*(c*e1[i]+s*e2[i]) for i in range(3))\\ndef sample_rayleigh_cos():\\n    while True:\\n        c = 2*rnd()-1\\n        if rnd()*2 < 1+c*c: return c\\nPE_M = {}\\ndef pe_electron_cos(E):\\n    beta = math.sqrt(1-(MEC2/(E+MEC2))**2)\\n    cs = np.linspace(-1,1,2001)\\n    M = ((1-cs**2)/(1-beta*cs)**4).max()*1.05\\n    while True:\\n        c = 2*rnd()-1\\n        if rnd()*M < (1-c*c)/(1-beta*c)**4: return c\\n\\nZV0, ZV1, RV = 4.9, 5.1, 1.0\\ndef V_interval(p, u, d):\\n    x,y,z = p; ux,uy,uz = u\\n    if uz != 0:\\n        ta = (ZV0-z)/uz; tb = (ZV1-z)/uz\\n        lo, hi = min(ta,tb), max(ta,tb)\\n    else:\\n        if ZV0 <= z <= ZV1: lo, hi = -1e30, 1e30\\n        else: return None\\n    a = ux*ux+uy*uy\\n    if a < 1e-14:\\n        if x*x+y*y <= RV*RV: ca, cb = -1e30, 1e30\\n        else: return None\\n    else:\\n        b = 2*(x*ux+y*uy); c = x*x+y*y-RV*RV\\n        disc = b*b-4*a*c\\n        if disc <= 0: return None\\n        sq = math.sqrt(disc)\\n        ca, cb = (-b-sq)/(2*a), (-b+sq)/(2*a)\\n    t1 = max(lo, ca, 0.0); t2 = min(hi, cb, d)\\n    if t2 > t1: return t1, t2\\n    return None\\ndef exit_dist(p, u):\\n    x,y,z = p; ux,uy,uz = u\\n    d = 1e30\\n    if ux > 0: d = min(d, (15-x)/ux)\\n    elif ux < 0: d = min(d, (-15-x)/ux)\\n    if uy > 0: d = min(d, (15-y)/uy)\\n    elif uy < 0: d = min(d, (-15-y)/uy)\\n    if uz > 0: d = min(d, (30-z)/uz)\\n    elif uz < 0: d = min(d, (0-z)/uz)\\n    return max(d, 0.0)\\n\\ndef make_event(E, W, pos, u, out):\\n    \\\"\\\"\\\"Forced/recorded first interaction inside V of photon with energy E.\\\"\\\"\\\"\\n    cC, cR, cP, kp = mu_C(E), mu_R(E), mu_PE(E), kappa(E)\\n    mu = cC+cR+cP+kp\\n    r = rnd()*mu\\n    if r < cC:\\n        Ep, c = sample_compton(E)\\n        phi = 2*math.pi*rnd()\\n        Ee = E-Ep\\n        ce = (E-Ep*c)/math.sqrt(E*E+Ep*Ep-2*E*Ep*c)\\n        out.append(dict(process=\\\"compton\\\", e_in_MeV=E, e_out_MeV=Ep, cos_scatter=c,\\n                        t_e_MeV=Ee, cos_electron=ce, t_positron_MeV=None, w=W))\\n    elif r < cC+cR:\\n        c = sample_rayleigh_cos()\\n        out.append(dict(process=\\\"rayleigh\\\", e_in_MeV=E, e_out_MeV=E, cos_scatter=c,\\n                        t_e_MeV=0.0, cos_electron=None, t_positron_MeV=None, w=W))\\n    elif r < cC+cR+cP:\\n        ce = pe_electron_cos(E)\\n        out.append(dict(process=\\\"photoelectric\\\", e_in_MeV=E, e_out_MeV=None, cos_scatter=None,\\n                        t_e_MeV=E, cos_electron=ce, t_positron_MeV=None, w=W))\\n    else:\\n        Tt = E-2*MEC2; f = rnd()\\n        th = abs(random.gauss(0,0.6))\\n        out.append(dict(process=\\\"pair\\\", e_in_MeV=E, e_out_MeV=None, cos_scatter=None,\\n                        t_e_MeV=f*Tt, cos_electron=math.cos(min(th,math.pi)),\\n                        t_positron_MeV=(1-f)*Tt, w=W))\\n\\ndef run(Nsrc, seed):\\n    random.seed(seed)\\n    events = []\\n    nsrc_total = 0\\n    for _ in range(Nsrc):\\n        # source photon\\n        while True:\\n            sx = 0.1*rnd()-0.05; sy = 0.1*rnd()-0.05\\n            wdir = (1+sx*sx+sy*sy)**(-1.5)\\n            if rnd() < wdir: break   # uniform in solid angle (rejection, weight 1)\\n        n = math.sqrt(sx*sx+sy*sy+1)\\n        u = (sx/n, sy/n, 1/n)\\n        p = (sx*100.0, sy*100.0, 0.0)   # point on front face (source at z=-100)\\n        E = 1.1732 if rnd() < 0.5 else 1.3325\\n        stack = [(p, u, E, 1.0/Nsrc)]\\n        while stack:\\n            pos, dir_, E, W = stack.pop()\\n            if E < ECUT: continue\\n            d = exit_dist(pos, dir_)\\n            mu = mu_C(E)+mu_R(E)+mu_PE(E)+kappa(E)\\n            iv = V_interval(pos, dir_, d)\\n            if iv is None:\\n                s = -math.log(1-rnd())/mu\\n                if s > d: continue\\n                Wc = W\\n            else:\\n                t1, t2 = iv\\n                PV = math.exp(-mu*t1)*(1-math.exp(-mu*(t2-t1)))\\n                make_event(E, W*PV, pos, dir_, events)\\n                Pb = 1-math.exp(-mu*t1); Pa = math.exp(-mu*t2)-math.exp(-mu*d)\\n                Q = Pb+Pa\\n                if Q <= 0: continue\\n                v = rnd()\\n                if rnd()*Q < Pb:\\n                    s = -math.log(1-v*Pb)/mu\\n                else:\\n                    s = -math.log(math.exp(-mu*t2)-v*Pa)/mu\\n                Wc = W*Q\\n            # collision at s (not in V)\\n            x = (pos[0]+s*dir_[0], pos[1]+s*dir_[1], pos[2]+s*dir_[2])\\n            cC, cR, cP, kp = mu_C(E), mu_R(E), mu_PE(E), kappa(E)\\n            r = rnd()*mu\\n            if r < cC:\\n                Ep, c = sample_compton(E)\\n                nd = rotate(dir_, c, 2*math.pi*rnd())\\n                stack.append((x, nd, Ep, Wc))\\n            elif r < cC+cR:\\n                c = sample_rayleigh_cos()\\n                nd = rotate(dir_, c, 2*math.pi*rnd())\\n                stack.append((x, nd, E, Wc))\\n            elif r < cC+cR+cP:\\n                pass\\n            else:\\n                # annihilation: two 0.511 MeV photons back to back, isotropic\\n                ct = 2*rnd()-1; ph = 2*math.pi*rnd()\\n                st = math.sqrt(1-ct*ct)\\n                nd = (st*math.cos(ph), st*math.sin(ph), ct)\\n                stack.append((x, nd, MEC2, Wc))\\n                stack.append((x, (-nd[0],-nd[1],-nd[2]), MEC2, Wc))\\n    return events\\n\\nif __name__ == \\\"__main__\\\":\\n    Nsrc = int(sys.argv[1]); seed = int(sys.argv[2]); out = sys.argv[3]\\n    ev = run(Nsrc, seed)\\n    json.dump(ev, open(out,\\\"w\\\"))\\n    print(len(ev), sum(e[\\\"w\\\"] for e in ev))\\n'''\\nopen(\\\"mc.py\\\",\\\"w\\\").write(code)\\nimport subprocess, time\\nt=time.time()\\nprint(subprocess.run([\\\"python3\\\",\\\"mc.py\\\",\\\"20000\\\",\\\"1\\\",\\\"test.json\\\"],capture_output=True,text=True).stdout, time.time()-t)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The formula checks out against NIST values, confirming my coefficient at 1.25 MeV is 0.0632, correcting my earlier error. Now I'll write the full simulation file.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSyQcKEAgSGAI4AUIIdGhpbmtpbmcSDC/6Aki+AalAhiIbUBoM6lUKWaYx3cRmAKQ3IjAllUzdTzNit7GfVX4/iD+qpe6BmtyuKGyDlvt9cNqp4Jilpw+qEQ8qFMtxDqcmgS0q5gbhlNi2yw2QVgcx9HgZya6XQyC77atu2NZwl1gUguRa95PnIAuaOgM+yeAF6FDPiGr7q6uGbeMJdjREhKfG/iUwj8C0TQieZLCx7pu96PrbzFnElpDRxuOL4qWxu5xaF1nBzxpjWi82tt6tu/hhK4B34oEDD2FRT3YIwTcLQGGMJEhLoC0DDbz2vblLjljvupPi+7h91aEqykRS9uTgP3sjVP9ZGBWijbkCYThws9uU5nsGO7JkpANibHw7PgFAq+Up2YejooH+1FcgrcEPnRTG/f94M/WkxO+ctmVvI7TqA60/VNOIZ5QxF8tQZUGHVrZLLTEgOsRGtT8pdJKXYkrDH0awaazwWRs9d2b/DIFFMT+1GTamBcr6ljKvQYMXiaQqw0HOJQEi68CVcB2quKZl4QId8EYcHPg+Z2VdvYT304akoxAyX2b9KjFacPUftc4vspaSdZRZ8YsA+G/KI33E50TMQj2yGGH4yi8bKTlCzttFMSsPvLt/f7OLr+1tgxZRsdjstDU4XGujE4KE7GCe0tyuZpmSXT5f/GJDQorut3S4xu26Rs+c07PgZ1ItBdLkzwLa0MQGFRamgKnA9jmB0uGQYq6pSmjT122Szk5y4JuPsOwIBl6FBoAYwdwd9IFbXF8iIx4Su6D1timlsXc6O3PtMEj+rp0UKfWpOk1xhSK89bS202MQ1Cgm7sEA9t9PjOPK/cIR0KSGdvrdlcu/03VDIUQHSDlV87/8RT09PF5PaoqSkuTHC3mDh9GmrrPB+k++LHmZhy7KXQn11b5pRx9qRk4FnFXnjLNMqXCZAXYZUHitbVvCEwsrwVJMTeL85OFEYO2BPPD8RVE8CDFl9jHbrDGEsdvKmbQ0EzpxdD2ASMUWybpGvjBJoGPyCXewZWCU2IEg+6Sd4mTK22yy+fH5zw/dHOVXsjks/BfPOD/t/LmYKIZDQlWw0PJBjh1oPcK+syBu1SthI6PIos63raOwt1+aq+rAa6kXJR+vH/uMLeS8anR11QVhlt7kVyQktkCB1M4Z8saxXoPnTB+6wK2uOtB4UHOZbp37nNmPrMj20vIWQTRhcoeAcCn6uzAS0o4oB5zRhkvinHWwN4SUj6GHKwVp/78BDudS95M4miUj1lhvAVT9nqPD9JqwOrso56eHXzoYAQ==.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 39721,
+  "completion_tokens": 3817,
+  "total_tokens": 43538,
+  "cost": 0.002366955,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 39188,
+   "cache_write_tokens": 531,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.002366955,
+   "upstream_inference_prompt_cost": 0.000458455,
+   "upstream_inference_completions_cost": 0.0019085
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 122,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

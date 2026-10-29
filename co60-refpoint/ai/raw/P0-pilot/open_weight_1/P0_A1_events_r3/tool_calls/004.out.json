@@ -1,0 +1,9 @@
+{
+ "stdout": "",
+ "stderr": "Traceback (most recent call last):\n  File \"/tmp/work/_call_004.py\", line 325, in <module>\n    ev = simulate_batch(2000, rng)\n  File \"/tmp/work/_call_004.py\", line 97, in simulate_batch\n    c,ph,pa,co = get_mus(E)\n                 ~~~~~~~^^^\n  File \"/tmp/work/_call_004.py\", line 21, in get_mus\n    s = np.interp(np.log(np.clip(E,1e-3,10)), np.log(Egrid), sig_grid, left=sig_grid[0], right=sig_grid[-1])\n                                                     ^^^^^\nNameError: name 'Egrid' is not defined\n",
+ "exit_code": 1,
+ "timed_out": false,
+ "wall_s": 0.22,
+ "stdout_truncated": false,
+ "stderr_truncated": false
+}

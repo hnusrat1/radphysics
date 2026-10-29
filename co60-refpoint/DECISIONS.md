@@ -329,3 +329,145 @@ secret. Only `openrouter.ai` needs to be reachable.
 - Trade-off: one route is simpler and gives one bill. The cost is that OpenRouter, not the provider, decides some
   request handling, such as fallbacks and caching. The pilot checks that each frontier slot is served by its own
   provider.
+
+## D030. M4 model list: the fast, low-cost tier of each provider (2026-10-12)
+
+Humza, 2026-10-12, named the five OpenRouter models for M4 and set a budget rule: run the P0 pilot, report the
+measured cost, and run the full R0 matrix only if it fits under $10.
+
+| Slot | OpenRouter model | Pinned release (OpenRouter canonical slug) | Listed price, $/Mtok in / out |
+|---|---|---|---|
+| frontier_anthropic | `anthropic/claude-haiku-5.5` | `anthropic/claude-haiku-5.5-20261007` | 0.10 / 0.50 |
+| frontier_openai | `openai/gpt-6-luna` | `openai/gpt-6-luna-20260922` | 0.10 / 0.50 |
+| frontier_google | `google/gemini-2.5-flash-lite` | `google/gemini-2.5-flash-lite` | 0.10 / 0.40 |
+| open_weight_1 | `deepseek/deepseek-v4-flash` | `deepseek/deepseek-v4-flash-20260423` | 0.0173 / 1.28 |
+| open_weight_2 | `qwen/qwen3.7-flash` | `qwen/qwen3.7-flash-20260727` | 0.03 / 0.13 |
+
+Prices are from OpenRouter's public models endpoint on 2026-10-12 (`ai/prices.yaml`).
+
+This departs from D028 item 5 in two ways:
+- **Not the most capable models.** Each is its provider's small, fast tier: Haiku below Sonnet and Opus, GPT-6 Luna
+  below Sol, Gemini 2.5 Flash-Lite below the 3.x Flash and Pro models. The study then measures where this tier
+  breaks, not where the frontier breaks. Results must be reported under that name.
+- **open_weight_2 is not open-weight.** OpenRouter lists DeepSeek V4 Flash with published weights
+  (`deepseek-ai/DeepSeek-V4-Flash`) but gives no weights for Qwen3.7 Flash. The slot keeps its name because the
+  scorer keys on it; the model is reported as API-only.
+
+Reasoning stays at `effort: high` for every slot (D028 item 5). Each request also sets `usage: {include: true}`, so
+every response carries OpenRouter's charge. `ai/harness/cost.py` sums the charges and projects them to R0.
+
+## D031. Fixes from the P0 pilot (2026-10-12)
+
+The pilot (`ai/raw/P0-pilot/`, excluded from analysis) found the following. The prompt files are unchanged, and
+their hashes still match `MANIFEST.yaml`.
+
+| Found in P0 | Fix for R0 |
+|---|---|
+| Asked for exactly 200 events, models returned 140 to 243 (14 answers) | The harness accepts 150 to 250 events (`EVENT_COUNT_ACCEPTED`). The prompt still asks for 200. The scorer pools events, so the count does not enter any statistic except the sample size |
+| Haiku spent its whole default output (65,536 tokens) on reasoning and wrote no answer | `max_tokens: 128000` for Haiku, the model's maximum |
+| Qwen answered a retry with the JSON schema itself | The retry text asks for "your answer, not the schema itself" |
+| Haiku was served by "Claude Platform on AWS", not Anthropic (D029 check) | `provider: {order: [anthropic]}`, with fallbacks allowed and recorded per call |
+| DeepSeek was served by a mix of fp4 and fp8 hosts | `provider: {quantizations: [fp8]}`, the release's native precision |
+| GPT-6 Luna returned `"events": []` with a statement that it cannot sample without a transport code (all 10 events calls in A0 and A1) | None. This is a result. `analysis/m5.py` counts a parse failure whose last reply is valid JSON with no content as a refusal (STUDY_PLAN 5.2) |
+| Gemini and Qwen sometimes ran past 200 events until the output limit (80,000 to 116,000 characters) | None. Both are already at their maximum output; such answers stay parse failures |
+
+A1 and A2 tool use worked for every model. Every frontier slot is now served by its own provider.
+
+## D032. M4 launch: caching for Haiku, budget, freeze (2026-10-12)
+
+**Pilot cost.** The measured P0 charge was $3.90 for 64 conversations, plus $0.38 for one cached Haiku re-run and
+the charge for one DeepSeek conversation cut off by a job time limit (`ai/raw/P0-pilot-killed/`). Six DeepSeek
+pilot conversations were still running at launch.
+
+**Projection.** Projected from the pilot, R0 cost $14.33, above Humza's $10 limit. Haiku was $12.77 of that: in
+the tool conditions every turn re-sends the conversation, and Anthropic bills a request of 100,000 prompt tokens
+or more at 5× the base price for input and output alike.
+
+**Fix: prompt caching for the Haiku slot (`prompt_cache: true`).** Breakpoints sit on the system prompt and the
+newest message. What the model sees is unchanged. Measured on Haiku's P0 A2 observables conversation: $0.38 with
+caching against $1.87 without, with 95% of 3.5 million prompt tokens read from the cache. With that ratio
+applied to Haiku's tool conditions, R0 projects to $4.72. Groups with no DeepSeek pilot data take the highest mean
+of the other non-Haiku models.
+
+**Launch.** R0 runs under Humza's rule ("run the full R0 matrix if it fits under $10"), with a hard stop:
+`--budget 9.5` stops new conversations once R0's measured charge reaches $9.50. The headroom covers the five
+conversations in flight. `ai/models.yaml` and `ai/prompts/v1/MANIFEST.yaml` are frozen as of this entry.
+
+## D033. OpenRouter errors inside HTTP 200 replies (2026-10-12)
+
+OpenRouter reports some upstream failures inside an HTTP 200 body: `finish_reason: "error"` with an error object,
+for example 429 "temporarily rate-limited upstream" or 504 "Upstream idle timeout exceeded". The harness read these
+as empty replies, so they became parse failures after the one retry.
+
+- **Fix.** `providers.in_band_error` detects them. Retryable codes (408, 409, 429, 5xx) are retried with backoff
+  (10 s doubling, 6 attempts). Anything else, or a persistent error, raises and the conversation is recorded as
+  `api_error`. Checked on every stored response: it flags exactly the 17 error replies and none of the other 368.
+- **R0.** Stopped about 3 minutes after launch. Seven conversation directories with no model output were moved to
+  `ai/raw/M4-R0-void/`: two Gemini conversations whose only replies were in-band 429s, and five cut off by the stop
+  before any reply. None was charged. R0 restarted with the fix.
+- **P0 reading.** 13 Gemini pilot replies were in-band 429 or 504 errors, so some of Gemini's pilot "parse
+  failures" were rate limits, not model behaviour. The pilot is excluded from analysis and is not rerun.
+
+## D034. Parser fallback on malformed fenced JSON: kept as launched for R0 (2026-10-12)
+
+When an answer's fenced JSON block does not parse, `parse.extract_json` falls back to the last balanced `{...}` in
+the text. Inside a broken answer, that is a nested object. The validator then reports "method missing" instead of
+the JSON error, and the one retry tells the model the wrong thing. Seen in R0 for DeepSeek (A0 observables r2: a
+number written `.0008`; r4: U+FFFC characters between keys) before either reached the retry.
+
+- **R0 keeps the parser it launched with.** The running processes have it loaded. Changing it would give some
+  repeats a different retry message from others. The outcome of such an answer is a parse failure either way.
+- **Fixed after R0.** With a fenced block present the parser reports the decode error and does not fall
+  back. Re-scoring R0 with the fix gives identical results.
+- **Scorer.** `analysis/m5.py` counts a refusal only for a top-level answer (one that has `method`), so a nested
+  fallback object is no longer read as an empty answer.
+
+## D035. R0 execution: parallel processes, API-error reruns (2026-10-12)
+
+- **Parallel processes.** R0 started as one process per model. Once DeepSeek and Haiku had reached their tool
+  conditions, extra processes were started for their remaining blocks: A1 events and A2 observables, plus A2
+  observables for Qwen. Each process skips a conversation whose directory exists, so every conversation runs once.
+  The order of conversations changes; nothing a model sees does.
+- **API errors are rerun.** Gemini had four `api_error` conversations:
+  - two in-band errors with no error code;
+  - one 429 that outlasted 6 retries;
+  - one upstream 504 idle timeout.
+
+  An API error is an infrastructure failure, not model behaviour, so these four were moved to
+  `ai/raw/M4-R0-void/<slot>/<name>.api_error` and rerun. Together with the empty attempts in D033, they carry
+  $0.0045 of charge. For the reruns the harness retries in-band errors without a code as well, with backoff of 20
+  s doubling over 8 attempts. This applies to the reruns and to conversations started after 18:20 UTC; earlier
+  ones used D033's 6 attempts from 10 s. Only the API retry differs; the prompts, the parser and the model's
+  retry text do not.
+
+## D036. Code audit of the A1 and A2 answers (2026-10-12; exploratory, not in the analysis plan)
+
+Humza asked whether models that write their own Monte Carlo defeat the purpose of A1. To see what each answer
+rests on, all 50 A1/A2 observables conversations were classified, and the 40 with code were audited against a
+physics checklist (`analysis/m4_audit_spec.md`).
+
+- **Who did it.** Four Claude subagents read the transcripts, one per model. Every claim carries an exact quote
+  from the code or its output, and each subagent checked its quotes against the files programmatically. I
+  checked eight claims against the raw files myself; all were confirmed:
+  - GPT-6 Luna's typed scatter constant;
+  - its C++ compile;
+  - its cylinder-only interaction bug;
+  - Qwen's 1.602e-13 conversion;
+  - Qwen's Monte Carlo claim with no random sampling in the code;
+  - DeepSeek's "validated" Monte Carlo claim;
+  - DeepSeek's Compton envelope;
+  - Haiku's backscatter exit.
+- **Output.** The audit is in `analysis/results/M4_method_audit.json`; scores by group come from
+  `analysis/m4_methods.py` and are in `analysis/results/M4_methods.json`.
+- **Photon-field category.** My judgement from the audit, one per conversation:
+  - `simulated`: the scattered photons come from a photon-transport simulation the model ran;
+  - `simulated_with_major_bug`: three runs, each with its bug named in the file;
+  - `assumed`: the scatter fluence and spectrum are typed or formula values;
+  - `no_code`: Gemini, which made no tool call.
+- **Sandbox finding.** The plan defines A1 and A2 as a Python sandbox, but the sandbox exposed the container's
+  compilers (`g++`, `clang`). GPT-6 Luna compiled and ran C++ in three R0 conversations (A1 events r3, A2
+  observables r2 and r5) and in one pilot conversation. Isolation held: no network, no transport code or results,
+  and the same time and core limits. The answers are kept and the compiler use is reported. For future runs,
+  either remove the compilers from the sandbox or state that they are available.
+- **Status.** This analysis was added after seeing the data. It is reported as exploratory and does not change
+  any verdict in `M5_M4-R0.json`.

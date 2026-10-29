@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791817752-7Q5v3bug40GkeAzmBzAy",
+ "object": "chat.completion",
+ "created": 1791817752,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I need to fix the ordering issue where sys.path needs to be modified before the import happens in the same call, so I should add that path insertion at the top of each function call.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01PATLAruMdfHv19BbbbVtam",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport sys, importlib, time\\nsys.path.insert(0,'/tmp/work')\\nimport numpy as np\\nimport sim\\nt=time.time()\\no=sim.run_chunk(200000,11)\\nprint(\\\"time\\\",time.time()-t)\\nprint(\\\"Fl_sc\\\",o['Fl_sc'],\\\"Kd[:10]\\\",o['Kd'][:10])\\nprint(o['nproc'])\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I need to fix the ordering issue where sys.path needs to be modified before the import happens in the same call, so I should add that path insertion at the top of each function call.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS5wYKEAgSGAI4AUIIdGhpbmtpbmcSDOVtSYeeGZJDOlPSiRoMIk91CUpWA/iENWgVIjByKvPicSB1IlzbnIo/rWu21MBONPqw8pInxKRIQV3KTiYgMPtwBq42yPddH0Z3QIIqhAZH/SmPzhuSWG0oMM+AJxTt2mNbLpz0upIk3HfRNnxXExrdrvQitFJ2fE9Ry42HrTVV7SjrmsRfnkSy1Xc72cGQ1sqRBlY+dSaJqi64xSBa8SCqJlHJshNUlT1b6MhoZ5yUvl5f9hNBcgfrYfhoNoGipfBgfJswTD/btKe5pjOATqt8fxyhOSk6S+kgyewOWDtRG0lwt2wGO+kACH0BvAJFGg1I2cL+S8wYwOSSY54hldwoXD/1tPKA2Geva7mCEbyF/GhI0Mi/TpGqKOonKB2S9kqEkd3WILtYMG9C5vWVvwnnjii/ZBznqX+hdR+L81TX7Y/F8qz8FWH0BVK4ajaQl6AR5X7jqJWWi8n5xMQSHIshA+7Y+g+XnUBuqSLsq3pj1AKrXWSZz3LevXdjhHEQ2Qy874vDZrPqvYGl2+vYf39mO07kG5NP0oB4YlJHNyve8LrE/lV3JwElCPGi78WC3j63VA7nJqYvZdg2rjWSPP5eGN4NRADQCS3dsuZo+YRfTou02YJ7l7ahZC7/Pta8ybhHPJERPsxitpf6cKmmqh6T92dusntSWgJ2S0kBR92sdNcpBcBK4peai3pUuqzueqO9BJJ7TkJv5Cgxk/26VYY4o4yoG+DHgni67mam0YCAa86FOMEgDRPOUIV1oECt7DD818NxZCmxSj4nrJVshBAuaPrIXHA3tZfR5ZSn9xxdd4rfXUR9MSl30mYVQPQZ57OON99R/IwjSzcm8g8B5IPCAZnOGU5JAWMmFBYgZV3zG7H3haQpzY8GJPhRIUXFvJ8+cNo8fqiI+tQ1+8fFLDToEE2kbD1eZatRL1dgD8MXFeHijBgo0RYgWv7/RQ4OmAalr6Ds2wtvNSoBD5c4Uglh5ntLFQyCpH7BhctCMm+tjGKNnS0/JoI+6B+TzrpEXEXofWUNk+k7jLOEwHNBOClOicaqoVyefggj6oEL6axSzW6YN8bAX1e+mUS7pT661lPtldy6rJb1RAg6ws8lKf5tkZwtEsoafVNgpRCgMk6O6QpCGAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 109282,
+  "completion_tokens": 201,
+  "total_tokens": 109483,
+  "cost": 0.0551435,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0551435,
+   "upstream_inference_prompt_cost": 0.054641,
+   "upstream_inference_completions_cost": 0.0005025
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 30,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

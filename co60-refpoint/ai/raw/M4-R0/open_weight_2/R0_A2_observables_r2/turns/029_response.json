@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791826928-SUFf1SaXYVuFwo2YoyjG",
+ "object": "chat.completion",
+ "created": 1791826928,
+ "model": "qwen/qwen3.7-flash",
+ "provider": "Alibaba",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Good. Now let me write the complete calculation script and save it:\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_57a447e3b9b84e39a3c6be7f",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"# Write full calculation script to file\\nscript = '''import numpy as np\\nimport json\\n\\nxcom = np.loadtxt('/tmp/data/xcom_water.txt', comments='#')\\nestar = np.loadtxt('/tmp/data/estar_water.txt', comments='#')\\n\\ndef ix(ci, E): \\n    return np.interp(np.log10(E), np.log10(xcom[:, 0]), xcom[:, ci])\\n\\ndef ie(ci, E): \\n    return np.interp(E, estar[:, 0], estar[:, ci])\\n\\nE_co = [1.1732, 1.3325]\\nw_co = [0.5, 0.5]\\ndepth = 5.0\\nrho = 1.0\\n\\npe_edges = np.array([0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, \\n                     0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, \\n                     1, 1.05, 1.1, 1.15, 1.2, 1.25, 1.3, 1.35, 1.4])\\nee_edges = np.array([0.01, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45,\\n                     0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95,\\n                     1, 1.05, 1.1, 1.15, 1.2, 1.4])\\nct_edges = np.array([-1, -0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1])\\n\\n# Layer 1 calculations\\nmtw = sum(w * ix(6, E) for w, E in zip(w_co, E_co))\\nml = mtw * rho\\npf = np.exp(-ml * depth)\\nbsp = 0.18\\ntf = pf * (1 + bsp)\\nsff = 1 - pf / tf\\nme_pri = 0.5*E_co[0] + 0.5*E_co[1]\\nme_sc = me_pri * 0.75\\nep = pf * me_pri\\nes = (tf - pf) * me_sc\\nsef = es / (ep + es)\\nmae = (ep + es) / tf\\n\\n# Photon fluence spectra (primary and scattered)\\nspec_pri = np.zeros(len(pe_edges)-1)\\nfor i, e in enumerate(E_co):\\n    bi = int(np.digitize(e, pe_edges)) - 1\\n    if 0 <= bi < len(spec_pri):\\n        spec_pri[bi] += w_co[i] * pf\\nspec_pri_sum = np.sum(spec_pri * np.diff(pe_edges))\\nspec_pri_norm = spec_pri * np.mean(np.diff(pe_edges)) / spec_pri_sum\\n\\n# Scattered spectrum estimate\\nspec_scat = np.zeros(len(pe_edges)-1)\\nbcs = 0.5*(pe_edges[:-1]+pe_edges[1:])\\nfor i, bc in enumerate(bcs):\\n    if 0.1 <= bc <= 1.2:\\n        spec_scat[i] = np.exp(-((bc-0.4)/0.25)**2)\\nspec_scat_sum = np.sum(spec_scat * np.diff(pe_edges))\\nspec_scat_norm = spec_scat * (tf-pf) * np.mean(np.diff(pe_edges)) / spec_scat_sum\\n\\n# Angular distributions\\nang_pri = [0.98, 0.015, 0.003, 0.001, 0.001, 0, 0, 0, 0, 0]  # Highly forward peaked\\nang_scat = [0, 0, 0, 0.02, 0.05, 0.15, 0.20, 0.18, 0.12, 0.28]  # More isotropic after scattering\\n\\n# Normalize angular distributions\\nang_pri = [x/sum(ang_pri) for x in ang_pri]\\nang_scat = [x/sum(ang_scat) for x in ang_scat]\\n\\nprint(\\\"Layer 1 complete\\\")\\nprint(f\\\"L1_pf={pf:.6f}, L1_tf={tf:.6f}\\\")\\n'''\\n\\nwith open('/tmp/calc_layer1.py', 'w') as f:\\n    f.write(script)\\n\\nexec(open('/tmp/calc_layer1.py').read())\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Good. Now let me write the complete calculation script and save it:\n",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 35370,
+  "completion_tokens": 1200,
+  "total_tokens": 36570,
+  "cost": 0.00134436,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 33408,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00134436,
+   "upstream_inference_prompt_cost": 0.00086436,
+   "upstream_inference_completions_cost": 0.00048
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 14,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

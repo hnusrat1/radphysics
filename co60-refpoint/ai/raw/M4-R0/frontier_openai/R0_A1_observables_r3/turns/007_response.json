@@ -1,0 +1,85 @@
+{
+ "id": "gen-1791822307-iTsA30C3s0jdEzpdQJOP",
+ "object": "chat.completion",
+ "created": 1791822307,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Calculating energy metrics**\n\nI'm working on normalizing values, aiming for a mean of .761. The scattered energy fluence is .228, and adding that to the mean primary energy of .920 gives a total of 1.148, which I then divide by 1.035, yielding 1.109. The scatter energy fraction is .199, and it seems like the total scatter might be close to .4. If the ratio of scattered to primary energy is around 35%, then using these values feels plausible.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_E3qt9bRoGpPmxyfM9owE5bFd",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import numpy as np\\nme=.51099895\\nedges=np.array([.01,.05,.1,.15,.2,.25,.3,.35,.4,.45,.5,.55,.6,.65,.7,.75,.8,.85,.9,.95,1,1.05,1.1,1.15,1.2,1.4])\\n# KN distribution integrated with mu for incident E\\ndef e_hist(E, weight=1):\\n mu=np.linspace(-1,1,12000)\\n ep=E/(1+(E/me)*(1-mu)); rat=ep/E\\n kn=rat**2*(rat+1/rat-(1-mu**2))\\n ke=E-ep\\n return np.histogram(ke,edges,weights=kn*weight)[0], np.sum(kn*ke*weight),np.sum(kn*weight)\\npr=np.zeros(25); den=0; en=0\\nfor e in [1.1732,1.3325]:\\n h,a,b=e_hist(e);pr+=h;en+=a;den+=b\\npr/=pr.sum(); print('primary mean',en/den,pr)\\n# scatter weights w values and photon bin center. weight by scatter fluence*approx sigma; equal no sigma\\nw=np.array([.001,.002,.003,.004,.006,.009,.012,.016,.02,.025,.03,.035,.04,.043,.045,.045,.044,.042,.04,.038,.035,.03,.024,.017,.009,.003,.0005,.0001]); centers=np.array([.025+i*.05 for i in range(28)])\\nhsum=np.zeros(25); ens=0; ds=0\\nfor e,ww in zip(centers,w):\\n if e<.02: continue\\n h,a,b=e_hist(e,ww); hsum+=h; ens+=a;ds+=b\\nsh=hsum/hsum.sum(); print('scatter electron mean',ens/ds,sh)\\ntot=.7*pr+.3*sh; print('total mean',.7*en/den+.3*ens/ds); print(tot,tot.sum())\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Calculating energy metrics**\n\nI'm working on normalizing values, aiming for a mean of .761. The scattered energy fluence is .228, and adding that to the mean primary energy of .920 gives a total of 1.148, which I then divide by 1.035, yielding 1.109. The scatter energy fraction is .199, and it seems like the total scatter might be close to .4. If the ratio of scattered to primary energy is around 35%, then using these values feels plausible.",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzQnnRw-3VG5OPIXTQ3yhplsS2Gxy-W1GY6ERihopVB0Zs-3_iL1CGbzBFfFWOxUiJw0iz09MDzp85uUFcn6bMxo1lCgAi_HIBgdeSjky2qpRO_MAC00L7HuIAPlsDn8mygBB1UtqlaCDt9JEmYHhtAMeljS1u3IPBi_tDvUkW1iEGhR-WY3kvFnt_aKU5cymUSUeZH6yBD91gTyTk2TPglf_HNAQaqzrdhmX1s3uTVzHoW2qD9fd3v2AgEB4_QY8hLHsy-NSipSpXuUCP7t1UQiodK4SkOR9t-XHaC6Rn3TklKw0xoCkNMsfRNxhhbFvhd0tDyHmvzvEN023RLZt7Z7RjPljwKGnK5FnEW4l7jooQfpzkVllZsN72NCfOQQemWm-97NPVpH9k1-oWA3qiD185oic-nIh2V1j--jdyq_V2WNeDAPAC6UCZ7EOpoO5DpeRkj0rXoalyE9ODFwjRLtxo3QsZueUm6NuP_OLADDrG39Hmd13Hh4N1PHi_qFEooZPrMDhjBLVAsp-qR1EA-k1QQAiYmUwV4eEKqUoOx9aGWd6Y9vw0o5F_nNhGSWT24rBwD2R_-KdhAju6aRSDxRxCW8dEuWw0F5Mh4gJUFzCmFVQQShRFODGTtev2Gekm3DPswCocoUj7TSSIe3j_xcFlLcABR8i3_-4L8Re0OqWl2mvK0z_vyY-xk7wBwBaG36LiuSxDhRXfJP7QU-_1Ggu7IaSzt3rrO9fFWI69TjiN0dg2BSqy4w3n0C29_PvLasToxgA-EpMue_sD3g33NNtpf5xCPcGGZ3jrmdiQhVsBo_8AnvzMHuJZy32fq1YEGZm9kZOznj0vyJkbxwfk1v23ycNTb7ClQxlCoBtuaNiDS6zmHEmlHhZsEdgq5B4ZfBqaDNWfKx1aQojzWASyuWH6urJKaC4apWVpbQ4OxZTDeb-KB1rIu7_demBmyQFJkn_I5sF4Ii9B_2kDp05pl7daHnPWp3r5wFYEdSnAge2RDY50RbMIqFI9Oxfpw-g453YsE0v0ozuFRPEOUDDoPjMNWqCbJYWangcM1N8FClo27yTWQx7XyL73qdA4Pd9v4gXVm1xr7cbohDg3MW_udYVRceaSWeK7qVTXnM9CNEo113dPhvdoBp7fn8XpiopvF8i9C4QE6aWUm-Bn-mqlufT8If8wU8d20jK_tYdo1gZz-nAilpV2vw2NNUcg0FA6VwaICL-9cQWKSY3R9TAw-zE9VUNyJwFexZAzQnCzk4utBiIUxvemdeSsSzfpzgbZcnoha03zXqfXclzfwVBGgUk-rBPvwy8Qe5eXjuJjWP6gGesdopTrJK1Sn9Z9ZNMaCC4O-RQxyqoVQIESQCCF0vizvocJS6KbwDjTxXxiQtislF_l51MJWvLcbLF4InKiK_Y0_PYqo2BE16icsvD1jc1Lj8P9bqJE5Zp_v3EObitR9ssTev03WGn2Fl5H-QfXXgHjo2nF0ag3sdYH0-XRfkW1meoeGzMQIMiEwtBmQGsKUFjt0a5gtzyNgTBv2quy64kgTm7Xqpi4ptAtd5lCrWdacjs3UydXpsPq72CGbk0s-S8ABWmizRg_q0k_6MTTaNhfqgv0at4VFIvffFIsGtdJHcJBE3m6Q0nKSn_2RNsutEUakb1XS9-NmWk2QxWDbqF7RpUbQxo6QKoeSHFt2wcpzeAmuk0UaK5sL0E_Oykb1P_aBe_3VGMPsYCVTbRzv_qViLw3JIFg4VEVWHkz_Pbsya_hri2TAWol48Bs3ELB2jndANPQWfVHu5jgtVSbbwWnHZZhwSnMyPUb-AZJCxxqFgFVtJTfKyNTYfC3nIBGNtqip0t8-Isu-PI-GcSYzdt-JiEiI76jZ1zZiLJcehqOx5cJyxEYb6sQJz0MhWz7LvTErrGMnM6YBkETudjkqV4f8rrWQYM18cexJAA0lU12ZnunQrG8p__xEKP2gyGSSFS1FOJGXQcDJaZNamOKT5EgH6YyT1TPDHf5PowCWJVfZA5MkClTVfvPp2AEZCihbHchgtoVUBC8SbePTQhcvFEBGaXpyd7mI8SQ3MQnbvk3NvjwL68nIai7AISDhHVQXpac1ZiimtIs-mC3KszT80lJhj_IcJkLvDVqcrC4j2c1orON3vCJ45JdDUJ-JrVk0SJu9qHMYridA4jWJ2PS9ZzgJMtFZX2b3tbhczGXQbfrRKFfM6BwOuMDAoYBookEu4neoUiMcPVXFwCdoJy-OWuQCD89ebSPwgrpiox4qHh7ZWcRiomyIouYcaMmBXrmJivV32cN6QPWDjEhbxm-Qi7Q80lYNDCgqG8-ffqqRKu2LdZB6ch2CjEP72sdpnHmC12PPQgZlZ4NyEX5I932ugd1zga35IWMJfEx9nf-p12o2xulC05j4IVczVEqxG0dqh79Ei26PdY5H3732EUcLN77cYzQdhTsc7udoy3stLATijSwxLFoEoPZ5TMtf5BpJreegcTudWuMOFIiy29sU1QIR39hEvTVvSbFPODpST7jdPyNkdHvy8Rm9sw31C3nT8Dc1DzCL10CWIGvOl2YjLGLWsBPhU67Fqzek-z5_A_J82yPadjiOVfXAl898KCmXl2svHpwhRSpmg11nKrVByotLnbRIj2v8shQzmZZpSk7xXqcGpsyhcPFDCovuQucVBwnoBq3985Z1sBxeIEzPbeWg7cNBaQr_VnkhnguHrhuDutxTQZ3091WaFz_h7wDOf9ZinQst5kydIR0E2YiqGMtJHCDvCzk8J8mWWn-arI9F-2I5Sk73CDSW4br9o62puDkpOslZH8m330_nHXo7swdrV4ZnusBc3vjRZXCWX6NVQtsde2Z2Bmq1RGb9AJWvYMySs-sSOWCTe3C25W-tGuEDm5LVSO01NcU-tIYh4mM38FO3LSUszlDprT8c4-AJ0DxIRZA7kHltRNXiMyvAq-WnJT6Mq1uXFKr8XiPWgh4fgrL4CKxGDQbacqNgbcvEmwX-Aj35YaU_gVXRPvk23eCShO003VhqK6SE0F4fEL2Pekgv1TUqM0l00TWak-GG6yZERJhM2gnUF9PWrGwrLd3avqvFlORWM-oVrv5tV5ggiIbxK2XiQ3hbc5HwYWrktZl6Qqll3fpIFWCp1_hs3rMMt7hE-ylElMV00ujGK7WDdOjcV8daecWvqLDAPEmkW1GLdFhz4IKKRStzVTowCChZtUt9P4vWIXnQc9hBUgSkDt7rWFKOAiXptEpezJE0-WeD3oF4JdZeCSEvrAuyoKdcXWojvsZutZaB0vVp-6Lo-szta_KdraorOvW07gm2h4rsvbvlHPZWQ7DUOBRpLrUkXhYqv4pfI6MyJ7ai-kOOWY3cYF3ubap2feVVt_Xcr1S7WbI5KrE3t9eOsbZdSKDHU0G2wCM2U1uqSwFwBEX3ymiGXXltdXlMO9HvjWuaxBmeIU-HBB5JhcTQQJtBtY5m4Y5s1UHYFg3ns7F69ZpzuHEdi7YydWVba8wR0TFL30SOlST6hJrkeqBRpBgdBkEjbgYQ9AJzzR_89ZYLemCg==.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_0ae288c99326865c016acd09e4d64487d1aeed0b5761efda5e",
+      "index": 1
+     },
+     {
+      "type": "reasoning.summary",
+      "summary": "**Calculating scatter distribution**\n\nI\u2019m aiming to calculate the incident energy spectrum while considering interaction-weighted \u03bc. The key step will be determining KN electron energies based on the energy bins of photons. I'll create a distribution of incident energies, and I need to factor in the Compton cross-section which might vary with energy. Afterward, I'll compile a histogram and compute the mean using kinematic integration. It\u2019s crucial to ensure that the incoming scatter distribution is properly weighted and that I exclude electron energies below 10keV.**Computing electron spectrum**\n\nI'm utilizing Monte Carlo quadrature for numerical computation. I need to establish the total initial electron spectrum, which consists of 70% primary electrons and 30% secondary ones, though the actual interaction weights are 0.70 and 0.30. I estimate the mean for the primary spectrum to be around 0.59, while the secondary average might be roughly 0.18, leading to a total of about 0.47. Now, I'll evaluate this data further.",
+      "format": "openai-responses-v1",
+      "index": 2
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzQnuqj0JL3JP4yTd9e64lpeNmMFahYbrsuR0zSrIzQ3JFhxeBeX22z-5GEPgFpjyPPuShj5H0dP2l-r4WXmwG7rnuvp9D_wCHCs2AOgRCjOpsT-qToVa1CXEOg4SD-YnWWSLy2HXpNzhp26XAYPi4rwZiRF6kywxsRQdTU6pvEQx2XiuorOzn16_mjOwBlovOJb4nS4cqojzwq1tVNHr7iNVHlh1Mq5Y6a-iZO9mWKw2HhPl5Qakr94QJPuiWqoddaEn6XuhL0wtJu_eK6NITJa8eSTTJscPtfz27Spnq6y-1tQ2eRzcKCXj-3_w00p5kw6iFK9Ya5TnfXbo3BdlKd1oJ_CRhbah-zhK9OfugHy7XygR-KaWtutHykONCw14mMnd3ntYM7Cqkc3y-_3Gq9ZaGu3rMYfph7V5JwWoLza3JLEpU50lBNtsvxUZ7XxeOrXY0lG8CT5I3qQYRjeoXcicGI1YmMXv5WfKoiovW1-cpnzbLUR1Ov9adQ8nQAWUiQZ74kbSlj6cks8IIyoU3gRFPG55cBZrTV-gyKA3malFRoKT3ntxc8gg7TtxywxHh__BihjtgrynwHwKQPyf8kwJMZQCsTAe-VaSSaz-7Oe3QzMn2yaKnosk9bVHq95l4C1RjqOL0PGPSSC7P1_1LBOzSqVXkUsTkAPOa4hjkI9uXlDx3rsfxLbrFUmRI3F2KSl3xqw75f9am6dcq9EJ7JCOel-19P9t1WLrSk51iGkwbeuq3YOvUpBbNbZj0QOJ1jv9G5KoitsIKbMyohW8sgSF87ux1BOKhhJsWT3Wmo1eGySmAnqPHzlfVwzC65b74V3XuANmHlNvWA0Xbn_2PYIPOqO9yMersWnhzavpIokRt_lYhjq5uL8E0ij5RrHR2UgvjGKPeCr6OXMxos6lY8FxU_BgR5_aJQiyyj5S1f0d8ecneVK8pj7KArV-puZ56xbqED-wypmUj0kUoMPS9ebBwnk_aV3Y4jb6WDuOXRg4AzGPl5gevKUlFKjFkKAl8vHNNexqM7C8u16j2hQwR2o6ZGjBYoVJgdZar27MIUgl26nZE_8LXG2jA_DAO9I2BQJANRCcMYvuQKNf23PeSS6Sszr6Ma6tPSODKARiDDWQewzChJ9UCy_TZ_eOlbTbVNsoSAkMWXrEEZZyUu0026VjYTFIXvso4b9ZSTy7tiZLUoPgHgoHro7GDrOd6rfP-BN6KmUrP_KCafxtF57LiOK02sFJoRGinuYcDjcAoMt5D6--7j_oQRCO5W_dyDz_mT5Ax2JbBLQtWpNEWQq--JBZEWHpdZXAT80dPj-Eb_xrGlJ65CcwNj_wW1Pj_HGiUjtL1QRa05fQqdkysliUcknuYDfeEgWPpJrOYgrkaW-osI7OFCFGzI56C3VGdc-j_MIcF08iHpW_Z67lqKgKTzLtQVc9QCmqe9-WA8ydcp5BJkR0uv5cOICY3_sht3MlMcrOJInIfp8AUrVSzdqJQ5lI-lu-d2n5Dvg9ATA8kiJvPVH9xtHbtutYPwz86g7Eof811gzid6_ugIGGHMNJz67_-clEK_GdzB71jGfOiJAOQPVEY1gEsQeGTHq_D9ahvr9DCblK1AnckmPPF7-1cSRqG9_nqAlI0VQ0hM98OugC8bFSLTDNyXnhnjJCX0nPrtZt0KFX8BeI5ijtsja31FZBZ_mbgKfw5_skRBYG6Sgvwi1uD5Qg8-pa4a5ODAIbtaqywDSg2kXcU7QRwRp2epT5j915E_0JNcHEAcleU6Sx1ftPe211pdxGPD8xVSnsKSfc4IzKO2_uV7nEcyS0BuZ-Ks6_gbYssWvvd9GfpZceuYcBSjiWj-D7jqFU2p_AgzqKb5ii2dwEgkjM_1IUjvMSjdO2iZoG3sFud_j_Qb7zZrPI2OlKIcEcsrXNzBhSr-ZdVanSqGTYS4UkRAKXh1SzvL2IH4MF5NUXByqfbQpj8O5c6kS2inL-2JiYX8atukiID9PkbA0oW8cddMd2fxZ96U_R9Y-M369rGPOL6e0bGnI9utBP013SVJyBtSv4RpdaTN5AbuudflXQLUc2wBsiddhYEQGQqApkh8_pqYUGQiNB_VrOGfsfZ8-RSr2_a-JbkifFNl43XP9zT4k5yDl9efOcFC-5VE6x0EY3sUs3KVvx5PJpQndFzCcnxy4xiklYQIySyl_G0_eV83CvIKZcRUlZc90eTZVYJBE6Af89kZs1Fi7raPNcuKsEbfttCi5CZnNcQ6kFlKkQQqxszapMsq1vLUBFP5hjtbjbDdckuiK1EjVNbt6iQIDB2JwWJZ_NQNA74dBaw-y3oJF8NNgclbn8n3pBNuAFVBpyl9KyJHmLxo-9vy9Cqaivs0isZszE7tqDsCJI5Gc_zu55RMv15vALxBOUgPaIMu2YtMwPOb56hle_BS216XTg7rh0hXFNZ5ujqflB7BcEx1-d9Uhitzf3oQg0MptHuiR2c93E245hbp6HUBVTFjQcqSIQLAgUOMzHqOH6nsTuZgocuMpaTQ6scBwbr02MwWkgMIMpybSK8WoBZq9Dsp32CTFletUeCDV6kRxzq3lh9TZyKAJpSY4jRB-WiGM4uKDr8yX8eFA8Q9BcDVlg_-ioigAS17TR9wjjx_vXH_enUT1Y0ZUTfxP5x44Dg0Uc45wp_CR2005FUlo-q4I9OQQl6agX65O69412lWV6lTexDlqT_aGdJlmn1h75xzu1zlDVO0k3EaLrnpo6y2fMChhcvCPA0terjhEKuSzJF_Fh1CtJX5GTIxJWV-o3ugqvFEZujUQuxB0oPCLjt20Q3ycaAAiuTOfpe5AQiVdIANmYoxACYGl-LrrPiPxI_fXpDgusJsFJoB3Juq58qOhLwRuBjhaEzEhR3FZFizCHZczTlNKYvjv31BXef5rDJyXJGCdnIuUPtk8PcSQpzOBRTX7COKSr4G-TBy6VFaYLYGLm60poT8wX0aV73wf6NLjp63kyLGw0nsf-8_-TWGiG3sVd75KIPhXTtbgQsoxjo-Bnh3mfBU0RnBgSXZPC42lRtwHud6YqS3FJyhwGJwLviRfsV3Ux9o1XBz18St05cBNSd5U7p3xT9YJY3Trp9G-tQrmwdlzcts7Pq3ZiuwhefZiOoXEuIZCT558ndl50jS1gzYh4tzbyu3jCc7CUuXRP-Bffiyrkeow4PNCTEZBWSMXjDJvCDN-HjciK9hCMdUEIiheoPk1MHRe95hCNDC93VA6MsJ5AqIh-xUbfOnwBWWUv3bvBmFEvTCAihYyczGcUi-AwgXcfyP8jEVYeq7rytiZMFdA06J9NwVLBVMvnD_4mHeGWeXglOU5_vSTuO74iHVI1JavNH1EiHSNRXkw7DjZWYMaFJokOhXEkYxdId-3MgOetaZVWkS0lnCF8-mogV3m_unmdFy0Ket0HlRDnPNgJ_0FOUA4GEOktfKVQn2OSyT3oZcUC6JG906LuNn9kRTZfCcsMn3HZF6p9w1Um1tyI2Uzs1YxWfuka85zALl28OXEVHOw4nfTt612vknyTN-FG2xt_31NC0aFNodUOF40-ykFZWM706WqT2-KVPP82iPRSQUR9wnrQYCsO1XP1qYweY3O6YJtRQMuLCHyJ6mDg6UStlgESBSADO_CbgeawRQpZ3QJKlt-QC1C2FWUp2syEEHTDWEadPY_x03gJ1imTih4qknPGJfrq2qkGIBMgOLVKNdWpKRG3l3oE4LMp4AOIVFpvV4v3pGAOsRwwBJAO93xN6UbTdFh30FPhGGM7AWBSnjy7n_MBB7bxKhReTR-rwa1uF09_t8jQgj8WD8D1fyPgLFr2YKA_83Jj_NQxURPWHblFkH6xYfLhIrMWCN6xxy3r_HN7GL55JFDFAUBDnnRSGWJBsoFJ_TbjEdtcQ0v54gU2Zv2DN9BhAMEtAxhLNYSHSBL4WOms0_b41k-VAF0XG0te9nDUwec7KhXz3Y-gY2pleY-LcAGw-_7y_USUaVqn2f7IG8fvWABQp-7qYD5hF1zonaAtjBBUwGddxBCGkdVQqtv6he6dgmJ7tYPrtceP3M4wRHS2Bd1NMoE5cpmHv7pIgXv4AmWeWJLLxleIrNoszrbPaMc1s6zPbmRQyL5n7IdGEByQ0Bno1tPTFymaXWTSfNSRBnwKIaXs4EMDpylR2y16p1RgYJNtPkis3tM3jOKVXRbBnEdKoFI-5PPv0bQalBhS_PRlWjVWya_5Mkjp61hl3YQYqOvL_7gE2l8YkUCT-UK7cNIEoLZ8tXRzv_SZy_3z9qIg2fgpN2I7X4kQkFxnWkewotnfXX_rstxSPULtIgoUAZTBZYvQpsed1c6Sk--aGJ_QuYwCm1oq0QyP7xsxN7Q2kFg3YeI9822Dmlr_7A-HnH0W2JEPfk2q534zsapKWD6V3OBj6GfUIh82Ops6eST_C6ZtRtPutxBWBTEd7cFwVAhTxCL__t98M4X8ICKQZuYMp4ayRZ6kU1bOHq5TUDOLHrMRj-cG-Z9KdrDdTwJGjQX-atSR1DQferkdcO7ejx9PA4Po9UrxPTDZYDpfvXygWua_YlK5022po3a6TheUlyA26H4qIq3fK-Pa6tZsEi-kkYuJQoPRYLggjpp1YO9U0amgJxhFC0XR3vUDhDOvgB-N2MtZJKgKja9EhjG2ErE6XvssRP0orgBnXgwe7W_-rfWWXBzDbDcNxiANG4lnAebIJ_FGgHXe1cIAukraOL0-a0ZJOP8akS8GmFKryG2r5NqCAY7QZqGLIGJ4XBSLkhe7s0unRP1S_3IM1pzU-Hc4dCmd8jufYPtOLuhbS0srvA9V5NoXzkV95bxIe-Fw18yzZSadfNMgABqJzncHpmOM38ut98x8s-3nN9qsNUMKHmv__8TNmfmTWdSJRxNatCXI08XgZ-lF26-d6urLFCu5v0DMh3v3uW9EQzQwF-nNpbHJDIm7aOIqedNNhaTvsTUn3bErL1SYydGzMi9D1ByT50iC5p4GV2JDRUy_QfwSCAYQZu27Ru-KERQFUpoTX2H7441hDn6f3Gi1boWX7cCdv2i3K9UfOf6Kxy5ChfALc-igD50rcgJJK7AXrOZdP3rzRyFI_Ad3bootVzBaWghg-6H3EDKuOn7VMe9hvCMeY8B1xaGiaTejdF6X7RcdE-GkMUQSu3k7a8y3ZlBZ3UyTgeGt_adl1NOuZCcglyWa_g8xRTpRvL_FsL4dcc1QzhNmoY4URn9R3aHjpYbhp-HWDiiNeFa-Z3EbPxu8A7Mi3POAG4DzImg8EdvgLU4kY-xPwCuk7D3edemHGEKnuUv6nO6pdjcJteO5z4SVxAPC6vZ9pcik9jWJVN9ieI-xH3dYIEInvYSnBgmJrEh5OQk_CO1NCUkxaQCat6s23lXUdRr_kmKymGkEawpTHDElL54Yqm9015vzjgoyGzmLspa-u3MUo0gk3gwc4JzhNDi4XbxZgNG8UCrTGWQVJXeUHmm3cEsd0Q0jDizHEiRtD-hjKNvoKsbgxEzSOwZjbwE0EEkuAIL9dtQ8nu3hn6dJyQvxcTlnGR_4HdEvP66glLXlSV-e8-F939vYjuoP2TF4g288rQszS1TZLuf1P8DR5ATcxib6IT5VdZNIrHva1SzVUXLlxQcXlD3M6AzBCp2JK-Jv694NfcUJ4TOTpga2Kjb7nxRK-h7fRgbg6x8bXZbzk_Ma8SLONeK_w-bdKzqkZ8YpmkONTppnSI87iwSeuj-tioy-47hZy_mHhMG7G4QWStyw73ino9BZSHyv4MWkyR9ntU6zrQ4xO6YEZxG868s-2OsHsWQTczKkkTNEdmx8QwK6BIVupsbQ5mUhllFTNXWRKfMuWNaOuccrk_DUS0fZFvX22fNIfQD_s509Y7cwHdgZ9k3OjG3HDJ1WejCaMOi4qubnnMsStpBzr703a3ct9EA2ZDMQgkdelf_VpVBYSIoO_HlVA1x-OUBL32QRtHgm-pSR8lrSlYfCEZlPClkyoLXcv5KwK_sGKu66R6weq5YUFQCM0eS9su3GBytaagAkB3FS6TXiRfulaJCcn7JDXwzsDbFsh2kqd_460S6fVKywOJX_kbUG_Mzw4I-oGhy60nAQcX6Au17DCfghbrhVPF0DCxu-_3ij46ieWYvZjx2S_xoMPuwwIasVavEZ3HnPHPnDvpE_rE9e5Y6kI_PwwfquanQOlEmsaGvZCab1_zmekUsVTk57mksM6ZlqTp5XlEbLTv12_ykpfoDEIlRIyilGSD2LnlztqSvPzV1uxeYpokbSJyejejPO_NhRcOJfXp7kxzoE9Gg-3xPPMFKgqy6IiS1L1yFcWWlZSQDI-zB_5Otp3hKGQpQIogUmYriXQOY-cC69y4UmBB4ZBaHprbln-t_dCPs7Ahi-qY4iXLZqBF8GOmP0LYCLTHVqBfQX3wIA7zXnZIVkC_E3RG2OHlW37rwrst1s7jzHHXxgNOpwwufY9hmF64TfWLCnFGW6fohFU1cfod1dFBHH953Xa_EilzzsV_sj8Zfjwi1QCl0IQCp-Q1H_uDwYpDiZC4ZV42xgfj0pSVSQlDyzEUHIU60mmGHfjTOOqVoz_FVdd79yavnsPWCsBI-yPBsqvFRgNmtd9JjOeBW0PyRjqwCDUypcdLIQlpP5vyNWI-hs2DZGw21EA5Cm0AmW3C_T0ENBitnK_Qg4OIZKd1NAODJaq63xXutsKor3Cz3lETRFhfklcUyRzeeOE0eN5rhVuCj90UsbQjmpQdJ3uvbGI0jbIN7cowBRmBcfBBAWk4Vy7QSQvv9izsQpwWD2DyJnnRCjLiWFAlN6AAefrM4mcOmLJOf6chZ5ggi24DYdPgxIwBBntIRxgcLCFo7gffQDl5pM72wvihO9dSVuzK8ZSfT4Po1xbrbD1FD1NGi66uPxGN_lqlEoOwl71waCn4R7tsZzVNGMfyJf6MGFRiUltU40QPdbPu9-9xmZEzlfz0zawO65Pnb8jQRSlskjDtAsVlhevMk14ynVvAAmnhKBV8OTfLTho0vU79Wjmw6Nxv1foGfqDctKCke5ljtMV2KaQVWWwMWXtrVfZydZ8rqfc-FYbRPLwNfevk-TGyD4QS5kij4TVsdw8onUjR9Vry0kOBoD5o14aUC9EKAW6a4owq05WvunNoJc1oJq_ZveUNmVtHV0TiGK8lyTtwtwljly5gM2-Najy-uTDhjCFivfNwW-uu7TircwzAsNz8dzjcpB0-qod2q1jpWsd_o5pp0mg994erW1Yx4vs-YoRVcFJ5B1h8XdBmCATe3hanDDNDedX6xnyWa3MLphcWpoCRuaU1QoHDiY8PFu6qOZCk-u4zXLlonTcVcUMy_DqZHsys_ooKiEJ5myzu2VT6f-JPjAo73Y2VvbfcIh_bbq9w-Pv_EV2OTspX8hdxJKwQ5kyvP3mAPuS8vEtNAx1Z9aHKaBEek-wm5TuUKUVKeowS4aq9ZGFUX1C5D2QnFEZ-7HmJB4k87LCIAHjyMGsqXT7gTaQlm6k69_7eqx26ryAApthyM_NdeXAj5B9aklVIjJwG8ANH6yWFyHo_XwMYRKCW9o02Z24S669RUfu0r6K5t1lxqmKuvpu5ji-mAtNl6lS5GvdBn97kCWiZsvW4wioFSOAsQy1NuJDkP4QEN7ARISsv72Czco7nBSFlhhfHhFjfvkB2F9MTzo1QiHe1bndHR4gvQ-uMdKefX5jg==.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_0ae288c99326865c016acd09e7dca487d19c77b524a92a9695",
+      "index": 3
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 12917,
+  "completion_tokens": 1133,
+  "total_tokens": 14050,
+  "cost": 0.000717215,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 12729,
+   "cache_write_tokens": 185,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000717215,
+   "upstream_inference_prompt_cost": 0.000150715,
+   "upstream_inference_completions_cost": 0.0005665
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 642,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

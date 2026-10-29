@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791825844-rCMDxzED2V5e2iaXI9rV",
+ "object": "chat.completion",
+ "created": 1791825844,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Since state isn't persisted between calls, I'll need to include all imports and the full pipeline in a single script, saving results to a pickle file so I can reuse them later.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01AWi2nMzrjinomLkCi9rmST",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport sys, time, pickle; sys.path.insert(0,'/tmp/work')\\nimport mc as M, physics as P\\nimport numpy as np\\nzpts=[0.25,0.5,0.75,1.0,1.5,2.0,3.0,4.0,5.0,6.0,8.0,10.0]\\nt=time.time()\\nR=M.run(1000000, zpts, seed=21, store_main=zpts.index(5.0))\\nprint(\\\"time\\\",time.time()-t, \\\"collisions\\\",R['nColl'])\\nN=R['N']\\nfor j,z in enumerate(zpts):\\n    print(z, \\\"scat fluence/Phi0=\\\", P.SF/N*R['A_tot'][j], \\\"K_col_scat=\\\", P.SF/N*R['A_Kc'][j], \\\"K_scat=\\\",P.SF/N*R['A_K'][j])\\n# save\\nst=R['store']\\nEs=np.concatenate([s[0] for s in st]); rh=np.concatenate([s[1] for s in st]); W=np.concatenate([s[2] for s in st]); tg=np.concatenate([s[3] for s in st])\\nnp.savez('/tmp/work/main5.npz',E=Es,rh=rh,W=W,tag=tg)\\npickle.dump({k:v for k,v in R.items() if k!='store'},open('/tmp/work/R.pkl','wb'))\\nprint(len(Es))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Since state isn't persisted between calls, I'll need to include all imports and the full pipeline in a single script, saving results to a pickle file so I can reuse them later.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSiggKEAgSGAI4AUIIdGhpbmtpbmcSDCJ84xUP1IC0k6HCoBoMPIWci5+zqmslr5LJIjCFakNB6RSUSxZsFWj3Xatm5ggVL7ZVdm9Cf9fxug5PLxo6YLfFv2oDz9gBfd0mKOcqpwf0fdb7WvrguRd/0zICz3uzQ60qadbRveLHl50KDF3GoI8pQAIp6GI4HJEN2xXUd9FaQevkSQrUOA+UM0v3jI+CkOldOZ9yilZaiS6Ar2gVU/T04wSUHjYSJQDeAcNTtNrMLj9FHFIuvQPlYhb+fSUXErSBClQEyyLbmUFW+9J1LLHsn18Bt15kVhHovL1ebtSKv1MVhpRI/MQnT4eMAuM5u/Rwb6ajjTjK1BSlUTkIZSnrlDHONnPhqMhQhr/mztyWmLokSrVqdHA+Ae9AyWIaZF4dn6jKyCRJDsbCtXAACCxMMgZyuaGbGiFn3Wl9YxPt7O4wvTMQd0/etCEkY1EM+J/68PZbCca01/V8YFUB7yO1I6xjCVDTCg7pPoHKUIfZXvA13Yj2dITQC0BKwc9cxS6WJxLgMYGhgOMktDacggQqtrZJtWJHKUETt1eQ9OY3pumXe7BgOiFRg/pgKGPrbHqAZzeFCh729r26ZIITklv8pvhNTNCMROSmufmsDUVJSQqZBhuLKmF+Kn2Ye2WcpAaiFBE0tRzjxUYKKjsm+s95AgFIpLL+FpATA3XiH1CaTlliPqyxNSjeq5H5ve3hiEWS2mX+573v42YxDAvT/NTtOZO1lt1Jo2v38RnkaLrXDuqWlSSJczNeIQlFAv5CGG0CZKZ5yOz+LuzCqlaM65ntCQZ85rJ27ymUfeWalfR7asVGwhu8X3UyqUq1NCuXnSP9mwpcxjW4j7nf9g9T0H+hmiJDe1ReLQ78WdNOEzqLBgdqQLIMHye5dwJNrIzNoaQ4CqvzBf03LTB/W4ehhA/GNYmxXI8tzTe26sVwMEwMe4MkFhyPzIwbC6zJGb2i5Q9Du7moZZq1LiSTM68A7fRY3prE2oSs5SMu1caKoej7QMteQzdDKiYG6/RzCjlxX8tnP8Y/LwCmVnOkv/bSz6C2Uj0uDMc7kFofVKeQg1Yx2tTHcV92H7ooBHbawjb/ARJ3/whU0OfbL0t2BWBWdTycFP+Ocj8wMFQvzUiv8yZ0QKOGUt+F43KsUuDm2fsFTyYH+R8xUX3tudBEseASRcH9wKsnbgiZBIU+LOoYblGVjdJRNViBavNzJ0Pcm3cKSLfuvYgerIVwBmWQjIHBug46DPRTfhT7um4pmNbLcvojmEGGL24/lAIzSOngU1Mw53ziusDAnrB4qfrtwR+2OPbeXhYXv5/s8faZA5i0lK5zzn/cepu7wZfwnDTcVD4zba+zBx5sRhgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 112685,
+  "completion_tokens": 566,
+  "total_tokens": 113251,
+  "cost": 0.0075895,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 111745,
+   "cache_write_tokens": 938,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0075895,
+   "upstream_inference_prompt_cost": 0.0061745,
+   "upstream_inference_completions_cost": 0.001415
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 63,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

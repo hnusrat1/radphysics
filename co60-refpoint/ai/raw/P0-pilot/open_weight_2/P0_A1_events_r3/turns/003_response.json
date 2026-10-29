@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791815659-ff0WjBTE3iimlldJhOS2",
+ "object": "chat.completion",
+ "created": 1791815659,
+ "model": "qwen/qwen3.7-flash",
+ "provider": "Alibaba",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I have a variable name error - h_bar_c was defined in the first cell but I'm working with the assumption that it persists. Let me fix this and run again properly.\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_884a5e025abd40a9974460c7",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nfrom scipy import constants\\nimport json\\n\\n# Constants\\nE_photon = 2.0  # MeV\\nm_e_c2 = 0.5109989461  # MeV (electron rest mass energy)\\nr_0 = 2.8179403262e-13  # cm (classical electron radius)\\nh_bar_c = 197.3269804  # MeV*fm = 1.973269804e-11 MeV*cm\\nN_A = 6.02214076e23\\n\\ndef sample_klein_nishine_cos(E):\\n    \\\"\\\"\\\"Sample cos(theta) from Klein-Nishina distribution using rejection sampling.\\\"\\\"\\\"\\n    alpha = E / m_e_c2\\n    \\n    # Create reference function values for rejection sampling\\n    n_points = 200\\n    cos_vals = np.linspace(-1, 1, n_points)\\n    \\n    kn_values = []\\n    for ct in cos_vals:\\n        E_prime = E / (1 + alpha * (1 - ct))\\n        r = E_prime / E\\n        val = r**2 + (1/r)**2 - (1 - ct**2)\\n        kn_values.append(val)\\n    \\n    kn_array = np.array(kn_values)\\n    max_val = np.max(kn_array)\\n    \\n    while True:\\n        # Random test point\\n        idx = np.random.randint(0, n_points)\\n        test_cos = cos_vals[idx]\\n        \\n        # Test value\\n        E_test = E / (1 + alpha * (1 - test_cos))\\n        r_test = E_test / E\\n        kn_test = r_test**2 + (1/r_test)**2 - (1 - test_cos**2)\\n        \\n        # Interpolate acceptance probability\\n        if idx > 0:\\n            frac = (test_cos - cos_vals[idx-1]) / (cos_vals[idx] - cos_vals[idx-1])\\n        else:\\n            frac = 0.0\\n            \\n        # Linear interpolation between neighbors\\n        val_left = kn_array[idx] - frac * (kn_array[idx] - kn_array[0])\\n        if idx < n_points - 1:\\n            val_right = kn_array[min(idx+1, n_points-1)] - (1-frac) * (kn_array[n_points-1] - kn_array[idx])\\n        else:\\n            val_right = kn_array[idx]\\n            \\n        accept_prob = min(kn_test, val_left) / max_val\\n        \\n        if np.random.uniform() < accept_prob:\\n            return test_cos\\n\\ndef sample_pair_production_energy(E):\\n    \\\"\\\"\\\"Sample energy division between electron and positron in pair production.\\\"\\\"\\\"\\n    E_avail = E - 2 * m_e_c2\\n    \\n    if E_avail < 0:\\n        raise ValueError(\\\"Energy below threshold\\\")\\n    \\n    # Use approximate logarithmic distribution\\n    # Sample fractional kinetic energy allocation\\n    f = np.random.uniform(0.25, 0.75)\\n    \\n    t_electron = E_avail * f + m_e_c2\\n    t_positron = E_avail * (1-f) + m_e_c2\\n    \\n    return t_electron, t_positron\\n\\ndef sample_rayleigh_angle(E):\\n    \\\"\\\"\\\"Sample scattering angle for Rayleigh (coherent) scattering.\\\"\\\"\\\"\\n    # Coherent scattering is peaked forward\\n    # Uses atomic form factor F(q) where q is momentum transfer\\n    # For simple model, use distribution P(cos\u03b8) ~ exp(a*(1-cos\u03b8)) or similar\\n    \\n    # Simple approach: sample \u03b2 parameter for cos(\u03b8)=tanh(\u03b2/2) type distribution\\n    # Or use uniform but biased toward forward angles\\n    \\n    # Better: rejection sampling on dipole-like distribution modified by form factor\\n    while True:\\n        # Try random direction\\n        cos_theta = np.random.uniform(-1, 1)\\n        theta = np.arccos(cos_theta)\\n        \\n        # Momentum transfer q ~ (E/c)*theta for small angles\\n        q = 2 * (E/h_bar_c) * np.sin(theta/2)  # Actually in MeV/c units\\n        q_fm_inv = q / 1e-15  # convert to fm^-1\\n        \\n        # Rough form factor approximation for water/Oxygen\\n        # Using exponential model F(q) = exp(-q^2*a^2/2)\\n        # where a is effective radius ~ 2-3 fm for outer shells\\n        a_eff = 2.5  # fm\\n        ff_sq = np.exp(-q_fm_inv**2 * a_eff**2 / 2)\\n        \\n        # Also include angular dependence ~ (1+cos^2\u03b8)\\n        weight = ff_sq * (1 + cos_theta**2)\\n        \\n        # Accept/reject with weight up to maximum\\n        if np.random.uniform() < weight:\\n            return cos_theta\\n\\n# NIST XCOM values at 2.0 MeV in liquid water (H2O)\\nmu_compton = 0.0784  # cm\u00b2/g\\nmu_rayleigh = 0.0026  # cm\u00b2/g\\nmu_photo = 0.00017  # cm\u00b2/g\\nmu_pair = 0.0198  # cm\u00b2/g\\nmu_total = mu_compton + mu_rayleigh + mu_photo + mu_pair\\n\\nprobs = {\\n    'compton': mu_compton / mu_total,\\n    'rayleigh': mu_rayleigh / mu_total,\\n    'photoelectric': mu_photo / mu_total,\\n    'pair': mu_pair / mu_total\\n}\\n\\nprint(\\\"Event probabilities:\\\", probs)\\nfor proc, prob in probs.items():\\n    print(f\\\"{proc}: {prob*100:.2f}%\\\")\\n\\nnp.random.seed(42)\\n\\nevents = []\\nn_events = 200\\n\\nprocess_keys = ['compton', 'rayleigh', 'photoelectric', 'pair']\\nprobabilities = [probs[k] for k in process_keys]\\n\\nfor i in range(n_events):\\n    process = np.random.choice(process_keys, p=probabilities)\\n    \\n    event = {\\n        \\\"process\\\": process,\\n        \\\"e_in_MeV\\\": round(E_photon, 6),\\n        \\\"e_out_MeV\\\": None,\\n        \\\"cos_scatter\\\": None,\\n        \\\"t_e_MeV\\\": 0.0,\\n        \\\"cos_electron\\\": None,\\n        \\\"t_positron_MeV\\\": None\\n    }\\n    \\n    if process == 'compton':\\n        cos_theta = sample_klein_nishine_cos(E_photon)\\n        E_out = E_photon / (1 + E_photon / m_e_c2 * (1 - cos_theta))\\n        t_e = E_photon - E_out\\n        \\n        # Electron angular distribution from Compton kinematics\\n        # Relativistic formula relating electron angle to photon scattering\\n        gamma_e = 1 + t_e / m_e_c2\\n        beta_e = np.sqrt(1 - 1/gamma_e**2)\\n        \\n        # Angle of electron relative to incident direction\\n        # From kinematics: cot(theta_e) = sqrt(gamma_e^2-1)/gamma_e * tan(theta/2)\\n        sin_theta_p = np.sqrt(1 - cos_theta**2)\\n        tan_half_theta = sin_theta_p / (1 + cos_theta) if abs(1+cos_theta) > 1e-10 else 0\\n        \\n        if tan_half_theta != 0 and gamma_e > 1:\\n            cot_theta_e = np.sqrt(gamma_e**2 - 1) / gamma_e * tan_half_theta\\n            cos_theta_e = 1 / np.sqrt(1 + cot_theta_e**2)\\n            # Ensure correct sign (forward scattered electron has positive cos)\\n            cos_theta_e = abs(cos_theta_e)\\n        else:\\n            cos_theta_e = 1.0\\n            \\n        event['e_out_MeV'] = round(float(E_out), 6)\\n        event['cos_scatter'] = round(float(cos_theta), 6)\\n        event['t_e_MeV'] = round(float(t_e), 6)\\n        event['cos_electron'] = round(float(np.clip(cos_theta_e, -1, 1)), 6)\\n            \\n    elif process == 'rayleigh':\\n        cos_theta = sample_rayleigh_angle(E_photon)\\n        \\n        event['e_out_MeV'] = round(E_photon, 6)\\n        event['cos_scatter'] = round(float(cos_theta), 6)\\n        event['t_e_MeV'] = 0.0\\n        event['cos_electron'] = None\\n        \\n    elif process == 'photoelectric':\\n        # Complete absorption (photon disappears)\\n        # Photoelectron gets most energy minus binding\\n        # K-shell binding for O is 0.532 keV, negligible vs 2 MeV\\n        binding = 0.0005  # MeV (very rough average)\\n        t_e = E_photon - binding\\n        \\n        event['e_out_MeV'] = None\\n        event['cos_scatter'] = None\\n        event['t_e_MeV'] = round(float(t_e), 6)\\n        \\n        # Photoelectrons approximately isotropic in atom frame\\n        # But boosted forward by photon momentum\\n        cos_electron = np.random.uniform(-0.3, 1.0)  # bias forward\\n        event['cos_electron'] = round(float(np.clip(cos_electron, -1, 1)), 6)\\n        \\n    elif process == 'pair':\\n        t_e, t_p = sample_pair_production_energy(E_photon)\\n        \\n        event['e_out_MeV'] = None\\n        event['cos_scatter'] = None\\n        event['t_e_MeV'] = round(float(t_e), 6)\\n        event['t_positron_MeV'] = round(float(t_p), 6)\\n        \\n        # Both tend to be emitted forward\\n        cos_electron = np.random.uniform(0.5, 1.0)  # Forward biased\\n        event['cos_electron'] = round(float(np.clip(cos_electron, -1, 1)), 6)\\n\\n# Check number of events generated\\nprint(f\\\"\\\\nGenerated {len(events)} events\\\")\\nprint(\\\"\\\\nFirst 10 events:\\\")\\nfor evt in events[:10]:\\n    print(evt)\\n\\n# Count by process\\nfrom collections import Counter\\nprocess_counts = Counter([e['process'] for e in events])\\nprint(\\\"\\\\nProcess distribution:\\\")\\nfor proc, count in sorted(process_counts.items()):\\n    print(f\\\"  {proc}: {count} ({count/200*100:.1f}%)\\\")\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I have a variable name error - h_bar_c was defined in the first cell but I'm working with the assumption that it persists. Let me fix this and run again properly.\n",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 6174,
+  "completion_tokens": 2442,
+  "total_tokens": 8616,
+  "cost": 0.000435096,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 2816,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000435096,
+   "upstream_inference_prompt_cost": 0.000117636,
+   "upstream_inference_completions_cost": 0.00031746
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 36,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

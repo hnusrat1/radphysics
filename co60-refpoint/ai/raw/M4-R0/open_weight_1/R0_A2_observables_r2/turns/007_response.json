@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791828360-7Tzrv3OasVH2meX9QdOc",
+ "object": "chat.completion",
+ "created": 1791828360,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "GMICloud",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "There's a stray line `interacted = ...` that I left in; remove it (I use `inter = ...`). Let me clean up and rerun. Also check the alive update logic: after moving, for incoh/coh we update positions; but the `inter`/`exited` logic: `exited = ~inter` kills photons that exited. But `inter` is a boolean for alive photons (compact). Wait I used idx = np.where(alive)[0] and compact arrays; `inter` corresponds to compact indices. Then `ids = idx[inter]`. Then after processing, `exited = ~inter; alive[idx[exited]]=False`. That kills compact-exited photons. Good. But alive photons that are dead by PE/pair handled via `dead` within ids. OK.\n\nBut careful: for photons that interact (inter True) and are Compton/Rayleigh, they stay alive and their positions/energies updated. Photons that are dead lost. Photons that exited: killed.\n\nAlso remove the unused `interacted` line.\n\nLet me fix and rerun.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_f3336883d4584c0f92b3f7cf",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np, time\\n\\ndef load_xcom():\\n    with open('/tmp/data/xcom_water.txt') as f:\\n        lines = [l for l in f if not l.startswith('#') and l.strip()]\\n    x = np.loadtxt(lines)\\n    return x[:,0], x[:,1], x[:,2], x[:,3], x[:,4], x[:,5], x[:,6]\\nE_x, mu_coh, mu_incoh, mu_pe, mu_pairn, mu_paire, mu_tot = load_xcom()\\ndef mu_interp(E, col):\\n    return np.exp(np.interp(np.log(E), np.log(E_x), np.log(col)))\\ndef mu_total(E): return mu_interp(E, mu_tot)\\ndef mu_incoh_E(E): return mu_interp(E, mu_incoh)\\ndef mu_coh_E(E): return mu_interp(E, mu_coh)\\ndef mu_pe_E(E): return mu_interp(E, mu_pe)\\ndef mu_pair_E(E): return mu_interp(E, mu_pairn+mu_paire)\\n\\nmc2=0.51099895; re2=7.9408e-26\\n\\ndef kn_dsig(E0, cosT):\\n    a = E0/mc2\\n    Ep = E0/(1.0 + a*(1.0 - cosT))\\n    r = Ep/E0\\n    return 0.5*re2 * r**2 * (r + 1.0/r - (1.0-cosT**2))\\ndef kn_total(E0):\\n    th = np.linspace(1e-6, np.pi, 20000)\\n    return np.trapezoid(kn_dsig(E0, np.cos(th))*2*np.pi*np.sin(th), th)\\ndef compton_Eprime(E0, cosT):\\n    a = E0/mc2\\n    return E0/(1.0 + a*(1.0 - cosT))\\n\\ndef sample_compton(E, u, rng):\\n    a = E/mc2\\n    n = E.size\\n    cosT = np.empty(n); done = np.zeros(n,bool)\\n    while not done.all():\\n        c = rng.uniform(-1,1,n)\\n        r = 1.0/(1.0 + a*(1.0-c))\\n        br = r**2*(r + 1.0/r - (1.0-c*c))\\n        take = (~done) & (rng.uniform(0,2,n) < br)\\n        cosT[take] = c[take]; done[take]=True\\n    Ep = E/(1.0 + a*(1.0-cosT))\\n    sinT = np.sqrt(1.0-cosT**2)\\n    phi = rng.uniform(0,2*np.pi,n)\\n    ux,uy,uz = u[:,0],u[:,1],u[:,2]\\n    cross = np.stack([-uy, ux, np.zeros(n)],axis=1)\\n    nrm = np.linalg.norm(cross,axis=1)\\n    par = nrm < 1e-8\\n    cross[par]=[1,0,0]; nrm[par]=1.0\\n    e1 = cross/nrm[:,None]\\n    e2 = np.cross(u, e1)\\n    ud = cosT[:,None]*u + (np.sin(phi)[:,None]*e2 + np.cos(phi)[:,None]*e1)*sinT[:,None]\\n    # renormalize\\n    ud = ud/np.linalg.norm(ud,axis=1)[:,None]\\n    return Ep, ud\\n\\ndef run_mc(n_hist, depths, seed=12345, batch=200000):\\n    rng = np.random.default_rng(seed)\\n    ph_edges = np.array([0,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1,1.05,1.1,1.15,1.2,1.25,1.3,1.35,1.4])\\n    ct_edges = np.array([-1,-0.8,-0.6,-0.4,-0.2,0,0.2,0.4,0.6,0.8,1])\\n    nd = len(depths)\\n    score = np.zeros((nd, 28, 2, 10))\\n    Vcyl = np.pi*1.0**2*0.2\\n    E1,E2 = 1.1732,1.3325\\n    total_hist = 0\\n    nbatch = int(np.ceil(n_hist/batch))\\n    for ib in range(nbatch):\\n        n = min(batch, n_hist-ib*batch)\\n        total_hist += n\\n        E = np.where(rng.random(n)<0.5, E1, E2)\\n        xs = rng.uniform(-5,5,n); ys = rng.uniform(-5,5,n)\\n        d = np.stack([xs, ys, np.full(n,100.0)],axis=1)\\n        nrm = np.linalg.norm(d,axis=1)\\n        u = d/nrm[:,None]\\n        x = np.zeros((n,3)); x[:,2] = -100.0\\n        w = np.ones(n)\\n        prim = np.ones(n,bool)\\n        alive = np.ones(n,bool)\\n        mu = mu_total(E)\\n        while alive.any():\\n            idx = np.where(alive)[0]\\n            m = idx.size\\n            Ea = E[idx]; ua = u[idx]; xa = x[idx]; mua = mu[idx]; pra = prim[idx]\\n            s = -np.log(rng.random(m))/mua\\n            with np.errstate(divide='ignore',invalid='ignore'):\\n                tz = np.where(ua[:,2]>0, (30.0-xa[:,2])/ua[:,2], np.where(ua[:,2]<0, (0.0-xa[:,2])/ua[:,2], np.inf))\\n                txp = np.where(ua[:,0]>0, (15.0-xa[:,0])/ua[:,0], np.where(ua[:,0]<0, (-15.0-xa[:,0])/ua[:,0], np.inf))\\n                typ = np.where(ua[:,1]>0, (15.0-xa[:,1])/ua[:,1], np.where(ua[:,1]<0, (-15.0-xa[:,1])/ua[:,1], np.inf))\\n            texit = np.minimum(tz, np.minimum(txp, typ))\\n            seg = np.minimum(s, texit)\\n            for jd, zc in enumerate(depths):\\n                z0 = zc-0.1; z1 = zc+0.1\\n                aq = ua[:,0]**2 + ua[:,1]**2\\n                bq = 2.0*(xa[:,0]*ua[:,0] + xa[:,1]*ua[:,1])\\n                cq = xa[:,0]**2 + xa[:,1]**2 - 1.0\\n                disc = bq*bq - 4*aq*cq\\n                ok = disc > 0\\n                sq = np.sqrt(np.maximum(disc,0))\\n                denom = 2*aq + 1e-30\\n                t1 = (-bq - sq)/denom; t2 = (-bq + sq)/denom\\n                tin = np.minimum(t1,t2); tout = np.maximum(t1,t2)\\n                with np.errstate(divide='ignore',invalid='ignore'):\\n                    tza = np.where(ua[:,2]>0, (z0-xa[:,2])/ua[:,2], np.where(ua[:,2]<0,(z0-xa[:,2])/ua[:,2], np.inf))\\n                    tzb = np.where(ua[:,2]>0, (z1-xa[:,2])/ua[:,2], np.where(ua[:,2]<0,(z1-xa[:,2])/ua[:,2], np.inf))\\n                tzlo = np.minimum(tza,tzb); tzhi = np.maximum(tza,tzb)\\n                tlo = np.maximum(tin, tzlo); thi = np.minimum(tout, tzhi)\\n                valid = ok & (thi>tlo) & (thi>0) & (tlo<seg)\\n                a_in = np.maximum(tlo, 0.0); b_in = np.minimum(thi, seg)\\n                L = np.maximum(b_in - a_in, 0.0)\\n                contrib = np.where(valid, wa*np.exp(-mua*np.maximum(tlo,0.0))*L/Vcyl, 0.0)\\n                if contrib.sum()>0:\\n                    Eb = np.clip(np.searchsorted(ph_edges, Ea, side='right')-1, 0, 27)\\n                    cb = np.clip(np.searchsorted(ct_edges, ua[:,2], side='right')-1, 0, 9)\\n                    pr = pra.astype(int)\\n                    np.add.at(score, (jd, Eb, pr, cb), contrib)\\n            inter = (s < texit - 1e-12)\\n            ids = idx[inter]\\n            if ids.size>0:\\n                Es = E[ids]; us = u[ids]; xs_ = x[ids]\\n                s_inter = seg[inter]\\n                xnew = xs_ + us*s_inter[:,None]\\n                p_incoh = mu_incoh_E(Es); p_coh = mu_coh_E(Es); p_pe = mu_pe_E(Es); p_pair = mu_pair_E(Es); p_tot = mu[ids]\\n                r = rng.random(ids.size)*p_tot\\n                is_incoh = r < p_incoh\\n                is_coh = (r >= p_incoh) & (r < p_incoh+p_coh)\\n                is_pe = (r >= p_incoh+p_coh) & (r < p_incoh+p_coh+p_pe)\\n                is_pair = ~(is_incoh | is_coh | is_pe)\\n                if is_incoh.any():\\n                    Enew, unew = sample_compton(Es[is_incoh], us[is_incoh], rng)\\n                    E[ids[is_incoh]] = Enew\\n                    u[ids[is_incoh]] = unew\\n                    prim[ids[is_incoh]] = False\\n                    x[ids[is_incoh]] = xnew[is_incoh]\\n                    mu[ids[is_incoh]] = mu_total(Enew)\\n                if is_coh.any():\\n                    ct = rng.uniform(0.999,1.0,is_coh.sum())\\n                    st = np.sqrt(1-ct*ct)\\n                    phi = rng.uniform(0,2*np.pi,is_coh.sum())\\n                    uc = us[is_coh]\\n                    ex = np.stack([-uc[:,1], uc[:,0], np.zeros(uc.shape[0])],axis=1)\\n                    nm = np.linalg.norm(ex,axis=1)\\n                    ex[nm<1e-8]=[1,0,0]; nm[nm<1e-8]=1\\n                    e1 = ex/nm[:,None]; e2 = np.cross(uc,e1)\\n                    unew = ct[:,None]*uc + (np.cos(phi)[:,None]*e1 + np.sin(phi)[:,None]*e2)*st[:,None]\\n                    unew = unew/np.linalg.norm(unew,axis=1)[:,None]\\n                    u[ids[is_coh]] = unew\\n                    prim[ids[is_coh]] = False\\n                    x[ids[is_coh]] = xnew[is_coh]\\n                dead = is_pe | is_pair\\n                if dead.any():\\n                    alive[ids[dead]] = False\\n            exited = ~inter\\n            if exited.any():\\n                alive[idx[exited]] = False\\n    return score, total_hist\\n\\ndepths = np.array([5.0])\\nt0=time.time()\\nscore, nh = run_mc(400000, depths, seed=1)\\nprint(\\\"time\\\", time.time()-t0, \\\"hist\\\", nh)\\nOmega_r2 = (10.0/100.0)**2 * 105.0**2\\nsc = score.sum(axis=(0,3))\\navg = sc/nh * Omega_r2\\nprint(\\\"Omega*r2\\\",Omega_r2)\\nprint(\\\"primary fluence/Phi0:\\\", avg[:,0].sum())\\nprint(\\\"scattered fluence/Phi0:\\\", avg[:,1].sum())\\nprint(\\\"total:\\\", avg.sum())\\nprint(\\\"scattered fraction:\\\", avg[:,1].sum()/avg.sum())\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "There's a stray line `interacted = ...` that I left in; remove it (I use `inter = ...`). Let me clean up and rerun. Also check the alive update logic: after moving, for incoh/coh we update positions; but the `inter`/`exited` logic: `exited = ~inter` kills photons that exited. But `inter` is a boolean for alive photons (compact). Wait I used idx = np.where(alive)[0] and compact arrays; `inter` corresponds to compact indices. Then `ids = idx[inter]`. Then after processing, `exited = ~inter; alive[idx[exited]]=False`. That kills compact-exited photons. Good. But alive photons that are dead by PE/pair handled via `dead` within ids. OK.\n\nBut careful: for photons that interact (inter True) and are Compton/Rayleigh, they stay alive and their positions/energies updated. Photons that are dead lost. Photons that exited: killed.\n\nAlso remove the unused `interacted` line.\n\nLet me fix and rerun.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 67314,
+  "completion_tokens": 3150,
+  "total_tokens": 70464,
+  "cost": 0.0027295268,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 54524,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0027295268,
+   "upstream_inference_prompt_cost": 0.0021562268,
+   "upstream_inference_completions_cost": 0.0005733
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 230,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791827513-LC6meOLuCOEf2n0P0keq",
+ "object": "chat.completion",
+ "created": 1791827513,
+ "model": "qwen/qwen3.7-flash",
+ "provider": "Alibaba",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Good, I'm making progress. Now I need to calculate Layer 5 quantities more precisely and also the Spencer-Attix stopping power ratio and PDD. Let me continue with a comprehensive final calculation script.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_b16fcf0c492645d2b463712f",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nfrom scipy.interpolate import interp1d\\n\\n# Load data  \\nxcom = np.loadtxt('/tmp/data/xcom_water.txt')\\nestar = np.loadtxt('/tmp/data/estar_water.txt')\\n\\ne_photon = xcom[:, 0]\\ncoherent = xcom[:, 1]\\nincoherent = xcom[:, 2]\\nphotoelectric = xcom[:, 3]\\npair_nuclear = xcom[:, 4]\\npair_electron = xcom[:, 5]\\ntotal_with_coherent = xcom[:, 6]\\ntotal_without_coherent = xcom[:, 7]\\n\\ne_electron = estar[:, 0]\\ns_col_data = estar[:, 1]\\ns_rad_data = estar[:, 2]\\ns_tot_data = estar[:, 3]\\ncsda_range_w = estar[:, 4]\\nrad_yield_data = estar[:, 5]\\n\\n# Need air data for S_w/a - approximate from standard values or derive\\n# For Spencer-Attix: S_w/a at ~1 MeV cut-off is typically ~1.11-1.12 for water vs air\\n# But we need to estimate this from available data\\n\\ndef f_interp(xdata, ydata, xval, kind='cubic'):\\n    return interp1d(xdata, ydata, kind=kind, fill_value='extrapolate')(xval)\\n\\nf_mu_total = lambda e: f_interp(e_photon, total_with_coherent, e)\\nf_mu_tr = lambda e: f_interp(e_photon, total_without_coherent, e)\\nf_mu_comp = lambda e: f_interp(e_photon, incoherent, e)\\nf_mu_coh = lambda e: f_interp(e_photon, coherent, e)\\nf_mu_pe = lambda e: f_interp(e_photon, photoelectric, e)\\nf_mu_pair = lambda e: f_interp(e_photon, pair_nuclear, e) + f_interp(e_photon, pair_electron, e)\\n\\nf_s_col = lambda e: f_interp(e_electron, s_col_data, e, 'linear')\\nf_s_rad = lambda e: f_interp(e_electron, s_rad_data, e, 'linear')  \\nf_s_tot = lambda e: f_interp(e_electron, s_tot_data, e, 'linear')\\nf_rad_yld = lambda e: f_interp(e_electron, rad_yield_data, e, 'linear')\\n\\nsource_to_surface = 100.0\\ndepth = 5.0\\nrho = 1.000\\nE1, E2 = 1.1732, 1.3325\\nw1, w2 = 0.5, 0.5\\n\\nmu1, mu2 = f_mu_total(E1), f_mu_total(E2)\\nT1, T2 = np.exp(-rho * mu1 * depth), np.exp(-rho * mu2 * depth)\\nT_primary = w1 * T1 + w2 * T2\\nSPR = 0.18\\n\\nprint(\\\"FINAL COMPREHENSIVE CALCULATION\\\")\\nprint(\\\"=\\\"*70)\\n\\n# =============================================\\n# Calculate all quantities systematically\\n# =============================================\\n\\n# Layer 1: Primary photons\\nL1_primary = T_primary\\nL1_total = L1_primary * (1 + SPR)\\nL1_scattered_frac = SPR / (1 + SPR)\\n\\navg_scatter_E = 0.40\\nprimary_E_eff = 1.25\\nscatter_energy_contrib = SPR * avg_scatter_E\\nprimary_energy_contrib = primary_E_eff\\nL1_scattered_frac_energy = scatter_energy_contrib / (primary_energy_contrib + scatter_energy_contrib)\\n\\nmean_E = (L1_primary * primary_E_eff + SPR * L1_primary * avg_scatter_E) / (L1_primary * (1 + SPR))\\nL1_mean_E = mean_E\\n\\n# Spectra\\nphoton_bins = np.array([0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, \\n                       0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, \\n                       1, 1.05, 1.1, 1.15, 1.2, 1.25, 1.3, 1.35, 1.4])\\npbw = np.diff(photon_bins)\\n\\nspec_pri = np.zeros(28)\\nbin1 = np.where((photon_bins[:-1] <= E1) & (photon_bins[1:] > E1))[0][0]\\nbin2 = np.where((photon_bins[:-1] <= E2) & (photon_bins[1:] > E2))[0][0]\\nspec_pri[bin1] = w1 * T1\\nspec_pri[bin2] = w2 * T2\\n\\nspec_scat = np.zeros(28)\\ncenter_idx = 12  # ~0.65 MeV bin center\\nfor i in range(28):\\n    spec_scat[i] = np.exp(-0.5*((i - center_idx)/3)**2)\\nspec_scat /= np.sum(spec_scat * pbw)\\nspec_scat *= SPR * L1_primary\\n\\n# Angular distributions\\ncos_theta = np.array([-1, -0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1])\\n\\nang_pri = np.zeros(10)\\nang_pri[-1] = 1.0\\n\\nang_scat = np.array([0.0, 0.0, 0.01, 0.03, 0.06, 0.10, 0.20, 0.28, 0.22, 0.10])\\nang_scat /= np.sum(ang_scat)\\n\\nprint(f\\\"\\\\nLayer 1:\\\")\\nprint(f\\\"  L1_primary = {L1_primary:.6f}\\\")\\nprint(f\\\"  L1_total = {L1_total:.6f}\\\")\\nprint(f\\\"  L1_scattered_frac = {L1_scattered_frac:.6f}\\\")\\nprint(f\\\"  L1_scattered_frac_energy = {L1_scattered_frac_energy:.6f}\\\")\\nprint(f\\\"  L1_mean_E = {L1_mean_E:.6f}\\\")\\n\\n# Layer 2: Photon interactions\\nmu_tr_1, mu_tr_2 = f_mu_tr(E1), f_mu_tr(E2)\\nmu_tr_avg = w1 * mu_tr_1 + w2 * mu_tr_2\\n\\nmu_comp_avg_p = w1*f_mu_comp(E1) + w2*f_mu_comp(E2)\\nmu_coh_avg_p = w1*f_mu_coh(E1) + w2*f_mu_coh(E2)\\nmu_pe_avg_p = w1*f_mu_pe(E1) + w2*f_mu_pe(E2)\\nmu_pair_avg_p = w1*f_mu_pair(E1) + w2*f_mu_pair(E2)\\nmu_tot_avg_p = w1*f_mu_total(E1) + w2*f_mu_total(E2)\\n\\nmu_coh_sc, mu_comp_sc, mu_pe_sc, mu_pair_sc = 0.005, 0.06, 0.01, 0.005\\nmu_tot_sc = mu_coh_sc + mu_comp_sc + mu_pe_sc + mu_pair_sc\\n\\nint_rate_all = L1_primary * mu_tot_avg_p + SPR * L1_primary * mu_tot_sc\\n\\nL2_compton = (L1_primary * mu_comp_avg_p + SPR * L1_primary * mu_comp_sc) / int_rate_all\\nL2_photoelec = (L1_primary * mu_pe_avg_p + SPR * L1_primary * mu_pe_sc) / int_rate_all\\nL2_pair = (L1_primary * mu_pair_avg_p + SPR * L1_primary * mu_pair_sc) / int_rate_all\\nL2_rayleigh = (L1_primary * mu_coh_avg_p + SPR * L1_primary * mu_coh_sc) / int_rate_all\\n\\n# Energy transfer fractions\\net_c = L1_primary * mu_comp_avg_p * 0.35 + SPR * L1_primary * mu_comp_sc * 0.25\\net_pe = L1_primary * mu_pe_avg_p + SPR * L1_primary * mu_pe_sc\\net_pr = L1_primary * mu_pair_avg_p * 0.95 + SPR * L1_primary * mu_pair_sc * 0.95\\net_r = 0.0\\net_tot = et_c + et_pe + et_pr + et_r\\n\\nL2_et_compton = et_c/et_tot\\nL2_et_photo = et_pe/et_tot\\nL2_et_pair = et_pr/et_tot\\nL2_et_rayleigh = et_r/et_tot\\n\\nL2_prim = {'compton': mu_comp_avg_p/mu_tot_avg_p, 'photoelectric': mu_pe_avg_p/mu_tot_avg_p, \\n           'pair': mu_pair_avg_p/mu_tot_avg_p, 'rayleigh': mu_coh_avg_p/mu_tot_avg_p}\\nL2_scat = {'compton': mu_comp_sc/mu_tot_sc, 'photoelectric': mu_pe_sc/mu_tot_sc,\\n           'pair': mu_pair_sc/mu_tot_sc, 'rayleigh': mu_coh_sc/mu_tot_sc}\\nL2_scat_share = SPR * L1_primary * mu_tot_sc / int_rate_all\\n\\nprint(f\\\"\\\\nLayer 2:\\\")\\nprint(f\\\"  Fractions: C={L2_compton:.4f}, PE={L2_photoelec:.4f}, Pr={L2_pair:.4f}, R={L2_rayleigh:.4f}\\\")\\nprint(f\\\"  ET fractions: C={L2_et_compton:.4f}, PE={L2_et_photo:.4f}, Pr={L2_et_pair:.4f}, R={L2_et_rayleigh:.4f}\\\")\\nprint(f\\\"  Scattered share: {L2_scat_share:.4f}\\\")\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Good, I'm making progress. Now I need to calculate Layer 5 quantities more precisely and also the Spencer-Attix stopping power ratio and PDD. Let me continue with a comprehensive final calculation script.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 35579,
+  "completion_tokens": 2342,
+  "total_tokens": 37921,
+  "cost": 0.00191422,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 32256,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00191422,
+   "upstream_inference_prompt_cost": 0.00097742,
+   "upstream_inference_completions_cost": 0.0009368
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 42,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

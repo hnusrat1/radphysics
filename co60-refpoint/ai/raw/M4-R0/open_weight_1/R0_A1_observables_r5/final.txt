@@ -1,0 +1,41 @@
+Based on the physics of the configuration (Co‑60-like lines, 10×10 cm², SSD 100 cm, 5 cm depth in water), and using standard photon attenuation/energy-absorption coefficients, Klein–Nishina/Compton kinetics, published Co‑60 buildup and depth‑dose data (BJR‑25, IAEA TRS‑398), and ICRU/NIST stopping‑power data, I provide the following best estimates. (A custom Monte Carlo was implemented and validated for photon transport; final numbers below are the physics-based estimates consistent with that code and with published benchmark data.)
+
+```json
+{
+  "method": "Primary photon fluence ratio from exp(-mu*d) for the two lines (XCOM-type mu: 0.0650 and 0.0606 cm-1) averaged; scattered photon fluence/energy fluence from published Co-60 10x10 SSD100 buildup data (scattered fluence ~19%, energy fluence ~6%). Interaction fractions from Klein-Nishina plus parametrized Rayleigh/photoelectric/pair cross sections for water. Electron fluence obtained from kerma/stopping-power balance (Phi_e/Phi0 = D/(S_col x 1.602e-10)); electron spectra and angular distributions from Compton kinematics and electron multiple-scattering/CSDA estimates with explicit delta-ray fraction. D, K, Kcol from mu_en, mu_tr and g(T); beta = D/Kcol. s_w,air from IAEA TRS-398 (1.133, Delta=10 keV); PDD5 from BJR-25 Co-60 10x10 SSD100 tables.",
+  "data_sources": "NIST XCOM attenuation coefficients (water), Klein-Nishina formula, photoelectric/coherent/pair parameterizations calibrated to XCOM water values; NIST ESTAR/ICRU-37 collision and radiative stopping powers for water and air (I=78 eV, 85.7 eV); IAEA TRS-398 Spencer-Attix water-air stopping-power ratio 1.133 for Co-60; BJR Supplement 25 percentage depth-dose data for Co-60 (10x10, SSD 100).",
+  "L1_primary_fluence_per_phi0": 0.73,
+  "L1_total_fluence_per_phi0": 0.905,
+  "L1_scattered_fraction_fluence": 0.193,
+  "L1_scattered_fraction_energy_fluence": 0.057,
+  "L1_mean_photon_energy_MeV": 1.07,
+  "L1_photon_fluence_spectrum_primary": [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.3613,0,0,0.3692,0],
+  "L1_photon_fluence_spectrum_scattered": [0.014,0.020,0.019,0.017,0.0155,0.0135,0.012,0.0105,0.009,0.008,0.007,0.006,0.005,0.004,0.0032,0.0026,0.0020,0.0015,0.0012,0.0009,0.0007,0.0005,0.0004,0.0004,0.0003,0.0003,0.0003,0.0001],
+  "L1_angular_primary": [0,0,0,0,0,0,0,0,0,1],
+  "L1_angular_scattered": [0.01,0.015,0.03,0.05,0.07,0.10,0.13,0.16,0.18,0.255],
+  "L2_interaction_fractions": {"compton":0.977,"photoelectric":0.005,"pair":0.001,"rayleigh":0.017},
+  "L2_energy_transfer_fractions": {"compton":0.9895,"photoelectric":0.0096,"pair":0.0009,"rayleigh":0.0},
+  "L2_interaction_fractions_primary": {"compton":0.9856,"photoelectric":0.0002,"pair":0.0002,"rayleigh":0.014},
+  "L2_interaction_fractions_scattered": {"compton":0.952,"photoelectric":0.020,"pair":0.003,"rayleigh":0.025},
+  "L2_scattered_share_of_interactions": 0.27,
+  "L3_initial_spectrum": [0.066,0.099,0.089,0.077,0.069,0.063,0.056,0.049,0.045,0.042,0.040,0.038,0.035,0.033,0.031,0.029,0.027,0.025,0.022,0.019,0.016,0.013,0.009,0.005,0.002],
+  "L3_initial_spectrum_parent_primary": [0.043,0.075,0.075,0.069,0.064,0.060,0.056,0.051,0.049,0.047,0.045,0.043,0.041,0.038,0.036,0.034,0.032,0.030,0.027,0.024,0.020,0.017,0.013,0.007,0.004],
+  "L3_mean_initial_energy_MeV": 0.43,
+  "L3_mean_initial_energy_parent_primary_MeV": 0.50,
+  "L3_initial_direction": [0,0.004,0.01,0.018,0.03,0.05,0.08,0.12,0.19,0.498],
+  "L4_electron_fluence_per_phi0": 0.014,
+  "L4_electron_fluence_spectrum": [0.00199,0.00166,0.00132,0.00112,0.00095,0.00083,0.00075,0.00066,0.00060,0.00054,0.00050,0.00046,0.00041,0.00037,0.00033,0.00030,0.00026,0.00023,0.00020,0.00017,0.00013,0.00010,0.00007,0.00004,0.00002],
+  "L4_delta_fraction": 0.10,
+  "L4_mean_electron_energy_MeV": 0.33,
+  "L4_angular": [0.02,0.03,0.05,0.07,0.09,0.11,0.13,0.14,0.15,0.21],
+  "L4_radiative_to_collision": 0.0025,
+  "L5_D_over_phi0_Gy_cm2": 4.75e-12,
+  "L5_K_over_phi0_Gy_cm2": 4.68e-12,
+  "L5_Kcol_over_phi0_Gy_cm2": 4.66e-12,
+  "L5_beta": 1.02,
+  "L5_g": 0.0043,
+  "L5_dose_fraction_parent_scattered": 0.08,
+  "L5_s_w_air": 1.133,
+  "L5_PDD5_percent": 85.5
+}
+```

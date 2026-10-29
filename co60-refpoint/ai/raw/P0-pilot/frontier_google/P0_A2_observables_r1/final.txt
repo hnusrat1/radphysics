@@ -1,0 +1,9 @@
+
+It is not possible to provide a complete set of the requested quantities. The problem describes a complex scenario involving particle transport (photons and electrons) through a water phantom, which necessitates a full Monte Carlo simulation or advanced transport calculations. The provided tools and data files (XCOM cross-sections and ESTAR stopping powers) contain the necessary physical data but do not include a simulation engine or the computational framework required to perform such a simulation within the given time constraints.
+
+Therefore, only a few quantities could be calculated based on direct data lookups and simple physics principles:
+
+*   **L1_primary_fluence_per_phi0**: This was calculated based on the exponential attenuation of the 2.0 MeV primary photons over 10 cm of water, using total mass attenuation coefficients from `/tmp/data/xcom_water.txt`.
+*   **L2_interaction_fractions_primary**: These were calculated using the photon interaction cross-sections (Compton, photoelectric, pair production, and Rayleigh) at 2.0 MeV for water, also obtained from `/tmp/data/xcom_water.txt`.
+*   **L1_mean_photon_energy_MeV**: Estimated as 2.0 MeV, assuming the primary photons, although attenuated, retain their initial energy.
+*   **L1_photon_fluence

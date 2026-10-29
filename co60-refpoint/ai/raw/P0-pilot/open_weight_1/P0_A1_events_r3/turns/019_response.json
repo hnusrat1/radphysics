@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791824610-8ZLJQgjUZMxUgGoYT4o7",
+ "object": "chat.completion",
+ "created": 1791824610,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "The simulation is running: 25 events from 50000 primaries in 0.2s. That's 125k primaries/sec. To get, say, 2000 events, need 50000/25*2000 = 4e6 primaries. At 125k/s \u2192 32s. That's good!\n\nBut 25 events: we have 22 compton, 3 photoelectric. No pair or rayleigh yet. With larger statistics, we should get those.\n\nLet me also check: do we have annihilation photons being added? The pair rate is low (~0.8% of interactions), and the scoring volume is small, so pair events are rare. Let me run more primaries.\n\nLet me run with 1e6 primaries to get ~500 events. Then subsample 200.\n\nBut the speed is 125k/s \u2192 1e6 takes 8 seconds. Let me do 1e6.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_d68b1bee16fd4465879c6c21",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"events = []\\nt0 = time.time()\\nrun_batch(1000000, events)\\nt1 = time.time()\\nprint(f\\\"1e6 primaries: {len(events)} events in {t1-t0:.1f}s\\\")\\nif events:\\n    cnt = Counter(e['process'] for e in events)\\n    print(cnt)\\n    # show some stats\\n    e_in = [e['e_in_MeV'] for e in events]\\n    print(\\\"E_in range:\\\", min(e_in), max(e_in))\\n    print(\\\"E_in mean:\\\", np.mean(e_in))\\n    procs = [e['process'] for e in events]\\n    for p in ['compton','photoelectric','pair','rayleigh']:\\n        sub = [e for e in events if e['process']==p]\\n        print(f\\\"{p}: {len(sub)} events\\\")\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The simulation is running: 25 events from 50000 primaries in 0.2s. That's 125k primaries/sec. To get, say, 2000 events, need 50000/25*2000 = 4e6 primaries. At 125k/s \u2192 32s. That's good!\n\nBut 25 events: we have 22 compton, 3 photoelectric. No pair or rayleigh yet. With larger statistics, we should get those.\n\nLet me also check: do we have annihilation photons being added? The pair rate is low (~0.8% of interactions), and the scoring volume is small, so pair events are rare. Let me run more primaries.\n\nLet me run with 1e6 primaries to get ~500 events. Then subsample 200.\n\nBut the speed is 125k/s \u2192 1e6 takes 8 seconds. Let me do 1e6.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 70693,
+  "completion_tokens": 424,
+  "total_tokens": 71117,
+  "cost": 0.002331994588,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 57344,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.002331994588,
+   "upstream_inference_prompt_cost": 0.002254945308,
+   "upstream_inference_completions_cost": 7.704928e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 199,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

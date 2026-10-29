@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791824680-Xmxg6kLd2veU6irXsB12",
+ "object": "chat.completion",
+ "created": 1791824680,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "The averages are stable to about 0.3\u20130.5%. Next, the percent depth dose at 5 cm, using a dedicated multi-seed depth scan around dmax.",
+    "refusal": null,
+    "reasoning": "I'm seeing the scattered fraction settle around 0.367\u00b10.003, but seed 11 stands out as an outlier at 0.388, nearly 7\u03c3 from the mean of the other seeds (0.363\u00b10.0028). That seems too extreme to be normal statistical fluctuation, so I suspect the NEE estimator has heavy-tailed variance behavior worth investigating further.\n\nI'm tracking scattered energy and dose fractions (0.181 and 0.189) along with the L5_K value, and now I need to compute PDD5 more accurately by running dedicated depth-based simulations. I'm planning to run multiple seeds at N=4e5 across depths [0.25, 0.5, 0.75, 5.0] to compute PDD5 as the ratio of primary plus scatter dose at 5cm versus 0.5cm, while keeping memory usage manageable by limiting photon counts and checking for consistency in how the depth values order relative to each other.\n\nSince D(0.25) exceeds D(0.5) in the K-based calculation, and standard Co-60 depth of maximum dose is known to be 0.5 cm, I'll use D(0.5) as the dmax value for normalization.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01DJPmzU3rzfRVU5Mba4bSk2",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\npdd = r'''\\nimport sys, time, gc\\nsys.path.insert(0,'/tmp/work')\\nimport numpy as np, phys, mc\\ndepths=[0.25,0.5,0.75,1.0,5.0]\\nacc=[]\\nt=time.time()\\nfor s in range(6):\\n    r=mc.run(400000,depths,np.random.default_rng(900+s),store_for=5.0)\\n    acc.append(r['dscat']/400000*phys.OMEGA*105**2)\\n    gc.collect()\\nacc=np.array(acc)\\nmu=phys.mu_tot(phys.Lines)\\ndef prim(z):\\n    return sum(0.5*phys.ETR(E)*np.exp(-m*z)*(105/(100+z))**2 for E,m in zip(phys.Lines,mu))\\nP=np.array([prim(z) for z in depths])\\nD=P[None,:]+acc\\nfor i,z in enumerate(depths):\\n    print(z, 'prim',P[i],'scat', acc[:,i].mean(), 'sem', acc[:,i].std(ddof=1)/np.sqrt(len(acc)), 'D', D[:,i].mean())\\npdd=100*D[:,4]/D[:,1]\\nprint('PDD5 with dmax=0.5:', pdd.mean(), pdd.std(ddof=1)/np.sqrt(len(pdd)))\\npdd2=100*D[:,4]/D[:,0]\\nprint('PDD5 vs 0.25:', pdd2.mean())\\nprint('time', time.time()-t)\\n'''\\nopen('/tmp/work/pdd.py','w').write(pdd)\\nimport subprocess\\nr=subprocess.run(['python3','/tmp/work/pdd.py'],capture_output=True,text=True,cwd='/tmp/work')\\nprint(r.stdout, r.stderr[-2000:])\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I'm seeing the scattered fraction settle around 0.367\u00b10.003, but seed 11 stands out as an outlier at 0.388, nearly 7\u03c3 from the mean of the other seeds (0.363\u00b10.0028). That seems too extreme to be normal statistical fluctuation, so I suspect the NEE estimator has heavy-tailed variance behavior worth investigating further.\n\nI'm tracking scattered energy and dose fractions (0.181 and 0.189) along with the L5_K value, and now I need to compute PDD5 more accurately by running dedicated depth-based simulations. I'm planning to run multiple seeds at N=4e5 across depths [0.25, 0.5, 0.75, 5.0] to compute PDD5 as the ratio of primary plus scatter dose at 5cm versus 0.5cm, while keeping memory usage manageable by limiting photon counts and checking for consistency in how the depth values order relative to each other.\n\nSince D(0.25) exceeds D(0.5) in the K-based calculation, and standard Co-60 depth of maximum dose is known to be 0.5 cm, I'll use D(0.5) as the dmax value for normalization.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "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.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 142244,
+  "completion_tokens": 1418,
+  "total_tokens": 143662,
+  "cost": 0.01145505,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 140856,
+   "cache_write_tokens": 1386,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.01145505,
+   "upstream_inference_prompt_cost": 0.00791005,
+   "upstream_inference_completions_cost": 0.003545
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 696,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

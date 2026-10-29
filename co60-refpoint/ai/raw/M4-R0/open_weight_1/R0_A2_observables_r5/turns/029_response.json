@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791831504-oreW8Mv1bz2OcrOx8VXD",
+ "object": "chat.completion",
+ "created": 1791831504,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "GMICloud",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "The placeholder has problems with in-place array updates. Let me rewrite the electron transport loop cleanly. The standard approach: work with arrays and rebuild alive arrays each step:\n\n```\npos_a = pos[alive]; dir_a=dir[alive]; T_a=T[alive] ...\neach step: compute, then set pos_a = pnew[~dead] etc, and update alive subset.\n```\nBut then `alive` must be tracked on the reduced arrays, not the original. Simplest: maintain working arrays `cp, cd, cT, cpar, ckind, cw, cdl` that shrink each step (drop dead). Since shrinking is fine (dead electrons never revive), just do:\n```\nwhile len(cT)>0 and step<maxsteps:\n    ...compute on cT...\n    keep = ~dead\n    cp = pnew[keep]; cd=newd[keep]; cT=Tnew[keep]; cpar=cpar[keep]; ckind=ckind[keep]; cw=cw[keep]; cdl=cdl[keep]\n```\nThat's clean. Let me rewrite the module.\n\nAlso the delta queue: new deltas are appended to `queue` (a list of arrays); we process with a while queue loop. Each queue element is a batch of electrons.\n\nNote on `sample_delta_energy`: my rejection loop has a bug: `remaining` indexing. Let me rewrite more carefully:\n\n```\ndef sample_delta_energy(T, n, rng):\n    gamma...; C...; Tc=TCUT; U=(T-Tc)/2.0\n    out=np.empty(n)\n    a=1/Tc; b=1/U\n    # first try\n    u=rng.random(n); Ts=1.0/(a-u*(a-b))\n    dsdT=C*(1/Ts**2+1/(T-Ts)**2-(2gamma-1)/(gamma\u00b2 Ts(T-Ts)))\n    env=2*C/Ts**2\n    acc=rng.random(n)<dsdT/env\n    out[acc]=Ts[acc]\n    bad=~acc\n    while bad.any():\n        nb=bad.sum()\n        u=rng.random(nb); Ts2=1.0/(a-u*(a-b))\n        dsd=C*(1/Ts2**2+1/(T[bad]-Ts2)**2-(2gamma-1)/(gamma\u00b2*Ts2*(T[bad]-Ts2)))\n        env2=2*C/Ts2**2\n        acc2=rng.random(nb)<dsd/env2\n        out[bad[bad]]... # need index array\n    ...\n```\nLet me use an integer index array for \"rem\". \n\nActually let me simplify: since the acceptance of the envelope 2C/Ts\u00b2 is decent (the ratio (d\u03c3/dTs)/(2C/Ts\u00b2) = 0.5[1+(Ts/(T-Ts))\u00b2 -(2\u03b3-1)/\u03b3\u00b2 Ts/(T-Ts)] ranges from ~0.5 (Ts\u21920) to ~0.5*[2-(2\u03b3-1)/\u03b3\u00b2] at Ts=T/2 \u2248 0.7), acceptance 50-70%. A while loop with a few iterations is fine.\n\nLet me rewrite the whole electron MC cleanly.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_2c7906fdeb6248c2bdc1a2f9",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"code = r'''\\nimport numpy as np, time\\n\\nestar = np.loadtxt('/tmp/data/estar_water.txt', comments='#')\\neT = estar[:,0]; Scol = estar[:,1]; Srad = estar[:,2]; Yy = estar[:,5]\\nlnT = np.log(eT)\\ndef scol_at(T):\\n    return np.exp(np.interp(np.log(np.clip(T,1e-4,20.)), lnT, np.log(Scol)))\\ndef srad_at(T):\\n    return np.exp(np.interp(np.log(np.clip(T,1e-4,20.)), lnT, np.log(Srad)))\\n\\nm_e=0.5109989461\\nX0=36.08\\nEs=21.2\\nTCUT=0.010\\nn_e=3.343e23\\nr02=2.8179403227e-13**2\\n\\ndef moller_rate(T):\\n    beta2 = 1.0 - 1.0/((T/m_e+1.0)**2)\\n    gamma = 1.0+T/m_e\\n    C = 2*np.pi*r02*m_e/np.maximum(beta2,1e-6)\\n    Tc=TCUT\\n    bracket = 1.0/Tc - 1.0/(T-Tc) + (2*gamma-1)/(gamma*gamma*T)*np.log(Tc/(T-Tc))\\n    return n_e*C*bracket\\n\\ndef sample_delta_energy(T_arr, rng):\\n    T_arr=np.asarray(T_arr,float)\\n    n=len(T_arr)\\n    gamma=1.0+T_arr/m_e\\n    beta2=1.0-1.0/(gamma*gamma)\\n    C=2*np.pi*r02*m_e/np.maximum(beta2,1e-6)\\n    Tc=TCUT\\n    U=(T_arr-Tc)/2.0\\n    a=1.0/Tc; b=1.0/U\\n    out=np.empty(n)\\n    rem=np.arange(n)\\n    for it in range(30):\\n        if len(rem)==0: break\\n        nb=len(rem)\\n        u=rng.random(nb)\\n        Ts=1.0/(a - u*(a-b[rem]))\\n        dsd=C[rem]*(1.0/Ts**2 + 1.0/(T_arr[rem]-Ts)**2 - (2*gamma[rem]-1)/(gamma[rem]**2*Ts*(T_arr[rem]-Ts)))\\n        env=2.0*C[rem]/Ts**2\\n        acc=rng.random(nb) < dsd/env\\n        out[rem[acc]]=Ts[acc]\\n        rem=rem[~acc]\\n    if len(rem)>0:\\n        u=rng.random(len(rem))\\n        out[rem]=Tc*np.exp(u*np.log(U[rem]/Tc))\\n    return out\\n\\ndef rot_dir(u, theta, phi):\\n    a = np.column_stack([-u[:,1], u[:,0], np.zeros(len(u))])\\n    na=np.sqrt(a[:,0]**2+a[:,1]**2)\\n    bad=na<1e-8\\n    a[bad]=[1,0,0]\\n    na=np.sqrt(a[:,0]**2+a[:,1]**2+a[:,2]**2)\\n    a=a/np.maximum(na,1e-30)[:,None]\\n    b=np.cross(u,a)\\n    ct=np.cos(theta); st=np.sin(theta)\\n    return u*ct[:,None] + st[:,None]*(a*np.cos(phi)[:,None]+b*np.sin(phi)[:,None])\\n\\ndef electron_run(src_pos, src_dir, src_T, src_par, src_kind, weights, depths, seed=1,\\n                 maxsteps=500, verbose=True):\\n    rng=np.random.default_rng(seed)\\n    depths=np.asarray(depths,float)\\n    nsc=len(depths)\\n    dose=np.zeros(nsc); dose_scat=np.zeros(nsc)\\n    i5=int(np.argmin(np.abs(depths-5.0)))\\n    flu_tot5=0.0; flu_delta5=0.0; flu_e_spectrum=np.zeros(25); flu_angular=np.zeros(10)\\n    rad_col_num=0.0; rad_col_den=0.0\\n    e_edges=np.array([0.01,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1.0,1.05,1.1,1.15,1.2,1.4])\\n    cos_edges=np.linspace(-1,1,11)\\n    queue=[(src_pos.astype(np.float64), src_dir.astype(np.float64), src_T.astype(np.float64),\\n            src_par.astype(np.int8), src_kind.astype(np.int8), weights.astype(np.float64),\\n            np.zeros(len(src_T),dtype=bool))]\\n    n_batches=0; total_steps=0\\n    t0=time.time()\\n    while queue:\\n        cp,cd,cT,cpar,ckind,cw,cdl = queue.pop(0)\\n        n0=len(cT)\\n        if n0==0: continue\\n        n_batches+=1\\n        step=0\\n        while len(cT)>0 and step<maxsteps:\\n            step+=1; total_steps+=len(cT)\\n            Sc=scol_at(cT); Sr=srad_at(cT)\\n            ds=np.minimum(0.02, 0.08*cT/np.maximum(Sc,1e-6))\\n            dEc=Sc*ds; dEr=Sr*ds\\n            # delta production\\n            mask_d = cT>0.05\\n            if mask_d.any():\\n                rate=moller_rate(cT[mask_d])\\n                p_pois=np.maximum(rate*ds[mask_d],0.0)\\n                nd=rng.poisson(p_pois)\\n                if nd.sum()>0:\\n                    reps=np.repeat(np.arange(mask_d.sum()), nd)\\n                    Ts=sample_delta_energy(cT[mask_d][reps], rng)\\n                    cosf=np.sqrt(np.maximum(Ts*(cT[mask_d][reps]+2*m_e)/(cT[mask_d][reps]*(Ts+2*m_e)),0))\\n                    cosf=np.minimum(cosf,1.0)\\n                    phid=rng.uniform(0,2*np.pi,len(Ts))\\n                    th=np.arccos(cosf)\\n                    newd=rot_dir(cd[mask_d][reps], th, phid)\\n                    queue.append((cp[mask_d][reps], newd, Ts, cpar[mask_d][reps], ckind[mask_d][reps],\\n                                  cw[mask_d][reps], np.ones(len(Ts),dtype=bool)))\\n            # multiple scattering rotation\\n            pc=np.sqrt(np.maximum(cT*(cT+2*m_e),0)); beta=pc/(cT+m_e)\\n            theta_sig=np.sqrt(2.0)*Es/np.maximum(beta*pc,1e-6)*np.sqrt(ds/X0)\\n            theta_sig=np.minimum(theta_sig,2.0)\\n            th2=rng.rayleigh(theta_sig)\\n            phi2=rng.uniform(0,2*np.pi,len(cT))\\n            newd=rot_dir(cd, th2, phi2)\\n            # advance\\n            dEc2=dEc; dEr2=dEr\\n            pmid = cp + newd*ds[:,None]*0.5\\n            pnew = cp + newd*ds[:,None]\\n            Tnew = cT - (dEc2+dEr2)\\n            # scoring\\n            r2=pmid[:,0]**2+pmid[:,1]**2\\n            for kd,zd in enumerate(depths):\\n                mask=(np.abs(pmid[:,2]-zd)<=0.1)&(r2<=1.0)\\n                if mask.any():\\n                    add=dEc2[mask]*cw[mask]\\n                    dose[kd]+=add.sum()\\n                    dose_scat[kd]+=add[ cpar[mask]==0 ].sum()\\n            m5=(np.abs(pmid[:,2]-depths[i5])<=0.1)&(r2<=1.0)\\n            if m5.any():\\n                flu_tot5 += (ds[m5]*cw[m5]).sum()\\n                flu_delta5 += (ds[m5]*cdl[m5]*cw[m5]).sum()\\n                bin_e=np.clip(np.searchsorted(e_edges, cT[m5],'right')-1,0,24)\\n                np.add.at(flu_e_spectrum, bin_e, ds[m5]*cw[m5])\\n                bin_c=np.clip(np.searchsorted(cos_edges, newd[m5][:,2],'right')-1,0,9)\\n                np.add.at(flu_angular, bin_c, ds[m5]*cw[m5])\\n                rad_col_num += (Sr[m5]*ds[m5]*cw[m5]).sum()\\n                rad_col_den += (Sc[m5]*ds[m5]*cw[m5]).sum()\\n            # kill\\n            rnew=np.sqrt(pnew[:,0]**2+pnew[:,1]**2)\\n            dead=(Tnew<TCUT)|(rnew>5.5)|(pnew[:,2]<-1.5)|(pnew[:,2]>15.0)\\n            keep=~dead\\n            cp=pnew[keep]; cd=newd[keep]; cT=Tnew[keep]; cpar=cpar[keep]\\n            ckind=ckind[keep]; cw=cw[keep]; cdl=cdl[keep]\\n        if verbose and n_batches%5==0:\\n            print(f'  batch {n_batches} done, queue {len(queue)}, elapsed {time.time()-t0:.1f}s')\\n    if verbose:\\n        print(f'electron_run done: batches={n_batches}, total_steps={total_steps}, elapsed {time.time()-t0:.1f}s')\\n    return dict(dose=dose, dose_scat=dose_scat, flu_tot5=flu_tot5, flu_delta5=flu_delta5,\\n                flu_e_spectrum=flu_e_spectrum, flu_angular=flu_angular,\\n                rad_col_num=rad_col_num, rad_col_den=rad_col_den, i5=i5)\\n'''\\nopen('/tmp/electronmc.py','w').write(code)\\nprint('written')\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The placeholder has problems with in-place array updates. Let me rewrite the electron transport loop cleanly. The standard approach: work with arrays and rebuild alive arrays each step:\n\n```\npos_a = pos[alive]; dir_a=dir[alive]; T_a=T[alive] ...\neach step: compute, then set pos_a = pnew[~dead] etc, and update alive subset.\n```\nBut then `alive` must be tracked on the reduced arrays, not the original. Simplest: maintain working arrays `cp, cd, cT, cpar, ckind, cw, cdl` that shrink each step (drop dead). Since shrinking is fine (dead electrons never revive), just do:\n```\nwhile len(cT)>0 and step<maxsteps:\n    ...compute on cT...\n    keep = ~dead\n    cp = pnew[keep]; cd=newd[keep]; cT=Tnew[keep]; cpar=cpar[keep]; ckind=ckind[keep]; cw=cw[keep]; cdl=cdl[keep]\n```\nThat's clean. Let me rewrite the module.\n\nAlso the delta queue: new deltas are appended to `queue` (a list of arrays); we process with a while queue loop. Each queue element is a batch of electrons.\n\nNote on `sample_delta_energy`: my rejection loop has a bug: `remaining` indexing. Let me rewrite more carefully:\n\n```\ndef sample_delta_energy(T, n, rng):\n    gamma...; C...; Tc=TCUT; U=(T-Tc)/2.0\n    out=np.empty(n)\n    a=1/Tc; b=1/U\n    # first try\n    u=rng.random(n); Ts=1.0/(a-u*(a-b))\n    dsdT=C*(1/Ts**2+1/(T-Ts)**2-(2gamma-1)/(gamma\u00b2 Ts(T-Ts)))\n    env=2*C/Ts**2\n    acc=rng.random(n)<dsdT/env\n    out[acc]=Ts[acc]\n    bad=~acc\n    while bad.any():\n        nb=bad.sum()\n        u=rng.random(nb); Ts2=1.0/(a-u*(a-b))\n        dsd=C*(1/Ts2**2+1/(T[bad]-Ts2)**2-(2gamma-1)/(gamma\u00b2*Ts2*(T[bad]-Ts2)))\n        env2=2*C/Ts2**2\n        acc2=rng.random(nb)<dsd/env2\n        out[bad[bad]]... # need index array\n    ...\n```\nLet me use an integer index array for \"rem\". \n\nActually let me simplify: since the acceptance of the envelope 2C/Ts\u00b2 is decent (the ratio (d\u03c3/dTs)/(2C/Ts\u00b2) = 0.5[1+(Ts/(T-Ts))\u00b2 -(2\u03b3-1)/\u03b3\u00b2 Ts/(T-Ts)] ranges from ~0.5 (Ts\u21920) to ~0.5*[2-(2\u03b3-1)/\u03b3\u00b2] at Ts=T/2 \u2248 0.7), acceptance 50-70%. A while loop with a few iterations is fine.\n\nLet me rewrite the whole electron MC cleanly.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 121192,
+  "completion_tokens": 3130,
+  "total_tokens": 124322,
+  "cost": 0.004010552,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 104225,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.004010552,
+   "upstream_inference_prompt_cost": 0.003440892,
+   "upstream_inference_completions_cost": 0.00056966
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 703,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

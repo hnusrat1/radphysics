@@ -1,0 +1,9 @@
+{
+ "stdout": "",
+ "stderr": "Traceback (most recent call last):\n  File \"/tmp/work/_call_027.py\", line 7, in <module>\n    res=emc.run_electron_mc(5.0,20000,seed=101,src=src)\n  File \"/tmp/emc.py\", line 186, in run_electron_mc\n    pos,d,E0,parent,ispos,w_el,N_birth=sample_sources(z0,src,N_el,rng,R_lat=R_lat,zr=zr)\n                                       ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/emc.py\", line 148, in sample_sources\n    zsel=np.interp(rng.uniform(0,1,N_el),cdf,zg)\n  File \"/opt/venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py\", line 1686, in interp\n    return interp_func(x, xp, fp, left, right)\nValueError: fp and xp are not of the same length.\n",
+ "exit_code": 1,
+ "timed_out": false,
+ "wall_s": 1.0,
+ "stdout_truncated": false,
+ "stderr_truncated": false
+}

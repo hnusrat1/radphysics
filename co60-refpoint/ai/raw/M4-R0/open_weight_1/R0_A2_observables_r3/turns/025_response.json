@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791830285-xRezkqzFI345gJbaQ6Eb",
+ "object": "chat.completion",
+ "created": 1791830285,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "GMICloud",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Bug: np.histogram(bins=EG) with EG length 150 gives 149 bins; pdf_hist has 149 elements; need to pad to 150 (pdf per MeV, undefined above Emax... use edges = append EG with last+something). Let me fix compton_pdf_grid to produce pdf on the same grid EG: use np.histogram(Ee, bins=np.append(EG, EG[-1]+0.05)) \u2192 150 bins; widths = np.diff(np.append(EG,EG[-1]+0.05)) \u2192 150.\n\nAlso note in build_S0, the delta-function injection uses (EG[1]-EG[0]) as bin width \u2014 on a log grid that's not the local width, but for our purpose (small PE/pair contributions), fine-ish. Let me use local width: widths=np.gradient(EG); S0[i]+=w*mpe/widths[i].\n\nLet me fix and rerun.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_02ccda71c6f4472b81ca572f",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nfrom scipy.interpolate import interp1d\\nme=0.51099895\\nr0=2.8179403e-13; NA=6.02214076e23; Ne_w=NA*(10.0/18.015268)\\nd=np.loadtxt('/tmp/data/xcom_water.txt',comments='#')\\n_Em=d[:,0]; _incoh=d[:,2]; _pe=d[:,3]; _pair=d[:,4]+d[:,5]\\nf_incoh=interp1d(_Em,_incoh,bounds_error=False,fill_value=(_incoh[0],_incoh[-1]))\\nf_pe=interp1d(_Em,_pe,bounds_error=False,fill_value=(_pe[0],_pe[-1]))\\nf_pair=interp1d(_Em,_pair,bounds_error=False,fill_value=(_pair[0],_pair[-1]))\\nd2=np.loadtxt('/tmp/data/estar_water.txt',comments='#')\\n_Ee=d2[:,0]; _Sc=d2[:,1]; _Sr=d2[:,2]; _St=d2[:,3]\\nf_Sc=interp1d(_Ee,_Sc,bounds_error=False,fill_value=(_Sc[0],_Sc[-1]))\\nf_Sr=interp1d(_Ee,_Sr,bounds_error=False,fill_value=(_Sr[0],_Sr[-1]))\\nf_St=interp1d(_Ee,_St,bounds_error=False,fill_value=(_St[0],_St[-1]))\\nEL_EDGES=np.array([0.01,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,\\n                   0.75,0.8,0.85,0.9,0.95,1,1.05,1.1,1.15,1.2,1.4])\\nPH_EDGES=np.array([0,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,\\n                   0.8,0.85,0.9,0.95,1,1.05,1.1,1.15,1.2,1.25,1.3,1.35,1.4])\\nphc=(PH_EDGES[:-1]+PH_EDGES[1:])/2\\nE1=1.1732; E2=1.3325\\n\\ndef kn_ratio(E,mu):\\n    a=E/me; r=1/(1+a*(1-mu)); return r*r*(r+1/r-(1-mu**2))\\ndef compton_pdf_grid(E, EG):\\n    a=E/me\\n    mu=np.linspace(-1+1e-9,1-1e-9,6000)\\n    r=1/(1+a*(1-mu)); Ep=E*r; Ee=E-Ep\\n    dmu=mu[1]-mu[0]\\n    w=2*np.pi*kn_ratio(E,mu)*dmu\\n    dP=w; tot=dP.sum()\\n    edges=np.append(EG, EG[-1]+0.05)\\n    pdf_hist,_=np.histogram(Ee,bins=edges,weights=dP/tot)\\n    widths=np.diff(edges)\\n    return pdf_hist/widths\\n\\ndef moller_dsdT(Ep,T):\\n    gamma=(Ep+me)/me; b2=1-1/gamma**2\\n    pref=2*np.pi*r0**2*me/b2\\n    term=1/T**2+1/(Ep-T)**2-(2*gamma-1)/gamma**2/(T*(Ep-T))+((gamma-1)/gamma)**2/me**2\\n    return pref*term\\n\\ndef solve_fluence(S0, EG, iters=60):\\n    N=len(EG); dE=np.gradient(EG)\\n    St=f_St(EG)\\n    def cumint(f):\\n        vals=f*dE; c=np.zeros(N); c[-1]=vals[-1]/2\\n        for i in range(N-2,-1,-1): c[i]=c[i+1]+(vals[i]+vals[i+1])/2\\n        return c\\n    K=np.zeros((N,N))\\n    for j in range(N):\\n        limit=EG[j]/2; iend=np.searchsorted(EG,limit,side='right')\\n        if iend>0: K[j,:iend]=Ne_w*moller_dsdT(EG[j],EG[:iend])\\n    I0=cumint(S0)\\n    Phi=np.zeros(N)\\n    for it in range(iters):\\n        Sd=K.T.dot(Phi*dE)\\n        Id=cumint(Sd)\\n        Phi=np.maximum((I0+Id)/St,0)\\n    Phi_p0=I0/St\\n    return Phi, Phi_p0\\n\\nr=np.load('mc_results.npz',allow_pickle=True)\\nVcyl=np.pi*0.2; N=int(r['N']); i5=np.argmin(abs(r['depths']-5.0))\\nprim_phi=0.5*(np.exp(-0.0653626*5)+np.exp(-0.06122524*5))\\nk=prim_phi/(r['prim_tl'][i5]/Vcyl/N)\\nspec_scat_per=r['spec_scat']/Vcyl/N*k\\nf1=0.5*np.exp(-0.0653626*5); f2=0.5*np.exp(-0.06122524*5)\\ngroups_all=[(E1,f1),(E2,f2)]+[(phc[i],spec_scat_per[i]) for i in range(28) if spec_scat_per[i]>0]\\ngroups_prim=[(E1,f1),(E2,f2)]\\ngroups_scat=[(phc[i],spec_scat_per[i]) for i in range(28) if spec_scat_per[i]>0]\\n\\nEG=np.exp(np.linspace(np.log(0.010),np.log(1.4),150))\\nwidths=np.gradient(EG)\\ndef build_S0(groups, EG, include_positron=False):\\n    S0=np.zeros(len(EG))\\n    for E,w in groups:\\n        minc=f_incoh(E)\\n        if minc>0: S0+=w*minc*compton_pdf_grid(E,EG)\\n        mpe=f_pe(E)\\n        if mpe>0:\\n            i=np.argmin(abs(EG-E)); S0[i]+=w*mpe/widths[i]\\n        mp=f_pair(E)\\n        if mp>0 and E>1.022:\\n            Te=(E-1.022)/2; i=np.argmin(abs(EG-Te))\\n            S0[i]+=(2 if include_positron else 1)*w*mp/widths[i]\\n    return S0\\n\\nS0_all=build_S0(groups_all,EG); S0_p=build_S0(groups_prim,EG); S0_s=build_S0(groups_scat,EG)\\nprint(\\\"S0 integrals:\\\",np.trapz(S0_all,EG),np.trapz(S0_p,EG),np.trapz(S0_s,EG))\\nPhi_all,Phi_p0=solve_fluence(S0_all,EG)\\nPhi_prim,_=solve_fluence(S0_p,EG)\\nPhi_scat,_=solve_fluence(S0_s,EG)\\n\\ndef fluence_bins(EG,Phi,edges):\\n    out=np.zeros(len(edges)-1)\\n    for i in range(len(edges)-1):\\n        m=(EG>=edges[i])&(EG<edges[i+1])\\n        out[i]=np.trapz(Phi[m],EG[m]) if m.sum()>1 else 0.0\\n    return out\\n\\nL4_spec_all=fluence_bins(EG,Phi_all,EL_EDGES)\\nL4_flu_tot=L4_spec_all.sum()\\nL4_spec_p0=fluence_bins(EG,Phi_p0,EL_EDGES)\\nL4_spec_prim=fluence_bins(EG,Phi_prim,EL_EDGES)\\nL4_spec_scat=fluence_bins(EG,Phi_scat,EL_EDGES)\\nprint(\\\"L4 fluence/Phi0 total:\\\",L4_flu_tot,\\\" primary-only(no delta):\\\",L4_spec_p0.sum())\\nprint(\\\"delta fraction:\\\",1-L4_spec_p0.sum()/L4_flu_tot)\\nprint(\\\"mean electron energy:\\\",np.trapz(EG*Phi_all,EG)/np.trapz(Phi_all,EG))\\nprint(\\\"primary-parent fluence:\\\",L4_spec_prim.sum(),\\\" scattered-parent:\\\",L4_spec_scat.sum())\\nSc=f_Sc(np.maximum(EG,0.011)); Sr=f_Sr(np.maximum(EG,0.011))\\nprint(\\\"rad/coll:\\\",np.trapz(Phi_all*Sr,EG)/np.trapz(Phi_all*Sc,EG))\\nprint(\\\"L4 spectrum:\\\",np.round(L4_spec_all,5))\\nnp.savez('fluence_results.npz',EG=EG,Phi_all=Phi_all,Phi_prim=Phi_prim,Phi_scat=Phi_scat,Phi_p0=Phi_p0,\\n         L4_spec_all=L4_spec_all,L4_flu_tot=L4_flu_tot)\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Bug: np.histogram(bins=EG) with EG length 150 gives 149 bins; pdf_hist has 149 elements; need to pad to 150 (pdf per MeV, undefined above Emax... use edges = append EG with last+something). Let me fix compton_pdf_grid to produce pdf on the same grid EG: use np.histogram(Ee, bins=np.append(EG, EG[-1]+0.05)) \u2192 150 bins; widths = np.diff(np.append(EG,EG[-1]+0.05)) \u2192 150.\n\nAlso note in build_S0, the delta-function injection uses (EG[1]-EG[0]) as bin width \u2014 on a log grid that's not the local width, but for our purpose (small PE/pair contributions), fine-ish. Let me use local width: widths=np.gradient(EG); S0[i]+=w*mpe/widths[i].\n\nLet me fix and rerun.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 121360,
+  "completion_tokens": 2385,
+  "total_tokens": 123745,
+  "cost": 0.0037030812,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 106796,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0037030812,
+   "upstream_inference_prompt_cost": 0.0032690112,
+   "upstream_inference_completions_cost": 0.00043407
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 204,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

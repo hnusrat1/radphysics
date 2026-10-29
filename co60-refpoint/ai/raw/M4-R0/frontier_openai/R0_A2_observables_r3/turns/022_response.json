@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791824391-V03zYCUpu0bOAd5SpoVB",
+ "object": "chat.completion",
+ "created": 1791824391,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Calculating L4 Spectrum Values**\n\nI'm looking at the L4 spectrum bin values, which seem to be calculated as total times allsp. I think I need to compute the actual list, and I might use the normalized entries from above multiplied by 0.01484. So, I should focus on outputting those numbers clearly. It\u2019s all about crunching those figures accurately, ensuring everything is well-structured for whoever might need them. Let's see how that all adds up!",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_Yi7Z88PTWMEScNXFG8Fmh78M",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import numpy as np\\nsp=np.array([.0509317,.0621707,.0660862,.0687106,.0694944,.0694424,.0683937,.0666194,.0643226,.0616436,.0586926,.0450998,.0421781,.0390792,.035784,.0322356,.0283563,.0239754,.018812,.0123115,.0084252,.0055121,.0017217,.0000013,0]);\\nprint((sp*.01484).tolist()); print(sum(sp))\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Calculating L4 Spectrum Values**\n\nI'm looking at the L4 spectrum bin values, which seem to be calculated as total times allsp. I think I need to compute the actual list, and I might use the normalized entries from above multiplied by 0.01484. So, I should focus on outputting those numbers clearly. It\u2019s all about crunching those figures accurately, ensuring everything is well-structured for whoever might need them. Let's see how that all adds up!",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzRIMjK9pA0A6hqVI-9mQlAS5XpTqUbgYhy0fS6dezkwjhs9v_AgNhfzJ14BgS-BUcDtGKM4_PMBC9vKByhJBYEtahSqadY5-ZInjX0GUUcTveyXxeEb2kTJLCi5rw2ZOznXePz7Q1k1t1SW0ttktYmKEmMczXGpDyVtafRY_r8laexOcK5s2hOV7UXpB-lU1PVQqSIOsEgECbWSBxNe3wCog9YHnO6n9oToGdrxcDcEbL7YQHKCXh2OMpF1paqsvNMVq1sod9iPW7HXmS8MHTQYsNdXOsGSHloJlk63xXav8OGHEQvaj31kb7Ew40dUZb-92czLTP5zpOTeMkHnL74TmQNQSdzAb6fJoVDRjs6xDCAA2S3JNJLkVy6cSgbyMUW1ASRGJ_VMho7t6MOBNKJ7oaM-34P07fEubmSWLMJO6jZ2KS9B_dUClaDPDiFYN9Z-HArLsYQsSlBA3AGOODvn3HnU3CGIMYmnr5GIunnbyoFTfC4DJbfNp-R1aZ-S6-a7V7pOvL9wd11KZUWwbekUoXDk7G1YjfAbrNQfhk0MzuVpMob5RpNh96WnjM8fWnUpiwrFlilFvUuTF58Dk9_3-o0U4c21l9nvqWwascdbwQuQ1Ik3pK7pavspJ3g88-zuEgXm6ajKphRiV2L2MOp0OKG4ViOF67JB3hbMT3r5SnSO_s5G64vd8rm54NmCJ17zlzr5W0Ii1MRkHHzt_jN6xryrii2isEJSM4RQ2TH1eiwcCbFdZuMRzzekLWqPCxQoU7M4dD8GZT2P9ZNfbrYiEmuSdRxvuA5lojtZCamlKRg7vaJ7q-LO2bwdSQyvG7iH-_Unu4bwMSYXUBLUJvXuDnp5yJy_Wg19MVK865KL8EwyUIJyzKjHi2cvUR_FYrLuc10Kl7QopK4CdLUbUFOCg2fAs6Mv3T58jaC7_so87DeYeokXCj08zAuAmLJDHwTjmKwbwWGLeTOikk_QhLzvZLjegJQ1txyl1xfePt3XkDVJqZfGwaD-DSSVmOt_C5uXYj02sGe1kK7a3twmjxIfEjp-wu-psk99F3ZsWHlfgxSH8pvJKF76tu59kaPJDg25XMPHFTzQVU_lDtg8DDB-p9JiS-eE2RcblInxfXzXQvCBsUA-Q7S14KUqlcnSPadmgP6_5_awCwhDNN0fnZvc2E9Xc6pPZM5YVNAuGrLtmQevZVRFTcy3D9LSQCLhFJm71pd9DTuNf69w1Go7wkMsFbRDWtCQUKyiaC7KwW_oRVjyGxbXlQJtC3PXEGZwb4j7MMM7NJd0qUa7V2mHPRYehyXt8QpbrEv3Jpjc7Raf_sUIlen6XkJ04JMwptCmH3sZMHNISTgcpP96-vd33dbH-MqfCPRyrwyQjJP8pTTIRked-Y-WSWrmmifuZGRx3aRTCznyVUs3SwFNOuTTZE-iYinUWPOoZxnj7LudzpFLL72ctUT6UsYJjp-WGNy5da3rqpR8_G3R8yHN9Wx9LyifyVX5l1XHgqnIYlzBuWIQY3rlCSouV2qpM_LR1Zaya_titZZBgvcFd8r1mYxg-FKNvciV7yvcbTrtbvw8sr25KVqdop5tMtpuY5NNiR7qpM019brAIMba054Zt-EnRx0A8OqaZUfXcizSXOgdafiNfHotbKRIcUjCmPcypAFTUlSqwdnskvJWpiRvy5BAYGRRzm6ho9-itPnOlCtHY8LObZsorz3zmpxpWhYmwPwMykv1WN5fBPfKauXyAyj1c1WqGRHo5nocnN3OIEXun3CeRm7AOrRtpKPA_AILg_kaBSyNuSYRBKK8cIcU7qdmdYayb_UyNPZzkWyweicYObxCchQ2mBsNugx-LXXEpdwkqYr6wxxTAK8W2J0uBU63uMBaaZlXC7o1i_TYwqz4S98CT3NRH-LZOLtcBqFWhrLS0zRg-7N4JvotE_H2mGiFR5l3LWHf4SmPoeBLkpWoprLTgE2PgEQczkizLQcwnah0Lg0XqN3K-GSa9T3pyh2VTqI-pxlKFSwNb7Gx9ATGwLLFiCcMFyVWb5uo-H6lxSjP_42W-q-I5ZhFzWeakj_XFerrdSzO7lQeOtpAImDdZjbUtla5KhhQIIBKcCCtn64RdkUodTrsX3c1Bmc8-SMGlL0UeCD2OSk_DWfZItFyZU8EmcBEapu2E8jcH5308Qtm2EAid_Yntw7n4Fy66wqJh7ipTF4vFD6p4L80OmzxlF8WXlYZbcYWeeihv6TjIJbi9yiIb-e9ehusFpSctfubk-5WRsrbxlHuyK97YJJiiqzCloB6B82VU09WcjPzUYI2Rui-DrhQowoKbCF5q0abp1bI5xrnlA_zm4r4qXVX5omj2DSXgCmVitenYJ9yNXu6ZGEVZNFm-WS42-Ot9jw9cuV4RVap_J1uBskNqa9S_nB5T-N1sIfjCRN8aw8ZAu2EraSDOuK16ziLZCObOg7EhWNOLSPLLx67crwhpjaKj4phQ8kfxvxoyOC0NZeVMzhgoAemteeVtImTeGrOQrb6Q8h65KDeJ5AiMJ7Iqp94JCmYMNOfmlurMxaDxKZCPvNG6AhGM3xNLqpd6Dq1_dMNWsk_AQWr0jwkYWxdeaQdv6kSfwohMS3AlKfUIrvrEqfdBDZ4xdKu9P3OBIz-YfqFxyLW828tLVtfXLS7Dx4WWU95VyUsxPM89e6hOAdZNTEG_A5WeGuTnTUEDdY_FRrQNuopC_HVWKjYLx_PZR7Aqaq4oNz76ZwIMjklVYbM9J_HF1juPmVu2-X_2ezv2lBpkcMfbbMsTHGazkH2p2x65DAFlAhLvdO0hCDY22NaT3ZR4Qckuj9ys7hXCUgKL4qDMpPooiYCuvsYHLIEqVvHoMPQ63hNR5Sr7l1I0RUWnRPVEGFnm3eQkbxu9rCfMf2j29tvgSjHtslhqJEXw5khZbxgY1jAG3asmlCbTP8sSkr0bik46F68ZspwGr8oDCBDf8EYa2Q_-QOn7sd1hfP5qu-6ZG0NcpPPvWGY5rfnIILOoMZMwsrvtPKEXlnsuNp_fRc5Zn7UYi0JHcweh_1Jtl-axSqKQIMF8rwbnjzSYUac_FmZpK-nFahkqZNiiIgZkFkWkK4ct_neKrDINdioQqZuo3G0pUNhm_svlkmYb7aZgVtKIMew2pG8eYxYUZ47F7u7popsafWP7kRPWNaGBRsLnFIZVKDUXHHwJKVO0EkR8-Qd-WqfQWF_B276j7SHzw2CMInufvsFxLcrPP7qg1lLIkNz_ARLxOYIVuEkLCy3Wbt05GcQUWAsE3dDYI-Up6n0PXw4y3ZngKS_LJ1hSkdtlGDW6d0SZiJpE3mWsN8SysPiGtg3xBvJJGyNsjtsxcEHDBL8pGBWb3F3pSfLiPMSgWPxDhrvSfX8D8Q4p_0BYHpGvnOo75iXwGZ4Nbf1-iRly-oiwobL6bR158QsUzmYBSx6JZM7khIOVBEvxD8ynYw4C-GdihfHQiJNJJ590rUcdX9zC187gDN7wVkrb3No51TrvbghdynXLPhRMVUgCUznNM6NWICygYx2bMC9VnCK9ZpmYhNeC0APs1Geuqdh3AWhm6evFmSQ5KX7O7UPfxPfeGPxEhdcPetexz6mIOE8Rluf7OS7zCHWvCwq9eG38Se9NHbj3dVJ2CFsQTilhW_id2MT7CnGtowdqYIZnSr-2bjYHD0TxS-6DuF3jfN5AX_VgN72lHi2AYo9fF2Z4AjMQWRYM6M0kCKDSs_RhuAtSdFN2TVwuvpYyn6AgskvQ6n_4ImsTWg4n5ilmP-h9tfG0gV_ostHzWSkPQRO1U9o_edy-IdQuAAp_7nMaJuINboW0DKj5kpoZMmeku1NpWJBoYQ9PevPDGs9WGo1WTLA8np-2_jTZCRgfvBQQtdy0RDonBqMxrorNIQh0ewtj7tF3GG4kztnBn_MPhnLRKyxstR-KTol149SxTYDSBnHn8h-2dtqcdrOLSsxwEvbcJ7ypxiPXsCJpaUzyA1cZI1lKFOqyZUzKqGMK-cmzOHgzzqH4Xw2oqH4_ZIwbiXwpTYdin7BVya-xPUCCMJRjsxmEvXqt9UAOJkyWDuLSoi-oHIjWpOTljz9HqYa8CFjJUfgBJ_7zKq1KVFAmYBE2LtSQFt1MFSLgQXIMTt4Nj28wx1iUrbrKRx-zkzNTnZt3IKpycTRTYVmh3oxdETsWZ1fsWU8zPN2pjO-_tbKNHTjIYFG2haz_iUKU57WfvUerjRxK_yfwow8z8iigC6KwXpSisTznH2NVQjLv5gZi0xFhixrMAadwFpCp4dfsqWs88zXLsO_KO3-qTZ3mCJVlwJZdn0PgACMXyV7IX7m5uGh1rehERtz9ChtpSP6kR7Azn2I8GJHxjcIM_cBt0vvJGCNTSiRgPt7QR881YWwnkp_uKFLXo2AMm8iJuSsDPlzimrsnn1Sebjk8JNcSYP_1poz90MN3_Y5IwT6TANIZZgHCprb67R85075awiLnPMFpo0Bdt0a6s-MTiuv-cui6i6tWNTPkVV2SxO5dyfePI8fU5oQPekQIkjrFK0NOuVlO2FsgfFNgzwDBAlTJckx0OnI6iOgz9svhE0pD7ZQVV2cfKg5ugt48QEMTRKIRS_pYfHvV3Sn7bLwPq513gizplQGVttNCQvQZ-02Tza6AFEvwk7g=.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_0b98880d2ebb4a4d016acd1208bfec87d1bd1854dbf366df22",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 30776,
+  "completion_tokens": 406,
+  "total_tokens": 31182,
+  "cost": 0.00058923,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 30093,
+   "cache_write_tokens": 680,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00058923,
+   "upstream_inference_prompt_cost": 0.00038623,
+   "upstream_inference_completions_cost": 0.000203
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 267,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

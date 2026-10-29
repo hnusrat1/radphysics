@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791829617-2ndeO8SusdzVExjWg5Hc",
+ "object": "chat.completion",
+ "created": 1791829617,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Right, each call is probably a fresh process, so the sys.path insertion from before doesn't persist -- I need to add that insert in every call rather than assuming it carries over.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_015RFDTsAZiDuWQsQ6wUNroX",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport sys; sys.path.insert(0,'/tmp/work')\\nimport ana\\nfor E in [0.1,0.5,1.1732,1.3325]:\\n    s,me=ana.kn_eps_stats(E); print(E, s/ana.kn_total(E), 1-me)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Right, each call is probably a fresh process, so the sys.path insertion from before doesn't persist -- I need to add that insert in every call rather than assuming it carries over.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS5AkKEAgSGAI4AUIIdGhpbmtpbmcSDLt7Aqb2qcBh5EDynhoMXxSbpb2Seq8arWyaIjBm5IOtOwOgUqf3re7ojffSN9Pq4IjjtVYk/gCDmLfg4V7oIHFsvYeMbiIoqzHM+bcqgQmCYwTQxc0hxuzf2MHH+7PMRoNBc1aAe9ydtAAb1kScGY98C4m7u8q7gZxQl6mMnBUwp6AjM4FeauzmlLyO0sOoblmiYPXm03sld+vAzhjuWyLXk7wwORISBRYCXRm2SO7kY9yWWpRRtEY+3tE2Q6zmKwPTFswYVBzEghKnvjDD/wlj+ChORLOAlcaWSEkQjbDsMO4zNust8V218davASp8GtPJ2isYYByaVO5kKAOoBoit4YKi084+vHI7vocr20Fj95sgdyhKp8ATpTpbLCdvlAlSkveNrPtgBXQYI92kRyUlO7/U2Ousd8sZzrTf959sn11V8b932l5ELh5WPU8bdYRrr44LsFWRlIju/F1oZ/fgZZs1ob7xvxYVXRopfmGfP0BtTWS+RHIQ0zShcZElJi8DAWtlD5qYgS+1oFGPE15tG8wSFETUaJDvIW2t2U/D1Cs/PckQsK929wQKW35/X7279xOsKlyl5hiiMLsno2fhx7Jnd917XvM+mKN36qKRycDkZ1EqJSKBImWWO3+yoYZYRuc+Pj/YzN6uyqaiyNrW5W7OOmDWHWcmkV7q2InH34XA+83QEW7dB42sMcYHtTNK/byMhg/LDebq5qW5gHs3qC82VyunoTlUWGoGu/VyyGRLWH5l8B3FbvpLW9srLfxFTmGb2y6/yfpegoHGcXZVlMW7FSziZq2Lt5IXVYTU/SDoWb2N0vlCeMDncCSE4YbiDneYpzOuFHybPyOHPKCFf/6mzGL5tEjIgMO+bczik9J0rS4mqk2+EK12Ar2XjSlKcpdl4iXCs8Gg33V48KlcY8fWuvsjsq1C9KOeql8TSUbRDFXZ4Tu9BhWHaAVqQBDstl4VBxCoEOdlI0V4ZpGWwDxcSoGs7mBA5/zInv72vyWlD6caiofzqKHvsgyorLRDh5sRpVb/TYLl7vRDobgnCti79wV7cbaV371K1P6rVptXUYFmcLKAVesixU1qkIAQekT2+wVakZi1P1Hg166/RjFPoZiFeHoryQfVWfSML8PuyOpg7AFU+LSOUPGBhvHW6EM4f/LfjstMQXDDDG9u4IV50p3CVAO59soZLKBT/tSezl3h/LVJX3lONDWLFXIWeGU3euKhXoXFcxJgCQBzixm8C27COrrurXE7gH+ShEGJanxQwtA5CMb/ehgbfNlU/6a/ggWthoK4BeFifZakMcsQ86rneS6PERGx1bYuTPaxwW6mlB6jf3sYLcQm/YjzPSnaHAjXiOW44j4sH7aPjioyoR4E2MRFu++cVYp6VD0TSmTTX2CjUn/z2J1fC2sB+nAhSZpoBUfZzPsxyDHiYI28HaRZbo4OZl9nLBdDRkawvA6yGfnGurNV0qjdgPznpGYbRHd9FuEgv/m9AHha0tcS9l/tELkmty+Pd99NbjF/9pcYXHDdKSP43NDk0fxzj8dNEgoHy/osnpxiqVe/7Tdf3x1h5fhyJ0fOfDpcQG1yLY4Wxx8sJ9Ax1Kxz9nYy3inSvhWZ/6XZc/IE5/hKYQAZENWghctx76VPD0ykGAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 119870,
+  "completion_tokens": 268,
+  "total_tokens": 120138,
+  "cost": 0.006815625,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 119605,
+   "cache_write_tokens": 263,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.006815625,
+   "upstream_inference_prompt_cost": 0.006145625,
+   "upstream_inference_completions_cost": 0.00067
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 130,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

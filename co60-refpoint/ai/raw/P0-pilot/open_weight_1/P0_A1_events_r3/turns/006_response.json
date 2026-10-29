@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791823963-9EaQmoCxQc03IvcGJP3N",
+ "object": "chat.completion",
+ "created": 1791823963,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "kn_f defined after the function that uses it. Let me reorder. Let me rewrite the whole simulation in one properly ordered block.\n\nLet me restructure.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_7d6114637f0848c4a88d1f2d",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nimport time, math\\n\\nrng = np.random.default_rng(12345)\\n\\nme = 0.51099895\\nre = 2.8179403262e-13\\nNe = 3.343e23\\n\\n# --- Cross sections ---\\ndef kn_f(mu, E):\\n    a = E/me\\n    r = 1.0/(1.0+a*(1.0-mu))\\n    return r*r*(1.0/r + r - (1.0-mu*mu))\\n\\ndef kn_sigma(E):\\n    mus = np.linspace(-1,1,3001)\\n    return np.pi*re**2*np.trapezoid(kn_f(mus,E),mus)\\n\\nEgrid = np.logspace(np.log10(0.001), np.log10(10.0), 300)\\nsig_grid = np.array([kn_sigma(E) for E in Egrid])\\n\\nE_ph = np.array([0.01,0.02,0.03,0.04,0.05,0.06,0.08,0.10,0.15,0.20,0.30,0.50,0.80,1.0,1.5,2.0])\\nmu_ph= np.array([4.90,0.506,0.162,0.0712,0.0375,0.0223,0.00988,0.00547,0.00240,0.00128,0.000526,0.000151,5.0e-5,3.0e-5,1.0e-5,4.7e-6])\\nE_pa = np.array([1.022,1.25,1.5,2.0,2.5,3.0,4.0,5.0,6.0,8.0,10.0])\\nmu_pa= np.array([0.0,3.1e-5,1.32e-4,4.1e-4,8.1e-4,1.39e-3,2.69e-3,4.32e-3,6.19e-3,1.05e-2,1.55e-2])\\nE_co = np.array([0.01,0.02,0.03,0.05,0.08,0.10,0.15,0.20,0.30,0.50,0.80,1.0,1.5,2.0])\\nmu_co= np.array([0.30,0.060,0.022,0.0098,0.0046,0.0034,0.0017,0.0011,0.0006,0.0003,0.00015,0.00012,8e-5,4.5e-5])\\n\\ndef mu_comp(E):\\n    s = float(np.interp(np.log(E), np.log(Egrid), sig_grid))\\n    return Ne * s\\ndef mu_photo(E):\\n    return float(np.exp(np.interp(np.log(E), np.log(E_ph), np.log(mu_ph))))\\ndef mu_pair(E):\\n    if E <= 1.022: return 0.0\\n    return float(np.exp(np.interp(np.log(E), np.log(E_pa), np.log(mu_pa))))\\ndef mu_coh(E):\\n    return float(np.exp(np.interp(np.log(E), np.log(E_co), np.log(mu_co))))\\ndef mu_total(E):\\n    return mu_comp(E)+mu_photo(E)+mu_pair(E)+mu_coh(E)\\n\\n# --- Compton sampling ---\\ndef sample_compton_single(E, rng):\\n    a = E/me\\n    while True:\\n        mu = rng.uniform(-1,1)\\n        f = kn_f(mu,E)\\n        if rng.uniform(0,2) < f:\\n            break\\n    Ep = E / (1.0 + a*(1.0-mu))\\n    te = E - Ep\\n    num = E - Ep*mu\\n    den = math.sqrt(E*E + Ep*Ep - 2.0*E*Ep*mu)\\n    cos_el = num/den if den>1e-15 else 1.0\\n    return mu, Ep, te, cos_el\\n\\ndef rotate_dir(ux,uy,uz, mu_s, phi):\\n    d = np.array([ux,uy,uz])\\n    d = d / np.linalg.norm(d)\\n    # choose reference\\n    if abs(d[2]) < 0.9:\\n        ref = np.array([0,0,1])\\n    else:\\n        ref = np.array([1,0,0])\\n    e1 = np.cross(d, ref); e1 = e1 / np.linalg.norm(e1)\\n    e2 = np.cross(d, e1)\\n    st = math.sqrt(max(0,1-mu_s*mu_s))\\n    nd = st*math.cos(phi)*e1 + st*math.sin(phi)*e2 + mu_s*d\\n    return nd[0], nd[1], nd[2]\\n\\ndef inside_cube(x,y,z):\\n    return abs(x)<15 and abs(y)<15 and 100<z<130\\n\\ndef in_scoring(x,y,z):\\n    return x*x+y*y<1.0 and 109.9<z<110.1\\n\\n# --- Event collection ---\\nall_events = []\\n\\ndef simulate_primary(rng):\\n    \\\"\\\"\\\"Returns list of interaction dicts from this primary and its descendants.\\\"\\\"\\\"\\n    events = []\\n    # initial state at phantom surface\\n    x = rng.uniform(-5,5)\\n    y = rng.uniform(-5,5)\\n    z = 100.0\\n    nrm = math.sqrt(x*x+y*y+z*z)\\n    ux = x/nrm; uy = y/nrm; uz = z/nrm\\n    E = 2.0\\n    pos = np.array([x,y,z]); dir = np.array([ux,uy,uz])\\n    \\n    # queue of (pos, dir, E) for photons to track\\n    queue = [(pos.copy(), dir.copy(), E)]\\n    \\n    while queue:\\n        pos, dir, E = queue.pop(0)\\n        while True:\\n            if E < 0.01:\\n                break\\n            if not inside_cube(pos[0], pos[1], pos[2]):\\n                break\\n            mu_tot = mu_total(E)\\n            if mu_tot <= 0:\\n                break\\n            s = -math.log(rng.uniform(1e-10,1))/mu_tot\\n            pos[0] += s*dir[0]; pos[1] += s*dir[1]; pos[2] += s*dir[2]\\n            if not inside_cube(pos[0], pos[1], pos[2]):\\n                break\\n            \\n            # interaction at pos\\n            mu_c = mu_comp(E); mu_ph = mu_photo(E); mu_pa = mu_pair(E); mu_co = mu_coh(E)\\n            tot = mu_c+mu_ph+mu_pa+mu_co\\n            u = rng.uniform(0,tot)\\n            score = in_scoring(pos[0], pos[1], pos[2])\\n            \\n            if u <= mu_c:\\n                # Compton\\n                mu_s, Ep, te, cos_el = sample_compton_single(E, rng)\\n                if score:\\n                    events.append({'process':'compton','e_in_MeV':E,'e_out_MeV':Ep,\\n                                   'cos_scatter':mu_s,'t_e_MeV':te,'cos_electron':cos_el,\\n                                   't_positron_MeV':None})\\n                phi = rng.uniform(0,2*math.pi)\\n                nd = rotate_dir(dir[0], dir[1], dir[2], mu_s, phi)\\n                dir[:] = nd; E = Ep\\n                continue\\n            elif u <= mu_c+mu_ph:\\n                # photoelectric\\n                if score:\\n                    te = E; cos_el = rng.uniform(-1,1)\\n                    events.append({'process':'photoelectric','e_in_MeV':E,'e_out_MeV':None,\\n                                   'cos_scatter':None,'t_e_MeV':te,'cos_electron':cos_el,\\n                                   't_positron_MeV':None})\\n                break\\n            elif u <= mu_c+mu_ph+mu_pa:\\n                # pair production\\n                t_avail = E - 1.022\\n                share = rng.uniform(0,1)\\n                t_pos = share*t_avail; t_e = t_avail - t_pos\\n                E_total_e = t_e + me\\n                theta0_e = me/max(E_total_e, 1e-10)\\n                theta_e = theta0_e*(-math.log(rng.uniform(1e-10,1)))\\n                cos_el = math.cos(theta_e)\\n                if score:\\n                    events.append({'process':'pair','e_in_MeV':E,'e_out_MeV':None,\\n                                   'cos_scatter':None,'t_e_MeV':t_e,'cos_electron':cos_el,\\n                                   't_positron_MeV':t_pos})\\n                # add annihilation photons\\n                for _ in range(2):\\n                    u1 = rng.uniform(-1,1); u2 = rng.uniform(0,2*math.pi)\\n                    nz=u1; nx=math.sqrt(1-u1*u1)*math.cos(u2); ny=math.sqrt(1-u1*u1)*math.sin(u2)\\n                    queue.append((pos.copy(), np.array([nx,ny,nz]), 0.511))\\n                break\\n            else:\\n                # Rayleigh\\n                theta0 = min(0.5, 0.0007/E)\\n                theta = theta0*(-math.log(rng.uniform(1e-10,1)))\\n                mu_s = math.cos(theta)\\n                if score:\\n                    events.append({'process':'rayleigh','e_in_MeV':E,'e_out_MeV':E,\\n                                   'cos_scatter':mu_s,'t_e_MeV':0.0,'cos_electron':None,\\n                                   't_positron_MeV':None})\\n                phi = rng.uniform(0,2*math.pi)\\n                nd = rotate_dir(dir[0], dir[1], dir[2], mu_s, phi)\\n                dir[:] = nd\\n                continue\\n    return events\\n\\n# Test timing\\nt0 = time.time()\\nevents = []\\nfor i in range(500):\\n    events.extend(simulate_primary(rng))\\nt1 = time.time()\\nprint(f\\\"500 primaries: {len(events)} events in {t1-t0:.2f}s\\\")\\nif events:\\n    # count processes\\n    from collections import Counter\\n    cnt = Counter(e['process'] for e in events)\\n    print(\\\"Processes:\\\", cnt)\\n    print(\\\"Sample event:\\\", events[0])\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "kn_f defined after the function that uses it. Let me reorder. Let me rewrite the whole simulation in one properly ordered block.\n\nLet me restructure.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 40048,
+  "completion_tokens": 2497,
+  "total_tokens": 42545,
+  "cost": 0.00409251612,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00409251612,
+   "upstream_inference_prompt_cost": 0.00363876128,
+   "upstream_inference_completions_cost": 0.00045375484
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 32,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

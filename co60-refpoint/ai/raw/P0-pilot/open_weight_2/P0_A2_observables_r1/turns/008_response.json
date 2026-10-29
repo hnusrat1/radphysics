@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791817351-DzXJCkrmawaC3WbKAZtn",
+ "object": "chat.completion",
+ "created": 1791817351,
+ "model": "qwen/qwen3.7-flash",
+ "provider": "Alibaba",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I need to fix the lambda function issue. Let me correct this and continue.\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_d52f91860786489aa8ecf1ee",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nfrom scipy.integrate import quad\\n\\n# Read data files\\nxcom_data = []\\nwith open('/tmp/data/xcom_water.txt', 'r') as f:\\n    for line in f:\\n        if not line.startswith('#'):\\n            parts = [float(x) for x in line.split()]\\n            xcom_data.append(parts)\\nxcom = np.array(xcom_data)\\n\\nestar_data = []\\nwith open('/tmp/data/estar_water.txt', 'r') as f:\\n    for line in f:\\n        if not line.startswith('#'):\\n            parts = [float(x) for x in line.split()]\\n            estar_data.append(parts)\\nestar = np.array(estar_data)\\n\\n# Define parameters\\nE_photon = 2.0  # MeV\\nrho = 1.0  # g/cm^3\\ndepth = 10.0  # cm\\n\\n# Cross-sections at 2.0 MeV (index 28)\\nE_idx = 28\\nmu_rayleigh_mass = xcom[E_idx, 1]\\nmu_compton_mass = xcom[E_idx, 2]\\nmu_photo_mass = xcom[E_idx, 3]\\nmu_pair_nuc_mass = xcom[E_idx, 4]\\nmu_pair_el_mass = xcom[E_idx, 5]\\nmu_total_mass = xcom[E_idx, 7]  # without coherent\\n\\nmu_rayleigh = rho * mu_rayleigh_mass\\nmu_compton = rho * mu_compton_mass\\nmu_photo = rho * mu_photo_mass\\nmu_pair = rho * (mu_pair_nuc_mass + mu_pair_el_mass)\\nmu_total = rho * mu_total_mass\\n\\n# Bin definitions\\nphoton_energy_edges = np.array([0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, \\n                                0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1, 1.05, \\n                                1.1, 1.15, 1.2, 1.25, 1.3, 1.35, 1.4])\\nelectron_energy_edges = np.array([0.01, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, \\n                                  0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1, 1.05, \\n                                  1.1, 1.15, 1.2, 1.4])\\ncos_theta_edges = np.array([-1, -0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1])\\n\\nn_photon_bins = len(photon_energy_edges) - 1\\nn_electron_bins = len(electron_energy_edges) - 1\\nn_cos_bins = len(cos_theta_edges) - 1\\n\\nprint(\\\"Calculating Klein-Nishina distribution for 2.0 MeV photons\\\")\\nalpha = E_photon / 0.511\\nprint(f\\\"alpha = {alpha:.4f}\\\")\\n\\ndef klein_nishina_intensity(alpha, cos_theta):\\n    \\\"\\\"\\\"Klein-Nishina differential cross-section intensity\\\"\\\"\\\"\\n    k = 1.0 + alpha * (1.0 - cos_theta)\\n    sin_sq_theta = 1.0 - cos_theta**2\\n    intensity = (1.0/k**2) * (k + 1.0/k - sin_sq_theta)\\n    return intensity\\n\\ndef scattered_photon_energy(alpha, cos_theta):\\n    \\\"\\\"\\\"Energy of scattered photon\\\"\\\"\\\"\\n    k = 1.0 + alpha * (1.0 - cos_theta)\\n    return E_photon / k\\n\\n# Weight by intensity and integrate\\nresult1, _ = quad(lambda ct: scattered_photon_energy(alpha, ct) * klein_nishina_intensity(alpha, ct), -1, 1)\\nresult2, _ = quad(lambda ct: klein_nishina_intensity(alpha, ct), -1, 1)\\nmean_scattered_E = result1 / result2\\n\\nprint(f\\\"Mean scattered photon energy: {mean_scattered_E:.4f} MeV\\\")\\nprint(f\\\"Fractional energy transfer to electron: {(E_photon - mean_scattered_E)/E_photon:.4f}\\\")\\n\\n# Compton edge calculation\\nT_max = E_photon * (1 - 1/(1 + 2*alpha))\\nprint(f\\\"Compton edge (max electron energy): {T_max:.4f} MeV\\\")\\nprint(f\\\"Minimum scattered photon energy: {E_photon - T_max:.4f} MeV\\\")\\n\\n# Now let's calculate primary fluence\\nprimary_attenuation = np.exp(-mu_total * depth)\\nL1_primary_fluence_per_phi0 = primary_attenuation\\nprint(f\\\"\\\\nL1_primary_fluence_per_phi0 = {L1_primary_fluence_per_phi0:.6f}\\\")\\n\\n# Interaction fractions\\nf_compton = mu_compton / mu_total\\nf_pair = mu_pair / mu_total\\nf_rayleigh = mu_rayleigh / mu_total\\nf_photo = mu_photo / mu_total\\n\\nprint(f\\\"\\\\nInteraction fractions:\\\")\\nprint(f\\\"  Compton: {f_compton:.6f}\\\")\\nprint(f\\\"  Pair: {f_pair:.6f}\\\")\\nprint(f\\\"  Rayleigh: {f_rayleigh:.6e}\\\")\\nprint(f\\\"  Photoelectric: {f_photo:.6e}\\\")\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I need to fix the lambda function issue. Let me correct this and continue.\n",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 16522,
+  "completion_tokens": 1386,
+  "total_tokens": 17908,
+  "cost": 0.00032256,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 14720,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00032256,
+   "upstream_inference_prompt_cost": 0.00014238,
+   "upstream_inference_completions_cost": 0.00018018
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 16,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

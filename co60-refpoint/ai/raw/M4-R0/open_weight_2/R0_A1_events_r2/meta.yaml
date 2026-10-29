@@ -1,0 +1,57 @@
+slot: open_weight_2
+provider: open-weight via OpenRouter (pinned weights)
+api: openai_compatible
+model_requested: qwen/qwen3.7-flash
+settings:
+  reasoning:
+    effort: high
+  usage:
+    include: true
+condition: A1
+task: events
+config: R0
+prompt_version: v1
+prompt_sha256:
+  system_A1.txt: e06e9a5ea06c2f5ca29739818f324713f2dbbf775f019c11018d1aa7ef5416b8
+  task_events_R0.txt: 871cffaf3fb764b91cfda15169f125951e9eb985bfe79f27e1ac8bc6b710cf73
+started_utc: '2026-10-12T17:34:44Z'
+turns:
+- n: 1
+  usage:
+    input_tokens: 1571
+    output_tokens: 6997
+    reasoning_tokens: 5690
+  stop: tool_calls
+  wall_s: 82.18
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 1
+- n: 2
+  usage:
+    input_tokens: 8690
+    output_tokens: 135
+    reasoning_tokens: 49
+  stop: tool_calls
+  wall_s: 2.55
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 1
+- n: 3
+  usage:
+    input_tokens: 9091
+    output_tokens: 21351
+    reasoning_tokens: 963
+  stop: stop
+  wall_s: 126.55
+  http_attempts: 1
+  model_reported: qwen/qwen3.7-flash
+  tool_calls: 0
+tool_calls: 2
+retries: 0
+outcome: ok
+model_reported: qwen/qwen3.7-flash
+finished_utc: '2026-10-12T17:38:16Z'
+usage_total:
+  input_tokens: 19352
+  output_tokens: 28483
+  reasoning_tokens: 6702

@@ -1,0 +1,55 @@
+{
+ "id": "gen-1791815322-wGXKTrbdNuehTa640Wzz",
+ "object": "chat.completion",
+ "created": 1791815322,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "stop",
+   "native_finish_reason": "end_turn",
+   "message": {
+    "role": "assistant",
+    "content": "These are estimates from a crude in-house Monte Carlo, not validated transport-code output. No transport code or tabulated XCOM/ESTAR data were available offline. The main caveats:\n\n- **Photon spectra:** the 2 MeV primaries lie outside the 0\u20131.4 MeV photon grid, so the primary spectrum is zero in every bin. Scattered photons above 1.4 MeV are also not binned, so the scattered spectrum does not sum to the total scattered fluence.\n- **Cross sections:** Compton uses Klein-Nishina (0.0489 cm\u00b2/g at 2 MeV). Photoelectric, pair and coherent terms are rough approximations contributing about 1\u20132% of interactions.\n- **Electrons:** the Layer 3\u20134 electron quantities come from an infinite-medium (CPE) recursion with M\u00f8ller delta rays. Bremsstrahlung and fluorescence are neglected, and the electron angular distribution is approximated from the source distribution.\n- **Depth dose:** the PDD5 value comes from a straight-ahead electron deposition model with no lateral transport, so it is the least reliable number here.\n- **Dose:** D is taken as K_col under CPE, so \u03b2 = 1.00 by construction.\n\nThe primary fluence (0.610) agrees with exp(\u2212\u03bc\u00b710) to 0.1%, and the kerma agrees with the electron energy fluence times collision stopping power.\n\n```json\n{\n \"method\": \"Crude in-house Monte Carlo (no transport code available): analog photon transport in a 30 cm water cube, 2 MeV point source at 100 cm SSD, uniform-solid-angle 10x10 cone, 4x10^7 histories. Compton via Klein-Nishina with exact kinematics; rough photoelectric, pair and coherent coefficients. Fluences, interaction rates and energy transfer scored by track length in the 1 cm x 0.2 cm cylinder, normalised to Phi0. Compton/photo/pair electron sources scored in the cylinder. Electron fluence from a CSDA-type recursion with Moller delta-ray production (infinite-medium, CPE assumed). Kerma from energy transfer, D = Kcol (CPE), radiative loss via 0.00927*T ratio. Spencer-Attix from restricted Bethe minus Moller delta energy above 10 keV. PDD from straight-ahead CSDA deposition of electrons born within 3 cm of the axis. Primary fluence is analytic exp(-mu*10) and agrees with MC. Scoring-volume spectra on the 2 MeV source fall outside the 0-1.4 MeV grid, so primary spectrum bins are zero. Bremsstrahlung and fluorescence are neglected; angular electron distribution is approximated.\",\n \"data_sources\": \"Klein-Nishina cross section (analytic, Compton total = 0.0489 cm^2/g at 2 MeV, close to XCOM incoherent); Berger-Seltzer Bethe collision stopping power for water (I=75 eV, no density effect; checked against ESTAR at 0.1, 0.5 MeV); Moller delta cross section; air I=85.7 eV for Spencer-Attix denominator; radiative/collision ratio ~ Z/800*T with Z=7.4. Photoelectric, pair and coherent coefficients are rough power-law/approximate values (not XCOM); they contribute ~1-2% of interactions. No ESTAR/XCOM tables were used directly; no tabulated values were available offline.\",\n \"L1_primary_fluence_per_phi0\": 0.61029,\n \"L1_total_fluence_per_phi0\": 1.0076,\n \"L1_scattered_fraction_fluence\": 0.39429,\n \"L1_scattered_fraction_energy_fluence\": 0.19519,\n \"L1_mean_photon_energy_MeV\": 1.5052,\n \"L1_photon_fluence_spectrum_primary\": [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],\n \"L1_photon_fluence_spectrum_scattered\": [0.0071636,0.032019,0.031356,0.024611,0.026772,0.021676,0.014814,0.012023,0.010109,0.0091502,0.011321,0.0075075,0.0071669,0.006872,0.006828,0.0065207,0.0065392,0.0064854,0.0065133,0.0067815,0.0066387,0.0068583,0.0067423,0.0068275,0.0069453,0.0069065,0.0070864,0.0069407],\n \"L1_angular_primary\": [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0],\n \"L1_angular_scattered\": [0.059508,0.054791,0.053212,0.054097,0.055908,0.061445,0.069113,0.089127,0.14235,0.36045],\n \"L2_interaction_fractions\": {\"compton\": 0.97425, \"photoelectric\": 0.0097622, \"pair\": 0.0039306, \"rayleigh\": 0.012058},\n \"L2_energy_transfer_fractions\": {\"compton\": 0.99243, \"photoelectric\": 0.0011177, \"pair\": 0.0064509, \"rayleigh\": 0.0},\n \"L2_interaction_fractions_primary\": {\"compton\": 0.98782, \"photoelectric\": 0.0000076, \"pair\": 0.0080762, \"rayleigh\": 0.0040928},\n \"L2_interaction_fractions_scattered\": {\"compton\": 0.96444, \"photoelectric\": 0.016809, \"pair\": 0.00093574, \"rayleigh\": 0.017812},\n \"L2_scattered_share_of_interactions\": 0.58058,\n \"L3_initial_spectrum\": [0.23115,0.11972,0.070559,0.047721,0.038455,0.03344,0.030454,0.027011,0.025259,0.024041,0.022877,0.022204,0.021307,0.020789,0.020307,0.019873,0.019525,0.019124,0.018866,0.018549,0.018196,0.018105,0.01809,0.018151,0.076227],\n \"L3_initial_spectrum_parent_primary\": [0.028267,0.035074,0.034769,0.034698,0.03458,0.034504,0.034422,0.034145,0.033929,0.034068,0.033878,0.034188,0.033785,0.034092,0.034265,0.034511,0.034677,0.034894,0.035314,0.035246,0.035349,0.036122,0.037016,0.038061,0.17014],\n \"L3_mean_initial_energy_MeV\": 0.56829,\n \"L3_mean_initial_energy_parent_primary_MeV\": 1.0523,\n \"L3_initial_direction\": [0.044192,0.044017,0.044272,0.045707,0.047258,0.055141,0.070955,0.09573,0.14528,0.40744],\n \"L4_electron_fluence_per_phi0\": 0.018028,\n \"L4_electron_fluence_spectrum\": [0.00047019,0.00063677,0.0006957,0.00073531,0.00075864,0.0007692,0.00077003,0.00076431,0.00075419,0.00074039,0.00072378,0.00070514,0.00068497,0.00066374,0.00064165,0.0006189,0.00059566,0.00057212,0.00054833,0.00052429,0.00050019,0.00047589,0.00045143,0.00042681,0.0014517],\n \"L4_delta_fraction\": 0.040159,\n \"L4_mean_electron_energy_MeV\": 0.69173,\n \"L4_angular\": [0.044192,0.044017,0.044272,0.045707,0.047258,0.055141,0.070955,0.09573,0.14528,0.40744],\n \"L4_radiative_to_collision\": 0.0051572,\n \"L5_D_over_phi0_Gy_cm2\": 6.4735e-12,\n \"L5_K_over_phi0_Gy_cm2\": 6.51e-12,\n \"L5_Kcol_over_phi0_Gy_cm2\": 6.4735e-12,\n \"L5_beta\": 1.0,\n \"L5_g\": 0.0056097,\n \"L5_dose_fraction_parent_scattered\": 0.21395,\n \"L5_s_w_air\": 1.1334,\n \"L5_PDD5_percent\": 83.363\n}\n```",
+    "refusal": null,
+    "reasoning": "I'm finalizing the answer, flagging that the scatter, L3/L4, and PDD values are rough estimates from a crude model rather than a validated calculation, keeping the method description concise, then assembling the complete JSON output with all the required keys and values.",
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I'm finalizing the answer, flagging that the scatter, L3/L4, and PDD values are rough estimates from a crude model rather than a validated calculation, keeping the method description concise, then assembling the complete JSON output with all the required keys and values.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSlAoKEAgSGAI4AUIIdGhpbmtpbmcSDAMR8QCZcxKdO5mt+hoMk39dFIXGEYb3hM9fIjDVW1S0WVTTom3QG3AO6PBuoeViBHojK6isvr4SzVr0zTVYpxALjfI6mrSL/6oaZrQqsQkcedtL3vgo3mI9/fHpqmuqjnmljDHz0S/PVEQ+t6oyBltgp3F4pOl4nHW1E/7StssUobMVSQVqNIcvRdEx32bC0UGmX+X8Kps96g7fgwcDOZzrb7bGoknmd9WRxtkEcnPGsXyhSbYdn4RZEhVCtN0FfVatAv43G3sL53VlWG6yjaKA9MuZMNzdIxas9LdbQ3RgkKD+qIAbQJEkr2derNZhESIIj1sy1ZXIsTAGe1ft6xSI1iVJS4U0F/DQlVrcHEQZye/qqovqDk7a32aJxjCEiQqqcS3G7WUacG1UlN500IdLUw0bE6tVBwrW9//py+RVN1sCt3yoO0Fw13uwV1dNRHIxcyhUqP0TIXOj3LKfDJ+zd0Q+8wWKPhBa5EUZcwI4qjGFT9WmzL7Dey2us+T1cNLXQKGY+nb9d3FZwJtFSDL4bxNctuzSpRUpBqvcUdcl41yi2IjIXFF4f8smZsYEVoh7P0G608KSk9kqxFblaekKm8K+6qdD/1ZdS8+VW6OJN08hfl1KrOXmBm5R3yZ1/z0sXtDbX5GfQ/tK/hMneXiyLbuOLQa8ZnagxnWZXPtC6DLI3TETUMATzSy5T1Hr8ygXAELNaL6bJsNa3Q6k+3GnJ8jnYeBSczk2JJMnOMZPXtfodJpRIQ+PRQ9SVHdbXkFHywZ9kVks8PYVDvAT3OIfW3/mqBkiw7GVo6SaCA/HIj/wUw3fQuy6iEetyDTuyY7vCb1SkT96tfXI2r9HYbVKTsb2kWUhdh+o1PBwBCVURDMeJB/j5iYue9Urun7hk9YihGodFY9diqN5G1baarbk/d0yLmZjBP1aNRJ/bVGqXuW7FYhiQmxXkJKVK0Jieh689BLFtEwJRJugWGkUIf3Lu4sv3SjbhW7WhMquEy2JYKRdB0Jjvs6X4AWvPM9RrQcK6Cd7bU0VVdPE8rrpqe5+eWuchrvnxedk+E91BBB7DlrrJii43pLL4ma6aZaN1WS/8OuK9UM9tew5ooKKN+hGIYgkPj/uD8mjS00AoHLWtWfBQB5245KCI4YEmj5K5Pd95SaVsvSvurjJn9k5WePAxUQ1pIoArazi6azKsJGcsoqlaXGPM96ngDS5NjHqYJSyVnO0PEr5kq2SYkx33/ixw2S1IsbrplMkSVBddgBn2LNx+Dxgw86ZeMtzs2tqVpo/gkwYgPGu8SvLq+XEdxTXKNbZHwdyPqKKOFNyk4taMGfsbDUBtduAuCEsnS/K2cFv2ws5BGbroyLyHJzCaA1dJ6sGn3vqE8vxdjDAdOTvDiPtibnX9DsResEJACSTtGek/OmtssqalvYN/spZbOpVhirbk+8rhC2jXefNVl5YFZldXRZaS2HTxRT3k+YguZ92E3HLiRSoPOxrNYgwRPuKKU74JY9vbOCeHvSZI6BMyf73uqAiY5QwShZKP7PrnOfWlvUhapWgCem50FYUa4AuXl8ZtDQ8pSnIlNzHP7FTC1rtAnNq87BhBmefhjdhnH+vBkDGn57nbnKCSXfxGeFaV8fSTBCVwNGOaAVTFB1jB/QjQikFPv20+SJkfG7q9nB44zuKM4tl5VFR6PfVk4IWaxornmoYoykqtubIFlmWGAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 120539,
+  "completion_tokens": 3124,
+  "total_tokens": 123663,
+  "cost": 0.0680795,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0680795,
+   "upstream_inference_prompt_cost": 0.0602695,
+   "upstream_inference_completions_cost": 0.00781
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 182,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

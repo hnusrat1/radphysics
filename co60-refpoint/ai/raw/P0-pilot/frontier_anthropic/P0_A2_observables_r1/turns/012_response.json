@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791817741-VvgnQaxfI4wEPglOU4mx",
+ "object": "chat.completion",
+ "created": 1791817741,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "The energy-deposition coefficients at 1 and 2 MeV agree with tabulated water values to about 1%. Now the main chunked run: photons, scoring-cylinder tallies, and depth-dose tallies at 80 depths.",
+    "refusal": null,
+    "reasoning": "I'm cross-checking my computed mass energy-transfer coefficient for water at 2 MeV against the standard NIST tabulated value to verify my calculation is consistent.  The ~1% discrepancy I'm seeing seems reasonable, likely due to differences in Klein-Nishina versus XCOM cross-sections with binding corrections. I'll move on to writing the main simulation script that runs in chunks and saves the results.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_013G71XhdRKoYopW5dSBd2G6",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\ncode5 = r'''\\nimport numpy as np, sys, time\\nsys.path.insert(0,'/tmp/work')\\nimport phys, photon, track, deposit\\nOm=0.009975072683099257; S_phi0=Om*110.0**2; V=np.pi*1.0**2*0.2\\nEB=np.array([0,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1,1.05,1.1,1.15,1.2,1.25,1.3,1.35,1.4])\\nCB=np.array([-1,-0.8,-0.6,-0.4,-0.2,0,0.2,0.4,0.6,0.8,1.0])\\nZD=np.arange(0.25,20.0001,0.25)\\ndef run_chunk(N,seed):\\n    res=photon.run_photons(N,seed=seed)\\n    R=res['r'];D=res['d'];E=res['E'];F=res['f'];L=res['l']\\n    out={}\\n    out['N']=N\\n    out['nproc']=res['nproc']\\n    # depth-dependent scattered Kcol and fluence\\n    Kd=np.zeros(len(ZD)); Fd=np.zeros(len(ZD))\\n    dep=deposit.transfer_coeffs(E)\\n    fcol=dep['col']; ftr=dep['tr']\\n    sel_all=np.where(F)[0]\\n    Rs=R[F];Ds=D[F];Es=E[F];Ls=L[F]\\n    fcol_s=fcol[F]; ftr_s=ftr[F]\\n    for k,z in enumerate(ZD):\\n        lin=track.cyl_track(Rs,Ds,Ls,z)\\n        Kd[k]=(lin*fcol_s).sum()\\n        Fd[k]=lin.sum()\\n    out['Kd']=Kd*S_phi0/V/N     # scattered Kcol per Phi0 (MeV/g per Phi0 before 1.602e-10)\\n    out['Fd']=Fd*S_phi0/V/N\\n    # tallies at z=10\\n    lin=track.cyl_track(Rs,Ds,Ls,10.0)\\n    m=lin>0\\n    w=lin[m]\\n    Em=Es[m]; Dm=Ds[m]\\n    out['seg']=dict(r=Rs[m],d=Dm,E=Em,l=lin[m])  # in cylinder at z=10\\n    # process rates (scattered) : sum lin*mu_i\\n    coh=dep['coh'][F][m]; inc=dep['inc'][F][m]; pe=dep['pe'][F][m]; pr=dep['pr'][F][m]\\n    out['mu_sc']=np.array([(w*coh).sum(),(w*inc).sum(),(w*pe).sum(),(w*pr).sum()])*S_phi0/V/N\\n    out['tr_sc']=np.array([(w*dep['tr_c'][F][m]).sum(),(w*dep['tr_pe'][F][m]).sum(),(w*dep['tr_pa'][F][m]).sum()])*S_phi0/V/N\\n    out['col_sc']=(w*dep['col'][F][m]).sum()*S_phi0/V/N\\n    out['K_sc']=(w*dep['tr'][F][m]).sum()*S_phi0/V/N\\n    out['Kcol_sc_check']=(w*dep['col'][F][m]).sum()*S_phi0/V/N\\n    # fluence spectrum and angular (scattered), per Phi0\\n    eb=np.clip(np.digitize(Em,EB)-1,-1,27)\\n    spec=np.zeros(28)\\n    ok=(eb>=0)&(eb<28)\\n    np.add.at(spec,eb[ok],w[ok])\\n    out['spec']=spec*S_phi0/V/N\\n    out['spec_over']=w[Em>1.4].sum()*S_phi0/V/N\\n    cb=np.clip(np.digitize(Dm[:,2],CB)-1,0,9)\\n    ang=np.zeros(10); np.add.at(ang,cb,w)\\n    out['ang']=ang*S_phi0/V/N\\n    out['EFl']=(w*Em).sum()*S_phi0/V/N\\n    out['Fl_sc']=w.sum()*S_phi0/V/N\\n    # interactions in cylinder by flag all segments at z=10 -- ALSO primary-independent counts\\n    return out\\n'''\\nopen('/tmp/work/sim.py','w').write(code5)\\nimport sim\\nimportlib.reload(sim)\\nt=time.time()\\no=sim.run_chunk(200000,11)\\nprint(\\\"time\\\",time.time()-t)\\nprint(\\\"Fl_sc\\\",o['Fl_sc'],\\\"Kd[:10]\\\",o['Kd'][:10])\\nprint(o['nproc'])\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I'm cross-checking my computed mass energy-transfer coefficient for water at 2 MeV against the standard NIST tabulated value to verify my calculation is consistent.  The ~1% discrepancy I'm seeing seems reasonable, likely due to differences in Klein-Nishina versus XCOM cross-sections with binding corrections. I'll move on to writing the main simulation script that runs in chunks and saves the results.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "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.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 106694,
+  "completion_tokens": 2450,
+  "total_tokens": 109144,
+  "cost": 0.059472,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.059472,
+   "upstream_inference_prompt_cost": 0.053347,
+   "upstream_inference_completions_cost": 0.006125
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 667,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

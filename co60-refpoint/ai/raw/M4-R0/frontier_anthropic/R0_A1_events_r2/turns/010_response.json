@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791827238-E479sjJIoWFXyZDV7Ylf",
+ "object": "chat.completion",
+ "created": 1791827238,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I realize the track-length estimator actually accumulates both primary and scattered segments, so the correct comparison is TL total (primary + scattered) against NEE totals, where primary corresponds to type 0 and scattered to types 1-3 which only count scattered interactions.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01WY1YuffDjJucTf5BucJUgG",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport subprocess\\ntest2=r'''\\nimport numpy as np, simtl\\nNs=400000\\nC=simtl.run(Ns)\\ntl=simtl.TL\\nprint('primary-segment TL per src photon:', tl[0].sum()/Ns)\\nprint('all-segment TL per src photon:', sum(t.sum() for t in tl)/Ns)\\nfor ty in [0,1,2,3]:\\n    m=C[:,0]==ty\\n    print(ty, C[m,1].sum()/Ns)\\n'''\\nopen('t3.py','w').write(test2)\\nr=subprocess.run(['python','t3.py'],capture_output=True,text=True,cwd='.'); print(r.stdout,r.stderr[-2000:])\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I realize the track-length estimator actually accumulates both primary and scattered segments, so the correct comparison is TL total (primary + scattered) against NEE totals, where primary corresponds to type 0 and scattered to types 1-3 which only count scattered interactions.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "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.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 78418,
+  "completion_tokens": 524,
+  "total_tokens": 78942,
+  "cost": 0.00166667,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 73022,
+   "cache_write_tokens": 5394,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00166667,
+   "upstream_inference_prompt_cost": 0.00140467,
+   "upstream_inference_completions_cost": 0.000262
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 238,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

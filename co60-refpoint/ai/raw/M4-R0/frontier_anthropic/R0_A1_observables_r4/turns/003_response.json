@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791826737-LPdyywronBFOfB0gCbnx",
+ "object": "chat.completion",
+ "created": 1791826737,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "The state doesn't seem to persist between runs, so I'll need to re-run the whole block including the trapezoid this time.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01D3HwDHzwNdGfGPPURGM9fB",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport numpy as np, time\\nme=0.51099895; re=2.8179403e-13\\nne_w=3.3428e23\\nEtab=np.array([0.01,0.015,0.02,0.03,0.04,0.05,0.06,0.08,0.1,0.15,0.2,0.3,0.4,0.5,0.6,0.8,1.0,1.25,1.5,2.0])\\nmutab=np.array([4.944,1.374,0.8096,0.3756,0.2683,0.2269,0.2059,0.1837,0.1707,0.1505,0.1370,0.1186,0.1061,0.0969,0.0893,0.0765,0.0707,0.0632,0.0572,0.0494])\\ntrap=np.trapezoid\\ndef loglog(x,xt,yt):\\n    return np.exp(np.interp(np.log(x),np.log(xt),np.log(yt)))\\ndef mu_tab(E): return loglog(E,Etab,mutab)\\ndef kn_sigma(E):\\n    k=E/me\\n    t1=(1+k)/k**2*(2*(1+k)/(1+2*k)-np.log(1+2*k)/k)\\n    t2=np.log(1+2*k)/(2*k)\\n    t3=(1+3*k)/(1+2*k)**2\\n    return 2*np.pi*re**2*(t1+t2-t3)\\ndef kn_tr_frac(E):\\n    k=E/me\\n    c=np.linspace(-1,1,40001)\\n    eps=1/(1+k*(1-c))\\n    f=eps**2*(eps+1/eps-(1-c**2))\\n    sig=np.pi*re**2*trap(f,c)\\n    sigf=np.pi*re**2*trap(f*(1-eps),c)\\n    return sig,sigf\\nfor E in [0.1,0.3,0.5,1.0,1.1732,1.25,1.3325]:\\n    s,sf=kn_tr_frac(E)\\n    print(E, round(kn_sigma(E)*ne_w,5), round(s*ne_w,5), round(sf*ne_w,5), 'tab',round(mu_tab(E),5), 'resid', round(mu_tab(E)-kn_sigma(E)*ne_w,5), 'frac',round(sf/s,4))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The state doesn't seem to persist between runs, so I'll need to re-run the whole block including the trapezoid this time.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSqAYKEAgSGAI4AUIIdGhpbmtpbmcSDGoR3+j9hMNtIlIyaRoMHmOK0P5PSVhWE5VBIjAoAD6yMsk46A7N1jwsuUUhGffq3xzbGLDiX33HXantCX2cvF9YFFyOKyTQNnFLxZ4qxQWCw7E5QbH2DeX4gl4x7jAE9PB1Sz6Ct4z2rw043QzqZuVeP2hwPzpmapOdiYSOD2y3guDZs+BxENTkpZPSAXf1NtqwkTkad9QwJEY1ktL4Ngyf+N+VdVy4de06zHfFusr9Bt0rocbONqxIFhCEL8cPbG9MuOtbluQi7r/xv4eB/MdtRbPylj2BBDh1XrjZx7xp3MvMp13Bv8qNZkcUhiGFNZPHZdqDMzSrndLDDiEKi0uwra9atpMR2PrzL/ZycHwHqebMHQALeXo3BF3BUc4DqyP9fFeDYAVDKo2C+tKuk70Tie3zTkvYcnhun5BhODL01+iPXY1zewx3BpT93ynTcPXcNlaqQ9LagPtDbbO3iteayeAAfcLXzRziMsqL+twA9YutJAJX8UWerty4t2F7Ck9NhThacTMYgwNk+Et/nCrlMYuWx+3wlKBu2X6rThQfwyEYf2Fi+4Byf2q2GLZ0GRKQLLfSsjM0ixNW+KIQWKu3/nn1cRtPHQgIBkdSh+lRIEExZL88fD5ZQQUSiaOqyRs4REsm77K1QW38E3bZh+41IfgEUTL3xNaKHO+nZNza6k3CvNreTDVwuu6WhxZZS6rzQExV/z2dOm9SOCgmNNwPkbJoaNQtHNTY4OyZiB0dwrbrIIpnnoEA9nROzZbB953VsSCFOWhg2jUMpL6zsmj8dSkFdMX3flV7E97hTfXDps9u1/lVgcCIfxh/aG2Dll/EITv6PCvKQfU6FS7L4Mq5URJ1alXulX8r6b8GCq/9sA0bpV4EtypoynrN42bryC8vL1o0JOMC76lamNFrlbFA2O7pXQzn+FySTKA7BQWpAaqizsA1G/RY8f2XwjWifgtSNpr1jieLUpE30io1HQOB4ewwQ7sIjHgCOtVWkTgtVXLDTTCTdBt4/Ass8dxBkVaPhA4odYQKI3U1fu7gYiJRGFCGGAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 75787,
+  "completion_tokens": 827,
+  "total_tokens": 76614,
+  "cost": 0.00122882,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 75287,
+   "cache_write_tokens": 498,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00122882,
+   "upstream_inference_prompt_cost": 0.00081532,
+   "upstream_inference_completions_cost": 0.0004135
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 26,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

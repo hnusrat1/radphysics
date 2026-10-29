@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791826852-uAbBeRRU5oLh0Qw75S7Y",
+ "object": "chat.completion",
+ "created": 1791826852,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Given the speed, I'll scale up to 2e7 total samples for better statistics, running in 80 batches of 250k each to keep memory manageable, which should take around two minutes.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01UeEdgw3w4BxYf8iXaxegaK",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport sys; sys.path.insert(0,'/tmp/work')\\nimport mc as MC, mut, numpy as np, time, pickle\\ncos_edges=np.array([-1,-0.8,-0.6,-0.4,-0.2,0,0.2,0.4,0.6,0.8,1.0])\\nEph=np.arange(0,1.4001,0.05)\\nt0=time.time()\\nres=[]\\nNB=60\\nfor s in range(NB):\\n    res.append(MC.run(250000,1000+s,mut.mu_fun,[105.0,100.5],Eph,cos_edges))\\nprint('time',time.time()-t0)\\n# combine\\nNtot=250000*NB\\ndef comb(res):\\n    T0=res[0][0]; \\n    Tc={k:(sum(r[0][k] for r in res)) for k in res[0][0]}\\n    kerma=sum(r[1] for r in res); flu=sum(r[2] for r in res)\\n    ev=np.concatenate([r[3] for r in res])\\n    return Tc,kerma,flu,ev\\nTc,kerma,flu,ev=comb(res)\\npickle.dump((Tc,kerma,flu,ev,Ntot),open('/tmp/work/comb.pkl','wb'))\\nprint(Tc['Lp']/Ntot/MC.VOL*MC.F0, Tc['Ls']/Ntot/MC.VOL*MC.F0, ev.shape)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Given the speed, I'll scale up to 2e7 total samples for better statistics, running in 80 batches of 250k each to keep memory manageable, which should take around two minutes.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS5QcKEAgSGAI4AUIIdGhpbmtpbmcSDH2ZAGiCyyc1GJmNlRoMlv2xNpmHT+DRSX01IjAZqXTlMM/nM+tj/mkiyajnyxC3HmCztJ4QzJ4uvaE2NxqkNQBHE9sfyHKVdO4kld8qggfB4pHWJWd8zfU8o3WGQQoX+TTuGZpmDbM15lWQ29vyvhjVoiT2yISOgPVGrwwwPLly5+dHTdsg//k7NRWu5cXjsIJRH3XtDny/bVNGI8V5E20rQvdkj0y/IIP71arSTt9+qNXZ4A+j8LLBRr9Ahr/c0mBfuuOw+9FU404s87F6ga2plhsDoai+EdARy94abMMMJA9HhW2MUfBggFAY3WbmyQrTwOWzs1Xjhy5ISpfzUkG14ueL2XTsQWLtvkoMGmixsfD1y9mw3ECLdnedsyDK+jtpuplWmaDepgVFgifz6WQM3xJHnGNv0Bm/mvAjMG9F4wJ8dV62HPQ7v7oRTbScK6SkWO2d9+FCIdON0ZGXfW8DE6EwRg8NGJXxXi0y/gaPjr6p9LCy8afWI+PjQAg6xxo5vX2YrC79zn74xVX2H06Ic9ZLFywHQKTGctPtUqIP8UfxWeD9oJ+LzQ5VgDtKK8PKMVXvboUt7RG8RuIgqYlUk8WHA7Jbhc36UWgCja73uVwFA8ozuMrB1GLgs2G6o5jSUqBAMnPmmqcQO/jK06drnttYYqzd4RpTFRl+2m0PDOcRRihriqOqKxWKqJusY1Pb9+emwZhlAcKvCHLHqXsSaJDLLjbGtLEy+32f6ME8cs5bLuWz9sXMgy8Qq59RX+ZoynZuBy2NuRLwDli1L04ggB1JjcSM4AXzANdaZnOjQh1PrBWkhiaC/GsesNswzHvBaXh0Gq2kvrkevyfkdL8exG4u4jT7tfW101LzbLAsQEIuSYct8CCo3R59uIXryG5AXcQ+lIKqqs43G5Te+H7MS4CJ3kJmdo7e8bTD/AlN0o2iH9mVqAnkDJBLdBlkLNDBNq0aQro4aOnaxVr59mM6BW6CDZGwKTceD61YDX4Zsa8njpgTcMU/1m6qqN44ROtvNY2UK6bcufGvYQL3QK+p4Rd2jVoHixsiXYcKl5WS1atsbiCo+GXn+kMyX+6x1mTwjkhXi18CM1kLKI0U3T1eN5r4aDS8lijI8AivQ5VMMVX8PR0zfDcFqnPUP65POHlDgQOTA5sZHBUgeWfktWRuSDvwv1sSQif2L7kqKwYQGkAWZ4FBAEGoF0fpMyia3rU2aBUbcWNECecB8SfmnmJS+6kqLkdxsqn3JRgTO+4OwvbNfujR0y/KPdU/NQU79c4ew/Fw3S0CTx57zjsuN2GHGAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 95093,
+  "completion_tokens": 621,
+  "total_tokens": 95714,
+  "cost": 0.00136189,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 94219,
+   "cache_write_tokens": 872,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00136189,
+   "upstream_inference_prompt_cost": 0.00105139,
+   "upstream_inference_completions_cost": 0.0003105
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 97,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

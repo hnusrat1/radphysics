@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791816177-6cerMq0Kq8RaHxAk9tfa",
+ "object": "chat.completion",
+ "created": 1791816177,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "The envelope with mu=1 gives max f=2 for all k, which looks good, and the energy array construction for the sampling function checks out. I'll time a smaller run of 200k histories first before scaling up to 1.5M.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01A75LxjYGoGu37hpuXyiU7a",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport subprocess,time\\nt=time.time()\\nr=subprocess.run(['python','mc.py','300000'],capture_output=True,text=True)\\nprint(r.stdout, r.stderr[-2000:], time.time()-t)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The envelope with mu=1 gives max f=2 for all k, which looks good, and the energy array construction for the sampling function checks out. I'll time a smaller run of 200k histories first before scaling up to 1.5M.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSoQcKEAgSGAI4AUIIdGhpbmtpbmcSDNZIZvZMlPlfxzQhFRoMUTM8g2UlwTPchzHPIjBBV3HJo6oz9uAX4ED2TP6Tv20aw6xRHAdLmV6P367AuUpBZ2W9NpwQA6ZovGI5mhUqvgZC4AAECbJUYtUCxvUKq3LwAO1Iq4+vZQOWb5iwtmoGf6BzoRj4ak7BfMYzgCm8lrerLdsqT8bFw3jQkjWrzoW3vay5eMRZm5JjR8UW2T8TJg8zDlZwrM99nsWDtGZO1go1HZGk4LmUSQk2OiiR6fG3XklubLRYN/5wGVbQZi74Kjj2lcMQzb9nfi9np4zt3TGROkXVRCQ1cLXhZNTapNxDt/kffIBV+OHuP+xq0LpUhlNReV8FNi3v0rwYRsuuWz1o9U1vUfyBW7R+hZBEh7hRCeoUPNHitUsDx2CiS6bo+VEHTfsArbg/qJ3ZccGGhcuOfycxMcfNBhI0Ap4nxrvlocVRwaU87GSLDHSDOEqTBDU5sGCdua7sn7DkOYZrRYL1VAFtnJ15rd1snAD4Agt+A1KKFkePkeQBKJIJgoIL4OBpTu6ov6dLnKZy8nFfWwEmFDrMInwScGIT03Xwb1BHTJooKwyKUOSFU+0GhFTPKwNEHx/QGJQixhOeGvwswlFiYzBFijErCJqsukHUTvB/M/VGpemKaRykKS2WprFvbpzCQG7jq/0G/tuoFdBqkkUTafq6eU0Q/Zxpt5sRYGU87wJuhpuOFGHgGxz8h31VE8+Rlwkdvs3yS90wftcHeDvKH4TK3nB4jr7Gm8oVFSzpqjazlD4snXef5U9TxoHCabvUmibXD+4U3vVEOpmppg9bcansgMOfjdGmhekmm4TZ7Zyy1HgQenejYNOQ6QCYAPaWuJOmTDfZYhgmeWyubi8thUrNiUsBlWxVfVTGAZBkeU8RxWoWZyNDI/iP/26Q7/kmvu7GY9OD2XfcbDAMw2K9c/xJuC0Puqfpq9tSFPgRX1BTRbtfDAUyHotlSo6m86rGbONk9aXwmK75BoeNKt09YiBepxz5yKhDsDA5lR6Wfpf6kEz4+CQ2zFsziARM2ZXPT7IgP3K4slybne6ZLInj/sUGWX/7tH4f0t8/rzFaHegEbJU5nNOgUxHj19HHW+nVW8hPvecj7IE+iL34PabDmE0mJKr+SKBUihIAimaGvruS3fIm8/G20MnR+QPk1Ia/xflZl58YkXiaJeQFGecn3LauukuhqjHcRpxYgBgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 26774,
+  "completion_tokens": 223,
+  "total_tokens": 26997,
+  "cost": 0.0027889,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0027889,
+   "upstream_inference_prompt_cost": 0.0026774,
+   "upstream_inference_completions_cost": 0.0001115
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 102,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791825222-OllYWlFvVbKM7cscMaEk",
+ "object": "chat.completion",
+ "created": 1791825222,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "Photon-level results look physically sensible: primary fluence 0.729, scattered 0.454 (38% of fluence, 18% of energy fluence), and Compton ~99% of interactions. Next I'll do the electron part: Bethe stopping powers (checked against ESTAR values), a continuous-slowing-down model with delta rays, and the Spencer-Attix ratio.",
+    "refusal": null,
+    "reasoning": "Something's inconsistent in my Kcol normalization \u2014 I need to check whether the 1.602e-10 conversion factor is being applied correctly when computing Kcol per fluence, since the earlier 0.0418 MeV cm\u00b2/g figure doesn't match what I'm now getting.\n\nWorking through it, 5.36e-12 Gy cm\u00b2 is actually consistent: 0.0335 MeV cm\u00b2/g times the MeV-to-Gy conversion gives that result, confirming the unit conversion is correct. The energy-scattered fraction of 0.182 matches my earlier estimate, and I'm now checking the scattered fluence fraction at 5 cm against the s/p ratio from a previous run.\n\nThe scattered interaction share of 0.54 makes sense since scattered photons undergo more interactions than primaries, and Rayleigh scattering accounts for a small 0.68% of total interactions mostly from low-energy scattered photons. Compton interactions dominate energy transfer at 99.8%, and the overall mean energy and angular spread of scattered photons look reasonable. Now I'm moving on to the electron stopping power and slowing-down calculations.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01BJoSxtKqYsz9pkmTprCEeF",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport numpy as np\\nre=2.8179403e-13; mc2=0.51099895; NA=6.02214076e23\\ndef Scol(T, Zov A, I_eV, dens_ne_per_g):\\n    # Berger-Seltzer electron collision stopping power per gram (MeV cm2/g); T kinetic MeV\\n    tau=T/mc2; g=tau+1; b2=1-1/g**2\\n    Kg=2*np.pi*re**2*mc2*dens_ne_per_g\\n    Im=I_eV*1e-6/mc2\\n    F=1-b2+(tau**2/8-(2*tau+1)*np.log(2))/g**2\\n    return Kg/b2*(np.log(tau**2*(tau+2)/(2*Im**2))+F)\\nne_w=0.55509*NA; ne_a=0.49919*NA\\nT=np.array([0.1,0.5,1.0,2.0])\\nprint(\\\"water Scol\\\", Scol(T,None,75.0,ne_w))\\nprint(\\\"ESTAR water collision ref: 0.1:4.115  0.5:~2.04?  1:1.849  2:~1.6?\\\")\\nprint(\\\"air Scol\\\", Scol(T,None,85.7,ne_a))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Something's inconsistent in my Kcol normalization \u2014 I need to check whether the 1.602e-10 conversion factor is being applied correctly when computing Kcol per fluence, since the earlier 0.0418 MeV cm\u00b2/g figure doesn't match what I'm now getting.\n\nWorking through it, 5.36e-12 Gy cm\u00b2 is actually consistent: 0.0335 MeV cm\u00b2/g times the MeV-to-Gy conversion gives that result, confirming the unit conversion is correct. The energy-scattered fraction of 0.182 matches my earlier estimate, and I'm now checking the scattered fluence fraction at 5 cm against the s/p ratio from a previous run.\n\nThe scattered interaction share of 0.54 makes sense since scattered photons undergo more interactions than primaries, and Rayleigh scattering accounts for a small 0.68% of total interactions mostly from low-energy scattered photons. Compton interactions dominate energy transfer at 99.8%, and the overall mean energy and angular spread of scattered photons look reasonable. Now I'm moving on to the electron stopping power and slowing-down calculations.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS2hQKEAgSGAI4AUIIdGhpbmtpbmcSDLVyGBCaSql3hPCmpBoMyTY64H6WoCltw7opIjBvcVoMfbTTzdOg1jfCcNP5UVKwEyHMlSObMSNT45El4fNDf86LKZrlimC3lYfTmJ4q9xOwmKVExHOrCYHe1lKEOKY7XLoD2wA3EoEcknMVMf2WKFkzn1cOpFX0zbDCHw/7kQhS+xey8SnmZhht+ClnfKycjkvPYA5CD3f+S/TEe8R7PRMSSWUGIYNT2WaJSbfTsd9u7T3Z2AYaR9WLyuoKArRG+fJT/RbHb0xXAbYK2wKJEAV/+FHvk3NDCoSXZKh5cNR6hdjYtjWDru7VDwQTYaPwkrn1LYm16/IoBDDvQJyDkRnt3USJB8P139cg+qSeWZo1yb9Vth+JEcwixk5JKCoB1IQN9IfAaqXm3QPS0khCqkPZXgBGhS7Mt/DXvr/mvJEvYXqrtvsbamojCLhBAHZZv/m//2uyyE9mU/blerhclTN+jGgNCd8YMXYw+RTuXSCvWeoHPD4cUfE+gG32T1y5ASMOSsW6hLWzrgXFE4LWXmntXG/srBirFFBS2hLkiDr4ZhavSyhUfuizbOTBc12B+hRHR/+ojP8AvAF7xUHGYxL+knuB7dzdJoafXD1uIUyDEgMs3K2+sWKfIRysKLopm3MehPhmzvs48hF0mtiLWqWco0I7wbm3krpmmBKw/BXwSzsKAAXBykwyWFHrO+EP71FDxtj9JenPdfSUyWrktTBHCYi0/Oj3LynojUYjzU9B7PtQO+9gVlfaOzWyt4lCP9XH6uBoSOlvLt6f9jrLvo26IgRuM00EVTrWAs1ELf6BlmYK+D9oZGlOeZdtuhlwTHq7hWy474gca/LUvtQXavq7SrEhmdv1Iqt+G64HGx4ai/mkftcfmgR+sdhER6QI3XuCVydndz/Z91T8myYBx85sXSEO7VJCYt7Kv/28+lUdOHCtSt6dX5LEPMBpgHB/7n9+IpqDAkKBJAHh68XqRuLw+1n6d5j2smvkIAIEjy1NR6luelyZ/iUPKV6L7ZDiREZGk6jzSiFL74CnwmQZ42JUMv1j9q1S2nmuoxZOJgTllN05VSWdB72fD0rOc1ycetK/hpz34oMqIPSDALO0PCINOr4dghD8D2o9aJY2RBgPgai14Q1QEC62eaJQB20gkjKuOqlvjPTtUScBj6GKSODP48FCtqhCl+tfZLwBVQdgYbsDvu/MnZQ8RTPmFbednPvy9d9l8Yiv9eRZguWWK+Wa4YY4h3kTjX5Q9BVWbTYgtdKxQIygqqjAqWpwUg00i1F6N/V8L88xAQTZfKnkEMM7TPqR7kp1Kkidpf6D3nCdy3Tj13DQqkocdPOpHvGLC9givgDsnKIYVFSgXMcwRPTAav/V+XogZZoWyXr8tRpnHFR9nIX06Kxe6yZONPO6QHr7MxwBn9rLOIKmdwN4RjDt9vN7tP4NQajapyo4pk+NExRaF6JnuKkLw8Gy0Lu1ehO1NrP4cFW8mMBpdlPoukSQjMHpCd3IqZk6Je9mDjQZEs3z1DK5nxRE8kVPzqt3LcHlauWoiK8Y5sTdbsUuuR6J7UFzlWkTVGi601jk1baN9wCDZT5tLgF+EXpxJY5tCK3fl/MQHSRTFe3/iLvk9BegluuzLBhxV+lEy5l2rXhUhisdC9+rqMajkNWCjKqVOQPn6NFd+wlhfswPSh3QHfSNwpAnZe2fUWc0cdIqmIVME69RmA+kx4Ar1vZt50v53lRRUw/NYbWru39DO3GvKij2xZulVAxzeHScgW/BMOAkkXq7WYVugHL8OUrfziqfYuHAJHUtkgbBpKz6KVQr9dPfpccf2fsw1slo8ciHTtQyKHsbllySynt0W/915++rcDWpQ31nh6/eKQXKG9yX94hpxhJdhLP7IdScjRJXLzGUcx251mp8OqkJBk2v2vBxJXWRDJ+o2l/Vo5zf/LJXrFlC3bbCAtVbyn3tDddgBqSWYc9NxIE4wHR3beYgaxZKpMM7rI7eSkQHqRwmBIYmGsdn9hrDhKaiATeS9SoWEeKPDZ+PaRi/2zSWoFSjL8p4LtkTDYAsEfG2fpV4fzzhTeCBMClr2qc54JEwIgt7+uNJqEZZmNi5/3NcUxMuA2PKvq71OgisavhQtucnOhRLn+Jn6FOABj5A6L+U3GSprjtgs8n1W4gNZIXbyApPbik0In7kDaAZOJD2TlxOOEDzoEgtZdxvLWJvsv/XR0VXOD6CL1Ytgv7EpUdauEbglx42hQKcuGYCt1JcZgnYB5HpU6/IhPcakOetH0/rQQ8NyiNLQsSo+fY/meUXOLM6Ua+aTFpJpt16Q5G29VAEh21nqhUJYxZd1GW3kL9yD96CD/XKKVddQmF4chK53SMlC4c128XeDDiYukokCPRie8LPrc/wJXhNJgcr1/vYd0bAOrteMzKqbZyBJyCzTY+R1GWrOrSthSdmkICBX6gY1Y9KLsFqxsARazZpK1TpUmCwLqR9SzOnV+ZM2oAmR/tPlxKPox2VjXQdvz/6WqQhPL67gabft02RsnDd7OjGgttXasbLtwg4jw/4qhl4+PcpSUPaDucHevtjKsP1U332Ln9LXcL8LLOqi8ssk7YrldauB64ekMRvN6+SC1cxNJvvX8C6GVGRY9792b4vAwrxIUijUkE4CMKeIYrzYmtZ8pLzYHfTcp/zZ3v8XSKGuO3cP3JUW5nP2L1in2aJJ26vOVW4dRlIzhcFzyE9V2vzMH/Pi9gB0W+RB49Vzjv3z7NsNQ/sUVI7rausLx1dyujfmW8w14H0mSnOL2hBeLr4FcdpOBaAuRFxcvCTFG3vhn3dtdx8xFJv5vXkXFJySYW3jIgwZhefVTvkaSbqRgcCbJCi6ARZZJEmWF4IEhNbgsJ11z1SLPOo5AbeUgAVtKMNBZQ3dpaa7HqKdZI0k4PEJ6I2ILDunUxnZu9hm64gTsVWqKqjmF4EJpZg4AUins2LCifGwZFclbQrKMiikSQKvUq378lOK4c5cev0XcuZhxlRigomKgko11Df4Gj9aYN1pQZzeSxMzfk+MlfCoashDbqzaYD5pkBXW1382ua6YS/Ivdiu5G0G68KefvVRJ4HFFnDw2frQnK2I8K2EczLJidZhOtsLPaSi8shDeBgKV+W+G1n312kXVgJfkFD7P7m0daKO4BHHsD+R+HGXhr2aqm92X9DMA3hXh5AN2VtXxLdxhyePECZ5IrdWqcRDUUYVtPKXiklU/T+FgGmFlOzoL6sM8UqXI32oxyPSWtpyJyUu2MqQBxZpEPxOmzIo0A35ZEmLJ4uSpS2SX2lKsEIp6MpMWtdLkpqDq8AE2uFL0aWlHv6DANYga+kMcXCMlFnkXNdJ8dzCF8dJhLNFcsIBaRS9bVevOY9Z/1xXAWBRX3Ss0SNBMvfgzA9GsZ+dhB6q0kEDZFck/M4R6jh0gyF6kUzIG7jREjyMZBfAtwyaYKtSJoOSMfcHeSJQ4WwxV6M+ZpZ3CVAXWOpA1mG0aq8+Ydmzlp20X8rPmxIzGAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 85228,
+  "completion_tokens": 1511,
+  "total_tokens": 86739,
+  "cost": 0.00276095,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 75200,
+   "cache_write_tokens": 10026,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00276095,
+   "upstream_inference_prompt_cost": 0.00200545,
+   "upstream_inference_completions_cost": 0.0007555
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 937,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

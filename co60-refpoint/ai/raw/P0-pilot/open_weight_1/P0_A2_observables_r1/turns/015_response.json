@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791826634-RCwODtxjMWXscStqR5Vq",
+ "object": "chat.completion",
+ "created": 1791826634,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Let me continue with the scatter calculation. I'll compute the first Compton scatter contribution numerically.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_dc815a058dd044fa873e2d01",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nfrom scipy.interpolate import interp1d\\nimport time\\n\\n# Load and interpolate\\nxcom_data = np.loadtxt('/tmp/data/xcom_water.txt')\\nxcom_en = xcom_data[:, 0]\\nxcom_inc = xcom_data[:, 2]\\nxcom_coh = xcom_data[:, 1]\\nxcom_photo = xcom_data[:, 3]\\nxcom_pair_n = xcom_data[:, 4]\\nxcom_pair_e = xcom_data[:, 5]\\nxcom_tot = xcom_data[:, 6]\\n\\nestar_data = np.loadtxt('/tmp/data/estar_water.txt')\\nestar_en = estar_data[:, 0]\\nestar_coll = estar_data[:, 1]\\nestar_rad = estar_data[:, 2]\\nestar_csda = estar_data[:, 3]\\nestar_rad_yield = estar_data[:, 4]\\n\\nf_inc = interp1d(xcom_en, xcom_inc, kind='linear', bounds_error=False, fill_value=0.0)\\nf_coh = interp1d(xcom_en, xcom_coh, kind='linear', bounds_error=False, fill_value=0.0)\\nf_photo = interp1d(xcom_en, xcom_photo, kind='linear', bounds_error=False, fill_value=0.0)\\nf_pair_n = interp1d(xcom_en, xcom_pair_n, kind='linear', bounds_error=False, fill_value=0.0)\\nf_pair_e = interp1d(xcom_en, xcom_pair_e, kind='linear', bounds_error=False, fill_value=0.0)\\nf_tot = interp1d(xcom_en, xcom_tot, kind='linear', bounds_error=False, fill_value=0.0)\\nf_coll = interp1d(estar_en, estar_coll, kind='linear', bounds_error=False, fill_value=0.0)\\nf_rad = interp1d(estar_en, estar_rad, kind='linear', bounds_error=False, fill_value=0.0)\\nf_csda = interp1d(estar_en, estar_csda, kind='linear', bounds_error=False, fill_value=0.0)\\nf_rad_yield = interp1d(estar_en, estar_rad_yield, kind='linear', bounds_error=False, fill_value=0.0)\\n\\nmec2 = 0.511\\nrho = 1.0\\nE0 = 2.0\\nSSD = 100.0\\n\\n# Scoring cylinder\\nscoring_r = 1.0\\nscoring_z_min = 9.9\\nscoring_z_max = 10.1\\nscoring_vol = np.pi * scoring_r**2 * 0.2\\n\\n# Bins\\nphoton_bins = np.array([0,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1,1.05,1.1,1.15,1.2,1.25,1.3,1.35,1.4])\\nelectron_bins = np.array([0.01,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1,1.05,1.1,1.15,1.2,1.4])\\ncos_theta_bins = np.array([-1,-0.8,-0.6,-0.4,-0.2,0,0.2,0.4,0.6,0.8,1])\\n\\n# Klein-Nishina differential cross section\\n# d_sigma/d_Omega = (r_e^2/2) * (E'/E0)^2 * (E0/E' + E'/E0 - sin^2(theta))\\n# Normalized to 1 at theta=0 (forward scattering) for convenience\\n# Actually we need the absolute cross section\\n\\n# Number of electrons per gram in water\\n# H2O: 10 electrons/molecule, 18.015 g/mol\\nNA = 6.02214076e23\\nNe_per_g = NA * 10 / 18.015  # electrons per gram\\n\\n# Klein-Nishina cross section per electron (cm^2)\\n# d_sigma/d_Omega = r_e^2/2 * (E'/E0)^2 * (E0/E' + E'/E0 - sin^2(theta))\\nr_e = 2.817940e-13  # cm\\n\\ndef compton_scattered_energy(E, theta):\\n    \\\"\\\"\\\"Energy of photon scattered by angle theta (radians)\\\"\\\"\\\"\\n    return E / (1 + (E/mec2) * (1 - np.cos(theta)))\\n\\ndef kn_dsigma_dOmega(E, theta):\\n    \\\"\\\"\\\"Klein-Nishina differential cross section per electron (cm^2/sr)\\\"\\\"\\\"\\n    E_prime = compton_scattered_energy(E, theta)\\n    ratio = E_prime / E\\n    sin2 = np.sin(theta)**2\\n    return (r_e**2 / 2) * ratio**2 * (1/ratio + ratio - sin2)\\n\\ndef compton_electron_energy(E, theta):\\n    \\\"\\\"\\\"Kinetic energy of recoil electron\\\"\\\"\\\"\\n    E_prime = compton_scattered_energy(E, theta)\\n    return E - E_prime\\n\\ndef compton_electron_cos_theta(E, theta):\\n    \\\"\\\"\\\"cos(theta_e) where theta_e is the electron recoil angle relative to incident photon direction\\\"\\\"\\\"\\n    E_prime = compton_scattered_energy(E, theta)\\n    # cos(theta_e) = (E - E_prime * cos(theta)) / sqrt(E^2 + E_prime^2 - 2*E*E_prime*cos(theta))\\n    # Actually, from kinematics:\\n    # tan(theta_e) = cot(theta/2) / (1 + E/mec2)\\n    # Or: cot(theta_e) = (1 + E/mec2) * tan(theta/2)\\n    # cos(theta_e) = ?\\n    # Let me use: cos(theta_e) = (E - E_prime * cos(theta)) / sqrt(E^2 + E_prime^2 - 2*E*E_prime*cos(theta))\\n    # Actually, from conservation of momentum:\\n    # p_e * cos(theta_e) = E/c - E'/c * cos(theta)  [for photon momentum E/c]\\n    # p_e * sin(theta_e) = E'/c * sin(theta)\\n    # So tan(theta_e) = E' * sin(theta) / (E - E' * cos(theta))\\n    tan_theta_e = E_prime * np.sin(theta) / (E - E_prime * np.cos(theta))\\n    theta_e = np.arctan2(E_prime * np.sin(theta), E - E_prime * np.cos(theta))\\n    # Make sure theta_e is in [0, pi/2] for Compton\\n    return np.cos(theta_e)\\n\\n# Test Compton kinematics\\nprint(\\\"Testing Compton kinematics at E0=2.0 MeV\\\")\\nfor theta_deg in [0, 30, 60, 90, 120, 150, 180]:\\n    theta = np.radians(theta_deg)\\n    E_p = compton_scattered_energy(E0, theta)\\n    E_e = compton_electron_energy(E0, theta)\\n    cos_e = compton_electron_cos_theta(E0, theta)\\n    print(f\\\"  theta={theta_deg:3d}\u00b0: E'={E_p:.4f} MeV, E_e={E_e:.4f} MeV, cos(theta_e)={cos_e:.4f}\\\")\\n\\nprint(\\\"\\\\nKinematics test done\\\")\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Let me continue with the scatter calculation. I'll compute the first Compton scatter contribution numerically.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 24909,
+  "completion_tokens": 1816,
+  "total_tokens": 26725,
+  "cost": 0.00110458502,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 20480,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00110458502,
+   "upstream_inference_prompt_cost": 0.0007745815,
+   "upstream_inference_completions_cost": 0.00033000352
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 18,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

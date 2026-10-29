@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791824226-BPPHOzMfd5nQepSveaKC",
+ "object": "chat.completion",
+ "created": 1791824226,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Calculating photon paths**\n\nI\u2019m examining the path directions of primary photons within a field. The angles are roughly \u00b10.047 radians at the surface, and the scoring radius shows that the direction is slightly off, but still very close to one. The spread seems negligible. I want to clarify how the direction relates to the beam before moving forward with calculations. It\u2019s essential to get these details right for accurate results!",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_guwatRUlZf3UMT2bVnX7D0GY",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import numpy as np\\nm=.51099895\\nedges=np.array([.01,.05,.1,.15,.2,.25,.3,.35,.4,.45,.5,.55,.6,.65,.7,.75,.8,.85,.9,.95,1,1.05,1.1,1.15,1.2,1.4])\\nce=np.linspace(-1,1,1000001)\\nweights=[]; energies=[]; mus=[]\\nfor E in [1.1732,1.3325]:\\n eps=1/(1+E/m*(1-ce)); ds=eps**2*(eps+1/eps-(1-ce**2))/2\\n T=E*(1-eps)\\n # electron angle cosine from momentum conservation: p_e cos = E - E' c; p=sqrt(T(T+2m))\\n mu=(E-Eps if False else E - E*eps*ce)/np.sqrt(np.maximum(T*(T+2*m),1e-30))\\n mask=T>=.01\\n # integration over c via bin weighted approx\\n weights.append(ds[mask]); energies.append(T[mask]); mus.append(mu[mask])\\n# compute bin with trapezoidal quadrature point arrays\\nEarr=np.concatenate(energies); muarr=np.concatenate(mus); warr=np.concatenate(weights)\\n# equal line but differential cross sect total differs, need line interaction counts same photons, electron interactions cross-sections nearly same slight; normalization equal line counts and interactions probabilities. normalized by KN integrated; per line normalize each\\nwarr=np.concatenate([weights[0]/np.trapezoid(weights[0],ce[ (1/(1+1.1732/m*(1-ce)))<1]) if False else weights[0]])\\n# easier direct each line differential distribute trapezoid weights, normalize line\\nhist=np.zeros(len(edges)-1); ang=np.zeros(10); mean_num=den=0\\nfor E in [1.1732,1.3325]:\\n eps=1/(1+E/m*(1-ce)); ds=eps**2*(eps+1/eps-(1-ce**2))/2; T=E*(1-eps)\\n mu=(E-E*eps*ce)/np.sqrt(np.maximum(T*(T+2*m),1e-30))\\n w=ds.copy(); w[0]*=.5;w[-1]*=.5; w*=2/len(ce)\\n mask=T>=.01\\n hist += np.histogram(T[mask],edges,weights=w[mask]/2)[0]/np.sum(w[mask])/2\\n ang += np.histogram(np.clip(mu[mask],-1,1),np.linspace(-1,1,11),weights=w[mask]/2)[0]/np.sum(w[mask])/2\\n mean_num += np.sum(T[mask]*w[mask])/np.sum(w[mask])/2\\n den+=.5\\nprint(hist, hist.sum(), mean_num/den)\\nprint(ang,ang.sum())\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Calculating photon paths**\n\nI\u2019m examining the path directions of primary photons within a field. The angles are roughly \u00b10.047 radians at the surface, and the scoring radius shows that the direction is slightly off, but still very close to one. The spread seems negligible. I want to clarify how the direction relates to the beam before moving forward with calculations. It\u2019s essential to get these details right for accurate results!",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzRFneW--69UHg5Uaa4-2-tOpeEXeUj-mlzjdK5UQP0QhtAyvb4dzy7DSJVl16aHf8CzBIFCYY2Ug5LJrCLFlYPw2meRxzeSWxQ4Bc9QM_i8Tj7neXuCDzfk-8zF1pIEER3-Mdm20VHg3UOSm6YY7yxRHCYu1LfIoL7lZi7N5MGspa_GrZRWGByXfmzfUFf70bYUfrdXi2Fwg4ONFCqfhizW8VncyKZBN_WdkvgJW5SBhRUY28gZ_NBEtJbvjjLdiRc2dVUJDfiWOyB5PNljoikZmVVUl6HA-XADqGXo9NaywNMrVNo2m2d_5zsVy3O8tvD5dbeHoxm0eDT9yTwFjHPqKksqAJaXmWxpLRycWcIrs6xQ5a_2LAUap9gP5dFiRe9Tf46JxQvSINVAIP4AK4WagMcBuv2bMc0cKMKvgHuurbFK7sHg8-GQUADqoaVHwt38q8x_HkmkagLv4l8updw0JndGTRaEnMH8_DVZwD9m52Vp54Mtmv18Ta00ts-UrRY4hJLC3aPbv3FF3XxLSj8uKHYXcZfZrsZxI8gDuhYocP6UPus2QZhgpn38--INMgDgr4JUWnFZuioA6WBnAw0vRT28LJDPeUddZh3T_lgJPUsafeUhJhte3I0ZMI8dq0n9WfBHHKVPFR0c2rJPAMM1JE4B-5ilv3k-YDVARjZk-UWqsGxikAUKM4GejxBLTmizqStdggg0PvVYB3XcCRcGmBqBlsb_MMj18X74-N-__Vi-nuH5684HViy1Lq_cp3gV8DVEvTj5xhVpGpt1Ncux0x-ND3P5HIku_pRMMaQ4n3sfoRdWkYuq6VISmKpVgiwuUdi4GwkE9rSl6tmynqVaTuxUuOKUq57xGe8LTIP71WKCQ80KLNiWv_RqeT-4mJGdPg1_rX0_VsDjZTW2cDZZLBaJ3mXqCQp7uAgJbtZ2r5HhRev2weO_BwlQwSNY_uJc7BVrjhjDaNgmlNDyMVWmHxgW_uHETEnET1TwTXI79RUVKTWg-ERN4eAUQDyuiP8CPWqSnzuLjbcXbrLYphVk0dJr_VtW5cjVl1hYIn8ir_VpuUfzhgMdSD1I1lWSdV6Qkb29v7CgxdP2Xnx6AP8i72g_zFoovLrnttJmxantyWD1tWMK1-WajREnDDPCfCLDJ6jjfC_O0JDe-2RhxrBjuXgTJRJeAK_9wgW5MGROcoXZ8RNcg8KoO-SAVFTxwYftowcgqJAfdEMT0y_NeG7DfFKimgB_QPonkGN5q-U9OqrwTt7nkkruYFOEg7rhfqK0TooGA995IlJalwQ8Yl_7jBPOAtq2gNVdGTmzqhxFUt-r9Oy0FQH47yHJW3LS90x8nzElGiIv6HT_Lcx6UMbup7MK8sAuMzVLhxbEltR3mat4OREIjxxC-ScpHCazVfU1hQl-SmFvC3uKLp6D0P_xSaGTuxXfRFNNDSgCJeqkQeZWrrn__lVdVlCkXKzBKkQaq7px-d8ZqQvfnD3lxNM-Vm281b_oh38BJjpR-fvGUy8dk3uCEERRtEghxKC-EIvlpIau6-0tOivay5ZuVoNaIoQgaOGmCCZWfkUXVtFrNgIEtIq3tlgbtqdPLMuFvjDOY2CVrmHGnLLBlqwWaN0l-PfWRMuwxlSQFXZXU5FKuOKWbMp1105gM9URC7DV5BoQziwfOw3mFnNv6RTXOABEjstXoJx6FUxuhw_I_hMuGePwhsiQro05SRZUZ5tDTZCiF9_Znsw9GKiSAg6Km1HxoYnjel8tZzeO_raj79LrpbgID8Xp96nQNQK64P2qppyCT3OO-3zz1QdGx0wUIn7H-uYLj5kEgNg47jGOZVCS3YSlfH3ZS9TycsOkQ5l4_rHfKgaysWnLQOod-B7LuWhgEgcZr4oaqHRp6IwddVosxb8_N7bWm8GtROzTWn_SeQaZDZw2SRXFbChHQIoEFhqLWmszCqOTx8Cr-xL3iGxFu9eVz1Obr6yJwmlcSE3gMqcic8JWNNTI9WRs7vvurHAj9D1DBnB6FQFuQBNWTmUl82aexAtxWkpVg--xzuT6Ho3w_GxL6ttpVQvPKnEFMN0EJtuJWb3p8vooHGK_4JBOSL_V1AJRVmnQs6qEhpQdbZiFk-2kxkzuhVpEvf2RD4qrNImAXqo9CuUaZJbYaUNkpB20OrzHZEhVwix3FMYwBmsTnVPx-iLNBuJeGjWCM_uUzwGAeslmdpzZvueJCQJDn8Nm8TAGD_epM2wtG-OOHQJu1Dpe-ZKD4Xc1fhvSFHBdWsnLKTIyC4ZOPjpUY_JYnLdaMPXBO2U2QElORyMoWFa6jeEnOHA33Muy7l8WJwihShCq2k7lwVLHP1246ytZyDbLE4M53Qrv_lAM-HWBnswczjY1GlOT61SV-nwleFQ_8_ve-AoKHPWB7X0dTk3YMLrr7E1XnsvNie25e9jDqo-uoFC5EQJ5tpzOjd7ZgjXki_ebd7RXw_W6NTgnTt2i2ommlQBx-V3nYYm_hvL-cDPJi3IC_itBWYi1-O9RPqYUh05tAYKAD7jBfEq09f7-LI5Qe7ru5vBzHGlNDdHqqtfbdasTn-81pQmV0KnLtwChqNJM1ZLnxY-CsFe1Tj22gx4VdEBj7e96bE0myc-mIdJl-h4spSkwb2qoA06GMWXB_qoeMaV4UXRxbPpHJysSh8DwOkDzJMHjD5wzO2MbSXIZ4M8hMCV3Z3EqooldkJP9Ta8KYfsezoPVID-SxsidltFD11PdlOBeQF5FhjogClqitPELaynpeEk5FPYTpTd6YG4v2smD1VF4oVZgwBIV3AETycnr_qvqUX4BB1UBVaHasF0aJgODWKAnvk47FaaKTxT84MBJADEZ9ThMdc5H4gbeXCaov1JdgnXCOk8bpq11zRAc70sctc85oYwP3EkSVWf5PFPhcRHjflxNzBWRXbW0FiJU7uKOOyJp_7PqEHlSMKn3W0Fxstnzxqi5BUYLolz1xTfD9HjcQYueovhO_I-qWaLRnJlvOvqD8ZeMifdsLL7annQZp4FPY6YX6Mycw1JFocFAmREY39EurBgWmJ09wqPeLtcFofBjBK73WJDR2eZ2vpAnObJHmxKhePG5Wohxn0odWfi0qNB4_Ttx7oiuFMofUyWAdxgVKY0hx8EZEQznm3xkERxqegrUEqbaU5zFjDYcaEmeSqlp_hGlft_-0qaMUHZl-S1JpXaVyMzCkc6Uwv7DKch46ESubSgx_aqnHuz0BP1xvwXmyuPoAJwPpvOwRUrgaUgUbHzA8hD7oH-3qBP5iYiJCgPQ4vCC0p9_pvvOaJVu5FSkL5C8yofw3O5S6OzkP9ESjGEk1vg3RhTnBaSxh3U9z8IlaJLeVfjXCdxzi9KpCSK_se9YbiRAiHaI2pyZcBkn3VtuDNdcetHyr6DWYkF_t3R5xgphrQfRP4EEoxtBUNTPnGBvbHUe8LWeYvKlxqHd8iBaWWlkmR9h6-OIW-GoYL-FWyeNFJSHiejZzX8cguLcZbhqLEdS2hh-m0IeErq_28bNj3_ZE-q_aN5ZyEfv5cv8-UmYgl4SQxq1pa6OYCMjAykVWEKNCeDWMPvcMXuzOkBunMbXx5E_B4arknigixoKFawDPKMpZsfKgUFTYSODnWNgrTl-FcdlNybsCou763BSZvafiu0_mZ_aBw4FNHbVkoAIB7htfhatsl2lSLcEW3e5lHE3q_OUx1o58IbUZge8SzjuDQznqHt2E9AEiDHhgX7HoWGHzxYpkG4JKQtt4YBTyZroKKRbhKGqalFbXWhpVdGrq_cOn_boXELDcUoF1t_ateRQC2IMJiIvu3c8_ziT2ilb7TQcKG55XNS2itTAHbAfL4jHuMd6T3Xrou0hRPIzuZy3KbdNpGvwGzr4tt0yJfm1KxgNHXdtcVUzuGDTmxdSwSBON9Hn0sfIrD093sJoPVXQdzLRuLb7tRZ1TKYuKBACdyEtv31ss43VABo4E3HTriihkfhd8vbZHJPAqyfJrCz1LCiom24thjY02_OxP6fUTY22UZmde_ksx1zjI0UliSqdmxr-TVuJIP5qY1Lorv61xLkxGgApX-H_hK_31Dwg5qHDRrF1k9tuTrUP6lWoBSC7JIuqLZPGV6vOSsNO8yO6uih2EdOsOcKobipTc5Olox_iePvZSsTj9odNV-TxcoyaSXZAq97MXPzZyiPJrPsj8GK5UR7iDnM3b4KFVsZ__u9HyDffTZnQgGh6RRMGvMfnU7Z-fLGtbK-xg84kc2_nJLNPsB6DoY_sin3ohZ51o-ps6Hy4CMp0ZPyf3p2fzRacxo9u-5V50W18NCCAHXTmSNcWxdVipCL2c-6PqUpM-ZteSLJoEfk-kjcq3lqZqhbKMwSl4NDG2v7uhI2B8OcGxjgS-A8phZEsuR_tOpGh9idDTpbn0xJUveaz8a3wTcaG9P9ySdSDh4Z4WDE3CwWUyOqDB6igz-Idqj3lT2wfjqYaa3CLQOOr1fSOVpljQYE5MGQk6yJotQrhkaee9u3mR9D3VkYxfe0yxqOAkIIQ-KuHTkKXOUuqG1xPLypgdrrYmHQNLtGNPmWg_eJEl7SkxSHDkT0HrNq2l5ZvQiCsbwxPwnOFdRtFhQxvEmElHM4eoMgRPCic7OhE460H_1c11FQ4OypoUtpYfNoRuR7_YxAnA9Qg9oGWynvAHnADqTJcIobdnnOGOVo-AjY4ZtaT7UO2XETqRgX_55ClRiduOY7WFFwPkjS3wJsPPm4gpi8KLjSarM-5d4NbgoYJIFg==.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_0b98880d2ebb4a4d016acd1163567487d1844ea20fdc360568",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 10719,
+  "completion_tokens": 938,
+  "total_tokens": 11657,
+  "cost": 0.000605325,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 10465,
+   "cache_write_tokens": 251,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000605325,
+   "upstream_inference_prompt_cost": 0.000136325,
+   "upstream_inference_completions_cost": 0.000469
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 272,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

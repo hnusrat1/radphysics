@@ -1,0 +1,1 @@
+print(json.dumps(out, separators=(",",":")))

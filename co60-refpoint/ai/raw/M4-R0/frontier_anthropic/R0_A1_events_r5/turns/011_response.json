@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791828309-1K2ixqF0esa5cIklhvz8",
+ "object": "chat.completion",
+ "created": 1791828309,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I need to include the full JSON content in my answer, so let me pull up the file's contents.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01MFxoXWnXX632yNqrwL6sSy",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport json\\nprint(open(\\\"sample.json\\\").read())\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I need to include the full JSON content in my answer, so let me pull up the file's contents.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS+QYKEAgSGAI4AUIIdGhpbmtpbmcSDL5g0Dz5SPQiY0xRZxoMlDNs0M1IgVqsXFa3IjCsTQY5IrUlafXhZywMbSo45gRiaQiD20WftgCH01qCEfdx2mzemNYFo+WBeHVOyTMqlgZQteX4rkHYOWwPjOoMo5zw0w14zRi9yYs+JF9/0vCKtNqiFwD4NK9dMNkk/b89ZHHMNwiYh5Jw5JJYtcTq7zTsZu4RdZLsO71yCYnkC+d3fRmAdjnd/iq9JgluCvGYdSFQbdwjTeALPJOeyFGZ29Cv/oZQrJm8JeMQQOI1LBO5wvI35IpicjOMnXlhQb1S6qwWismJgEhGJphf5dtnhqO5d1OsJD89Y0gNoJhGJnjQfrwwHoP7Z2zzef1AyG/mYVya8PYkjiqZMlXmgF0YDHAFPg6xN9pc6f4zd8+AwUyWf72dAg1/O3uY26+NgCNjfPdaolkOlUE3/5qivCScRse8BDF3qcsvLn1zfjQuEhVwNE95WobqSBBpAIlNIsR89H9DsrRLPS46VGuF/ljG+LTRKDBO1WJGOMQFeBgmlmGiTGC7qTa+LZVaVfDa7WVdgtXXOfEa5k5YlBsNGVgJT9280jwazYxMGdjIArPmb+tICR04r8cJDuPjlLVcXrcpUIHqzqmfzx/SfP2a1f/75jxnQuPj3TkGsYiYmF590JZoBE40avj/n0OXTZXDA7tiEhFRPK0Fef20nmsfl+JW2oboHe83MX6o8q6r5eRJT1ZBygGSkjncNuwo9yg/5cxmmzfhVM1kPF7TL7CRInhf6hE61iHmNf5PotHor/jVhhSdOklShItEuv77RMw1rzLIX91AVLKhMdeFziZ3bHk0GH4sVkg4bEguDo5WgUmpUCgFdQcHcbigrqyX4sMzNIyxYJJSyIT0dRNY2k2GBOjYQQbsa4xs/Ljh8Hymt2VkF5ft3hsMMB9Mk58g5+sEetVfoTVeQ83Hh/JuiB5sELVFlQthIlx74ULJ/zq8xDezF6QpiUQhNyeSZT0Etk1g2TsCLMutALJp4ULwKEfLJ8f+kSpcDkJMMO+cWK1YhZTSCZGS9gd/aQ5/xI6MKPBjWRK/CW9VZExk7axMWK3nj4VE6Cq1qvBrB86FalSa5ezQYQ9Cw58rQuZ7vRog/I19aMy+v+MOvugY8HIKJzQQqASmWqDkI06hU4EiGAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 41365,
+  "completion_tokens": 87,
+  "total_tokens": 41452,
+  "cost": 0.000527595,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 40752,
+   "cache_write_tokens": 611,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000527595,
+   "upstream_inference_prompt_cost": 0.000484095,
+   "upstream_inference_completions_cost": 4.35e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 26,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

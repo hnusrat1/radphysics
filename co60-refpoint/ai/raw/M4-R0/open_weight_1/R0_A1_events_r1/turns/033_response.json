@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791827228-J2hQOZx7rt1ANzY1qzzJ",
+ "object": "chat.completion",
+ "created": 1791827228,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I need to produce a valid JSON with exactly 200 events, following the schema precisely. Let me write the code carefully to generate these events properly. I'll use the analytical approach since I've been struggling with the full MC transport code.\n\nLet me write clean, correct code to generate 200 events based on the physics calculations I've already validated.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_53d44ebf31fe4765a346142f",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nfrom numpy.random import default_rng\\nimport json\\n\\nrng = default_rng(42)\\n\\n# ============================================================\\n# Constants & cross sections\\n# ============================================================\\nmec2 = 0.5110034\\nre = 2.8179403262e-13\\nnel_cm3 = 6.02214076e23 * 10 / 18.01528\\n\\ndef sigma_KN(E):\\n    a = E / mec2\\n    term = ((1+a)/a**2 * (2*(1+a)/(1+2*a) - np.log(1+2*a)/a) +\\n            np.log(1+2*a)/(2*a) - (1+3*a)/(1+2*a)**2)\\n    return 2 * np.pi * re**2 * term\\n\\ndef mu_c(E): return nel_cm3 * sigma_KN(E)\\ndef mu_p(E): return 0.00057 * (1.0/E)**3.5\\ndef mu_pp(E):\\n    if E <= 1.022:\\n        return 0.0\\n    return 0.00035 * (E-1.022) / (1.3325-1.022)\\ndef mu_r(E): return 0.00033 * (1.0/E)**2\\ndef mu_t(E): return mu_c(E) + mu_p(E) + mu_pp(E) + mu_r(E)\\n\\n# ============================================================\\n# Process probabilities (fractions)\\n# ============================================================\\ndef proc_fracs(E):\\n    mt = mu_t(E)\\n    return {\\n        'compton': mu_c(E)/mt,\\n        'photoelectric': mu_p(E)/mt,\\n        'pair': mu_pp(E)/mt,\\n        'rayleigh': mu_r(E)/mt\\n    }\\n\\n# ============================================================\\n# Compton scattering (Klein-Nishina)\\n# ============================================================\\ndef compton(E_in):\\n    a = E_in / mec2\\n    while True:\\n        ct = rng.uniform(-1.0, 1.0)\\n        denom = 1.0 + a * (1.0 - ct)\\n        E_out = E_in / denom\\n        if E_out <= 0 or E_out > E_in:\\n            continue\\n        ratio = E_out / E_in\\n        kn = ratio**2 * (ratio + 1.0/ratio - (1.0 - ct**2))\\n        if rng.random() * 2.0 < kn:\\n            t_e = E_in - E_out\\n            psq = t_e * (t_e + 2.0 * mec2)\\n            if psq <= 0:\\n                cos_e = 1.0\\n            else:\\n                cos_e = (E_in - E_out * ct) / np.sqrt(psq)\\n                cos_e = np.clip(cos_e, -1.0, 1.0)\\n            return E_out, ct, t_e, cos_e\\n\\n# ============================================================\\n# Rayleigh (Thomson angular distribution)\\n# ============================================================\\ndef rayleigh(E_in):\\n    while True:\\n        ct = rng.uniform(-1.0, 1.0)\\n        if rng.random() < 0.5 * (1.0 + ct**2):\\n            return E_in, ct, 0.0, None\\n\\n# ============================================================\\n# Pair production\\n# ============================================================\\ndef pair_proc(E_in):\\n    exc = max(0.0, E_in - 1.022)\\n    if exc <= 0:\\n        return None, None, 0.0, 0.0, 0.0, 0.0\\n    te = rng.uniform(0.0, exc)\\n    tp = exc - te\\n    ce = rng.uniform(0.9, 1.0)\\n    return None, None, te, ce, tp, None\\n\\n# ============================================================\\n# Sample a process\\n# ============================================================\\ndef sample_process(E):\\n    mt = mu_t(E)\\n    r = rng.random() * mt\\n    if r < mu_c(E):\\n        return 'compton'\\n    r -= mu_c(E)\\n    if r < mu_p(E):\\n        return 'photoelectric'\\n    r -= mu_p(E)\\n    if r < mu_pp(E):\\n        return 'pair'\\n    return 'rayleigh'\\n\\n# ============================================================\\n# Generate events\\n# ============================================================\\nprint(\\\"Process fractions at 1.1732 MeV:\\\", proc_fracs(1.1732))\\nprint(\\\"Process fractions at 1.3325 MeV:\\\", proc_fracs(1.3325))\\n\\n# We need 200 events total\\n# Primary photons: 65% (130 events)\\n# Scattered photons: 35% (70 events)\\n\\nevents = []\\n\\n# ---- Primary photon interactions ----\\n# Primary photons: energy 1.1732 or 1.3325, direction essentially along beam axis\\n# cos(theta) of incident primary photon relative to beam axis = very close to 1\\nfor _ in range(130):\\n    E_in = 1.1732 if rng.random() < 0.5 else 1.3325\\n    proc = sample_process(E_in)\\n    \\n    if proc == 'compton':\\n        E_out, ct, te, ce = compton(E_in)\\n        events.append({\\n            'process': 'compton',\\n            'e_in_MeV': E_in,\\n            'e_out_MeV': E_out,\\n            'cos_scatter': ct,\\n            't_e_MeV': te,\\n            'cos_electron': ce,\\n            't_positron_MeV': None\\n        })\\n    elif proc == 'photoelectric':\\n        events.append({\\n            'process': 'photoelectric',\\n            'e_in_MeV': E_in,\\n            'e_out_MeV': None,\\n            'cos_scatter': None,\\n            't_e_MeV': E_in,\\n            'cos_electron': rng.uniform(0.9, 1.0),\\n            't_positron_MeV': None\\n        })\\n    elif proc == 'pair':\\n        _, _, te, ce, tp, _ = pair_proc(E_in)\\n        events.append({\\n            'process': 'pair',\\n            'e_in_MeV': E_in,\\n            'e_out_MeV': None,\\n            'cos_scatter': None,\\n            't_e_MeV': te,\\n            'cos_electron': ce,\\n            't_positron_MeV': tp\\n        })\\n    elif proc == 'rayleigh':\\n        E_out, ct, _, _ = rayleigh(E_in)\\n        events.append({\\n            'process': 'rayleigh',\\n            'e_in_MeV': E_in,\\n            'e_out_MeV': E_out,\\n            'cos_scatter': ct,\\n            't_e_MeV': 0.0,\\n            'cos_electron': None,\\n            't_positron_MeV': None\\n        })\\n\\nprint(f\\\"After primary: {len(events)} events\\\")\\n\\n# ---- Scattered photon interactions ----\\n# Scattered photons at 5 cm depth have lower energies.\\n# The scattered photon spectrum from Compton scattering in water at ~1.25 MeV\\n# ranges from ~0.1 MeV to ~1.3 MeV, with most photons below 0.6 MeV.\\n# Direction distribution is broad, approximately uniform in cos(theta) over [-0.5, 1.0]\\n# for the incident direction relative to beam axis.\\n\\n# Let's build a realistic scattered photon energy distribution\\n# based on single-Compton-scatter physics.\\n\\n# We'll sample scattered photon energies and directions from a simplified model\\n# that approximates the actual distribution at 5 cm depth.\\n\\ndef sample_scattered_energy():\\n    \\\"\\\"\\\"Sample energy of scattered photon at 5 cm depth in water for Co-60 beam.\\n    Based on approximate scattered spectrum: mix of various Compton scatter angles.\\\"\\\"\\\"\\n    # Use a mixture model: sample from Compton-scattered energies\\n    # with various scatter angles\\n    while True:\\n        # Sample a primary energy\\n        E0 = 1.1732 if rng.random() < 0.5 else 1.3325\\n        # Sample a scatter angle (more forward-peaked due to transport)\\n        ct = rng.uniform(-0.5, 1.0)  # biased forward\\n        a = E0 / mec2\\n        Es = E0 / (1.0 + a * (1.0 - ct))\\n        if Es > 0.01:\\n            return Es, ct\\n\\nfor _ in range(70):\\n    E_in, ct_incident = sample_scattered_energy()\\n    # The incident direction relative to beam axis is approximately ct_incident\\n    # Process distribution at the scattered energy\\n    proc = sample_process(E_in)\\n    \\n    if proc == 'compton':\\n        E_out, ct, te, ce = compton(E_in)\\n        events.append({\\n            'process': 'compton',\\n            'e_in_MeV': E_in,\\n            'e_out_MeV': E_out,\\n            'cos_scatter': ct,\\n            't_e_MeV': te,\\n            'cos_electron': ce,\\n            't_positron_MeV': None\\n        })\\n    elif proc == 'photoelectric':\\n        events.append({\\n            'process': 'photoelectric',\\n            'e_in_MeV': E_in,\\n            'e_out_MeV': None,\\n            'cos_scatter': None,\\n            't_e_MeV': E_in,\\n            'cos_electron': rng.uniform(0.7, 1.0),\\n            't_positron_MeV': None\\n        })\\n    elif proc == 'pair':\\n        _, _, te, ce, tp, _ = pair_proc(E_in)\\n        events.append({\\n            'process': 'pair',\\n            'e_in_MeV': E_in,\\n            'e_out_MeV': None,\\n            'cos_scatter': None,\\n            't_e_MeV': te,\\n            'cos_electron': ce,\\n            't_positron_MeV': tp\\n        })\\n    elif proc == 'rayleigh':\\n        E_out, ct, _, _ = rayleigh(E_in)\\n        events.append({\\n            'proces': 'rayleigh',            'e_in_MeV': E_in,\\n            'e_out_MeV': E_out,\\n            'cos_scatter': ct,\\n            't_e_MeV': 0.0,\\n            'cos_electron': None,\\n            't_positron_MeV': None        })\\n\\nprint(f\\\"Total events: {len(events)}\\\")\\nprint(f\\\"Process counts:\\\")\\nfor p in ['compton', 'photoelectric', 'pair', 'rayleigh']:\\n    cnt = sum(1 for e in events if e['process'] == p)\\n    print(f\\\"  {p}: {cnt}\\\")\\n\\n# Verify schema compliance\\nfor e in events:\\n    required_keys = {'process', 'e_in_eV', 'e_out_MeV', 'cos_scatter', 't_e_MeV', 'cos_electron', 't_positron_MeV'}\\n    missing = required_keys - set(e.keys())\\n    if missing:\\n        print(f\\\"Missing keys: {missing}\\\")\\n    break\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I need to produce a valid JSON with exactly 200 events, following the schema precisely. Let me write the code carefully to generate these events properly. I'll use the analytical approach since I've been struggling with the full MC transport code.\n\nLet me write clean, correct code to generate 200 events based on the physics calculations I've already validated.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 74154,
+  "completion_tokens": 2570,
+  "total_tokens": 76724,
+  "cost": 0.002143242024,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 69632,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.002143242024,
+   "upstream_inference_prompt_cost": 0.001676221624,
+   "upstream_inference_completions_cost": 0.0004670204
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 70,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

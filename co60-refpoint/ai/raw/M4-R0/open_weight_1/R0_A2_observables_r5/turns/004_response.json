@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791830843-Ux7bW96kDFkp5HTEOdQM",
+ "object": "chat.completion",
+ "created": 1791830843,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "GMICloud",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Need to handle alpha broadcast: alpha is array (n,), mu_c is (n,K). a*(1-mu) broadcasts (n,1)*(n,K) \u2192 (n,K) only if alpha reshaped. For scalar alpha it's fine. Let me fix with reshape.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_39e57c23f31443e094f9450e",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np, time\\n\\nm_e = 0.5109989461\\n\\ndef sample_compton(E, rng, K=10):\\n    E = np.asarray(E, dtype=np.float64)\\n    n = E.size\\n    alpha = E/m_e\\n    def p_mu(mu, a):\\n        d = 1.0 + a[:,None]*(1.0-mu)\\n        return ((1+mu*mu)/2.0 + (a[:,None]**2*(1-mu)**2)/(2.0*d)) / (d*d)\\n    mu_c = rng.uniform(-1,1,(n,K))\\n    u_c = rng.random((n,K))\\n    p = p_mu(mu_c, alpha)\\n    accept = u_c < p\\n    has = accept.any(axis=1)\\n    idx = np.argmax(accept, axis=1)\\n    mu = mu_c[np.arange(n), idx]\\n    bad = ~has\\n    cnt=0\\n    while bad.any() and cnt<50:\\n        nb = bad.sum()\\n        mu_c2 = rng.uniform(-1,1,(nb,K)); u_c2=rng.random((nb,K))\\n        p2 = p_mu(mu_c2, alpha[bad])\\n        acc2 = u_c2 < p2\\n        h2 = acc2.any(axis=1)\\n        mu[bad] = mu_c2[np.arange(nb), np.argmax(acc2,axis=1)]\\n        bad[bad] = ~h2\\n        cnt+=1\\n    if bad.any():\\n        mu[bad]=rng.uniform(-1,1,bad.sum())\\n    Ep = E/(1.0 + alpha*(1.0-mu))\\n    pe = np.sqrt(np.maximum(E*E + Ep*Ep - 2*E*Ep*mu,0))\\n    cos_e = (E - Ep*mu)/pe\\n    Te = E - Ep\\n    return mu, Ep, cos_e, Te\\n\\nrng = np.random.default_rng(1)\\nE = np.full(2000000, 1.25)\\nt0=time.time()\\nmu, Ep, cos_e, Te = sample_compton(E, rng)\\nprint('compton sampling time', time.time()-t0, 'mean Te', Te.mean(), 'mean cos_e', cos_e.mean(), 'mean Ep', Ep.mean())\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Need to handle alpha broadcast: alpha is array (n,), mu_c is (n,K). a*(1-mu) broadcasts (n,1)*(n,K) \u2192 (n,K) only if alpha reshaped. For scalar alpha it's fine. Let me fix with reshape.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 55517,
+  "completion_tokens": 627,
+  "total_tokens": 56144,
+  "cost": 0.001528709,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 49965,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001528709,
+   "upstream_inference_prompt_cost": 0.001414595,
+   "upstream_inference_completions_cost": 0.000114114
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 58,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

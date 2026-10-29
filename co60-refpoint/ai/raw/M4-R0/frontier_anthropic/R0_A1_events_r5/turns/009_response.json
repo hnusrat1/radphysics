@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791828303-FEao9vWpRZNEY1yQwsNL",
+ "object": "chat.completion",
+ "created": 1791828303,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "From the 4380 events, I'll sample 200 uniformly at random without replacement, output as JSON with rounded floats, and double-check the photoelectric fields are properly populated. I'll also print some sanity-check stats like the fraction of Compton events at 1.17 vs 1.33 MeV and the scatter angle distribution.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01CvWUCV6u9w1mcDRswbQNSG",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nsample_code = r'''\\nimport pickle, json, numpy as np\\nfrom collections import Counter\\nev = pickle.load(open(\\\"events_all.pkl\\\",\\\"rb\\\"))\\nrng = np.random.default_rng(7)\\nidx = rng.choice(len(ev), size=200, replace=False)\\nout=[]\\nfor i in idx:\\n    e = ev[i]\\n    d = {}\\n    d['process']=e['process']\\n    d['e_in_MeV']=round(e['e_in_MeV'],5)\\n    d['e_out_MeV']=None if e['e_out_MeV'] is None else round(e['e_out_MeV'],5)\\n    d['cos_scatter']=None if e['cos_scatter'] is None else round(e['cos_scatter'],6)\\n    d['t_e_MeV']=round(e['t_e_MeV'],5)\\n    d['cos_electron']=None if e['cos_electron'] is None else round(e['cos_electron'],6)\\n    d['t_positron_MeV']=None if e['t_positron_MeV'] is None else round(e['t_positron_MeV'],5)\\n    out.append(d)\\nprint(Counter(o['process'] for o in out))\\nprint(Counter(round(o['e_in_MeV'],4) for o in out).most_common(5))\\njson.dump(out, open(\\\"sample.json\\\",\\\"w\\\"))\\nprint(json.dumps(out[:3]))\\n'''\\nopen('sample.py','w').write(sample_code)\\nr=subprocess.run(['python','sample.py'],capture_output=True,text=True); print(r.stdout, r.stderr[-2000:])\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "From the 4380 events, I'll sample 200 uniformly at random without replacement, output as JSON with rounded floats, and double-check the photoelectric fields are properly populated. I'll also print some sanity-check stats like the fraction of Compton events at 1.17 vs 1.33 MeV and the scatter angle distribution.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSqAgKEAgSGAI4AUIIdGhpbmtpbmcSDOMQMqHHNQXlEOB0uhoMAZ/pPQSUmdA4lomEIjBiflMYTkpbPRFwyJLfajCkftJPdnx1sJfR6olcGBZSGEMf+OrZDpOCS9OBt6xpr8AqxQcyk9AzoCAEut4h8VxqHAgySoBUoGCURR0IBcwIXS1YZh+bx9KDok07PRQeyQ2+qVIqHTMOmJhwiJlVbjyGe834o/qv3y0slOxuhr0Z3gbPQEC1xWAZqzXjwDF2Jgj9OXr+6zDiLok1PX5jMl2OuiB+xZ+L0KdHTzWPxKtnX7OG2iVGn/bn4ALGaOMmGY47fCIdt+x6evp7pjJb7VQWLlG8O/dvJbl+JEUadM4kkxy7fzZuSvQ0P4FvtsIJQ47QMBQeJeW0//MU3Lpl9+hzoOz3skaBrYb0fmpg9WY4j9xqGuHqLbilDMT1k6shjbpRW3OUPJ+fSHFEs378faeaMMgRU++Dfj2hDfhbjp6WA4wpqUEqtt9Ksp+zwU2jbg8+z5NYLHg1rbhI8Cd5MbgnWqq/KqsR+HS9owzYp7QKqvIgSAx1Tn9FLbq+AIhFr/K49fgHIo3fcNs9w6pdBz9e7lmb9IoUXlEMZaC7Gk8EhYNFyWBOjCLRJCvRZa0FuA5hfsW4V7WTooGOlLPoaMiIrvj4E2BBV6XGFHr9Cqy7WWV3WX/gD2/Sr54oF73mFtrNRtfW9mepZiQ8ddcJt2GJr3kzKn6Qmu0ecXDCK23Zk5QBpiESxurfLc9CtOh2xjlNOU8yt1Warp7dIhIw/0L4lxpTfO/HJ2CZhW67SE0USdOzpa5QAs/Xcoz9UrSV4tA+xV4Hagh4S5OKwOu1lwH3rrMzrDIDkK76CEJ2oE0wrR7oOjb1yfK39Oy6YI8rIjg7Mj2pFPB3CHkOU9jN/as1CGTjCzhNBMe+8mXwnNwCWOZXrcrC6vDk+6UpNof8VN/SBbBzhaN8ANq5O84pwNrBhM8gZlQzWGxfkQzcOyJ+Nb0hImLmraU5cW77ifNZwPLXaKT2hHvqYpP+D+ilFCiITYOuj6HY+XATppGdCx/QMbUaixbhIV6F8J/TzkHbZ16xz2qgKpcF3lLpmhq0lec9lyn89eWU3TIFgDc5dbUw/M/p1aMi2R6dRcR+xJiZkmCd0FWsUKBBu2NJc6U81wcjtCTCS8VKKNZn4YP+JVwuLFCTfjWy2jGL9VbCu60rTzyUmpjvkqod+qW9jExrVH8YYkiDxoJwxw9QCTKxP6JJ48oPgExGJj8tEaseMRuZcTdf3I4srSszDH8cWXG+6egtlTGVPFD8ehBNF78AKEF8103WH8OOtIZbjKFvhtVHT1CHO4vUFpbRYO45FD34jofeyJOo+jkZv9UjOnahGC3ZLpIPbZnf/kCN/cdhRjuof5pRE0oUKXnbBhgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 39878,
+  "completion_tokens": 665,
+  "total_tokens": 40543,
+  "cost": 0.00077424,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 39504,
+   "cache_write_tokens": 372,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00077424,
+   "upstream_inference_prompt_cost": 0.00044174,
+   "upstream_inference_completions_cost": 0.0003325
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 102,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

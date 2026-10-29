@@ -1,0 +1,57 @@
+{
+ "id": "gen-1791820285-lHFgxkj1w999aHnokEEA",
+ "object": "chat.completion",
+ "created": 1791820285,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_018gxpiYzEF4T1TnKRwjYAcd",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport sys, importlib, time\\nsys.path.insert(0,'/tmp/work')\\nimport mcph, mcph2\\nt=time.time(); r=mcph2.run(20000,1); print(time.time()-t)\\nprint(r['flu_E'].sum(axis=1), r['intr'], r['births'].shape, r['Qslab'][:5])\\n\"}"
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 93455,
+  "completion_tokens": 159,
+  "total_tokens": 93614,
+  "cost": 0.001067705,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 92988,
+   "cache_write_tokens": 465,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001067705,
+   "upstream_inference_prompt_cost": 0.000988205,
+   "upstream_inference_completions_cost": 7.95e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 0,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

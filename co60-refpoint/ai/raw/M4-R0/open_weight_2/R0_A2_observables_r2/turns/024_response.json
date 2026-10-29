@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791826891-FKekxDh1D2CuQCtayn2m",
+ "object": "chat.completion",
+ "created": 1791826891,
+ "model": "qwen/qwen3.7-flash",
+ "provider": "Alibaba",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "There's an issue with the variable names in my code. Let me write a very clean, simple version:\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_88f6c5ede1e04c7e98012a70",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\n\\n# Load data\\nxcom = np.loadtxt('/tmp/data/xcom_water.txt', comments='#')\\nestar = np.loadtxt('/tmp/data/estar_water.txt', comments='#')\\n\\nE_co = np.array([1.1732, 1.3325])\\nw_co = np.array([0.5, 0.5])\\ndepth = 5.0\\nrho = 1.0\\n\\ndef interp_x(ci, E):\\n    return np.interp(np.log10(E), np.log10(xcom[:, 0]), xcom[:, ci])\\n\\nmu_t_w = sum(w * interp_x(6, E) for w, E in zip(w_co, E_co))\\nmu_l = mu_t_w * rho\\nprimary_frac_val = np.exp(-mu_l * depth)\\nprint(f\\\"Primary transmission: {primary_frac_val:.6f}\\\")\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "There's an issue with the variable names in my code. Let me write a very clean, simple version:\n",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 31516,
+  "completion_tokens": 241,
+  "total_tokens": 31757,
+  "cost": 0.000248746,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 30336,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000248746,
+   "upstream_inference_prompt_cost": 0.000217416,
+   "upstream_inference_completions_cost": 3.133e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 22,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

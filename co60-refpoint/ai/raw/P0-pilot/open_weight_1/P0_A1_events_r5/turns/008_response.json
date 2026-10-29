@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791826374-Qekam1AtV5O5cmTPspDt",
+ "object": "chat.completion",
+ "created": 1791826374,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I'm having trouble with the Python tool formatting. Let me carefully write a clean Python script.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_5a3bd860a30549b9bb3e010b",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nimport math\\n\\nm_e_c2 = 0.511  # MeV\\n\\n# Cross section data (cm^-1 for density 1.0)\\nE_data = np.array([0.01, 0.05, 0.1, 0.2, 0.5, 1.0, 2.0, 5.0, 10.0])\\nmu_R_data = np.array([1.114, 0.0709, 0.0195, 0.00512, 0.00091, 0.000247, 0.000119, 0.000032, 0.000013])\\nmu_C_data = np.array([0.2941, 0.1379, 0.1470, 0.1277, 0.09477, 0.06958, 0.04877, 0.02377, 0.01301])\\nmu_PE_data = np.array([1.274, 0.00574, 0.00422, 0.00397, 0.00127, 0.000798, 0.000383, 0.000053, 0.000008])\\nmu_PP_data = np.array([0.0, 0.0, 0.0, 0.0, 0.000013, 0.000049, 0.000089, 0.000524, 0.001764])\\n\\n# Check\\nprint(\\\"Data check:\\\")\\nprint(f\\\"E_data shape: {E_data.shape}\\\")\\nprint(f\\\"mu_R_data: {mu_R_data}\\\")\\nprint(f\\\"mu_C_data: {mu_C_data}\\\")\\nprint(f\\\"mu_PE_data: {mu_PE_data}\\\")\\nprint(f\\\"mu_PP_data: {mu_PP_data}\\\")\\n\\n# Interpolation function\\ndef interp_mu(E, mu_data):\\n    \\\"\\\"\\\"Interpolate mu in log-log space\\\"\\\"\\\"\\n    # Clip to data range, extrapolate if needed\\n    log_E = np.log(E_data)\\n    log_mu = np.log(mu_data)\\n    log_E_new = np.log(np.clip(E, E_data[0], E_data[-1]))\\n    result = np.exp(np.interp(log_E_new, log_E, log_mu))\\n    # Handle extrapolation below minimum\\n    if np.isscalar(E):\\n        if E < E_data[0]:\\n            # Extrapolate using first two points\\n            slope = (log_mu[1] - log_mu[0]) / (log_E[1] - log_E[0])\\n            result = np.exp(slope * (np.log(E) - log_E[0]) + log_mu[0])\\n        elif E > E_data[-1]:\\n            slope = (log_mu[-1] - log_mu[-2]) / (log_E[-1] - log_E[-2])\\n            result = np.exp(slope * (np.log(E) - log_E[-1]) + log_mu[-1])\\n    else:\\n        result = np.array(result)\\n        for i, e in enumerate(np.atleast_1d(E)):\\n            if e < E_data[0]:\\n                slope = (log_mu[1] - log_mu[0]) / (log_E[1] - log_E[0])\\n                result[i] = np.exp(slope * (np.log(e) - log_E[0]) + log_mu[0])\\n            elif e > E_data[-1]:\\n                slope = (log_mu[-1] - log_mu[-2]) / (log_E[-1] - log_E[-2])\\n                result[i] = np.exp(slope * (np.log(e) - log_E[-1]) + log_mu[-1])\\n    return result\\n\\ndef mu_R(E): return float(interp_mu(E, mu_R_data))\\ndef mu_C(E): return float(interp_mu(E, mu_C_data))\\ndef mu_PE(E): return float(interp_mu(E, mu_PE_data))\\ndef mu_PP(E): return float(interp_mu(E, mu_PP_data))\\ndef mu_total(E): return mu_R(E) + mu_C(E) + mu_PE(E) + mu_PP(E)\\n\\n# Test\\nprint(\\\"\\\\nCross sections at 2.0 MeV:\\\")\\nt = mu_total(2.0)\\nprint(f\\\"Total: {t:.6f}\\\")\\nprint(f\\\"R: {mu_R(2.0):.6f}, C: {mu_C(2.0):.6f}, PE: {mu_PE(2.0):.6f}, PP: {mu_PP(2.0):.6f}\\\")\\nprint(f\\\"R%: {mu_R(2.0)/t*100:.3f}, C%: {mu_C(2.0)/t*100:.3f}, PE%: {mu_PE(2.0)/t*100:.3f}, PP%: {mu_PP(2.0)/t*100:.3f}\\\")\\n\\nprint(\\\"\\\\nCross sections at 0.5 MeV:\\\")\\nt = mu_total(0.5)\\nprint(f\\\"Total: {t:.6f}\\\")\\nprint(f\\\"R%: {mu_R(0.5)/t*100:.3f}, C%: {mu_C(0.5)/t*100:.3f}, PE%: {mu_PE(0.5)/t*100:.3f}, PP%: {mu_PP(0.5)/t*100:.3f}\\\")\\n\\nprint(\\\"\\\\nCross sections at 0.1 MeV:\\\")\\nt = mu_total(0.1)\\nprint(f\\\"Total: {t:.6f}\\\")\\nprint(f\\\"R%: {mu_R(0.1)/t*100:.3f}, C%: {mu_C(0.1)/t*100:.3f}, PE%: {mu_PE(0.1)/t*100:.3f}, PP%: {mu_PP(0.1)/t*100:.3f}\\\")\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I'm having trouble with the Python tool formatting. Let me carefully write a clean Python script.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 16978,
+  "completion_tokens": 1377,
+  "total_tokens": 18355,
+  "cost": 0.000899659376,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 12288,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000899659376,
+   "upstream_inference_prompt_cost": 0.000649430936,
+   "upstream_inference_completions_cost": 0.00025022844
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 19,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

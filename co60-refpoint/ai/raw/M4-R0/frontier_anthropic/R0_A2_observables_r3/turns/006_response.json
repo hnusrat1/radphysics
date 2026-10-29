@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791828703-4uTHijIUSzcBL5rlEw1U",
+ "object": "chat.completion",
+ "created": 1791828703,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Since each call runs as a separate process, I probably need to insert the path and import again, given that phys.py was written in the previous call before the import happened. The module isn't found now, so it might be a working directory issue \u2014 let me check that.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01WZ2LKsVDmq4q3ycyHoGipe",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport sys, os\\nsys.path.insert(0,'/tmp/work')\\ncode=open('/tmp/work/phys.py').read().replace('np.trapz','np.trapezoid')\\nopen('/tmp/work/phys.py','w').write(code)\\nimport importlib\\nimport phys\\nE=np.array([1.1732,1.3325])\\nprint(phys.mu_tot(E), phys.mu_pair(E), phys.mu_coh(E)/phys.mu_tot(E))\\nprint(phys.eps_mean(E))\\nprint(phys.mu_inc(E)*(1-phys.eps_mean(E)) + phys.mu_pair(E)*(1-1.022/E)+ phys.mu_pe(E))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Since each call runs as a separate process, I probably need to insert the path and import again, given that phys.py was written in the previous call before the import happened. The module isn't found now, so it might be a working directory issue \u2014 let me check that.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSswgKEAgSGAI4AUIIdGhpbmtpbmcSDOwfkaPf2awoNeXJRBoMViO4irhSSmRRGmvqIjANF7xG1BjJ1liC4QfcEGIEEoPg1PYPhvT8/OYei4twTWNsXQmtHkkwsNiNCPuSN7Iq0AdKIgnDbq4QJEt4HnQZX68zSxpI/hWNzzRMVKKo5mu7NMugdbWRl17ML1OzZEfASI0OBntcHR046f0HjwPLijehPHj/VhxdYUPmC8Vbh+0ms41U7C1zyLPPUwd3+avThp7fI9GCzCCB80eKPQz7NEMC2OVZNLiHkYTgwbpJ1TzhP2i7sNi9hDrUE1ESvr2ocINt3rPuCmSt1VKFe8pyg+SxvOwKOMv2b6uYkEDXrgaM8H/2DNz65ZF73eKTIRKXtxh8f96Q7Q84bMFtB/JNWDMZjmYUKFDzwhA4799tYmKe7fXnRmoosROlKLtlRFuK1Stl+Ui0t4R11qS6XRxrR3Msxf+1pslcmuvTXgXdT1Akgk2gztpfi39T+JjcfMfhjV5vHC6ATUi/4tFc6ktelqbb1VQCdV/PlV2GP7GrfTTSUBEDYFg35BF/isMczAQZE2pd/iHT1lK+b+gmU9vA8WmfOBLFDNmWnbzUiDWzLIYu7novkHJZ5yMeSOD7pw9cLdXLxjWVpSw67qj0uyGcyd3XWJvF2E8hjUuiNA8bvpGhNQm0JkZzM674096CQFUQGervDP8/orO6+wDLGn7EflRRs5Ke3fPWv332nwOl6UP4ImQRc5cvCqecVVmyOXLeHPRw0KNk9ehwh3ojvVR7koLrYChM4Fbx0Pq+hkedb93Bc8KklHXgv2vU8NBKJxTEmVnqdSFxfn5l2uQkazMZiMDO8nM17dkwcdjuKVkQ49UcUav8KbfKzv6ki+FhDNYsEjxOrwqgoszO7K3PLyEq9oeFEGwjx8Us8jJQluiV2qFyf2PnLgUav9v++r8Y7Gf6j26gCBgo1yvqesM4mDkJTO8NONtDzKSYjAhWRNXLZEye3TTPO54+v4Ytwgcs7z5/LafkDb6zKEzAN5rGaHLqUn3I+ENYi79Dl2JzUaULTpodUgwVDzAin7S1poPgM7rzUik78oOHsUMjZfcif220sn/8plzz5wVJ3a4qSBFRXZej4SqNAH+3btL8F4LqEEHEMBERTvgy36vgKr8Q5/YKsXJGonbMJIEDxRQG/XxbciUeNKMS4nSjbmcqxkKmvUDuJnqxJFh5d36zof/QFE9KjwS61BxzLKs6rPVB6T0QpC1845GOh5nlTp3Eqkin9iLf13tO54dXcVpI0pB2XzSp/MHv/b8ATDMdaRODoSaNsfbbvxdkyRRArDFy9GlQ3kvBwbHYUWVZFu2I2uzMQ43a791xjvpVGTQ8j41uL40Bt4aC/eRbjzL15e2XE0Wp+lkQszNKkGZ8Kdi+uq0uEfQ7U+kzGAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 84669,
+  "completion_tokens": 376,
+  "total_tokens": 85045,
+  "cost": 0.001081675,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 84260,
+   "cache_write_tokens": 407,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001081675,
+   "upstream_inference_prompt_cost": 0.000893675,
+   "upstream_inference_completions_cost": 0.000188
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 95,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

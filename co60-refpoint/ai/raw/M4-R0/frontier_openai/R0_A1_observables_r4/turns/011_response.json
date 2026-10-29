@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791822642-CA3fgujrVvMFLwXbv7VU",
+ "object": "chat.completion",
+ "created": 1791822642,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Calculating weights and averages**\n\nI'm thinking about how to integrate weights, specifically using the formula that involves fluence and an arbitrary mu. It feels like a step towards getting true averages, and I want to apply quadrature in Python to achieve that. I'll need to focus on ensuring the calculations are accurate and that the formula is correctly implemented. Let\u2019s break it down carefully to avoid any mistakes! I'm excited to see how it turns out.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_BHbEdFTRtHP1fcT2M5mggfUW",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import numpy as np\\nfrom numpy.polynomial.legendre import leggauss\\nx,gw=leggauss(1000);mu=x;s=np.array([.00005,.00015,.00035,.0007,.0012,.002,.003,.004,.0055,.007,.0085,.0095,.010,.0105,.0105,.010,.009,.008,.0065,.005,.0038,.0028,.002,.0015,.0008,.0005,.0003,.0001]);es=np.arange(28)*.05+.025\\nweights=[.5*.729,.5*.740]+[w*np.clip(1.25/e,1,10)**.45 for e,w in zip(es,s) if w>0]; energies=[1.1732,1.3325]+[e for e,w in zip(es,s) if w>0]\\ndef mean(e):\\n a=e/.51099895;ep=1/(1+a*(1-mu));T=e*(1-ep); kn=ep**2*(ep+1/ep-(1-mu**2));return (gw*kn*T).sum()/(gw*kn).sum(),(gw*kn).sum()\\nvals=[mean(e) for e in energies]; print(sum(w*v[1]*v[0] for w,v in zip(weights,vals))/sum(w*v[1] for w,v in zip(weights,vals)))\\npweights=[.5*.729,.5*.740]; print(sum(w*v[1]*v[0] for w,v in zip(pweights,vals[:2]))/sum(w*v[1] for w,v in zip(pweights,vals[:2])))\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Calculating weights and averages**\n\nI'm thinking about how to integrate weights, specifically using the formula that involves fluence and an arbitrary mu. It feels like a step towards getting true averages, and I want to apply quadrature in Python to achieve that. I'll need to focus on ensuring the calculations are accurate and that the formula is correctly implemented. Let\u2019s break it down carefully to avoid any mistakes! I'm excited to see how it turns out.",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzQs2m9c1J-M90ABt14F0nhGI0vr95FOUot_z1RvcWvmg1794Awze7GkyD62D0fvE09mNb3Qgq43X0Xb6AjFLM9O1Z7imol19jxobLWgJDGVoftTJVWq4wlp5ab0mIX8O4Dguli6BPQHFqh_aNv84sSTuJbl-iyGpzM1T1yo0rXBIhdoO3ygU4qrVaGys13E5p8YctCHZO8W9e3AEkABD4n10qmM9l-S3ccPohTHxMSLcE2vKbrz8NFVubWgYNmwC2iOHLO9ixTws7aTFNI02ClemlOickCBX8pLakIW4etw4XPzn86jviWpPiYXVtlCPwC0IYo_sHmzPOGMj9Sp3rXyUOFTOGP4ehPDB5MVJGIvYguwDljnIafvEQ-WqILfGnnTrW4kiqcV0CL0H5J_gkfanDUo9Hk2V-oUHEy5rk9RFCflJamnakdNDKRzS3C4O-_SkBUpV2vNUy1XAwY-MiC-ivzufz1EfLQLyWYcu0YIyuMJ4EKcM71d88vvHvfYX2sFijv4khQnm4kqW6KRoid2i2xWFWX0uMHiPT0TmFB1nW4Dz7Sor2XCBCZI5a6u6r4KhNxg6l-ugB2X8uY-9Tpin1yx2esaoPOI1vsWjWWOzmkMaBkHUHUDRUDFW5trQ27FdNRVfzSuboFq40MnvzysOZUK8g_t9SdxMjROu7Wkc821JSfbX-AF5g3L4ygRe_CyDz-cT32hozWgQtLp1s102Gg-_4IEl1jpQpQoWqrye_ljkYFooJEvXeszp2hJ7WRibUqMK7ZuZe5fKccM_0Dranu1kjSJ2vu_lsvKHMQXY444r5jLNJwBqKriTcD-9tIvU0inC2ATZZrmZCZfyDj59eAliIoUv50zYoYEzLb-iQnxF-Qijb0kf6Z6fksgGYMQz6i721VhMNhY0xqawc8qcdUXxyQf3tbdkWddBhFbkFZZdCX3M03t2KLWq3U7jP_6VXMgVXBp8nxjq0Ss3Xt32Q-L0WQJ_JDDDNTTIhuFU3GdSsaV2E8XWmOicbMG89TwU6dwOIxoRPeuLmz0aTaFswQMgqmsNoP7Ar3ipT4TRi72Ayr7x9Vzx6OZFiFtgPlmE8HMmXJwIsooIjjSHQK3GWYEzupvLtYcVtNCBGCnj3weMY8rdmB2satZqI3B01Pimt4DqcJJJ8VcjCat7l8vghUQ464cyjG6wPKR4NIJo0K1GYinbyJCFZdd2obepK0uHYlnhPgJu3nrZ7JRKBHoyMS7ANLmi7lcpBuo2pJRD05El9ktjwECMqneNXeeYkV088Du43L_rFZr_A7JsgIei9E_UMvlFDt6gZZ48uoXXuspxlJsUzkXwehyO9eflgEYsWGhW41Yd8m8iDo5IoWNAb8BDO9NrvS3kdwA3v6CdUSuvYuTDIV5pLZgwkDnv1X8cepQNrpKLAA0dkVyL4ZVi0EBwcRtT6_OSBRWpcvxfPeROLDYUqyfXvg6fskl1SNwTVHla7j3OVSmKK1Jg7DQtlouJ2gOCE4UJfACzjOmmSX-f1jDboaayi0Sxiwh37f-25qBWEmdZWaq56ccG9rst66WpU1V82vA2jOISLMDv0YOiWAKZezLfbPNq7N48gQ_ogoKfxNyzpuEtDfqQKCJep0yA4DfkRrBz-AVF8oMvt6ih6aRlQZSscReEbE-mUe5yWXqCK4D_Scv8YhMgkiUjE2eBtdrfOklID1JDXeMJjdaLPxxSloRVbyoZU5ce-DdsPPCOGcHWCpWJb0-WeSIyX_28Y0R6kJYENdn-qeNOmCANL3lrmo9gxv0x57JYBrwo43MmCEgXRLRSM6gMhqytyhkqf3U4LlOnN8pSc-5HYNXb0U03Q2uRShlEa4OKFrr6kTLwiE5U7KjQ9i2ZVl4iWRfDtXWY5_DsccdwzNjbNOHS_euD5yYnqIZKzPob5qMe0kClMSd7JyN8OO-GUL1e8lRrGeU0jGz1G6ifbjaSiTkrppS6WvcieDdbIF7VaeuWn1bg4LGFD-jYhekKDvPtn736kTEYr0664FYzQae-5bPF-gg9z_Dskx7ysLw0cx_gxSPsMWtpAHkXuKOSHAFY84TecCSIweVj_YOxnZXyH6hgx4BkX35bM0JUlcUvuruXAIpXgnpa2x44ZTWmY2LheJqUqXyulOevfGx6umQb3jRrll7uryBlMsr4Sx4Oqf4iyU57SWsa7LhtGkYbcCnsOWT7Lt4ESzed6czVzOQKtkMejW3WRntJhYR72AW26x5zFKiptj2G0r2Dde-YJgtGGWIA7R86Kr_-BdmD9chALHpM4EByCN50-S7POoiQlIOrjte3eJjwKfREXGG2nLKP1EtKdS3XeQwUCO70WyLrKdF-c3mX8wWlsDFNgmGn9nlhtjtiu108PB1LeSowWuiuYOeq7KxnxS1JIEW4H6JWlM4WLSqhQmHBHiK0zBCdRrQrRnSesYOu6HRa1nJgt7aZi76nmRkCkFl71w9j0i_wehlUgX5K6pwkwhHB5_fZgHg3KUvUxPq4fAN-Ic25lpMyI4Gg2iKJ_4dxd4ZEoQ1zxxxZkGTVYTBT23X2c8kYQJbyXkG169gT0ILFTheiw4UekJikGZjSVEAnB8tE-QBegcYYYPN6cDj8QwEUeo7u47wkKs4XWQOeXJgv2B-6BtkS65b5mI2PHure6MIbf9MGfxXQLtOdSgaesB1fd0YxwriyXSFTt7sNb9GgAkpyWZxPOa_-6408cLvAwKMP1jrJF9KqGS1Cm4RdkOduiJ9I1SAVCGX7Yl8_l0rmZM-6zVnzYEu95ZWWXvis6VUekM9MIyjbDMn6Yrx538Z86UII0qsGTzwk-_RovoyBUtl4NLSJHyO9FqAuIVj5ZqnsCA7O_M70Jh4NDxcGeUTCjzDz9DSLifhXyTMiI_AWN1zG2DAeioRf1sdwEfw0ytl12C66Q-i1toShGkTt9BKiUqku27hbVjW-rP_LoOihcN6JmhdxYvHrCVu1dPy42Z0GF2fAdxw3_Xe-O9_s3iEObMJ2Q_X5G4MnDEA3XTaJTBEzSUP2Z4BZRyY3eYZJ_IhDZ_YuzY8hV28gTCXCd7OE3LQZ4zkYM0mK4mKPCkX1rZk4GxSMlnNBCuoqcYgH_QCnHZuVwZubsg1Kfy_PxHDNlSZLI5K5lsWu0Eokx3LXmFdeRLWDOQQsPy5ibacXvZwsuyFBp_ifU4MGBATk4MVrjzzH71hLk_l6Jt3UMsHQuUdkTiGt46solcg7DHgONVeUfIc7oCE5lH1WmjhL2VKWBy7jJDlOXUzVR-BmPYT896HRWW3ikvtkUu8Gj6XopR0xGjDKWtHCSgVrJovT1n5B32xV6NjwZn-Uis5PsJdXjkjgkoNOTb0iZpbDM04AOUrczKj4WcPmyuAJ9KcXNE6reimSO7kB5g-pylVcxzNvE1JKx5RGUYauGKqTJSkiBtB87KfnxPGWWG8Hf-l7336JjrbQuSLycuP3lvNSCqzmVEDGEFyYeufu8467NBR2EpctCE0EHLA4K1KRavlitcPPmTW499ySYztN6xwRFiboZT6fLYb5RXttLvp_Icrtg7jeMBkodMAQT2VJcNKOD0O5HMWnER_P5nkMG5WhmM5ecv--1fFfTOHpd8pCa3yfAMqPC2R_yxbmtDZ2r3l-dTFkHM83C3wluXIrWu_MRxVgYW5QbBDtBlzNeXYcibhKlUbvB1x7BcIiHO-q_3vm3e6zTuS4kfBMf6r3e_GPBI0C0q8KD21Nh2nlvEbc01PRecv89N6Wcu0sZV3Mk9T1Nid18HoB_Mf_k0TSPB9pnoygXi1ZDbQa-iPx1NvURZ-BilJfDCUdRLWMIThaBHntnA3urT9NHBZQUG7c5STn6x_ajcSjM5WbVQFEPJQFzQgSgNuzSrRf8zQ9ljrYYqplDcXi8R3g5ORDOPsC_EzZadRPETIe3s-818IdggOSube-gwCxxRRmACcdkvjwohHHPPXQ82QXE6N6NoeaRWoMvu0U2F92HIc4F1Xu2IiRWx9nls-MYPzhp4h0ap39q05lcsnueeKjo6TSW7zvQbqa3ZcXVj06ZIiXiGxMzfvJ2W3KtN-A7eQw02h7cWrR5X_x7VwAkN7vuqSmbRJiD1vi_pzFbozSw-4u5meg7sVfC3w-WIJhcDdXiSbOtl2nk89-TS9-uBGt9RQINkTNGsTITf-fZl2Bo79K9PrzGaM9WjIVGh8dAVlRK57SFtoB9HbVwVlYaifGr_aoMLNpIcjkq-YcbXMOtWh3D856PNmSzWoaP2rspNTVaPCW7MaTdgGOMEfuUVl3_19jKyWJN0sDMTcA3FjrmmQMCgnIcBseF_Lds2tFmJUYtv_WpIeBoRQNPImMbHIcpYH4D6qsOUYhkItrlUdibcaj7-MnBYtuH4ZYuPRsHz2YOks=.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_0489e75b4db6a3f8016acd0b330b3087d1a2b08554cf6ab40f",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 17456,
+  "completion_tokens": 589,
+  "total_tokens": 18045,
+  "cost": 0.00051349,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 17069,
+   "cache_write_tokens": 384,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00051349,
+   "upstream_inference_prompt_cost": 0.00021899,
+   "upstream_inference_completions_cost": 0.0002945
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 211,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

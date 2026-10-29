@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791823922-A5DvuPimRKwXwzPDiEgc",
+ "object": "chat.completion",
+ "created": 1791823922,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Calculating radiative loss ratios**\n\nI'm looking into the radiative loss ratio for fluence-weighted electrons at energies between 0.1 and 0.9, which seems to be around 0.003. The kerma-based radiative energy appears to be about 0.002. I need to check the Layer4 ratio, which is potentially 0.002 as well. I'll compute the exact kerma values using Python to interpolate tables and spectra. Additionally, I\u2019ll factor in components for energy fluence spectrum and multiply fractions to complete my calculations.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_BUA4EvzrXoNrx0yJoZVBs1af",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import numpy as np, scipy.integrate as si\\nxx=np.loadtxt('/tmp/data/xcom_water.txt',comments='#')\\ndef interpcol(E,col):return np.exp(np.interp(np.log(E),np.log(xx[:,0]),np.log(np.maximum(xx[:,col],1e-30))))\\ndef comp_fraction(E):\\n a=E/.51099895\\n f=lambda m:(lambda r:r*r*(r+1/r-(1-m*m)))(1/(1+a*(1-m)))\\n den=si.quad(lambda m:f(m),-1,1)[0]\\n num=si.quad(lambda m:f(m)*(1-1/(1+a*(1-m))),-1,1)[0]\\n return num/den\\n# exact spectra tally primary and scattered\\nlines=[(1.1732,.36100922889),(1.3325,.368159899153)]\\nphoton_energies=[(float((a+b)/2),float(sp[i])) for i,(a,b) in enumerate(zip(edges[:-1],edges[1:]))]\\nKtr=Kcol=0\\nfor E,F in lines:\\n inc=interpcol(E,2);photo=interpcol(E,3);pair=interpcol(E,4)+interpcol(E,5)\\n mutr=inc*comp_fraction(E)+photo+pair*max(0,(E-1.022)/E)\\n Ktr+=F*E*mutr\\n Kcol+=F*E*mutr*.997 # assume rad fraction\\nfor E,F in photon_energies:\\n if not F: continue\\n inc=interpcol(E,2);photo=interpcol(E,3);pair=interpcol(E,4)+interpcol(E,5)\\n mutr=inc*comp_fraction(E)+photo+pair*max(0,(E-1.022)/E)\\n Ktr+=F*E*mutr\\n Kcol+=F*E*mutr*.997\\nprint('MeV/g',Ktr,Kcol,'Gy',Ktr*1.602176634e-10,Kcol*1.602176634e-10, 'g',1-Kcol/Ktr)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Calculating radiative loss ratios**\n\nI'm looking into the radiative loss ratio for fluence-weighted electrons at energies between 0.1 and 0.9, which seems to be around 0.003. The kerma-based radiative energy appears to be about 0.002. I need to check the Layer4 ratio, which is potentially 0.002 as well. I'll compute the exact kerma values using Python to interpolate tables and spectra. Additionally, I\u2019ll factor in components for energy fluence spectrum and multiply fractions to complete my calculations.",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzRA3MrTdN2VQ5sGsbOrx5RFEL8ZhJZhptxohgdgxZGXd0eOwLdsNAbFmQS25hnrSaQqIVxYir7Uf07haI3kvNVgy6SI5YYrMmuS5Qz-wrgvDUfgDNvgcpqK2_hKDYIZO-7oRV3jUU46Cb8y0zOwfidOcBP8ZnXsYjQijYu7Yfrp7BfZCuVgMDWvRJU7m0bIZJQYyDQbWxaamCXWsenTY877MNO85qDCMaH9SFmo9QHYIWG934p-8EeBtjR8YsB9d80XEfcWEfEpbycd02tiBqFA9rz6YyP88phdhojhIbqIzgqI8I7gT--sFjtx1tJipSUhlyezmkoYvAOjgUup4ApAp9yYbPYStF2yFnz5qRcdgjg1yMM0p1SZhfHw_KnUJV9t4KaJc3ANdDI8Vcx6WDlOU0wVfwb5JddSJRuLO6FbrameTuvDNhj2qVDhMkdzrGrA-iGPe5QAcHctwKhwc4UWrSdN9NiIr3d-1Dc-jQ_hhPWnSpDzlVgxTFCdN4YI7wo6-OUnOak6LMZ8dJOl_ExqRXPBwKz6u0qApv8ZC8zYhsIRtPKFhmG3RVMVDcvJZRe16bbj_WoWCeKJyoJp6oThO0HyyD6u6kAZ8dS8D7J-nTnLFFExS6HOQjAkiEAQ9T8BEthKkBV1S1SVZ2wSBEh5GBGFU3vli2i6F7_sGEoUSitwW1FgJ-7BHAe17O76R7VSPYNYwTHN4TzYhLFOtPfptaAV5-TtG7ffBL8iysuHZPwS8InPqhIMdcES1i1lbGHobZSbdt1Lumfx5MqG5k1klSCr2OKkVCSBCXA9-WnARMt-j4z-mR3_r47wly7ToQPGfy-f06DUgIKvk2KtSsTFhaDqrEGF6sZdROqL-XEvDjFsP8LPywaY0Q8B8ayn5nCbJ2iwTkdJTMUr7iMWWAJu8jkAHuFlPHBGvtJSUdHDdloLN5PkOb4Cqj751ZFahwoKuzGB5f0-ruEvoX9Btelv9tVl2E2gAyaqASWu4ngmep1-Ks9YPSpuBYxBrDDe6ucgPbPz2bzg8kIqKsg9FqphFr3sypEZj1E16nAmfb1nuQLVNPzFzjaSZIgpz18CxFE7Knvzial9lGjq_LrUbj30zFA-8yu_6PNkK4ggvrl7ShzC727t29qlHMhHdjDYK4pKUqiHgVcMm3hczV8kaDXnF_wZltgnJvrkMTj4uKgelHWU9tbLwKdbPkK6XkKeUh18X4g1SqvTaAgezlbSOIOH5vTDayS3szE-L1oAH0RgNectOs2CopGTCW18y-fDW5OMdNh_bPfalcAc8RHQwb0udx_isPSDYDiSww6tVmwQdBB48HBcVUx5w1XII7sePricLsfP7WMpda1cElDq54yzK5d4UBG_RRG3V9Ou8LtUrAXDVpP1EF-RUx6RyB2_CbK9sMcZw49UKfwZvhhXDc3LOHW0_5D-PJspw-j13QSilrdVovXQb6p1ipcPiGT_vXS45IEGuhPPED8-FdLWSX0p4tRniCPVfg39cPrjVX_KoLNPkadhpL8kyWqRHLJM1U5PSHE45SylNQzhigdldNVsYy2ZAENmlD5ztqFix6GjIR0MTvDj_b4mMOzyJoKcsG7EP-mCqNZDKriaRrOUbWq-GYfxdc47-b1178u-JbnZcMKywccsdrxujdZZqpBbx2874P2Ny_TXQzfIi-fM2uWmhu12dlfShy4MHmhnrtsFg1pg3blhUEvC2_GYQemnQ4ndg4rEBn-h1J8clnd8TiVzaopVmfPQnDT0vOGrh78DRfhrZsrTvN6xryIMRp6apHvX1xfVTN7tDcDO97V1Zf9M1WreM9rQy2PQvDLqoBcTDruRLfRP5tQOHOhgVxj88eZ4NC9DstV6fw3bYTO29IADHn8egNZv2E5KLaiOoJyBnvIHExzwBhdtvXrcd_ihh5Lw_SMCJgE48tv_Y0hkrabOWLFfc9tBW21aO3zD2cfTMlaN45bEDp3CalzwhWv44Kz-czdNLR8oUWdMgG1RCFD2aFScUHwBO0xpraUfJ0EMSE15A5wAn1F6KA72aj8wouQ_01DQkWKek7aWc7J-fbT6NBRagAapMNTzL-g-DDK1fP4RMvQWNqhdRvgo-ww3Ap0Dbulb6x2zfH987MnoVgYoAt6VP9nQjUbQBWHKqEbN6u8yKLB6AXyWfpkbhsZm4pwSRQNrqGyD3tnJE8nZTW0uM2Dne7HdYt8SjeJ4mIiz806Q6xZ8BpofthXNfqyXe1eCA_RcxhyABWGWbFfHkCC_HY1_5BARTzU9-F9eelOUcpoccw35vSBdkLcr8DVritVUOF05-gNidMZxg2IbZYy3hiyLo5_bhFUnWLOaG5UZ-Jj-nMzfVRXQI8daX4tHEZDaiiscK4AqTsjI7Phk-DvyH_cwZXUBm93-0pmY0EyXccEv-1e0Ho8h5n9k1VR4kuQOzZIyseSimbEsixu99ReKDhoi1vwFgkjACp-B1FA5gmv0B2MKBiJoO2iIGZ2V7ISj6DhfwgWCfAmoTPSai0q8br2nNdtwkqwZrHeWxdEJZqkRVXIj2t-vN7xXrYCBOzSGr0LoD41ASJBwXrI2klH8xhyPYR-iEZxYq3qtfqXSR_X9rahTE7kWdvlBGI1aUea9U7qAKf0b9SxgHDcWIirV6P9y0hT6U-5vb7SMHKjLfSohyLPiGlhOsJSIoMm5RZXg_Ei8JsOXqItBpoj00IshMPb1VaM81FdZnYwgntKyVUQ8X6-_8mAuC70dRQr7YdpI9gg1wAnbNodvYjUbmTxql1S97nJ103kcyO-2z6ZQC3yzaygfJrSsJVSEqpcqUT1OHucyVC4dCnaD2v0QzsMM3Ryvl1xlMbbwPbBl-AyEZoiDgBahjqC9zXH8-EqE7RtISjeRO5PWeCh6xYBKxpYz_ksz_p_NBMWv9y-P22JzQIVm1ECcqjxOhV4K4Fy3mNVO6-ipN-qdnwtOCbOWtl26uIEHOmG-RyuSt-e8UTdlyYM7zPd3SFVVNGh1q0PjYwQ57gFK8fDeIsDaR2Q5VSTrVSsWHpkR2bdg8DoZojzgGu2smw26s2LlEwzCW-QYidzUZiBA9MoUybSjqAa0hqvZh51YdaFuhMa_mZcax7VbbxyaeNckohGIx_foO5-FlMRMxjZlmvDI3donlJNuPM6gVU7rhV-Ereafl1wRLnY5TNanrVBq5FOkT76ifTXRzG-cFYFpZNkGnXCN-FpQSQpbtNWxato52gN0KDEfPbHLjAn8LUXFR6xUbRt1RKVYUnPwdUhbKPieKRGtEhDtGuo24A3bmld-GA1r8cgBpCmX6Sz056DZJNHk20gjCekxiOuZMF18Qo2Tks8KcUpTa6iy6b71nfObLVJ-R-DAt-DQyE-pA3tesDHE4K_rmf_PZ1puVNyMCx6SpEb_-2BpBYyMSLMX6Hc1JMZdt2bcMsWVLK2X_t8PwVvmcTARSZ4oBXzrTYEYtMml8Z-6bR4LyQBRy4u_2Io3Te4Rh5fYtkC_2mlD1mEFJWOXVnQ-6vYWmN8oaunNAWtddPqtlTesPRAWhNRVD0ovdxB0bb4wUoMfSjPnRnC8kAByO-ZLCRh3yOSxBoSS2LBneifu-R6lp4hZVLFmgrq_ucXuFZ3Wqsqqytuy6zNMSTejRd9ZutzVi2nV_8X6UbtoCe2a-j9yjxdMiu2WEe2XK65bx81bTcqLXSsxCkF-PS2b9uiWQ0hhmAD77GVjhy0KCCtfPI0Ww9dpNOKwj2m25emu0xY-DZOQ6Qu3WqmK-igwHOFHZgPVE58T5JsiB9msSnHopoxKKvMdHHQfQscgtx8kYX9oMhrFoeTUzyte2tBhuyP3_7kXS32JItRpwsyG0fET-EuwtakWLyQDXfyiCg01tCnE9xkExatnUcbTyIPvaxkTf7f4R_mzRxaP8ATLPWKIZjvmnCFZ1JIqcTgSXunfRqnR4K8Jpl58TS-08UJCwopGEF2o_Oa0cmeBy1a7moWN_LkDxA0NQsj025MrTbmwiCl_BYKsFSiXzE3eKLOzwrr3BUFjrMckBejhd6bunHmzeEVZnlDR7o_eRpu68QjzDJrX79xZ-lQeRrmwO1tBgGhn5E0hnH8mimSZnhpbLWVUPm8pMz9vvhfpWVELOO8u6m9yZrzT3b7XfoRCnFHUaBGy6g4mGCJUCx2KRiNNNw_Ujq9DmPVTsy87BvJz3o3TCxAVjgxecS-iygPOKdhg7A8TgIcdIjUrawCOrl2VOzT3UMzIZDiMiZh15z3idIwOMwGib3_toBHmwFZCqvtSDbKY7aUpn99He8wWfFUdxuCzXV99RxgIQIcetRbS1ESXgV0WeSMIM6oeaACSjL7jheAhd9RHZ6ReY91UlfG5djIV-OQj0iAGQLjjqh2M9KNFi2ktteW-DRoHq-mMZB0wn1QPmJfG36YDkPnd8C6_ncl7_mBDhlZguLye1rLMan42p4qDB6tMUuJIsomY7JuUCyZZWCAW8WZpu.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_042c9b3ec933c71f016acd10332ef887d19f91313cb7a5471a",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 24825,
+  "completion_tokens": 725,
+  "total_tokens": 25550,
+  "cost": 0.000662885,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 24371,
+   "cache_write_tokens": 451,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000662885,
+   "upstream_inference_prompt_cost": 0.000300385,
+   "upstream_inference_completions_cost": 0.0003625
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 239,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

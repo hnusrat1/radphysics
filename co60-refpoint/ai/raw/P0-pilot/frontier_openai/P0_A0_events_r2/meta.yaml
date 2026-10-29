@@ -1,0 +1,51 @@
+slot: frontier_openai
+provider: OpenAI via OpenRouter
+api: openai_compatible
+model_requested: openai/gpt-6-luna
+settings:
+  reasoning:
+    effort: high
+  usage:
+    include: true
+condition: A0
+task: events
+config: P0
+prompt_version: v1
+prompt_sha256:
+  system_A0.txt: 5d02a4bcfaa7d02c9202ab1c5e6dc263196bda4fd973c7421a5a87ac29d0777b
+  task_events_P0.txt: 994719c1edf5944e6dac9acaa42f55a5117a6c605f5bcfb8316e676dfdbbc913
+started_utc: '2026-10-12T13:54:10Z'
+turns:
+- n: 1
+  usage:
+    input_tokens: 1078
+    output_tokens: 1136
+    reasoning_tokens: 1034
+  stop: stop
+  wall_s: 12.4
+  http_attempts: 1
+  model_reported: openai/gpt-6-luna
+  tool_calls: 0
+- n: 2
+  usage:
+    input_tokens: 2268
+    output_tokens: 1410
+    reasoning_tokens: 1356
+  stop: stop
+  wall_s: 17.2
+  http_attempts: 1
+  model_reported: openai/gpt-6-luna
+  tool_calls: 0
+tool_calls: 0
+retries: 1
+outcome: parse_failure
+model_reported: openai/gpt-6-luna
+first_parse_errors:
+- '$.events: 0 items, expected 200-200'
+parse_errors:
+- '$.events: 0 items, expected 200-200'
+finished_utc: '2026-10-12T13:54:40Z'
+usage_total:
+  input_tokens: 3346
+  output_tokens: 2546
+  reasoning_tokens: 2390

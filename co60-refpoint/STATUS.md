@@ -2,6 +2,51 @@
 
 Humza delegated every open choice on 2026-10-11: "pick your best recommended choices, continue and dont stop until you have the full study ready for me to review" (DECISIONS D028). Under that delegation M2 and M3 run back to back, without a gate stop between them. Two things stay with Humza under Section 10: verifying `refs.yaml`, and approving paid API spend. M4 also needs API keys and network access that this environment does not have.
 
+## M4. AI runs (2026-10-12). R0 complete and scored.
+
+- **Results.** `analysis/results/M5_M4-R0.json` (scorer `analysis/m5.py`) and the page
+  `analysis/results/co60_m4_results.html` (`analysis/m4_page.py`). All 125 R0 conversations have an outcome; no
+  API error remains.
+  - D/Φ₀ within 2% with Python (A1 and A2): Claude Haiku 5.5 (−0.3%, −0.6%) and DeepSeek V4 Flash (−0.3%, +1.0%).
+    Both pass every Layer 5 dose quantity in both tool conditions.
+  - Without tools (A0), no model passes D/Φ₀. Haiku −2.6%, Qwen +5%, GPT-6 Luna −9%, DeepSeek −18%, and Gemini
+    about ×3,000 (wrong unit).
+  - GPT-6 Luna stays 7–11% low with tools; Qwen moves further off (+17%, +30%). Gemini made no Python call on the
+    observables task, answered with zeros twice in A1, and was off by a unit factor in A2.
+  - Every model and condition breaks at Layer 1: spectral and angular shapes fail the 3 × half-sample criterion,
+    even where the scalars pass.
+  - Events, bound-electron rule: Haiku A0 0.2% and A1 0% invalid, DeepSeek A0 0% and A1 13%, Qwen A1 51%, Gemini
+    28–66%. Haiku A1 and GPT-6 Luna's single answered A1 call match the Monte Carlo distribution. GPT-6 Luna
+    refused 9 of 10 event calls.
+- **Cost (measured OpenRouter charge).** R0 $7.78. P0 pilot $4.19, plus $0.38 for the cached-Haiku test and $0.13
+  for a cut DeepSeek conversation. Void attempts $0.005. Under Humza's $10 limit for R0 (D032).
+- **Models (D030).** The fast, low-cost tier of each provider. Haiku runs with prompt caching (D032).
+- **Access.** The environment's network secret for `openrouter.ai` first sent the key under a header named
+  `OPENROUTER_API_KEY`, which OpenRouter ignores (HTTP 401). With `Authorization: Bearer <key>` it worked.
+- **Pilot fixes (D031) and harness issues found during R0 (D033 to D035):**
+  - in-band OpenRouter errors are now retried, and Gemini's four API-error conversations were rerun;
+  - R0 ran as parallel processes per block;
+  - the parser fallback on malformed fenced JSON was fixed after R0. Re-scoring with the fix gives identical
+    results.
+- **Environment.** `/opt/venv` is rebuilt from `env/requirements.txt`. `test_a2_sandbox_sees_data_and_not_the_repository`
+  fails here only because `/opt/geant4` does not exist in this container. The other 19 AI and scoring tests pass.
+
+- **Code audit (D036, exploratory).** All 50 A1/A2 observables conversations were traced to their code.
+  - The photon field decides the answer. The 17 answers built on a simulation the model wrote have median errors of
+    0.8% in the scattered fluence and 0.5% in D/Φ₀. The 20 with an assumed scatter field are off by 57% and 16%, and
+    sit on the line expected when only the scatter is wrong (scattered photons give 18.8% of the dose).
+  - Simulated runs per model: Haiku 10 of 10, DeepSeek 8 (2 with major bugs), GPT-6 Luna 2 (a C++ run as accurate
+    as Haiku, and one with a bug), Qwen 0. Gemini wrote no code.
+  - 19 of 20 simulations do not transport electrons, none models electron binding, and their photoelectric share
+    is about a third of the Monte Carlo's.
+  - 11 of 40 answers come entirely from the code's output, and 11 stated methods describe calculations that are
+    not in the code.
+  - The sandbox exposed `g++` and `clang`; GPT-6 Luna compiled C++ in three R0 conversations.
+
+### Next
+- Humza's review of the results page and D030 to D036.
+- Optional: a frontier-tier run (D028 item 5) for comparison; the same harness and budget machinery apply.
+
 ## M2. Monte Carlo validation (2026-10-11 to 12). Complete.
 
 ### Summary

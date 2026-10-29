@@ -1,0 +1,85 @@
+{
+ "id": "gen-1791825038-T8iJtYHgE7MYtEnzfyw7",
+ "object": "chat.completion",
+ "created": 1791825038,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Calculating photon data**\n\nI'm working on calculations involving photon data. First, I need to use exact lines for the primary spectrum and check scattered energy bins. The scattered photons will mean slightly lower than the mids, which seem fine. There will be coefficients for each process, and I'll perform vector log interpolation while ensuring I have the right energy bins and spectrum adjustments. Energy transfer fractions will be weighed per event, with specific calculations for Compton energy transfers. I need to average scattering photon energies too for accuracy.**Analyzing Compton energy transfer**\n\nI'm calculating Compton energy transfer using the Klein Nishina formula. I\u2019ll need to consider photo energy and the pair energy of 1.022, while noting that Rayleigh scattering is negligible. I can utilize per-process coefficients for energy transfer. My direct Monte Carlo tally for local interactions should give reliable counts and transfer values for Compton interactions. The primary simulation transfer sums around 4626.7, with the scatter at 1693.7, but this is only for a 30m process fraction for the interaction events.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_P3z8ghhoJy18WQomRXXj7EfL",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import numpy as np\\nx=np.loadtxt('/tmp/data/xcom_water.txt',comments='#')\\n# interpolate each coefficient linearly loglog with fallback linear for zero\\n\\ndef coeff(E, col):\\n    k=np.searchsorted(x[:,0],E); k=np.clip(k,1,len(x)-1); out=[]\\n    for e,idx in zip(np.atleast_1d(E),np.atleast_1d(k)):\\n        a,b=x[idx-1,col],x[idx,col]; e0,e1=x[idx-1,0],x[idx,0]\\n        if a>0 and b>0: v=np.exp(np.log(a)+(np.log(e/e0)/np.log(e1/e0))*np.log(b/a))\\n        else: v=a+(b-a)*(e-e0)/(e1-e0)\\n        out.append(v)\\n    return np.array(out)\\nphspec=np.zeros(28);phspec[23]=.3607301346;phspec[26]=.368286654\\nsh=np.array([0,1.896757073e-06,2.711916391e-05,8.22782131e-05,0.000713897557,0.001121546131,0.002082667525,0.002368731648,0.001277173286,0.0007390768456,0.0005806524,0.0004283673863,0.0003738276051,0.0003669613753,0.000337788361,0.0003215975074,0.0003226709403,0.0002979864319,0.0002858250798,0.000261426193,0.0002581786833,0.0002705731785,0.0002730533806,0.1347732991,0.0001287440712,0.0001211507842,0.128187807,0])\\nEbin=np.arange(28)*.05+.025\\n# indices co/incoh/photo/pair sum separate\\nfor name,spec,energies in [('p',phspec,None),('s',sh,Ebin)]:\\n    E=np.array([1.1732,1.3325]) if name=='p' else energies\\n    W=np.array([spec[23],spec[26]]) if name=='p' else spec\\n    p1=coeff(E,1)*W;p2=coeff(E,2)*W;p3=coeff(E,3)*W;p4=(coeff(E,4)+coeff(E,5))*W\\n    vals=np.array([p2.sum(),p3.sum(),p4.sum(),p1.sum()]);print(name,vals/vals.sum(),vals.sum())\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Calculating photon data**\n\nI'm working on calculations involving photon data. First, I need to use exact lines for the primary spectrum and check scattered energy bins. The scattered photons will mean slightly lower than the mids, which seem fine. There will be coefficients for each process, and I'll perform vector log interpolation while ensuring I have the right energy bins and spectrum adjustments. Energy transfer fractions will be weighed per event, with specific calculations for Compton energy transfers. I need to average scattering photon energies too for accuracy.**Analyzing Compton energy transfer**\n\nI'm calculating Compton energy transfer using the Klein Nishina formula. I\u2019ll need to consider photo energy and the pair energy of 1.022, while noting that Rayleigh scattering is negligible. I can utilize per-process coefficients for energy transfer. My direct Monte Carlo tally for local interactions should give reliable counts and transfer values for Compton interactions. The primary simulation transfer sums around 4626.7, with the scatter at 1693.7, but this is only for a 30m process fraction for the interaction events.",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzRSWq56QujDAmmGJJlKUqmCE9n37YMFvuzRc6rbSv-uDEgvJd1r8iB680yaqA23w81TODBsWZ9TeuwA1DSHbf_gIPYYOyd7YT4xSkQYHHMJ3SzviIIKaHp_ZO47nIiFWuglhhM6vWLP88a-850JCTOZsHthouhiK5EjcFP6rHL1wDlUWWx9SXvbXlZ1Pu-ERJZfvxa1G6AezYM8QRJ3Zqf089UKtwwoVNpkaOVCXyAVOEg38G5GxZYg0vCL7AKb4SToqL0TfTC9CR8I-TSaeL8D0bS6_itMES1EfmzNm0rsCfnb3WkqbvecYoDD5_gAfPdmrQJikz3NdwUmdiYZvsBz_GiLgtBUV0trzJyGoWSiZZEzXWicOxbi9lMvVUR-iCU-YBu_0B4x3Mh4OxqVjqfgFtTTfrjRvK8nGngPFIdX0T8x1t0DpJld3KdZeNnNgrlLkwIIBALDyyjTij6eFoWRcR1hf7kltsV1dnW6umB7-BGvRo9MztuGVXSuAY5An7EKRi_mA78BrffDiH4CGwbQg6uEsKW2asog7e2jbhUwC6Yr1LLYf5p9xiepn32vYJdXmEwzBj-HudO5wu5fzLujN4siY9-TKjLnN7YVu32U7BvKEuggZvxq6Zcdt5TFkP4LFKKB1Wct3hQ7WHAe4NBGVCTjL_iqdHH7uLiYaoemDmOurn3ELG69RG7pn7shNQYrKGxEHua3LG9BOLPIM9mu4YKerh5WmiVwcKxA58qzArNHIpZ8luuwynwdpIeY1bKS2mq0ZY4beWp2DxxRr-zGLuCne4pnOqDHI_Nq4DjBmWFyuSWhW_sI4AS01eYnUMqijDHt2TYSUxinIBCwBsQ4cO55OX9-HGTcypQK4EFvnDe29LHq9wcpwvmofbFJKU1CJEjwrnY6eMmHIzBXa9uF8mOQVZcAOJgNOrx58Ghe_eR113Od7PPGs8gtO36Ep_p-fkUcw5Z0MHSG5O7BmRDZqdhQ4vT8Wpp5ngIhuisQoFOxc766rRjUl-u0SWMuf8DGj4SiP30xTOH3W8SOArQqzVbM_dEHMcJoehrIGbr0KdyfL4shpCRMpy_aOX12XeQRb6neVIYO57V5D3esUhwaHjLDsm-j18-YxbvdvPZD2qwuNCgf5EcGQOUxeqOUuzmu-YltHvOwpnPaCNAR0o-MQYRnzQHB9Y9ZOk8vETYpzmiqCzN_cXl_KRq64lRIv0Rwg2jWvJze_w63tNp-2DOqgtViDv24WlyBaxsriBaAJy3IinN6UEjQmkRiEOPmDeEP4U2XosBdsg_rGKI5FT1Xeoy_KzYl6Nwe_T4yPfdkYVqj-CmOJxejRLZiccQlgX_aveGMYXaKiipxPzvyHv9QF8_7JrJMW5hhetqSKHDnqYAfS6l4vzzPUhW0eJKoRR5t4d_ZiPiHNJxV8M8Th8Pv-cQq6VE4LQqoMbuoOy_alwG4EsjsWDt3zUOYpHfIX9vr42k8xXOE4zyPfBRQmRqli8weiNeMCcbWamRK8qQcLFseDINT-__8HGJz2SKdkwUrpf3zyp1A_6uhMPqnxNjySZcnPaagfCAuDLpJ0OvB_Zq-6SsoGr_98AW9QipAzvkmSBUQoeYJYG0y_U5d2VEsW5ZLOoeVokp85ipEM9VsM1aBVqiw-LGvoEqPTqgXPfYuqLn-7WQzyGd5tPPH5OZIotK-cvvYpChSuauAckXxaNp62aibh3dfWLcVmF1vSf3NjJqwEJtQhiC9HRFdP-UCjVErieP_u2KUUdnTO7Np_58cRXHU2QIVMH3kdSG0KYlgBmLHm68GuuoJt4yU_tZ-uTr9gyPFFWqhXgdoOWO1PyttLQpRCX3pUfFAg8yuE_Sx1PhXwwCFjGuKup5laZiqGozko0dcComuVcMcMDqu3e3agwYvMEPXEH501eNu9bv7-x6wJDujvZNnhcYni69MoCJDpo76rVorj3-Ytt2mCnng392UqBr8c_eFPOUiRfNmIGSvucngZRlnmjaSUzEuQyOKpgDnPZuM6pzaT67H30oIPbei7Wo5Mkx_bffV6XUcGU5SeVoTP8NF7G_3r0hlwfMOhyxY0yaF2u3AO21j4lw-trq_c4sQNSz4WgFOe-CpJYRYLvV7NslbGqOovK9VfrQWrOYKEc3czWOMd4S7AUiXmG-oa-yMSKbvBMugDATyb086M0dD6_rekEvlJEJCea1Q9qlE2HgNOhxcQs2kfqcJb97N-WmAC2ms497NmNZ0C-FFU-gafg9lBPf15jgKftpAkeapLFfNOAAr-u3vuQdVJUEpIhd7emzvBpI1-S1T2mNWYCUcaQLeG0xcBYrZxR0vrDpHUFO57xOjBoRZeKVUxWzxwxY-OlYVCmeOr8BZwjj_QaB4A5TGatnjrRj2QueuR-f9VWnPKj4Y4urya1h2CTJETzOIgFHej74-yWVq6dzN3Evs5lfNLEKIhKbULn-FQL7d-sc7JE2OLEJekX2piKDbcL5TLfzN9MseLG5mcpFzL6duHtdapSUEsAEowbm-EIFcsS3elRSUYT4dQG8aD04OCzVcRUOOtzLRgG52hSKkn-iaqG1bGZt_26A67RPAIl5WBmjnmBNF46jFC5fcpRIercdIKl-fZTVSnd2eqjbD0czCX4XnqStMlk5aUCvU8KNi-eZSXyIWApWGGZgoK5FK5xr8LAaHEixsZPz0GJ4fmrxON70sBo_A1Rrm-DhGYgoKur6E4nXAPCZuhECbb6yBqxjygHoh6fAtuHhNSXEpLlvO4SQ--Twe2qDs3-JcGzV3ChoqosdpvfaHxtH8ITfVmj6LXRtU_feT298GuFtE069bNBeaWT3_5kF8TXPcNDqnIIJn4wyJmcBJim37LllkfQYTgTgkPmcITV1dhrdMbIrE6UDzS41Lyd_EnozHggyIYe317oLWI6q6rTs6oxSBbzyQmnhvnin6B3FzIEuol4DM3DgzWNAd5NL_xpSqTITzw_JjbqH2KSxq0ilHJZRKiOedBhGAzLP3tAPHS2ul6BuTUvA9S_dV311hdXy-fMrjYELDHyPExuGxVgscwGjJ4HouVz1H1rSbD4KFjZScqoultjaUvueoimwoFDyub9gPypttkOIqKfwFnpuIGs-nL9aIfDZz3wOjtSSTpjr8TUFXmiTMvGjt7KLUJ_cTrxE19cqWPGDqILeocPKzQeAIZLWbGAaTxLAxZ4HxUrvD6iNw3OWZiqPZrAtZY3iI8ijOmANx4ou7CL5zqQXedp7LpR6AlDdpKpB4jGEd5OEniDUtBv1jfgHSp9tQs_QmWkJM71heXO8CJ3GrqFyUbqOYzZ48YOxNMsWw8CfUF_IE4icNpPZ_QaCls2HyxCU8cAwj4dV_3PLl0_lxoTVlOuj-FB3FKQr-SJ7TIfMKSnVxPR42rMEfpW3ytjCVN4uIzN5lquCwASQvjxobEbpFi_nEI3zHH-Xefv9kr3Q6xA-mBNDIqhxhfM93tsTn98TS2Xw_SUN174i6F9y4xfwU3FBDKr1Z6XQn8KyTdsQfUbtORaFRr3mhG10wG6dyPfQtdMicZt_Z4TUMQLRv-VVKLCsT0LxlNs2CLirVEqJf5nGkdIABwbkHZ5Jb1hDWCsZScooM0j2ve_isS-lRNLyatWhEv_ol3yJyqfDsxZoLRarEQd7nEIcwg7W_bMT75Ml_80b5sfIgMwL8_1F3gkroUptsfZ7XVkr3l2Acj8yfYhm3nRClGqzXoFWPXXjx7u_DpjxY3GkYLMep6pwAnGBK3SH-bS0y6T1XcYgeng0kUAjRtXqGxgMPwYm_s62hmhZpeoXz_aYSfyiN6XkbfBRZ-7gepuXfkDrdyBPs7HlRKWYngV5X83XytjhR4FqxxqSHVj3KgyCODmR5XMwyWRFKNcrt2MSgnPvy99DUnYSy6PWzhz9WdoXkYt6QH3-yLjEscFIW65vm3Inj8Hmd5EQVr2EZ5V8YQvhYBDGBL02PO_gkvI34kVSeaIK5GWF-BbggO7B_d3KKvSBk8IJWgB6XEkkY4MHpUq5cy9o_4pRejICiac1rkGH1Dzy17Kjk7iAf_0f72Hu9dIchFZIVSAD1gniQMBPfZ9P2COta5ET8dr2UFuLDxWM7-8kXFaWebUbDTMfundHt6VfrwGpqkXEbN7RHsjgmjT-dfOKmpiVVzRh6ZNOoEAbPCWFja4xrmB2qyHn3KDQn3xm6nen4QwWhedTetN_KkDj_4aRLhz_-NV-ffUhh3AYU7VN0AWbg7UNHJJ9E8qw_YOdZDEABqZUAg4sCZoj7pu1AtQ2DXf2CJGH4pstqQtaNQQuVemy4DJSf7FhK0hKednH0jjEbNJ_LAGbtZbq3FO1pfwfj3yEmFWaKBKSDrdmRBPxW_pOjOAikNuM5Sig4DW0McxIra7B-Vmh18YrcwkSG79RA8qwDjiI-A6FNagslwX5q5WkrQ7wUznIBmEjskqmp6f30RhwDAYjtllL1H9tta-4VINlocaXbPH6XHo2nRxM4ZOuA0c3fadOajSdaR7hZ3B8TGrZqrQWkb_Hp7cdzN8Mf30cGo3jdrijAdAag_DAM5eczaFpe1CqRSvtURnXjCLKJKgWBi9XZfVRc7YaBJaQd47yep4ZC77yIGSwoUHCrp4ZieIfViUPeKG6meylPVHgsGfemla5B1Dal4adRgFibDrfrqiWTvrs3J64TTBMSJ5t21t1yebM6q5birIwy_7dIAdJnDgmY6agKajDFYg-xx9MGoGqPpFAr3l_e5qeBDz3qFMVpVyxQr_Mufr7LTEhhErg39PCa6TyhC0yXjELwFIf4zp4SYnDRVrTnCMCIu3KjYlpi5y2CmC2_nrV_IGt9PfDRXm9my7EciFguG6l8ZNh1ljoDDm3LhT35Q-PrmJPNFIcNP7iJzIds__pdcrqEzP4SsGXzGydVhyJuHsSBnsEFkECFwWBF5hNNOxbRIroANWY97VFl_HV6RfCyvj79U58mXHfC0pfuC2ZOHdojbkQoFjz_1hBeaMGGT62PwcCLNXzCKVwLuFjEMdktAVnNS19K26dFOa7CTl50SPBUDSlioA67Vx9zTFk57Nezh2cjHTJxjm1BejKGKsTNB3DlxIJRxKd7ZJrobRvpYBSoi9YSyCdm1Uqf1kIy6UUG4ebTGpefaJxDVPTY17NPsZTVsfGdz_cTJ0aM5whx9LAI9Ijh_MsetocW1hhJ_-Ss3ysVedHTFHOvCmg5NCG2O7vfKy2WJjbO_8rm7aD8VfEn09xxpnYwVZqwzFYdOFB60FB8jECCswM-98L9uA6H53SvtvKjkm1_76iu1TFX_B0NR4_yoau2rbTniCSGyXt8SP3f8qJes-TU1a61iXQrUth9XSMY9D8ojXoetoStF41L2YNbgmJKbuMZRENIWhXAMWJQlzKIh4bFxHWRBKn8yCs8IvtDpf70VKSMs1tcOEzC3HwvLLsDFMyGNxZp7Dspw26IGuOgZxjLLZyQhK_b-GC4CsyI3al7xYYoYPqTtTUrAQA2ekA3zJAHA3OiEpLEjFBj07dMwoavcLeTnbKH3MkA2bfaIxlGqSggLnM70dOuakmhkntMuf1yxDQ3j2HuDml-SQuhN1oZYpYtL9sgt7CQAmDum3louo9oBzNx7m0UWgyp9IKW7YsI0B0q6hGhsD0e6hGtD2mCs8FbAbE3qPM3wuzhRElUH83Hh-3Ot67M7OZmu6O3XqV3dl7v0E8YEvMu1c8Gjl3ACNU4BlIfVazDC3NVfHBX2rp7jnTRptHUmfxuojPcMxeB73jRrGlvpVOaxM-zELB5AsTbSuq1_1m2FIrgKE0pmVDEcde0JMFzsc-knsBqGExRWVIY1VU1S2wKZqdDCAN2_vyIj7_RynUFdiqsBpOP7yPr3uFEvtaJFUY0fsTd2167yKO-TUZqkEfNCloCB60Zfp2AzfxW0rS5mHJoSWYPw0nmMEsTXugu--ewHgTM-5bDMJQFVn__-wFYkHJlTTQ7B2LKbJejP9zlaLwI2KLC5BzwBEFMZRsh9lmLuHW6CsAsi2RKAYp30ed-firWTtaL7UkvyI41d5sshenfPTwjoMNZ8zy6RRGOZg8kMCtqviX9vv96fsF3GBwev0ewK3DzdkQNN8QyoaT6Z1CnNJv10bCAmU4Qy09COkdSEsx_SRbqZQMfTaWiHW2v9ORG_NhNd6unFshi_ipH_ueCxz2cfapHr2f_PVloMgKMudeucRp8E5x4Wa7FT40qGSq-F7zOW3IFPc_txdGH0OckZut4qSO8dSgUGwmdGbPgIkVbPQoWkJG8wkieAQFp2mSFA_mDtNu81Rtx2gF3_s6e-vGACtYstc2Z2xplG4zTGI10vnRI_1GzcpiDj2oEXCJ7AW6rt-oRXOkMWuRm2Hp8sz2atJ8az1f8vvwD5hRCDAQQ09HWktF9l7hZ3rwbdyoOnQJ4rUXQz9XjYLgLaGgggy8Ox7ESlscdYFHfweQjMR0deSNMeZ5B20_RX7SYruzqIK6IiO3hjZrOPZ1-fuT1sI6ynW9KictppR-pK3jRjCvan27VLEr_cnoRJVBAP0XON2jhTowSkUqbRwZnw9K6VlOY7-Hx1PnTI9VCrrVtZNWUQksXhhB8j1eHfVMPsYbXMF53Cy_GFT5CwwwRj7pX0pGLOg1yq0NzRlgCI2OPO04zxODRSYW5900SJbcsiXPAOz6QF42UtGUe6UJhotAUNSfpNmtghVqpNRa5quJN3_v5cKW049smOVM9KRTCOwb1Z7h9wTdjopw0ljZVgzfeTL-VLq_t89h2r0Kx93dErr6KB_whU-Yr2lrapVVdgQdFp__Q2eg4LEoBEUNtLseEg4WmFFwQLaa42sc66lQlDMwMAxUUsWIXMQFtRjqmSaKdm4nWGdha8phCoC8_8kfKwsU4RW0uUOjvM9Fr6rwP7JkscEGFOtpqmKajjRfFidM2DZLmgy1qE_5w0HfwkGk4WOJqbhkraPZD0Q81Lx4zHqauQzEVdGlrQfJrdoggmSVbfGXtGMctU5aZZ4Z2bjrfim1fw0Ujed8Y1SeIBDqhsGfZx26G7bYrxk4NscEQTBdnAX8ft3HZ8rbRDs9G4cA3I2yvw3loVDXTQHyX1LkAC5TaHNGylO0SK8YrQRs8N-IJmFyGSL3N-AEGYHTPu8ZbsKhTnAkjBbtGIw0fFulOLuHJRyMyjxcdvVxwlZowoUuu3lPcHqC5qLvCKhm4CuPsZd0d0CeaqbqPAVgul6ZXkBh2JweZX7erJgtdhnHIxLTG69RgWpc1hrSsVe53c3zpob8CVoVplQzv1egwZZEDIn07bZzUJwG0CxcZqxgw15aZQk6ACkrvz32ToROjwSCKpLi-Fre8vjzg8IyLI9pgeDn5oJC3JwlCoeFM0hKUE06NDzwTjM34e9_M9_CdAmXDYPxwy3Dn7UDasEpAdcmvRjsO3r3CI88bKJ0aRALZszUHGkAlHRI4qITZeaWKQ3ZjS1n4SjnFuHQrBZCa3FFKc0QOPtvn5kv7yQLFwvtn_C64JufolGpPDXku-JyNywRtVpehV_Gjy8jIHd2Tra_jDj04zxQP6syZjFM8eWzatk1EZgBZULQSLwhJFq_T7e4x1xnI57gaj8CLKmRRt8MhoJLaKhdH0d5Di95r7fYa8j10FQR18d-s4JzOgs0hkes5pTAWiix6ZWvzaFS0QvhOZdW2w5U0gohJhqhXwQMH6M19AEPvQOGXsKDrGAg37Z2oninDcO4HUvnnunCxLVrBGun7c4xFzbwdWbuoOVAsqy5L_py_FVnl-1EL_wZ9-53Ris9Do04fveg-BjwENZ3MroJ2QOM-n75Maa17K2Aa94VYeTztld7NAYuOviE0U6HXcps5NKcxOCN8v005ApgwnGpZvjoNMR9DAfMNdS7PPynZdTS8DACyYfacjQ_-D7cchg8-VK0S2rArbvyApR0BEFxidR49YFNLCjWV7-THGPvuJWL2LxyTGxEA1bStjY1N0Mqa0TpL3ynmZ9CcfwF9ARUvv2kajlZVbKWEogHKN7r4L356siiIopG_HPRJgeiNmySuhHwrAOMOlQ0HTqIjyOc0-uIlZrgn0vBtJUXbAPNwXfutd00dT1kG5UWbzwtnO0HTXnmVSixYQ1Ny0iSNfp9AkUuPAXqu92ldWiVP6eP9YAJqwH8n8izFWxWiCThf_a6CNjc-KtLMOhDRfASOM8ju7n_a-Rieadn7uc-EpzNh7X7DBQ6j9q2JDA86pupV2oAOaW0necwu_Dcd6ILHDh5FjsVCpIshpQhSr9qqTxsYGyFD0yTvGUvzNC8UADuCwN-YZRQusil3eF7ensUtqsP5XY2vW8k4qkm9pRY3VpQ3YjsPjCISRdUUh1oqMnURXCU8AQWJGi_p5MIlW44v1.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_0e30cfb0b80b823e016acd148fe00887d1b9c50824bdc0811b",
+      "index": 1
+     },
+     {
+      "type": "reasoning.summary",
+      "summary": "**Calculating energy transfer fractions**\n\nI'm noting that the energy transfer fraction is about 73.2%, while scattering represents 26.8%. I can use event counts directly to determine these fractions. It seems that scatter processes are all Compton from stochastic low counts, so I think I should choose similar approximate cross sections based on spectrum weighting. Now, let's get started on the calculations!",
+      "format": "openai-responses-v1",
+      "index": 2
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzRSX7_aqeJQgVx4VRoBrdMdlhHTykWrxiSc25KQaS_36itaPn4XvS59WF9tRbTk1i-3gQqPRQ_K3ZsumZbadBwZnpb4VJd80bdtnoDkF8HUyrjsKWq0W1EC-qKlaxyyXp6SKNwoqjxhs9cDfAbkL4GVODEzYU6kDktQ48bBWhuQHwGUkFC5DRL3IJIwzJpuHfEdrLflXMFQavv7Opbr20Qn2Tesk36n8K_NXrAvbVqnZ8Uppr5AnBjqe_a4T3_X34q49TVXUwFdUzQEXveW5ULPgmgPRn0jQHFSNv3EbpPRq-3e7i6fY8vTfcuDcZzNgWVkuSC5WDUtEcLID-Rd0C0gA9TYmgyY9W-tOKtZUUW1gElc7WmVQV3TwVLtry7vKeKnZizM8kGwHp0LHrMnUWmtO3N71hJoD-6GuCv0nJQAChQcn0hWSPK7ct35RfheyGpxy809BssMJyJm431YKVhdsv8gs-0uD1QwzJJVUVhjvrG1gFqWNEu3OK-ou6iUq9UUJ8Uz1YXVWfWiSgReCLXqV4xLHA9nrydqcI0Xvol2lj5lpV3ijJnddBGaKWek1XiPDBFytPPHaLnoQO35aJcuCA_9D8r4qFjJmN4lm77VRkFRCC9MVd5dqYnRrDSb6Rqvfiah_TlsBLP2yg-SpHukc5REZbXvoMXwedYW5SYR2RVlE5jMo6glScUB_mb00ww3N6K7qF6ynU8_gYo17NY-AjtrJB28KUdxvH0GzlBDSCI208BAP8a9LLUE2HegUgLnnBmLyvfo3IvpkJKNbe4Sb753xyCRthK3CzHIPirmhNRtQMMOE3aR_zbsBfvIVWZIz5g0UH22HLpGz5Py9AUwJKlOad2zt_emAHGoPa6v725biXL52P-cSlzV2F0U9j8wLp0SMqhFCSpZ_NJp7kOXx3Zt-4cCCnnyO3EJHPLoUsh6BLomZJfyfh374Mfy6mlxKzWxZUyPM8ySsjlguQqTf_-gVFR8gyuP3YqBI11BkFaNbeQhirGBnZNzq_N2YVOPBJjuTbG6mvXUS9rV6oad7XH3BIsGbUGP3vHwekfhoICo8KcSz7pGSwAe_bsD47Ui2hcQFRJED5HJvmdvlzPIU7hyR7eWZcQsTAnOwa482iWogyyb8uLPo22sSHZo5eDx0PlitygXlGNJayy0xovj0O1tCjKUkEFHNx3GraMZiCoEnpXLpBXRv4SUXxSUiplePnHegf95yckGgdGVuVt8WKlmPZsSmLJwKOs4Qyk0EWXr9HfyDS9XuoU1CBx3ZdVujJnVdstU1c0QFwzu9PRdlYoDLsU23HkPKknan3eRMkrHrE-jvIZf6kkoaFZMovVm3ZKll8dsWi2pv71zYjWn3tWELmgrvnN_vjZmlpBHQMPwmKAcAnF5LQ6CYB8j6BS9yTCiwLhKyHVHGriVEEEqTc9AN3c3h_ky9XVPCc1-fJohVG5t5cNnZr7yQIxBtUtVS052pM5drDMAa2Z1AxWDcQ42ce78ll_vpawdyaZUo6z1KFfk_X8OvTowoCMKItt3X6KXgwL0TgQ3Q79O0luqdIgG7Bf0e69xHIRnHneOU8I8LWvgd0iFk-d7Q1HR8qLRtLo8Ni1nyvM8APzc2KwuUWV53_zA6DNB32TR4aWj5maZnkWAc5ErmaREWigx7V1O2eqYd82IimzaKaXQmkLbjjqYbWh77v3liuwx9OoYt0FK6TeFlaiy4qBsShjzdBGFpCmm1vAa_qFnItaMGOq0zU7__OWYkeCEFVM4zfMTXw_Yfa-b3MZrnPjpYIxWZV-cQEYE8XsYKYvsE4NQFTIhtBdV0nwP6-g6K-nW1JbVpQ5Lw5YVnEKQc6Q5OV135mnWqEI3Osihx_mdHP0Deymlkey0IP7cp2VrWwkhJjqjKw2317FYwlQFwQ1tFqaoum6D4NZ-LQdmDIArzXHFrsEcv_ewb4rYMWmQH1UIbeEGmLP85q72anV369F_tsq9-xl0ugJ9QylW6GwuttWltcFE9bUXiVl2VTyaPSeRwXbOXKqmtF-6H1ZfUopoXvobDNr5LYVdNhftTSLGN4ZlKWcDhC9lZUa993cDgMAjAKXZy4fx53GVI6DdG1SJluYFRshOwJTaHb6vNioD0ozvRB2a0ZiLbk6aDiJjpdtPaPQMG5IVrMuJN4hzp8OxBOu0wv6ezNuGUZfgJNUAAOxZJmFXyju6_9PlCDmURufLMVHl1SVgXOTHN6-KIC1MfN_rqp-Pl4AyweRo9yjsN6KV79qMZ6gXCfwhGRgwwJtCi_Ke7DY2DFvg9OEExpK8YcTuq3J8HVuOp_hLr58H_ITygCJ693g==.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_0e30cfb0b80b823e016acd149634cc87d1ad084020f946a040",
+      "index": 3
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 44146,
+  "completion_tokens": 1194,
+  "total_tokens": 45340,
+  "cost": 0.001111065,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 43514,
+   "cache_write_tokens": 629,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001111065,
+   "upstream_inference_prompt_cost": 0.000514065,
+   "upstream_inference_completions_cost": 0.000597
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 572,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

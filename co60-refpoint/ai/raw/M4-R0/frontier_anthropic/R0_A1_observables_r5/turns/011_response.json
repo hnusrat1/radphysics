@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791827513-LTER251VfT4ibhucoj8l",
+ "object": "chat.completion",
+ "created": 1791827513,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "The primary value agrees with the analytic exp(-\u03bc\u00b75) to 0.3%, so the geometry and normalization are right. Now I'll run a large batch and save the tallies.",
+    "refusal": null,
+    "reasoning": "The primary ratio from Monte Carlo (0.7315) lines up reasonably with the analytic value (0.7292), about a 0.3% difference, likely from geometric factors like the 1/cos term and pyramid shape. The total ratio comes out near 1.15, putting the scattered fraction of fluence at roughly 36%.\n\nThis scatter-to-primary ratio of about 0.57 is plausible for Co-60 at 10x10 field size, SSD 100, since literature values around 5cm depth suggest something in the 0.5-0.6 range \u2014 the scattered fluence here includes plenty of low-energy Compton photons. For statistics, I'm planning to run batches of 2e6 histories and aggregate up to around 1.6e7 total (roughly 100 seconds), saving the tallies to files so I can also extract depth-dose data afterward.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01HJ4GZTp774qXY8YGDoeFJX",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport numpy as np, sys, time, pickle\\nsys.path.insert(0,'/tmp/work')\\nimport sim\\nt=time.time()\\nallseg={}; alldep={}\\nNB=8; NPER=2000000\\nfor b in range(NB):\\n    seg,dep=sim.run(NPER,100+b)\\n    for k,v in seg.items(): allseg.setdefault(k,[]).append(v)\\n    for k,v in dep.items(): alldep.setdefault(k,[]).append(v)\\nseg={k:np.concatenate(v) for k,v in allseg.items()}\\ndep={k:np.concatenate(v) for k,v in alldep.items()}\\nNTOT=NB*NPER\\npickle.dump((seg,dep,NTOT),open('/tmp/work/tallies.pkl','wb'))\\nprint(time.time()-t, NTOT, seg['tl'].size, dep['z'].size)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The primary ratio from Monte Carlo (0.7315) lines up reasonably with the analytic value (0.7292), about a 0.3% difference, likely from geometric factors like the 1/cos term and pyramid shape. The total ratio comes out near 1.15, putting the scattered fraction of fluence at roughly 36%.\n\nThis scatter-to-primary ratio of about 0.57 is plausible for Co-60 at 10x10 field size, SSD 100, since literature values around 5cm depth suggest something in the 0.5-0.6 range \u2014 the scattered fluence here includes plenty of low-energy Compton photons. For statistics, I'm planning to run batches of 2e6 histories and aggregate up to around 1.6e7 total (roughly 100 seconds), saving the tallies to files so I can also extract depth-dose data afterward.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "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.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 67762,
+  "completion_tokens": 966,
+  "total_tokens": 68728,
+  "cost": 0.00122474,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 67204,
+   "cache_write_tokens": 556,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00122474,
+   "upstream_inference_prompt_cost": 0.00074174,
+   "upstream_inference_completions_cost": 0.000483
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 562,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

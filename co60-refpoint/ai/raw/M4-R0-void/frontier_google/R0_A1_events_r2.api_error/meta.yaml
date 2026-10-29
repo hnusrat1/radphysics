@@ -1,0 +1,28 @@
+slot: frontier_google
+provider: Google via OpenRouter
+api: openai_compatible
+model_requested: google/gemini-2.5-flash-lite
+settings:
+  reasoning:
+    effort: high
+  usage:
+    include: true
+condition: A1
+task: events
+config: R0
+prompt_version: v1
+prompt_sha256:
+  system_A1.txt: e06e9a5ea06c2f5ca29739818f324713f2dbbf775f019c11018d1aa7ef5416b8
+  task_events_R0.txt: 871cffaf3fb764b91cfda15169f125951e9eb985bfe79f27e1ac8bc6b710cf73
+started_utc: '2026-10-12T17:11:12Z'
+turns: []
+tool_calls: 0
+retries: 0
+outcome: api_error
+error: 'RuntimeError: in-band error after 1 attempts: {"message": "finish_reason error",
+  "code": null}'
+finished_utc: '2026-10-12T17:12:38Z'
+usage_total:
+  input_tokens: 0
+  output_tokens: 0
+  reasoning_tokens: 0

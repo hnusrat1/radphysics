@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791815775-omtCgco8ximm5FoKfQtX",
+ "object": "chat.completion",
+ "created": 1791815775,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "The first run gives 144 interactions from 300k histories, so I need more histories to reach 200. Running a larger batch.",
+    "refusal": null,
+    "reasoning": "Only 144 events out of 300k histories is too sparse a sample, so I should scale up to around 3 million histories to get reliable statistics on rarer processes like pair production and Rayleigh scattering. Checking the numbers, the overall interaction rate looks plausible against the expected primary photon count, and the pair production fraction suggests I'd only expect a couple of such events even with a larger sample of 200.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01DM7QSjyf7yPH8Ct11XT3ce",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport subprocess\\nr = subprocess.run(['python3','sim.py','3000000'],capture_output=True,text=True,cwd='.')\\nprint(r.stdout, r.stderr[-2000:])\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Only 144 events out of 300k histories is too sparse a sample, so I should scale up to around 3 million histories to get reliable statistics on rarer processes like pair production and Rayleigh scattering. Checking the numbers, the overall interaction rate looks plausible against the expected primary photon count, and the pair production fraction suggests I'd only expect a couple of such events even with a larger sample of 200.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS0wkKEAgSGAI4AUIIdGhpbmtpbmcSDDCykx4HBKg5+vv7zxoM6fd+mRaPKT236whgIjB4YihyX42KXgw98u9UWVrUBTll/5rDfbJB7rYDHT6wi4+cdELwcwMCR1L1LpXWQVwq8AjuO1bsQra7Ej15QzEjq7FT6JFdqtbonP0h16gScEJkjktyBNIwrIwL8yqbxvVANex1+DnZiRrj10qgdSReJ4ltzVAvHXPZAaEkJZ/N7d5KB1CVc9MoXDeLhyo5mG9nM638HlfxEVdiNtpIsn4J5kSw7ZUURQ3RNekFzvv2ETdUaI5bLqMu3s7W7DuQLk866pJCy1pdPtWid+VuKpS8exNTPscSlObF+JslB00A9xoMXIlWRM+jXwD+/IBMM6KTCKzIgoV1lnnI3lq4sdjzkYEWVie/A94orsZSnPw5BAPxYyHm9xpUQ2BUwLW8FKYLcoQfTG6wq1p06OvDd8jm1IKvCLlOBYUgokotCbpxmIUTE4BusAu6fW6crbJFROC2xSCbajlgBTwPU6NwGSRZWZXRvMCxyXeef8DqKkGDhIWJDIRXMorQx+jzq99d5rqJtk8kbMLhuuznWHkluIho+lfGqjO0ldbJQIjg5svXoEZsIe9i31ckzdQwZ6ympjE6Gc/0YjYCt8C+0lIFtflA1dwqb/sX4OXCRJZfYOIBzMFYVdZKDb1/3upIk1GztlISflHHBpur15v71yiD8mLwGiVTVquFsWJFvo87akP1TPj5YCX/rHAy83lceIvOl0k+QETBGSNPbjR/HxJNOwu9AnWFcE6RhVkUfqG5wOpUykpy2yF5/JGj1JwBUVBgnky5ti9eLJIO/Xskbz7RRTNRM86uWTKS6ysWTNpyrf3Q7xSFvb28APFfjj7nJahHg0JKpA8xmWbgfiLGafdnRlliZkMdBiOX5ECVv9P5eenFVvo2bW/zW/iQ1VJZNftM422cAUT/Po7/5I8XX6+NBDYB93TK89V3xymyZZktUdMHx5pM9ZJXpnGQl0PCq/76TF79GfBZK5lNtSrA/qGcIPFHaUV7D00ao4TLnnFlrtWkHJ6+fc9EQ4A4A+1bj0jlZrBTj3L9Sf6V8ODz7JVP1SH3h3g3WOi08ob/jLKpUw1JGmFyfb7x8BvISiXj5n+04eFOU7dtauZb1aKdaglgbx+rlEde0e8kZZG2GmzyN/tIAujyKtplLPvaMNV+iCa3N/o6kho8N8OZvoaUKXS4rSL4en5M4fF8c3ULyu95XsbhFwgfdjB4dKJqmEEsqYycRbxZd/FT6RZvRZAQR0rtF42C67BvhhHJCSls+EGLo8nUZgXWvHMfeknEPafWFjk1CudpcNUUU9gBN/ClTTS0/FxsmEoyHkqd7n+34n1ZbqHhjjWo5cvsk6E/+7UZ4jFee6CkAcCpPLgk4UQE/qN/GSbRGrm1VQkzx7HBH2nXxDN1yk7x0V++6K7dRxZ897dJaFMK6vNecZvBJSk4MSmQhfrhClztR4LdwOidQL6kCRxQFlmAPegUXm6sBD6PKDzI8R0jhKZ2fY7axEjHv7g+UqYOU+yJceXrJQnHMgKMLCYwG0C7v4vdJokNjprn+9Yoen+yaP/p5jj2qKEFoYHX/JVAJu5FOsS6R1Wxi+zmJPrWtnIZRRgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 25940,
+  "completion_tokens": 403,
+  "total_tokens": 26343,
+  "cost": 0.0027955,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0027955,
+   "upstream_inference_prompt_cost": 0.002594,
+   "upstream_inference_completions_cost": 0.0002015
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 252,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

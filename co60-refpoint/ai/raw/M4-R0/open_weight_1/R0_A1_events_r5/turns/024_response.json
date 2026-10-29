@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791830670-KFxd3t2Z5kvcGw5DuggI",
+ "object": "chat.completion",
+ "created": 1791830670,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "OK, I need to write the complete Python script and execute it as a single file. Let me write it to a file first, then run it.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_566a312c8cd64b2bbd7d964a",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"code = \\\"\\\"\\\"\\nimport numpy as np\\nfrom scipy.interpolate import interp1d\\nimport json, sys\\n\\nnp.random.seed(42)\\n\\nm_e = 0.51099895\\nr_e = 2.8179403262e-13\\nNA = 6.02214076e23\\nSSD = 100.0; fh = 5.0; zs = 0.0; zc = 5.0; zh = 0.1\\nzlo = zc - zh; zhi = zc + zh; Rc = 1.0\\nth = np.arctan(fh/SSD); Opyr = 4.0*np.arcsin(np.sin(th)**2)\\nne = 10.0*NA/18.015\\n\\nprint(f\\\"O={Opyr:.6f} ne={ne:.4e}\\\", file=sys.stderr)\\n\\nea = np.array([1.0,1.1,1.1732,1.2,1.25,1.3,1.3325,1.4,1.5])\\nxT = np.array([0.07070,0.06780,0.06590,0.06520,0.06400,0.06280,0.06220,0.06080,0.05780])\\nxC = np.array([0.06950,0.06650,0.06430,0.06350,0.06200,0.06060,0.06000,0.05850,0.05550])\\nxP = np.array([0.00040,0.00030,0.00025,0.00022,0.00020,0.00017,0.00015,0.00013,0.00010])\\nxPP= np.array([0.0,0.0,0.00020,0.00028,0.00050,0.00080,0.00100,0.00130,0.00150])\\nxR = np.array([0.00080,0.00068,0.00060,0.00055,0.00050,0.00043,0.00040,0.00035,0.00030])\\n\\nfT=interp1d(ea,xT,kind='cubic',bounds_error=False,fill_value='extrapolate')\\nfC=interp1d(ea,xC,kind='cubic',bounds_error=False,fill_value='extrapolate')\\nfP=interp1d(ea,xP,kind='cubic',bounds_error=False,fill_value='extrapolate')\\nfPP=interp1d(ea,xPP,kind='cubic',bounds_error=False,fill_value='extrapolate')\\nfR=interp1d(ea,xR,kind='cubic',bounds_error=False,fill_value='extrapolate')\\n\\ndef mu_t(E): return float(fT(np.clip(E,0.01,10.0)))\\ndef mu_c(E): return float(fC(np.clip(E,0.01,10.0)))\\ndef mu_ph(E): return float(fP(np.clip(E,0.01,10.0)))\\ndef mu_pp(E): return float(fPP(np.clip(E,0.01,10.0)))\\ndef mu_rl(E): return float(fR(np.clip(E,0.01,10.0)))\\n\\ndef c_E(E,ct): return E/(1.0+(E/m_e)*(1.0-ct))\\ndef KN(E,ct):\\n    thv=np.arccos(np.clip(ct,-1.,1.)); Eo=c_E(E,ct)\\n    return (r_e**2/2.0)*(Eo/E)**2*(E/Eo+Eo/E-np.sin(thv)**2)\\n\\ndef sample_KN(E):\\n    mx=r_e**2*1.05\\n    while True:\\n        ct=np.random.uniform(-1.,1.)\\n        if np.random.random()*mx<KN(E,ct): break\\n    Eo=c_E(E,ct); te=E-Eo\\n    num=E-Eo*ct; den=np.sqrt(E**2+Eo**2-2*E*Eo*ct)\\n    ce=num/den if den>0 else 1.0\\n    return Eo,ct,te,ce\\n\\ndef rot(v,ct):\\n    u=v/np.linalg.norm(v); thv=np.arccos(np.clip(ct,-1.,1.))\\n    ph=np.random.uniform(0.,2.*np.pi)\\n    if abs(u[2])<0.999: w=np.cross(u,np.array([0.,0.,1.]))\\n    else: w=np.cross(u,np.array([1.,0.,0.]))\\n    w=w/np.linalg.norm(w); vv=np.cross(w,u)\\n    return u*ct+w*np.sin(thv)*np.cos(ph)+vv*np.sin(thv)*np.sin(ph)\\n\\ndef src_samp():\\n    E=1.1732 if np.random.random()<0.5 else 1.3325\\n    x=np.random.uniform(-fh,fh); y=np.random.uniform(-fh,fh)\\n    d=np.array([x,y,SSD]); d=d/np.linalg.norm(d)\\n    return E,d,x,y\\n\\ndef sample_proc(E):\\n    t=mu_c(E)+mu_ph(E)+mu_pp(E)+mu_rl(E); r=np.random.random()*t\\n    if r<mu_c(E): return 'compton'\\n    elif r<mu_c(E)+mu_ph(E): return 'photoelectric'\\n    elif r<mu_c(E)+mu_ph(E)+mu_pp(E): return 'pair'\\n    else: return 'rayleigh'\\n\\n# ===== PRIMARY RATE =====\\nNMC = 500000\\npt = 0.0\\npb = {'compton':0.,'photoelectric':0.,'pair':0.,'rayleigh':0.}\\nfor _ in range(NMC):\\n    E,d,x,y = src_samp()\\n    dz = d[2]\\n    if dz<=0: continue\\n    x_ep = x*(SSD+zlo)/SSD\\n    y_ep = y*(SSD+zlo)/SSD\\n    if np.sqrt(x_ep**2+y_ep**2)>Rc: continue\\n    path = 0.2/dz\\n    muE = mu_t(E)\\n    t_sc = (zlo-zs)/dz\\n    att = np.exp(-muE*t_sc)\\n    p_int = 1.0-np.exp(-muE*path)\\n    w = att*p_int\\n    pt += w\\n    mt = mu_c(E)+mu_ph(E)+mu_pp(E)+mu_rl(E)\\n    pb['compton'] += w*mu_c(E)/mt\\n    pb['photoelectric'] += w*mu_ph(E)/mt\\n    pb['pair'] += w*mu_pp(E)/mt\\n    pb['rayleigh'] += w*mu_rl(E)/mt\\npt /= NMC\\nfor k in pb: pb[k] /= NMC\\nprint(f\\\"PRIMARY: {pt:.8f}\\\", file=sys.stderr)\\nfor k,v in pb.items(): print(f\\\"  {k}: {v:.10f}\\\", file=sys.stderr)\\n\\n# ===== SCRATE =====\\nst = 0.0\\nsb = {'compton':0.,'photoelectric':0.,'pair':0.,'rayleigh':0.}\\nfor _ in range(NMC):\\n    E,d,x,y = src_samp()\\n    dz = d[2]; muE = mu_t(E)\\n    if dz<=0: continue\\n    t_max = 30.0/dz\\n    C = 1.0-np.exp(-muE*t_max)\\n    if C<=0: continue\\n    # scatter point on ray from source\\n    t_scat = -np.log(1.0-np.random.random()*C)/muE\\n    sp = np.array([x,y,zs]) + t_scat*d\\n    if abs(sp[0])>15 or abs(sp[1])>15: continue\\n    pdf_scat = muE*np.exp(-muE*t_scat)/C\\n    # forced direction to scoring volume center\\n    d2v = np.array([0.,0.,zc]) - sp\\n    dist = np.linalg.norm(d2v)\\n    if dist<0.01: continue\\n    d2v = d2v/dist\\n    costh = np.dot(d,d2v)\\n    costh = np.clip(costh,-1.,1.)\\n    dcs = KN(E,costh)\\n    E_out = c_E(E,costh)\\n    # solid angle of scoring volume\\n    cosv = abs(d2v[2])\\n    proj = np.pi*Rc**2*max(cosv,0.01)\\n    solid = proj/(dist**2)\\n    # check ray hits scoring volume\\n    it = intersect_cyl(sp,d2v,Rc,zlo,zhi)\\n    if it is None: continue\\n    te, tx = it\\n    if te<0: te=0\\n    pv = tx-te\\n    if pv<=0: continue\\n    mu_out = mu_t(E_out)\\n    att_v = np.exp(-mu_out*te)\\n    p_int_v = 1.0-np.exp(-mu_out*pv)\\n    w = ne*dcs*solid*att_v*p_int_v/pdf_scat\\n    st += w\\n    mt = mu_c(E_out)+mu_ph(E_out)+mu_pp(E_out)+mu_rl(E_out)\\n    sb['compton'] += w*mu_c(E_out)/mt\\n    sb['photoelectric'] += w*mu_ph(E_out)/mt\\n    sb['pair'] += w*mu_pp(E_out)/mt\\n    sb['rayleigh'] += w*mu_rl(E_out)/mt\\nst /= NMC\\nfor k in sb: sb[k] /= NMC\\nprint(f\\\"SCATTER: {st:.8f}\\\", file=sys.stderr)\\nfor k,v in sb.items(): print(f\\\"  {k}: {v:.10f}\\\", file=sys.stderr)\\n\\ntotal = pt+st\\nfrac_s = st/total\\nprint(f\\\"Total: {total:.8f}, scatter fraction: {frac_s:.4f}\\\", file=sys.stderr)\\n\\n# ===== GENERATE 200 EVENTS =====\\nn_prim = int(round(200*pt/total))\\nn_scat = 200 - n_prim\\nprint(f\\\"Generating {n_prim} primary + {n_scat} scatter events\\\", file=sys.stderr)\\n\\nevents = []\\n\\n# Primary events\\ngen = 0; atts = 0; max_a = 5000000\\nwhile gen < n_prim and atts < max_a:\\n    atts += 1\\n    E,d,x,y = src_samp()\\n    dz = d[2]\\n    if dz<=0: continue\\n    x_ep = x*(SSD+zlo)/SSD\\n    y_ep = y*(SSD+zlo)/SSD\\n    if np.sqrt(x_ep**2+y_ep**2)>Rc: continue\\n    path = 0.2/dz\\n    muE = mu_t(E)\\n    t_sc = (zlo-zs)/dz\\n    att = np.exp(-muE*t_sc)\\n    p_int = 1.0-np.exp(-muE*path)\\n    # accept/reject\\n    max_p = np.exp(-0.064*5.0)*(1.0-np.exp(-0.064*0.2))\\n    if np.random.random()*max_p*1.5 > att*p_int: continue\\n    \\n    proc = sample_proc(E)\\n    if proc == 'compton':\\n        Eo,ct,te,ce = sample_KN(E)\\n        events.append({'process':'compton','e_in_MeV':E,'e_out_MeV':Eo,'cos_scatter':ct,'t_e_MeV':te,'cos_electron':ce,'t_positron_MeV':None})\\n        gen += 1\\n    elif proc == 'photoelectric':\\n        ce = np.random.uniform(0.7,1.0)\\n        events.append({'process':'photoelectric','e_in_MeV':E,'e_out_MeV':None,'cos_Scatter':None,'t_e_MeV':E,'cos_electron':ce,'t_positron_MeV':None})\\n        gen += 1\\n    elif proc == 'pair':\\n        tk = E - 2.0*m_e\\n        if tk > 0:\\n            te = np.random.uniform(0.,tk)\\n            tp = tk - te\\n            ce = np.random.uniform(0.9,1.0)\\n            events.append({'process':'pair','e_inMeV':E,'e_out_MeV':None,'cos_scatter':None,'t_e_MeV':te,'cos_electron':ce,'t_positron_MeV':tp})\\n            gen += 1\\n\\nprint(\\\"Ended\\\", file=sys.stderr)\\n\\\"\\\"\\\"\\nexec(code)\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "OK, I need to write the complete Python script and execute it as a single file. Let me write it to a file first, then run it.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 81451,
+  "completion_tokens": 2987,
+  "total_tokens": 84438,
+  "cost": 0.002584294636,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 73728,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.002584294636,
+   "upstream_inference_prompt_cost": 0.002041496996,
+   "upstream_inference_completions_cost": 0.00054279764
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 31,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

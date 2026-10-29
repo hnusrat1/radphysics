@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791825794-TGA1pAnylH2tZHuV4yZ8",
+ "object": "chat.completion",
+ "created": 1791825794,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "The Python state doesn't persist between calls, so I'll write the full code to a module file and import it.",
+    "refusal": null,
+    "reasoning": "Since variables don't persist between calls but files do, I should write all my definitions into a single module file and import it in each subsequent call instead of relying on in-memory state.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_016JDNHtkyHPnJoypYyR4jg6",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\ncode = r'''\\nimport numpy as np, time\\nme=0.51099895; re=2.8179403e-13; ne_w=3.3428e23\\nSF=110.25\\nlines=np.array([1.1732,1.3325])\\nEb=np.array([0,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1,1.05,1.1,1.15,1.2,1.25,1.3,1.35,1.4])\\ncb=np.array([-1,-0.8,-0.6,-0.4,-0.2,0,0.2,0.4,0.6,0.8,1.0])\\nebE=np.array([0.01,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1,1.05,1.1,1.15,1.2,1.4])\\ndef KN_sigma(E):\\n    k=E/me\\n    t1=(1+k)/k**2*(2*(1+k)/(1+2*k)-np.log(1+2*k)/k)\\n    t2=np.log(1+2*k)/(2*k)\\n    t3=-(1+3*k)/(1+2*k)**2\\n    return 2*np.pi*re**2*(t1+t2+t3)\\ndef dsig(E,c):\\n    k=E/me; eps=1/(1+k*(1-c))\\n    return 0.5*re**2*eps**2*(eps+1/eps-(1-c**2))\\ndef muC(E): return ne_w*KN_sigma(E)\\ndef mupe(E): return 0.0028*(0.1/np.maximum(E,1e-4))**3\\ndef mupair(E): return np.where(E>1.022, 0.0151*np.clip(1-1.022/np.maximum(E,1e-3),0,None)**3,0.0)\\ndef muR(E): return 0.0053*(0.1/np.maximum(E,1e-4))**2\\ndef mutot(E): return muC(E)+mupe(E)+mupair(E)+muR(E)\\nneg_w=6.02214e23*0.55509\\nneg_a=6.02214e23*0.49919\\nIw=75e-6; Ia=85.7e-6\\ndef rad_S(T, X0=36.08):\\n    f=np.minimum(0.31*np.maximum(T,1e-4)**0.3,1.0)\\n    return (T+me)/X0*f\\ndef Scol_bethe(T, I, neg):\\n    tau=T/me; b2=tau*(tau+2)/(tau+1)**2\\n    Kc=2*np.pi*re**2*me*neg\\n    F=1-b2+(tau**2/8-(2*tau+1)*np.log(2))/(tau+1)**2\\n    return Kc/b2*(np.log(tau**2*(tau+2)/(2*(I/me)**2))+F)\\nTg=np.logspace(-3,np.log10(1.5),600)\\ndef Sratio(T): return rad_S(T)/(rad_S(T)+Scol_bethe(T,Iw,neg_w))\\ngT=np.zeros_like(Tg)\\nfor i,T in enumerate(Tg):\\n    x=np.logspace(-4,np.log10(T),400)\\n    gT[i]=np.trapezoid(Sratio(x),x)/T\\ndef g_of_T(T): return np.interp(np.log(np.maximum(T,1e-3)),np.log(Tg),gT)\\nxg,wg=np.polynomial.legendre.leggauss(300)\\ndef KN_table(E):\\n    k=E/me; eps=1/(1+k*(1-xg))\\n    f=0.5*re**2*eps**2*(eps+1/eps-(1-xg**2))\\n    T=E*(1-eps)\\n    s=2*np.pi*np.sum(wg*f)\\n    Tm=np.sum(wg*f*T)/np.sum(wg*f)\\n    TgT=np.sum(wg*f*T*(1-g_of_T(T)))/np.sum(wg*f)\\n    return s,Tm,TgT\\nEtab=np.logspace(-3,np.log10(1.5),400)\\ntab=np.array([KN_table(E) for E in Etab])\\ndef interpE(arr,E): return np.interp(np.log(np.maximum(E,1e-3)),np.log(Etab),arr)\\ndef Tmean(E): return interpE(tab[:,1],E)\\ndef TgT(E): return interpE(tab[:,2],E)\\n# energy transfer coefficients (ratio, cm^-1) for photon energy E\\ndef ET(E):  # energy transferred to charged particles coefficient\\n    return muC(E)*Tmean(E)+mupe(E)*E+mupair(E)*(E-2*me)\\ndef KC(E):  # collisional part\\n    return muC(E)*TgT(E)+mupe(E)*E+mupair(E)*(E-2*me)\\ndef sample_KN(E, rng):\\n    \\\"\\\"\\\"returns eps=E'/E and cos of scattering angle, vectorized rejection\\\"\\\"\\\"\\n    n=E.size; eps=np.empty(n); cc=np.empty(n)\\n    idx=np.arange(n)\\n    while idx.size>0:\\n        c=2*rng.random(idx.size)-1\\n        k=E[idx]/me\\n        e=1/(1+k*(1-c))\\n        f=e**2*(e+1/e-(1-c**2))\\n        acc=rng.random(idx.size)*2.0 < f\\n        a=idx[acc]\\n        eps[a]=e[acc]; cc[a]=c[acc]\\n        idx=idx[~acc]\\n    return eps,cc\\ndef rotate(d,c,phi):\\n    # d: (n,3) unit; c,phi arrays\\n    n=d.shape[0]\\n    a=np.zeros_like(d); \\n    mask=np.abs(d[:,0])<0.9\\n    a[mask,0]=1; a[~mask,1]=1\\n    e1=np.cross(d,a); e1/=np.linalg.norm(e1,axis=1)[:,None]\\n    e2=np.cross(d,e1)\\n    s=np.sqrt(np.clip(1-c**2,0,None))\\n    return c[:,None]*d+s[:,None]*(np.cos(phi)[:,None]*e1+np.sin(phi)[:,None]*e2)\\ndef isotropic(n,rng):\\n    z=2*rng.random(n)-1; ph=2*np.pi*rng.random(n); s=np.sqrt(1-z*z)\\n    return np.stack([s*np.cos(ph),s*np.sin(ph),z],axis=1)\\n'''\\nopen('/tmp/work/physics.py','w').write(code)\\nimport sys; sys.path.insert(0,'/tmp/work')\\nimport physics as P\\nimport numpy as np\\nprint(P.KN_table(1.1732), P.KN_sigma(1.1732), P.gT[-1], P.g_of_T(np.array([0.1,0.5,1.0])))\\nprint(P.ET(1.1732)/P.mutot(1.1732), P.KC(1.1732)/P.ET(1.1732))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Since variables don't persist between calls but files do, I should write all my definitions into a single module file and import it in each subsequent call instead of relying on in-memory state.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSkAgKEAgSGAI4AUIIdGhpbmtpbmcSDLSn7UOyJBc+atemlxoMaAHvaIie+KPOfWr2IjBBAaL1es+NVI4gYMurxCcOwHnUl4rP+w4yAOc6j+Wyzu/TZbvBvyRdPkDnv7UesusqrQffzStKnmuP5MR8xBwWe5AlmPOTo0uQXnMa73gpfew/WzE7mKeRQf04Oy7zi3tee6eb5kYWnI9QV8WvkZDajD/6M/a8V6A66z14eBtn2trE7ZbQV8EnIWbZLzxZjdcmiSH3Ig9fD3nFZff5mu8YSC0GuKokGjJzvqZo57UHsSqSPmbh5nbbaMNWvo45TtVh3G/zWmZTg+3kkjfFSCk6g9Uc2YpzOgcpT4ZqDasMimYmbfY3WN2vQBxUcYHc93OMQYdiQKxrx8P0Y41FskJx/1c5AzptNhucNrpcidf8DaQ905jMI0tunt7L4gXaxY9EhXkJFtTQvnruDw4kWZk/pIgDCrxdRYuUmH6BPpxz3eEmPzLvUdTIqWsyoUuRZuruE0KC+h2dd+gCI6tqYwzCr8viw9owlKV3yS1AQ3rQhcrzZ64m5kC3RvYzCngEIatBNDfGo03Ivdy/FcNFL7vBmaz7qN9WhmpntAiwjRg9ODJg2kur2HQPgmt5wWbiheBuCHRvWv2LHvV2slLza89m47zmJLqhz4CmNUBx30Ud8DRfDCsyaF40sMYXODtYRNpwHZ065TiVcNY4guefA8uE7WEWHm3PQKmcu/WxBeVAXpKiDspjSTco5gq7ECYMWidmnpfj7dIWnEX3fyYRGifz6Y5wFvrfMOwWvwSSCuu7boYy/wXzEfvyao/zqbIaj10kqKivRw9mIpps06Q0HNTUuQkhhtSDj5y+7w5flpNftjr08bjxayy9f4UzplXwCTD2o6Xu7q66yKckVRrZibxuoRuCvJsbEH7UlRULmVTCy9+2tT6yMWIPWiqLNumGr1sRMFDO1pEpYx8yZTmsSEIYaSZ0FoqaTVRJ1/oYgKHkHZ56Chrt+rOZ5AL6PzR5rRFnxrERHz56MKIM0+jzO5HlRe2PYKCTJjKQpSNnT470cUThTEZd4TAt89P+K/tU4kawQeSSkgn8y22UjhlSId4vzdFAuos43cFh2a/kJz3AVM/aXJwcGRkQns0A/UUOpzPCYOh+G4YOu3+ToHgCoyqGIQEmeQYNtmyXRyp/VHMO/TmbxEBdITvxiBoTNQe57NXs4hrFyCB4EnICIz6jSefhMMehgY0Cd2KI40qvyNSsL/beLwXh09S1j7Bkgdl8yClRRvvw5dQccBxM+8yBPDQHBJQEUS8l/GJEgr2u1+jzA963wN+gOf92eOpnA358RMKWFuLedYwjaY1nn1rXEGCdzvivnaa/CbcSMeKxwTNYtRgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 100914,
+  "completion_tokens": 2581,
+  "total_tokens": 103495,
+  "cost": 0.012064325,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 99929,
+   "cache_write_tokens": 983,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.012064325,
+   "upstream_inference_prompt_cost": 0.005611825,
+   "upstream_inference_completions_cost": 0.0064525
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 76,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791826838-t4kHGTOHJk765JCNyVD7",
+ "object": "chat.completion",
+ "created": 1791826838,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "Interpolation matches the direct calculation and the run is fast now. Next, a 1e6-photon run with the main cylinder at 5 cm and a second cylinder at 0.5 cm depth for the PDD ratio.",
+    "refusal": null,
+    "reasoning": "About 37% of photons end up scattered versus primary based on the luminosity split I'm seeing. At roughly 100 seconds per 1e6 photons, I could run 2e6 photons in one go or split across processes for speed.\n\nI'll run two batches of 1e6 to stay under the time limit, combining results afterward, and need to make sure electron event storage won't balloon in size\u2014probably around 5000 entries per segment, which is manageable. For depth dose I'll focus on cylinders at z=100.5 and z=105, verifying the 100.5 cylinder's edge sits just inside the surface at z=100. I'm setting up the run with these two cylinder positions, cosine edges, and photon energy bins, then saving everything to an npz file.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_013CXRCk6JQVuk2A9HKkUMnY",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport sys; sys.path.insert(0,'/tmp/work')\\nimport mc as MC, mut, numpy as np, time, pickle\\ncos_edges=np.array([-1,-0.8,-0.6,-0.4,-0.2,0,0.2,0.4,0.6,0.8,1.0])\\nEph=np.arange(0,1.4001,0.05)\\nt0=time.time()\\nres=[]\\nfor s in range(4):\\n    res.append(MC.run(250000,100+s,mut.mu_fun,[105.0,100.5],Eph,cos_edges))\\nprint('time',time.time()-t0)\\npickle.dump(res,open('/tmp/work/res1.pkl','wb'))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "About 37% of photons end up scattered versus primary based on the luminosity split I'm seeing. At roughly 100 seconds per 1e6 photons, I could run 2e6 photons in one go or split across processes for speed.\n\nI'll run two batches of 1e6 to stay under the time limit, combining results afterward, and need to make sure electron event storage won't balloon in size\u2014probably around 5000 entries per segment, which is manageable. For depth dose I'll focus on cylinders at z=100.5 and z=105, verifying the 100.5 cylinder's edge sits just inside the surface at z=100. I'm setting up the run with these two cylinder positions, cosine edges, and photon energy bins, then saving everything to an npz file.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "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.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 94221,
+  "completion_tokens": 791,
+  "total_tokens": 95012,
+  "cost": 0.00159779,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 91959,
+   "cache_write_tokens": 2260,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00159779,
+   "upstream_inference_prompt_cost": 0.00120229,
+   "upstream_inference_completions_cost": 0.0003955
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 441,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

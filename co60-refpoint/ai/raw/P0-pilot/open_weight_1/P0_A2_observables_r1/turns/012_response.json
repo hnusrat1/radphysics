@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791826599-E8IPH9T5txgpAECxW1si",
+ "object": "chat.completion",
+ "created": 1791826599,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I'm having persistent issues with the tool calls. Let me try a very simple approach - maybe the issue is with special characters in the code.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_d3de49da227941f092b7c01f",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nprint(\\\"test1\\\")\\n# Load data\\nxcom_data = np.loadtxt('/tmp/data/xcom_water.txt')\\nprint(\\\"test2\\\")\\nprint(xcom_data.shape)\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I'm having persistent issues with the tool calls. Let me try a very simple approach - maybe the issue is with special characters in the code.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 21247,
+  "completion_tokens": 112,
+  "total_tokens": 21359,
+  "cost": 0.000759934868,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 16384,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000759934868,
+   "upstream_inference_prompt_cost": 0.000739582228,
+   "upstream_inference_completions_cost": 2.035264e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 29,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

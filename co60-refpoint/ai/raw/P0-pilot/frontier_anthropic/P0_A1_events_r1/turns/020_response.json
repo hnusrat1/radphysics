@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791815585-ziDmJa01DlGCQHEDBF2D",
+ "object": "chat.completion",
+ "created": 1791815585,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I need to piece together the full 200-event sequence from the chunks I printed earlier, making sure the 4-sig-figure version lines up correctly across the different offset ranges I viewed.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01SxGp7ZLhJMaeNpkLd83ynT",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nprint(s[16900:28200])\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I need to piece together the full 200-event sequence from the chunks I printed earlier, making sure the 4-sig-figure version lines up correctly across the different offset ranges I viewed.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSugsKEAgSGAI4AUIIdGhpbmtpbmcSDPtlu7nTEf5cqx2zORoM2OHdetCAj44u3n2KIjDBuGkz0vEEiOSWq6GlhKpLCDCZCscGPVIUVU2JWrSdagwsVw6Wze5Wb6RjHmgZLKQq1wppsw4TcZl0GOunxlqicsNMfNDDMFpCXG4Ul1/OQs6cHz01e6LlwKJYYw0fDDMyWOm76rp+88mh7lWTbTlcBz+Wjnv7gjAfIIfaO4U4tMDMFXCN80c96CG0xE8Um6fME5ePt4+2VIYD13C70S+dwGwYboryAf3ztLLNXh3LqZBa/c5Z7YX/XC2BXtCbxYwGhPeSPL2g42BfSBphOB4NrauAzOVTBtxADSNuog2IkZz24B5rr+pQcW4m/vkRGlaWr2gGckchmYQRTUFuYq/Ss6wzcclscN7f/EKca+W4PwIHBvFg1ULD45UvcZFWrWyjb9lmtQ30E4p89gHUgbwgLxzoIieeW+luK4yzvJgIu6sbT8og2pdRt1HCWbIcY8ZYtI/xV+nHQpcAuPhRYS62RqaX6CjcaLU8QHnipeplDyJOyJ0dWhtv6fh6e5pzMkCiEDvbrajtyQ4MD+UUdXQaeBVDKzJLKO3BNgChlYk1pol1g0Sp/iE3fIz+a/EtWhgchmTG5MWF0PucFoYZUzGfw/363lpIrq3pZQ3hrif5xb7Kkn+b+y1H7OOV1KB6TyLCEUNvpZqJJz+M0KveT1SLZMW5Li2n950cBl9Ce+TcnrZPmjcmocIH1yE10zRuVCXK71Aer1vwr9M6TQKnvKxIrLT4r/dvsVJnzKVH2a806KAvgZoVVPGEsz38aNVHOPt7znoHTuzY305yN6fD/NyhPWBzO4CdQVSJ9Ivf810K5hAS/GIXnLnuGspOc5iWkC7XzRMZTjFrOIPwzrJCHi1DhYWvAG4qJk16qfVlHVwYqxVhTKs4V1CUVMY8LpZc+xnVHVMWcbRPxY2Bok046AfLYPLpIUHWbFZFxPBxtj8zH3ncncwmSFMKz8F5Iro9QObhxvC3Yqz5YM245W/NCGTCPqnezi4LAd8/Wi5fvSVPx/W8/W2owq1enTpcDD3LDQXfLdANjz+9c+AbLJ6pou6yQ/k9OOHvG52cpI9MpGhkbAvcJIsf8EqWyynFyULZWd3zhdNK+lBMyNuHGXs8ytt0aQQM78Wq4xVcYsgI8kRVh1sxL96fIBZms+Hc6MPS5T3MryZCSBxg6tHC2qcJin4rCKtxcwSJkXYup7PmrNQ6vVkP5gr6DjmzgcvsTQO/WyXtLbQWBGvFY8iK3ydQedJ/KelAAYS2Iq0gjT9LA4/QYyy7xxZhiqGwfDxKyhEVbiHNR8IW23RftdVtAKENoc+fQFcPOYuIUPG7PI2fwobJINW9Pbb/Oa1ZgFEIBm+LGid3AYAR2MnByGhFNhyV7Auo6Vn9AIbC55hxInpcRj5dXc6SI41xlYdpTonpCPWiv6h8jnQfOT7p8fiedlLfKJcJ3vIm3GOC/IxD+h4JNgYvfKwvJ5NOooDozYZ1MW8pvQSJLHGxoyYBEahLv2jyGe4Pgk4WtdbJm5+Epslk7bwrx87Gswh/QHaLapD//6pPf+CyMljmLX5PgVk38HvbkGw75OmhjI1EuVLm045os59AfhoO3zpSSo5MZDF0dAtcOL9D5zjEcvKnfw2vQO/TOFI+ogGnXQSgvEs7PWmaxQwuYc1U3wuKb+MoupaQAjjKOUv4ri+AQ/5I0MFOa+rAsxhAtdtsvlD9g2MsRNhgj8e44GCOo4rGyk3SsE5qpdqtgELB+FY6avJaLOeFAolZC4dV7Z1W1+lbsrsG69SlFX5k0/tJXZeoT7WFquQpc9k2BDPd4oHS6krxsjj6w5bwAQtwCI4DzFFhdUJXOAvEq57Iw6EXbJ8ctkceb3BCNT7Q/BKUUwGDk7ez+qEm9cBZeHFIAyhxGwwHcSEb2RgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 82725,
+  "completion_tokens": 330,
+  "total_tokens": 83055,
+  "cost": 0.0084375,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0084375,
+   "upstream_inference_prompt_cost": 0.0082725,
+   "upstream_inference_completions_cost": 0.000165
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 273,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

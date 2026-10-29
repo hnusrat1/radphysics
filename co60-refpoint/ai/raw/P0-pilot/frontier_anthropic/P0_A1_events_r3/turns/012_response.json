@@ -1,0 +1,57 @@
+{
+ "id": "gen-1791816241-0rc8OVnOpQl5pzW3G6tZ",
+ "object": "chat.completion",
+ "created": 1791816241,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01FNoRDguqdeCjKbbwFURVUw",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport numpy as np, pickle\\nev=pickle.load(open('events_6000000.pkl','rb'))\\nrng2=np.random.default_rng(2024)\\nidx=rng2.choice(len(ev),200,replace=False)\\nrows=[]\\nfor i in idx:\\n    proc,ein,eout,cs,te,ce,tp=ev[i]\\n    f=lambda x: 'null' if x is None else f\\\"{x:.4g}\\\"\\n    rows.append(f'[\\\"{proc}\\\",{ein:.4g},{f(eout)},{f(cs)},{te:.4g},{f(ce)},{f(tp)}]')\\nprint(\\\"\\\\n\\\".join(rows[70:140]))\\n\"}"
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 47245,
+  "completion_tokens": 266,
+  "total_tokens": 47511,
+  "cost": 0.0048575,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0048575,
+   "upstream_inference_prompt_cost": 0.0047245,
+   "upstream_inference_completions_cost": 0.000133
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 0,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

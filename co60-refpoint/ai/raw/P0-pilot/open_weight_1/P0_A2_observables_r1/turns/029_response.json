@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791826865-NmjMLo23nqk37NK8eZ7x",
+ "object": "chat.completion",
+ "created": 1791826865,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I'm having persistent issues with encoding/long code blocks. Let me try a very clean, minimal approach. Let me write a script to a file first.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_6b8f2f651beb49b29220f654",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nx = np.loadtxt('/tmp/data/xcom_water.txt')\\nprint(\\\"loaded xcom, shape:\\\", x.shape)\\ny = np.loadtxt('/tmp/data/estar_water.txt')\\nprint(\\\"loaded estar, shape:\\\", y.shape)\\nprint(\\\"First energy in xcom:\\\", x[0,0])\\nprint(\\\"Last energy in xcom:\\\", x[-1,0])\\nprint(\\\"First energy in estar:\\\", y[0,0])\\nprint(\\\"Last energy in estar:\\\", y[-1,0])\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I'm having persistent issues with encoding/long code blocks. Let me try a very clean, minimal approach. Let me write a script to a file first.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 49158,
+  "completion_tokens": 183,
+  "total_tokens": 49341,
+  "cost": 0.001820180208,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 36864,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001820180208,
+   "upstream_inference_prompt_cost": 0.001786925448,
+   "upstream_inference_completions_cost": 3.325476e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 32,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

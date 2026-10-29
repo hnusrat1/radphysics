@@ -1,0 +1,55 @@
+{
+ "id": "gen-1791825352-8tXOlE7bPIuIvhawTHmC",
+ "object": "chat.completion",
+ "created": 1791825352,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "stop",
+   "native_finish_reason": "end_turn",
+   "message": {
+    "role": "assistant",
+    "content": "The previous reply gave the primary photon spectrum as 16 values; the schema needs 28, one per photon energy bin. The corrected list keeps the same values, with zeros outside the two photon lines (bins 23 and 26).\n\n```json\n{\n \"method\": \"Photon track-length Monte Carlo (12e6 histories, 50/50 Co-60 lines) through the 30 cm water cube with Klein-Nishina Compton (no binding/S(q)), approximate photoelectric (E^-3 scaling), pair (threshold-onset approximation, two 0.511 MeV annihilation photons) and small coherent term. Fluences, spectra, angles and interaction fractions are track-length tallies in the 1 cm radius, 0.2 cm thick cylinder at 5 cm depth (Phi0 = 1/(Omega r^2) at 105 cm). Compton electron sources from sampled KN kinematics, weighted by track length times interaction coefficient. Electron fluence from continuous slowing down with Bethe-Berger-Seltzer collision stopping power (I=75 eV water, 85.7 eV air), radiative yield ~0.0069 T, and iterated delta-ray production (Rossi-type spectrum). Dose = K_col (CPE, beta=1); K = K_col/(1-g). Spencer-Attix s_w,air uses restricted stopping powers (Delta=10 keV) with track-end term. PDD5 uses Kcol(5 cm)/Kcol(0.5 cm) at fixed Phi0. Electron angular L4 is an approximate blend (not transport). Estimated uncertainty: photon-level quantities a few %; electron-layer quantities roughly 10-20%.\",\n \"data_sources\": \"No internet or transport code: all cross sections are analytic/approximate. Klein-Nishina formula (free-electron, no binding) for water electron density 3.343e23 e/g (checked against NIST total mu/rho at 1.0 and 1.25 MeV from memory); photoelectric and coherent cross sections approximated by power-law scalings; pair cross section approximated near threshold. Electron collision stopping power: Berger-Seltzer Bethe formula without density-effect correction (agrees with ESTAR water collision 4.115 MeV cm2/g at 0.1 MeV; ~1% high at 1 MeV). Radiative yield approximated as 0.0069*T (MeV). Air: Z/A=0.49919, I=85.7 eV. No ESTAR/XCOM tables were actually read; values are reconstructed approximations.\",\n \"L1_primary_fluence_per_phi0\": 0.7289,\n \"L1_total_fluence_per_phi0\": 1.1824,\n \"L1_scattered_fraction_fluence\": 0.3836,\n \"L1_scattered_fraction_energy_fluence\": 0.1824,\n \"L1_mean_photon_energy_MeV\": 0.9449,\n \"L1_photon_fluence_spectrum_primary\": [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.36187,0,0,0.36699,0],\n \"L1_photon_fluence_spectrum_scattered\": [0.022869,0.045392,0.041932,0.034236,0.042938,0.028290,0.020860,0.017250,0.014946,0.014515,0.015637,0.013295,0.013045,0.012798,0.011912,0.011501,0.011381,0.011161,0.010393,0.010076,0.010436,0.010234,0.009736,0.006812,0.004402,0.004466,0.003079,0.0],\n \"L1_angular_primary\": [0,0,0,0,0,0,0,0,0,1],\n \"L1_angular_scattered\": [0.07789,0.07254,0.06750,0.06612,0.06671,0.07367,0.08372,0.10817,0.14886,0.23483],\n \"L2_interaction_fractions\": {\"compton\": 0.9877, \"photoelectric\": 0.003645, \"pair\": 0.001846, \"rayleigh\": 0.006789},\n \"L2_energy_transfer_fractions\": {\"compton\": 0.99799, \"photoelectric\": 0.000464, \"pair\": 0.001550, \"rayleigh\": 0.0},\n \"L2_interaction_fractions_primary\": {\"compton\": 0.99587, \"photoelectric\": 0.0000035, \"pair\": 0.003934, \"rayleigh\": 0.000193},\n \"L2_interaction_fractions_scattered\": {\"compton\": 0.98082, \"photoelectric\": 0.006730, \"pair\": 0.0000783, \"rayleigh\": 0.012376},\n \"L2_scattered_share_of_interactions\": 0.5414,\n \"L3_initial_spectrum\": [0.20005,0.11135,0.06784,0.05516,0.04317,0.03847,0.03485,0.03243,0.03033,0.02956,0.02775,0.02702,0.02723,0.02708,0.02774,0.02874,0.03118,0.03557,0.04390,0.02552,0.01924,0.02471,0.01110,0.0000012,0.0000008],\n \"L3_initial_spectrum_parent_primary\": [0.03455,0.04348,0.04167,0.04818,0.04105,0.04012,0.03969,0.03948,0.03882,0.03943,0.03875,0.03921,0.04117,0.04209,0.04436,0.04750,0.05303,0.06224,0.07882,0.04590,0.03457,0.04532,0.02056,0.0000021,0.0000015],\n \"L3_mean_initial_energy_MeV\": 0.3338,\n \"L3_mean_initial_energy_parent_primary_MeV\": 0.5848,\n \"L3_initial_direction\": [0.04846,0.04561,0.04609,0.04637,0.04748,0.05802,0.08045,0.10945,0.15922,0.35884],\n \"L4_electron_fluence_per_phi0\": 0.01284,\n \"L4_electron_fluence_spectrum\": [0.000488,0.000734,0.000825,0.000871,0.000890,0.000888,0.000871,0.000844,0.000810,0.000769,0.000725,0.000678,0.000628,0.000575,0.000518,0.000458,0.000395,0.000321,0.000232,0.000152,0.000105,0.0000514,0.0000111,0.0000000036,0.0000000049],\n \"L4_delta_fraction\": 0.0311,\n \"L4_mean_electron_energy_MeV\": 0.4286,\n \"L4_angular\": [0.08454,0.08368,0.08383,0.08391,0.08424,0.08741,0.09413,0.10284,0.11777,0.17765],\n \"L4_radiative_to_collision\": 0.00229,\n \"L5_D_over_phi0_Gy_cm2\": 5.360e-12,\n \"L5_K_over_phi0_Gy_cm2\": 5.370e-12,\n \"L5_Kcol_over_phi0_Gy_cm2\": 5.360e-12,\n \"L5_beta\": 1.00,\n \"L5_g\": 0.00198,\n \"L5_dose_fraction_parent_scattered\": 0.190,\n \"L5_s_w_air\": 1.134,\n \"L5_PDD5_percent\": 80.5\n}\n```",
+    "refusal": null,
+    "reasoning": "I need the full 28-bin primary spectrum: zeros from bin 0 through 22, then bin 23 at 0.36187, zeros at 24 and 25, bin 26 at 0.36699, and a final zero at bin 27. Now I'm starting to reconstruct the scattered list from before.\n\nVerifying the scattered list totals 28 values matching the earlier count, then checking the L3 initial spectrum has exactly 25 entries, and confirming the parent primary spectrum also has 25 values lining up correctly. Now I'm working through the L4 spectrum values one by one.\n\n",
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I need the full 28-bin primary spectrum: zeros from bin 0 through 22, then bin 23 at 0.36187, zeros at 24 and 25, bin 26 at 0.36699, and a final zero at bin 27. Now I'm starting to reconstruct the scattered list from before.\n\nVerifying the scattered list totals 28 values matching the earlier count, then checking the L3 initial spectrum has exactly 25 entries, and confirming the parent primary spectrum also has 25 values lining up correctly. Now I'm working through the L4 spectrum values one by one.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "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.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 120522,
+  "completion_tokens": 3438,
+  "total_tokens": 123960,
+  "cost": 0.01890205,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 113076,
+   "cache_write_tokens": 7442,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.01890205,
+   "upstream_inference_prompt_cost": 0.01030705,
+   "upstream_inference_completions_cost": 0.008595
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 933,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

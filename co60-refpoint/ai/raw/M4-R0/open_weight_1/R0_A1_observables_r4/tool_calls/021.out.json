@@ -1,0 +1,9 @@
+{
+ "stdout": "",
+ "stderr": "Traceback (most recent call last):\n  File \"/tmp/work/_call_021.py\", line 52, in <module>\n    f_etr=etr_fractions(sp_p+sp_s)\n  File \"/tmp/work/_call_021.py\", line 42, in etr_fractions\n    ec=sum((sp[i]*mu_comp(Ecb)*comp_etr(Ecb) for i,Ecb in enumerate(Ec)))\n  File \"/tmp/work/_call_021.py\", line 42, in <genexpr>\n    ec=sum((sp[i]*mu_comp(Ecb)*comp_etr(Ecb) for i,Ecb in enumerate(Ec)))\n                               ~~~~~~~~^^^^^\n  File \"/tmp/work/_call_021.py\", line 32, in comp_etr\n    return np.trapz(d*t,muq)/np.trapz(d,muq)\n           ^^^^^^^^\n  File \"/opt/venv/lib/python3.13/site-packages/numpy/__init__.py\", line 769, in __getattr__\n    raise AttributeError(f\"module {__name__!r} has no attribute {attr!r}\")\nAttributeError: module 'numpy' has no attribute 'trapz'. Did you mean: 'trace'?\n",
+ "exit_code": 1,
+ "timed_out": false,
+ "wall_s": 0.57,
+ "stdout_truncated": false,
+ "stderr_truncated": false
+}

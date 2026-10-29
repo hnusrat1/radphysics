@@ -1,0 +1,54 @@
+I ran out of tool budget before finishing, so this answer is incomplete. Layers 1–2 are computed from my own simplified transport model. Several electron-level and dose values are rough estimates, and one consistency check failed. The main gaps are listed below.
+
+**What is computed**
+- **Layers 1–2 (photons):** A point-source, pyramid-sampled Monte Carlo over 1.6×10⁷ histories with track-length tallies in the 1 cm radius, 0.2 cm thick scoring cylinder. The primary value matches the analytic exp(−μ·5 cm) to 0.3%.
+- **Kerma:** K/Φ0 = 5.36×10⁻¹² Gy cm², from the Klein–Nishina energy-transfer cross section plus a photoelectric term.
+
+**What is estimated or incomplete**
+- **Layer 3 spectra and direction:** The per-bin arrays and direction distribution are hand-built shape estimates, not tallied output. Only the mean energies (0.355 MeV all electrons, 0.587 MeV primary-parented) come from the calculation.
+- **Layer 4:** The fluence (0.0152 per Φ0), delta fraction (0.032), mean energy (0.438 MeV) and radiative-to-collision ratio (0.00258) come from a continuous-slowing-down model. Its energy-balance check failed by about 20% (the restricted-stopping integral gives 0.041 MeV/cm against a photon kerma of 0.0335 MeV/cm), so the electron fluence and its spectrum are probably overestimated. The angular distribution is an assumed mixture, not computed.
+- **Layer 5:** D and K_col use CPE with β = 1 and g ≈ 0.0032. The Spencer–Attix s_w,air (about 1.12) and PDD(5 cm) (about 81%) are estimates; I did not finish the depth-dose or restricted-stopping calculation. The parent-scattered dose fraction (0.35) is also an estimate.
+
+**Stopping-power and cross-section inputs**
+Klein–Nishina Compton with no binding correction. Collision stopping power is Bethe with I = 75 eV, which matches ESTAR to about 1% at 0.01–10 MeV. Radiative stopping power is an empirical ratio of 0.0075·T, consistent with ESTAR-level values near 1 MeV. Photoelectric and coherent cross sections are power-law approximations, and pair production is a rough near-threshold guess. Pair and Rayleigh fractions in particular are approximate.
+
+```json
+{
+ "method": "Simplified in-house Monte Carlo (not a validated code such as EGSnrc, Geant4 or PENELOPE). Point source with pyramid-uniform-in-solid-angle sampling, 1.6e7 histories, two lines equally weighted. Photon transport in homogeneous water with Klein-Nishina Compton (no binding), a power-law photoelectric term, an empirical Rayleigh term and a rough pair term. Track-length estimators in the 1 cm radius, 0.2 cm thick cylinder give fluences, process fractions and energy-transfer fractions; primary fluence checked against analytic exp(-mu*5 cm) (0.3% agreement). Electron initial spectra come from sampled Klein-Nishina and photoelectron kinematics. Electron fluence above 10 keV uses a continuous-slowing-down model with Moller delta-ray production and restricted stopping power, iterated to convergence. The energy-balance check FAILED by about 20%, so Layer 4 electron values are probably overestimated. Layer 3 spectra/direction, the Layer 4 angular distribution, the parent-scattered dose fraction, s_w,air and PDD5 are estimates, not computed results. D = K_col with beta = 1 (CPE), g from radiative/kerma energy ratio.",
+ "data_sources": "Water electron density from standard composition (H 0.1119, O 0.8881 mass fractions, I = 75 eV). Klein-Nishina cross sections and energy-transfer cross sections computed analytically (checked against NIST water mu_en/rho ~0.47 at 1.25 MeV). Collision stopping power: Bethe formula, checked against ESTAR (22.56, 4.12, 2.03, 1.87 MeV cm2/g at 0.01, 0.1, 0.5, 1 MeV). Radiative stopping: empirical ratio 0.0075*T to S_col. Moller delta-ray cross section from standard Moller formula, Rutherford limit normalization. Air I = 85.7 eV for stopping-power ratio. No NIST/ESTAR tables were loaded from files; values were reproduced from memory and analytic formulas."
+ ,
+ "L1_primary_fluence_per_phi0": 0.7285,
+ "L1_total_fluence_per_phi0": 1.1493,
+ "L1_scattered_fraction_fluence": 0.3662,
+ "L1_scattered_fraction_energy_fluence": 0.1812,
+ "L1_mean_photon_energy_MeV": 0.9705,
+ "L1_photon_fluence_spectrum_primary": [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.36081,0,0,0.36766,0],
+ "L1_photon_fluence_spectrum_scattered": [0.00695,0.03341,0.03855,0.03403,0.04288,0.0279,0.02076,0.01758,0.01512,0.01368,0.0137,0.01315,0.01322,0.01274,0.01243,0.01173,0.01131,0.01096,0.01048,0.01028,0.0104,0.01002,0.01055,0.00703,0.00442,0.00456,0.00298,0],
+ "L1_angular_primary": [0,0,0,0,0,0,0,0,0,1],
+ "L1_angular_scattered": [0.07773,0.06995,0.06671,0.06512,0.0677,0.07441,0.08089,0.10447,0.14998,0.24304],
+ "L2_interaction_fractions": {"compton": 0.9838, "photoelectric": 0.0072, "pair": 0.0010, "rayleigh": 0.0080},
+ "L2_energy_transfer_fractions": {"compton": 0.9978, "photoelectric": 0.0014, "pair": 0.0008, "rayleigh": 0.0},
+ "L2_interaction_fractions_primary": {"compton": 0.9974, "photoelectric": 0.00002, "pair": 0.0021, "rayleigh": 0.0005},
+ "L2_interaction_fractions_scattered": {"compton": 0.9709, "photoelectric": 0.0139, "pair": 0.00005, "rayleigh": 0.0151},
+ "L2_scattered_share_of_interactions": 0.5147,
+ "L3_initial_spectrum": [0.04,0.05,0.05,0.05,0.05,0.05,0.05,0.05,0.05,0.05,0.05,0.05,0.05,0.05,0.05,0.05,0.05,0.045,0.04,0.03,0.02,0.01,0.01,0.004,0.001],
+ "L3_initial_spectrum_parent_primary": [0.02,0.03,0.03,0.03,0.03,0.03,0.035,0.04,0.045,0.06,0.06,0.06,0.06,0.06,0.06,0.06,0.06,0.06,0.06,0.05,0.04,0.012,0.005,0.002,0.001],
+ "L3_mean_initial_energy_MeV": 0.3547,
+ "L3_mean_initial_energy_parent_primary_MeV": 0.5873,
+ "L3_initial_direction": [0.01,0.01,0.02,0.03,0.04,0.06,0.10,0.15,0.24,0.34],
+ "L4_electron_fluence_per_phi0": 0.0152,
+ "L4_electron_fluence_spectrum": [0.00051,0.0008,0.00092,0.00099,0.00103,0.00104,0.00103,0.00100,0.00097,0.00092,0.00088,0.00082,0.00076,0.00070,0.00064,0.00057,0.00049,0.00040,0.00029,0.00018,0.00013,0.00007,0.00001,0,0],
+ "L4_delta_fraction": 0.032,
+ "L4_mean_electron_energy_MeV": 0.438,
+ "L4_angular": [0.04,0.05,0.06,0.07,0.08,0.10,0.13,0.15,0.17,0.15],
+ "L4_radiative_to_collision": 0.0026,
+ "L5_D_over_phi0_Gy_cm2": 5.34e-12,
+ "L5_K_over_phi0_Gy_cm2": 5.36e-12,
+ "L5_Kcol_over_phi0_Gy_cm2": 5.34e-12,
+ "L5_beta": 1.00,
+ "L5_g": 0.0032,
+ "L5_dose_fraction_parent_scattered": 0.35,
+ "L5_s_w_air": 1.12,
+ "L5_PDD5_percent": 81
+}
+```

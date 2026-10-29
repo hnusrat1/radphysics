@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791824476-TQVMUFQHfCL0rRsQKDqO",
+ "object": "chat.completion",
+ "created": 1791824476,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I notice my bremsstrahlung term got messy \u2014 let me redo it properly: S_BS should equal the constant Kc = 2\u03c0r_e\u00b2mc\u00b2n_e/\u03b2\u00b2, multiplied by (L+F), matching the Kc I verified in the J check. I need to recompute my S_BS function since it was set up incorrectly.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_015c54RtgpL8BjYH7cqfh8Sf",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\ndef S_BS(T,I=75e-6):\\n    tau=T/mc2; b2=beta2(T)\\n    L=np.log(tau**2*(tau+2)/(2*(I/mc2)**2))\\n    F=1-b2+(tau**2/8-(2*tau+1)*np.log(2))/(tau+1)**2\\n    return 2*np.pi*re**2*mc2*ne/b2*(L+F)\\nfor T in [0.1,0.5,1.0]:\\n    b2=beta2(T); Kc=2*np.pi*re**2*mc2*ne/b2\\n    print(T, Kc*J(T,75e-6,T/2), S_BS(T))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I notice my bremsstrahlung term got messy \u2014 let me redo it properly: S_BS should equal the constant Kc = 2\u03c0r_e\u00b2mc\u00b2n_e/\u03b2\u00b2, multiplied by (L+F), matching the Kc I verified in the J check. I need to recompute my S_BS function since it was set up incorrectly.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSuggKEAgSGAI4AUIIdGhpbmtpbmcSDNOaGedFhCkS3kAH/RoMCjlcEnKvhZZRik5oIjC3pyOxrgtIm8sxhTwBWfeZQfayKyOiNTTJx12WGR7ALZ21lXGfq2WfU1XI+fDhqmQq1wfnYvUNnOnYFuS0NjRIhdwWEpb5VBNRUSq9HkK4rMquDwIMwQXzJNrMp/kcR4xzbISenVsgzQZla5nWQTQP93/k0QfrTK/hN9G6SfrapVwHejkU4tFgKVbWFQwQgZlqeZTUT+lRo0+FBdtfKFuue/or8gOKu9O5FokJS+mhcRGeRPlcQtKWqFSHAPuXIMgRbkIJsWi1G+KCJZ+MtWslqcSotuPN6u/PzWQ27vIZ0kg96awkmg5XhFh6nQAe2ZqTBwa4cs1nlAngIu4k1PglpaUvcu87f4zBSasCfegY2EZRosQVbd9qM1ygIdKWHyUB/yrJ/CrKo7zRm7ELVGTyjViQHA4OcXoLZRWJM52GCLstwh3oEl08faPsHFx20zDcc4Hr4yA1Reu24AhKbIeV2BNlEDVflHJwWrDu/FbWTI5pH68rE4koWBXuB++DUg2mxjw4tIqspJs3AUNNj3XoNCa773E8dTaM2mCEbLkElhOrGIRrMl4zgwROj5jfLsVJdmDcYEYC5W49U50Y4mvIzLBjOwxCAXTEzl82LTXpKwDUzPfyCJm/azqr/ciRWvPuU3k8/ecjE2qxJwcIXDVHc0sNR6GH10wPzEHei+5ibswl8ke7yKA3lCPQM0526dp1sUWYkFFoRDmEZ3jRYh97bLQQ9NNCH7Q9UVr0f284JNhWqRlYfX+4Zu9Ge9X61/hUjx49GZJVhyNhG/DEmKrHe12pkd4pDD2Dreq1Dgt1JJsRWkaHFqiZrHDlxX06eRCKk34ICGqvYEYMdxJ7Wq93spg11ZWroIPTVOPk2ZD1l9Ua5ZDDqCR72yPmKfe3skEKkCG6zAZ7PnTRAJ85hPtd2P36iqDOwPkAyBZK6KqYUeheVvJZMPkqkvjgCKRQPARcHmkJP6NIwN34CjjYtagLLxcZZsdoKwyclzFDMfjMZ+OWTvSuSzcGqarPGUH2OKdUoov6q1WDp/oO7a/75w24PgQH5ZMzV0rcUi93fxePRgkxPK71cdKdikTmuY6cPazCVpp7tom67U3z9bVRDyANSrFltfBMrX6AJZAon4TfDjiHkDqdPy8ewneXjVThkTcveWScjVE03Az2dLIlPa+39G+2g4ybOhQl6a6aZCHMEvvOhvOj6sX/z4lrRd/mNoJkmxvsun4f6CBJb75Bdl5WaoSCEeyjifI1R/SFH89Kp+ckQwgZBGWZxD2BN/9yXVd+cFzVV18RzwH5GuGh+nZAW7zqmSmu0TZFWm/G3cKbcUvyh4Eiw+oeVuSFcJee7KWgJVXbGa3SaKW6j8aNSsxyL2H611q2L1GhCxgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 105974,
+  "completion_tokens": 420,
+  "total_tokens": 106394,
+  "cost": 0.009976125,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 99665,
+   "cache_write_tokens": 6307,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.009976125,
+   "upstream_inference_prompt_cost": 0.008926125,
+   "upstream_inference_completions_cost": 0.00105
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 151,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

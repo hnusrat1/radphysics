@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791829596-pJ9WqCbVdeGxDdGg0N8P",
+ "object": "chat.completion",
+ "created": 1791829596,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "GMICloud",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "The working directory may be different between calls? Or the file was written but cwd differs. Let me check os.getcwd() and the file existence.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_b9b599d2b2964c6b8ae98d49",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import os\\nprint(\\\"cwd:\\\", os.getcwd())\\nprint(os.listdir('.'))\\nprint(os.path.exists('mc_module.py'))\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The working directory may be different between calls? Or the file was written but cwd differs. Let me check os.getcwd() and the file existence.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 88372,
+  "completion_tokens": 104,
+  "total_tokens": 88476,
+  "cost": 0.0023993424,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 77767,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0023993424,
+   "upstream_inference_prompt_cost": 0.0023804144,
+   "upstream_inference_completions_cost": 1.8928e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 31,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

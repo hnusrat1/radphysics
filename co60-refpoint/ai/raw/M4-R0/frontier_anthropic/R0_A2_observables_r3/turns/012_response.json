@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791828760-lt7BC0z0fvIfOyU32XwS",
+ "object": "chat.completion",
+ "created": 1791828760,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Since 1e6 took about 7 seconds, scaling to 2e7 should take roughly 140 seconds, so I'm planning to split the work into several calls, each handling around 5e6 with batches sized to keep runtime under 10 minutes per call.\n\nFor seeding, I want to make sure different tags produce non-colliding random seeds, so I'll derive the offset from the numeric part of the tag rather than treating non-digit tags as zero. I'll just run one combined pass of 2e7 using 16 batches of 1.25e6 each with tag 't1', since its digit gives a clean seed offset of 7919.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01Brim84hjtDpGepWYZpzjrz",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport subprocess\\nr=subprocess.run(\\\"cd /tmp/work && python driver.py 16 1250000 t1\\\",shell=True,capture_output=True,text=True)\\nprint(r.stdout, r.stderr[-2000:])\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Since 1e6 took about 7 seconds, scaling to 2e7 should take roughly 140 seconds, so I'm planning to split the work into several calls, each handling around 5e6 with batches sized to keep runtime under 10 minutes per call.\n\nFor seeding, I want to make sure different tags produce non-colliding random seeds, so I'll derive the offset from the numeric part of the tag rather than treating non-digit tags as zero. I'll just run one combined pass of 2e7 using 16 batches of 1.25e6 each with tag 't1', since its digit gives a clean seed offset of 7919.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "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.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 94839,
+  "completion_tokens": 495,
+  "total_tokens": 95334,
+  "cost": 0.001289795,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 94022,
+   "cache_write_tokens": 815,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001289795,
+   "upstream_inference_prompt_cost": 0.001042295,
+   "upstream_inference_completions_cost": 0.0002475
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 373,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

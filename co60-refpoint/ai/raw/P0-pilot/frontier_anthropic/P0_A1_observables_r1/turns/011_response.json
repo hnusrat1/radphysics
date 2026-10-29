@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791814944-XRuLq4tMvQFxSKPEFtnq",
+ "object": "chat.completion",
+ "created": 1791814944,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "The working directory seems to have changed between calls\u2014the \"phys\" module isn't found anymore even though it worked before. I should check the current working directory and list the files to see what's going on.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01UUix6dipbc9ypkznKmHYnp",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport os\\nprint(os.getcwd(), os.listdir('.'))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The working directory seems to have changed between calls\u2014the \"phys\" module isn't found anymore even though it worked before. I should check the current working directory and list the files to see what's going on.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS+AcKEAgSGAI4AUIIdGhpbmtpbmcSDFGL/RIir2ps2ep8fRoMElGFP4jP2D1nnHDbIjBcydDCLVGy9LluyxjThfz2xuIMLUOs86NhpasiDPsDSwhaVoP1gYm6eczCa2BHKh4qlQc3VT5Rc/jvdKUIwS6xh6iES1yYSyvrEndR7l6OoXlcmSExXugLCex2RFYiIfejIWw3lslWNMCrMfJrfDRG5aSYHXKKgtp/paCHppjwi8DPDHc3ox+gaxFWwcjVMj/fZ3C35WvWNhHzRTl+ppk796d+FGq5WKBUzaNtsgHPmfS/KOUqznzHr9VK+DaQDXv2BEEtTuYSZpMhFWul5FgDJjmmY8jU9DJJa+v6g/h+YmGiykkQhcvNKmrDIUOfPKepWcEVMedvCrKmC7dTQJjNi43h2vQty5niveafZ0bBYArP5MQq4LNPHyWYEAnLm5elt7474au/3WScZuu6h4cExq59xzl5BKAtg5EunRoQhx+X+MHU6AMvJu74kMCoiyUQLdDLKcHzCtyhnhrBUuA0Rseq02E1S3vUbAN92TqT/tuy3PnOlETfKiMCPxzHk7GJPtXhVyrbwOpUiqhGAqB4oWFg2VmVFI+nNdUj6ahGitS/n/UTErTacwDdLmZYkTNKaTrYUvTAsihHtcNDlCbCP6XQ0jBv7IB18OLCx3sa4ZRcceT2K9528EAMprS4lbC/rbX6sJsmsJbg0xqPGqY0fHiGt7zjLhOn7xWKPr1NfPMjqdz974lpK2MFghC8d9DZ3+/zRFoNDb7NN9PpAN0UI8Xsl8DOoGawXtDaqNWc7b12vTmwIYU/5AKCf9daJ2/IJLI+jpKo7HSvrk1G3ryKsfGA+cYuWL8j0dEyxhd8FcKVw5QjmkjxXHnvRpvW2ed/Nd+7iPRpB0mwc3gluqLTO8MUbIKgz8Ts1hQmOTZMDOs2ZM1FB54barG/tvKB29twUXa6OfKQIrB56OuJxKuajopBqlcwqJUSmrgEy5TooBM6hDW7cqCn6ySQiKRABG6DbYgOn8IsEnM6yMJ5LCL+INvYF8xJO4zSAJAJ0UpegFdKb6W39nXBqmq/Ov0sySM28sp4JTRMool7TTZn7mtBrP6EQtQeFsLXwPFXyCkUF2oVP0WPw4QaeNNrvZj7LTjHLZZJn7PNXpLPCD7GFRrx0jXYGOzHWyxXWvi1XMXPNsbzG/dxi6GVAuguVL7m8mMZV0zppNlv0CvXn+7ueYIhnpzPGI0D6u8Ldcavu0FuL/drf0QZv6IGa18pSMBA9ay7qYN85bl6BIhZh+oo8WG6X8OOJGTE5o2oI48rSSE3DGIhrrvwEedf5e6qRiaHzEd4UX/l5BeEyhgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 96409,
+  "completion_tokens": 151,
+  "total_tokens": 96560,
+  "cost": 0.0097164,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0097164,
+   "upstream_inference_prompt_cost": 0.0096409,
+   "upstream_inference_completions_cost": 7.55e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 82,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

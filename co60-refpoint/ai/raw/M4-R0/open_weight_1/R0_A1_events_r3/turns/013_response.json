@@ -1,0 +1,74 @@
+{
+ "id": "gen-1791828314-Xt4Zem1ZKpm2kL3qZCnL",
+ "object": "chat.completion",
+ "created": 1791828314,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "There seems to be an issue with how I'm passing the parameters. Let me look at the tool definition again.\n\nThe tool is called \"python\" and the parameter is \"code\" (string type). I think the issue is I'm using \"arguments\" instead of the properly formatted parameter. Let me look at how the tool should be invoked.\n\nLooking at the function definition:\n```json\n{\n    \"description\": \"Run Python 3 code...\",\n    \"name\": \"python\",\n    \"parameters\": {\n        \"properties\": {\n            \"code\": {\n                \"type\": \"string\"\n            }\n        },\n        \"required\": [\"code\"],\n        \"type\": \"object\"\n    },\n    \"strict\": false\n}\n```\n\nSo I need to pass a \"code\" parameter. Let me try with just the simple format again.\n\nActually, looking at the examples from the system prompt:\n```\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_7cdef1078d5e48698de0f317",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"print(\\\"hello\\\")\"}"
+      }
+     },
+     {
+      "type": "function",
+      "index": 1,
+      "id": "call_a194a9eccc7d444aaa451951",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"print(\\\"hello world\\\")\\nimport numpy as np\\nprint(np.__version__)\\nprint(np.random.rand())\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "There seems to be an issue with how I'm passing the parameters. Let me look at the tool definition again.\n\nThe tool is called \"python\" and the parameter is \"code\" (string type). I think the issue is I'm using \"arguments\" instead of the properly formatted parameter. Let me look at how the tool should be invoked.\n\nLooking at the function definition:\n```json\n{\n    \"description\": \"Run Python 3 code...\",\n    \"name\": \"python\",\n    \"parameters\": {\n        \"properties\": {\n            \"code\": {\n                \"type\": \"string\"\n            }\n        },\n        \"required\": [\"code\"],\n        \"type\": \"object\"\n    },\n    \"strict\": false\n}\n```\n\nSo I need to pass a \"code\" parameter. Let me try with just the simple format again.\n\nActually, looking at the examples from the system prompt:\n```\n",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 32970,
+  "completion_tokens": 312,
+  "total_tokens": 33282,
+  "cost": 0.000968240504,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 28672,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000968240504,
+   "upstream_inference_prompt_cost": 0.000911543864,
+   "upstream_inference_completions_cost": 5.669664e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 182,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

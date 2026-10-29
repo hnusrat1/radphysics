@@ -1,0 +1,57 @@
+{
+ "id": "gen-1791824224-ulyIbVS5ZU5OsvA9raCF",
+ "object": "chat.completion",
+ "created": 1791824224,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_2c6kyV3xILD9gWZfOw6AgMbx",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import numpy as np\\nm=.51099895\\nfor E in [1.1732,1.3325,1.25285]:\\n c=np.linspace(-1,1,200001); eps=1/(1+E/m*(1-c)); ds=eps**2*(eps+1/eps-(1-c*c))/2\\n T=E*(1-eps)\\n mean=np.trapezoid(ds*T,c)/np.trapezoid(ds,c)\\n print(E,mean,mean/E)\\n\"}"
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 10468,
+  "completion_tokens": 126,
+  "total_tokens": 10594,
+  "cost": 0.00039358,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 8503,
+   "cache_write_tokens": 1962,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00039358,
+   "upstream_inference_prompt_cost": 0.00033058,
+   "upstream_inference_completions_cost": 6.3e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 0,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

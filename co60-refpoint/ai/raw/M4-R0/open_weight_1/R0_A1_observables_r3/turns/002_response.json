@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791829975-Ne2Hy7XE0efjZjlcjPOE",
+ "object": "chat.completion",
+ "created": 1791829975,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "SiliconFlow",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I left a bad line. Fix.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "01a13163b082d7f14cc8d97f9c198627",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport numpy as np\\n\\nmec2 = 0.5110\\nre2 = 2.8179403e-13**2\\ntwopi_re2 = 2*np.pi*re2\\nN_e_per_g = 6.02214076e23 * 10/18.01528\\nrho_w = 1.0\\nN_e_per_cm3 = N_e_per_g*rho_w\\n\\ndef sig_KN(E):  # barns per electron\\n    al = E/mec2\\n    a2 = al*al\\n    t1 = (1+al)/a2 * (2*(1+al)/(1+2*al) - np.log(1+2*al)/al)\\n    t2 = np.log(1+2*al)/(2*al)\\n    t3 = (1+3*al)/(1+2*al)**2\\n    f = t1 + t2 - t3\\n    return 0.4987*f\\n\\ndef mu_compton_cm2g(E):\\n    return sig_KN(E)*1e-24*N_e_per_g\\n\\nE_tab = np.array([0.01,0.02,0.03,0.04,0.05,0.06,0.08,0.1,0.15,0.2,0.3,0.4,0.5,0.6,0.8,1.0,1.25,1.5,2.0])\\nmu_tab = np.array([4.951,1.374,0.7031,0.4470,0.2269,0.2059,0.1837,0.1706,0.1505,0.1370,0.1186,0.1061,0.0969,0.0896,0.0786,0.0707,0.0636,0.0576,0.0494])\\ncoh_tab = np.array([0.0,0.0,0.0,0.032,0.0205,0.0148,0.0102,0.0084,0.0047,0.0030,0.0014,0.0009,0.0006,0.00045,0.00030,0.00024,0.00019,0.00016,0.0001])\\npair_tab = np.zeros_like(E_tab)\\nfor i,E in enumerate(E_tab):\\n    if E>1.022:\\n        pair_tab[i] = 0.00153*((E-1.022)/0.228)**0.618\\n\\ndef interp(x,xe,ye):\\n    return np.interp(x,xe,ye)\\n\\ndef mu_tot_cm2g(E): return interp(E,E_tab,mu_tab)\\ndef mu_coh_cm2g(E): return interp(E,E_tab,coh_tab)\\ndef mu_pair_cm2g(E): return np.where(E>1.022, interp(E,E_tab,pair_tab), 0.0)\\ndef mu_pe_cm2g(E):\\n    tot = mu_tot_cm2g(E)\\n    return np.maximum(0, tot - mu_compton_cm2g(E) - mu_coh_cm2g(E) - mu_pair_cm2g(E))\\n\\nfor E in [0.05,0.1,0.2,0.5,1.0,1.1732,1.25,1.3325,1.4]:\\n    summ = mu_compton_cm2g(E)+mu_pe_cm2g(E)+mu_pair_cm2g(E)+mu_coh_cm2g(E)\\n    print(f\\\"E={E:.4f}: mu_tot={mu_tot_cm2g(E):.4f} comp={mu_compton_cm2g(E):.4f} pe={mu_pe_cm2g(E):.5f} \\\"\\n          f\\\"pair={mu_pair_cm2g(E):.5f} coh={mu_coh_cm2g(E):.5f} parts_sum={summ:.4f}\\\")\\n\\nmu1 = mu_tot_cm2g(1.1732); mu2 = mu_tot_cm2g(1.3325)\\nprint(\\\"mu1,mu2:\\\",mu1,mu2)\\nprint(\\\"primary/Phi0 =\\\", 0.5*(np.exp(-mu1*5)+np.exp(-mu2*5)))\\nOmega = 100.0/100.0**2\\nphi0_per_hist = 1.0/(Omega*105.0**2)\\nprint(\\\"phi0 per history:\\\", phi0_per_hist)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I left a bad line. Fix.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 64245,
+  "completion_tokens": 1087,
+  "total_tokens": 65332,
+  "cost": 0.008186194,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 4608,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.008186194,
+   "upstream_inference_prompt_cost": 0.007881834,
+   "upstream_inference_completions_cost": 0.00030436
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 9,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

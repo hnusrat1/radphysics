@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791826922-XLBEqTcZwlAdxQmejVRY",
+ "object": "chat.completion",
+ "created": 1791826922,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Since each call runs as a fresh process, I'll need to include the necessary imports every time.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01BDQPGQdWM1Dqwu8fft8BBQ",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport sys; sys.path.insert(0,'/tmp/work')\\nimport numpy as np, lib\\ntrapz=np.trapezoid\\nmu=np.linspace(-1,1,20001); E=1.1732\\nsig=2*np.pi*lib.re**2/2*trapz(lib.kn_f(E,mu),mu)\\nprint(\\\"n_e*sigKN =\\\",lib.ne*sig, \\\" XCOM inc =\\\", lib.mu_inc(np.array([E])))\\nrng=np.random.default_rng(1)\\nm=lib.kn_sample_mu(np.full(200000,E),rng)\\nprint(\\\"mean mu sampled\\\",m.mean(), \\\"analytic\\\", trapz(mu*lib.kn_f(E,mu),mu)/trapz(lib.kn_f(E,mu),mu))\\nS=lib.S\\nmec2=lib.mec2\\ndef moller_dsig(Tp,eps):\\n    tau=Tp/mec2; b2=tau*(tau+2)/(tau+1)**2\\n    br=1/eps**2+1/(Tp-eps)**2-(2*tau+1)/((tau+1)**2*eps*(Tp-eps))+(tau/(tau+1))**2/Tp**2\\n    return 2*np.pi*lib.re**2*mec2/b2*br\\nfor Tp in [0.1,0.5,1.0,1.25]:\\n    ee=np.linspace(75e-6,Tp/2,400001)\\n    Sd=lib.ne*trapz(ee*moller_dsig(Tp,ee),ee)\\n    Scol=np.interp(Tp,S[:,0],S[:,1])\\n    ee2=np.linspace(0.01,Tp/2,40001)\\n    Sd10=lib.ne*trapz(ee2*moller_dsig(Tp,ee2),ee2)\\n    print(Tp, \\\"delta-part all:\\\",Sd,\\\" Scol ESTAR:\\\",Scol, \\\" >10keV part:\\\",Sd10, \\\"L_Delta approx\\\", Scol-Sd10)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Since each call runs as a fresh process, I'll need to include the necessary imports every time.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS2QYKEAgSGAI4AUIIdGhpbmtpbmcSDAK/h5wsJE+godbZAxoMxt+uBvxUuaXwhG4xIjBFXuOQLPcALxT89qa9yylcr1H3J8VfDuUk+qvw6JdE9kh+ve4pmjl5n1wBHGm0msAq9gUb+sZx3NvfT/5DlToMM8N6ChpvJ+7PWeJ085ih1vCKP8WMLRlmvTXQjRWW+8uB4QZZ1xkWsH2pnfiJMBny9C9ezObb9yCyl+TJ2Mgxx1F1hhrA5N2IO8/P8eW/VAwtyS77A7TqOR88zaYd74x851iQi9pZem+m50aggTKKHmihDcbeZv0MSeQ//IiswLa+ocnFZQ1dbhUMPLC95muxIFOjMKq6fnlF1p4dBQc+ewhrV/8Ws0oJnDMcaLDNZM0jmPxIjmEjnFzu4N+29GT6cHmGuI1Hu4Z8iFeGpEXHiSZgM1NZbI8plmKP3McwqaTKS0MBUMZXx3Af2v4RsN9btwSBl6N0lZ5upzVB/4yA563B4GwPPgyWhShDr/J/s8Snc3UdPUbzYS3LpUxjYdhX0Y/br470sKVOT5jiTbbANP7AqC5EUJoJdNfyL87gd4SJmmNAaCs9nEb72FYxDHp4b06/lbsXxvkVnGUlJaFwOH37sBIf4Pv6uCRIfThTXkMO212Pz0TFy9PlaQQLJCRu9mqHpC+IqlQsASx7sNZOPSb/7rM5oQaXUTC4xSwXwSWlkD/1t0HBzZCoMiLt4NmMhSrVBWQJZ4nWdxbf2ZogoyiwertiZRem19fLL16RIzMhMjyMIUb7/eVCt1FGtFOwFGiSj+RYT5o87IVz5cvyS0s2Rnxlt1IPJ/HlqlyigLn9yKZUSa8pnpHLGASGXot9svjRZRxcUO44xP5uFAeQ86JFbWrUNjQtKl94bzEF1/TfrdG6EbScyaNwMVy41oDn6Zn/9NzogeKDU+dFwzdmi5j21DFUXbWjNd/c+ty4EmtMTYBvgIso6hwsxEQsU/K4hD4nDHa6YkU47c4ZE8Z0ZeDwhqG6JgbmBFfjTaOsW3bdSEUA9U10pk5NcEEG17d8cBKrfEy1GjuHMIw/T6CYlx7XlxQqEOD7xxNY6KHiNLcD9VmTR1A/wjdZhrabx/0W94IMXXSnjDlO796SMkPmwPt8k5uSxhVEZRgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 94764,
+  "completion_tokens": 741,
+  "total_tokens": 95505,
+  "cost": 0.00143309,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 93764,
+   "cache_write_tokens": 998,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00143309,
+   "upstream_inference_prompt_cost": 0.00106259,
+   "upstream_inference_completions_cost": 0.0003705
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 23,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

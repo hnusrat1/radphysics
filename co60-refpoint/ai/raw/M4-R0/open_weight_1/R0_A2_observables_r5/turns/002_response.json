@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791830752-yn1oN1NkOIHn8P0WoEsp",
+ "object": "chat.completion",
+ "created": 1791830752,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "GMICloud",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Let's look at the full data to know energy ranges.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_944a8ea2f1d040e0a4b270b2",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nd = np.loadtxt('/tmp/data/xcom_water.txt', comments='#')\\nprint('xcom shape', d.shape)\\nprint('E range', d[0,0], d[-1,0])\\ne = np.loadtxt('/tmp/data/estar_water.txt', comments='#')\\nprint('estar shape', e.shape)\\nprint('E range', e[0,0], e[-1,0])\\n# inspect around 1.1-1.4 MeV for xcom\\nm = (d[:,0]>=0.9)&(d[:,0]<=1.5)\\nprint(d[m])\\nprint()\\n# estar around 0.01-1.5 MeV\\nm = (e[:,0]>=0.01)&(e[:,0]<=1.5)\\nprint(e[m])\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Let's look at the full data to know energy ranges.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 40272,
+  "completion_tokens": 230,
+  "total_tokens": 40502,
+  "cost": 0.0013612144,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 32217,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0013612144,
+   "upstream_inference_prompt_cost": 0.0013193544,
+   "upstream_inference_completions_cost": 4.186e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 12,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

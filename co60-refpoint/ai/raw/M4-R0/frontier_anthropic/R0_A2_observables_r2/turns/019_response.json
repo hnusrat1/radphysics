@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791828453-kbJkuZHPwNG4Daa1NeXe",
+ "object": "chat.completion",
+ "created": 1791828453,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "The primary fluence from the MC agrees with the analytic value to 0.08%. Next I'll add the photon, interaction and Layer 3 outputs.",
+    "refusal": null,
+    "reasoning": "The Monte Carlo result of 0.73009 matches the analytic value of 0.72954 within 0.08%, which is good agreement. Now I'll move on to the rest of the analysis\u2014covering L1, L2, L3 outputs, KN histograms, and the solver.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01ArEx7MevByxQtWqxBLJMnj",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nana2 = r'''\\n# ---------- L1 ----------\\nedges28=np.arange(0,1.4001,0.05)\\ndef rebin(fine, edges_coarse):\\n    # fine bins width DE from 0; coarse edges multiples of DE\\n    idx=np.round(edges_coarse/M.DE).astype(int)\\n    out=np.array([fine[idx[i]:idx[i+1]].sum() for i in range(len(edges_coarse)-1)])\\n    return out\\nprim_spec=np.zeros(28)\\nfor E,R in zip(ELINES,R_line):\\n    prim_spec[int(np.floor(E/0.05))]+=R\\nscat_spec=rebin(Rs_fine,edges28)\\ntot_spec=prim_spec+scat_spec\\nPhi_prim=R_line.sum(); Phi_scat=Rs_fine.sum(); Phi_tot=Phi_prim+Phi_scat\\nL1_scat_frac=Phi_scat/Phi_tot\\nEcen28=(edges28[:-1]+edges28[1:])/2\\nE_scat_fine=EC\\nenergy_scat=(Rs_fine*EC).sum(); energy_prim=(R_line*ELINES).sum()\\nL1_scat_energy_frac=energy_scat/(energy_scat+energy_prim)\\nL1_mean_E=(energy_scat+energy_prim)/Phi_tot\\nangP=np.zeros(10); angP[9]=1.0\\nangS=t['fl_cos'][1]/t['fl_cos'][1].sum()\\n# ---------- L2 ----------\\nWi=t['W_int']; We=t['W_etr']\\nnames=['compton','photoelectric','pair','rayleigh']\\ndef fr4(vec):  # vec order coh,inc,pe,pair -> dict order\\n    v=np.array([vec[1],vec[2],vec[3],vec[0]]); v=v/v.sum()\\n    return dict(zip(names,[float(x) for x in v]))\\nL2=fr4(Wi.sum(0)); L2e=fr4(We.sum(0)); L2p=fr4(Wi[0]); L2s=fr4(Wi[1])\\nL2_share=Wi[1].sum()/Wi.sum()\\n# ---------- L3 ----------\\nrec=t['recs']\\nT_e=rec['T']; c_e=rec['cos']; w_e=rec['w']; f_e=rec['flag']\\nedges25=np.array([0.01,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1,1.05,1.1,1.15,1.2,1.4])\\ncedges=np.linspace(-1,1,11)\\ndef hist(x,w,edges):\\n    h,_=np.histogram(x,bins=edges,weights=w); return h\\nh3=hist(T_e,w_e,edges25); L3_spec=h3/h3.sum()\\nm0=f_e==0\\nh3p=hist(T_e[m0],w_e[m0],edges25); L3_spec_p=h3p/h3p.sum()\\nL3_mean=(T_e*w_e).sum()/w_e.sum()\\nL3_mean_p=(T_e[m0]*w_e[m0]).sum()/w_e[m0].sum()\\nhc=hist(np.clip(c_e,-1,1-1e-12),w_e,cedges); L3_dir=hc/hc.sum()\\n'''\\ns=open('/tmp/ana.py').read()+ana2\\nopen('/tmp/ana.py','w').write(s)\\nexec(s)\\nprint('L1', Phi_prim,Phi_scat, L1_scat_frac, L1_scat_energy_frac, L1_mean_E)\\nprint('L2', L2, L2e, L2p, L2s, L2_share, sep='\\\\n')\\nprint('L3', L3_spec.round(4), L3_mean, L3_mean_p, L3_dir.round(3), sep='\\\\n')\\nprint('scat spec', scat_spec.round(5))\\nprint('angS', angS.round(4))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The Monte Carlo result of 0.73009 matches the analytic value of 0.72954 within 0.08%, which is good agreement. Now I'll move on to the rest of the analysis\u2014covering L1, L2, L3 outputs, KN histograms, and the solver.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS0AcKEAgSGAI4AUIIdGhpbmtpbmcSDEBH3Cl9QmhHyoTwOBoMYgclypt+saXE6fVkIjC6ANHYXin/GH9qItceM9dw2NIklz/m8n5bp6iRyTlVSQtvsqycYJFxvDhR8xB/O9Iq7QaazibirccMjNx+PaJxhQh7yyc8pOUJ481W1avFOj9Az7HEmo/OnqujAiEhbCv9XY7vuKM7nkR1WgNRPb+3gGI7Zd88YxlQKt72aDcs8lqWCIWQWoBiW0JZPwKj2V7lYHfPG0Fx2GspaipTnW2VPVdcqWtytkJv81qMZAnIL7xfuNOwU0vPALwfz52w66QpbbRQW19dDyfG/GPM+AXvJ1XZYdU4D9i636Ek1BDB047w1x+YiBBpikRAipK/L5wP5FI1hHD33vT/MANqz/ezUHM3Y/WY9+q/3nbnkfEQQzh57j7iVbUJv5Gkb97u3PbXUuJnmBcDQf7ZP+BjGDGYX+7cZ1cjHRigIyqmPYtU1kB4hcyvgwJ2euoT+kwwE8UE5dFBgptTRKbbsvgVip2lzM+kRYnr4ejzA9xDm6BYyxREZ4zUG9R1Hx3h5HzU1gQuxmELwUOXPGKECoRI0kKjf5kDeA/4deoPfbk30CthHIdJUilRAO2o0Nhw+mj+P5ZpXiXD5c0MVfws85fatajd/8+/l8DRhYMBRzgkNw+38DINLa7TV8AuEpsGh7fNa1WqYb/uwm9yIHRrFb1A4e9msh3kzCtBJOtCUZtoLTxRDn8wWO9sBQVnrfrG+5J1mIDZz35afCaWvzZDok4dsLZ3g0aPsSuao/zt46HHF4CvV7zKFTSMdvEJYK62x/J+qbfzOGmpwnmDPUmtLNEIcoNCT4EXA4NGTQNTuaQBNmr85QEejA0bJp/prKMbJw5uuCHdPrfsiRiEZUYRZ1Z2rnRP3ERVEDT8OPtEJ+4xwC1vGkTA5TtrUpJMCuemf9pPMrgx34OGKgyf8s9lNU19UOn16Sro3wW2O0zPEjRqqNNpn4kbz4jGKYkq5gbtIf86VRJf9hm/lX+7TPAMQ+QyV8Hmrgemlak5rnSb4W89SlU9splfyHKb0GXpoFMLpyivpFjmQUOYjccfYTgiLsSarAisYNaINWCVF/1aFuVrtAWPjWIcybc2aLRXN9tSWotLkcevwDyUZFCB8Gh2PylOv0364Naz9Y1ecbihnTSqRlLIi7trB4IXnGDubhfGAaTwLGYkddGVOdimO3BfFXBx++j9qu5V0FiY1O26FOcVnOGt5daO1gjVbdecU4pwbWfAuM9OqtB77Pr5TB7FTwXAODC2GAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 125753,
+  "completion_tokens": 1574,
+  "total_tokens": 127327,
+  "cost": 0.0103972,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 125449,
+   "cache_write_tokens": 302,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0103972,
+   "upstream_inference_prompt_cost": 0.0064622,
+   "upstream_inference_completions_cost": 0.003935
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 80,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

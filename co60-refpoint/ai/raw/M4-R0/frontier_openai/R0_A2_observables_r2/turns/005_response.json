@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791823772-b9tuHHZq8PbRdsqzs8wS",
+ "object": "chat.completion",
+ "created": 1791823772,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Analyzing code processes**\n\nI'm focusing on how the parent code occurrence is determined before any interactions take place. After that, I need to set 'isprim' to false if the type is not equal to 3. Also, I see that there's no need for repetition if I adjust the process after scoring. Outside the Compton area is indeed correct. Oh, and I'm planning to run it for 30 minutes! That should help gather the right data.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_EBF7eQ0gYiTnQr59QwpQOaIn",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"p='/tmp/mc.cpp'; s=open(p).read(); s=s.replace('double mu;do{mu=2*R()-1;double ratio=1/(1+(E/.51099895)*(1-mu));}while(R()>0.5*pow(1/(1+(E/.51099895)*(1-mu)),2)*(1/(1+(E/.51099895)*(1-mu))+1+(1+(E/.51099895)*(1-mu))-(1-mu*mu)));','double mu,rr;do{mu=2*R()-1;rr=1/(1+(E/.51099895)*(1-mu));}while(R()>0.5*rr*rr*(rr+1/rr-(1-mu*mu)));')\\ns=s.replace('if(typ!=3)isprim=false;','isprim=false;')\\nopen(p,'w').write(s)\\nimport subprocess\\np=subprocess.run(['g++','-O3','-std=c++17','/tmp/mc.cpp','-o','/tmp/mc'],capture_output=True,text=True);print(p.stderr)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Analyzing code processes**\n\nI'm focusing on how the parent code occurrence is determined before any interactions take place. After that, I need to set 'isprim' to false if the type is not equal to 3. Also, I see that there's no need for repetition if I adjust the process after scoring. Outside the Compton area is indeed correct. Oh, and I'm planning to run it for 30 minutes! That should help gather the right data.",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzQ-h-XffrglUZ9KOHFaXTtZYTkqHb1BSDJ_FNeBjWZnvERluD8kgB1oKNLvQZrdWvHxAAQkQZpreB3xEfYSSeH-rmj_5kgu3osdngZbFoTmlt7-8bxdyEIRyjdqe5lzTvQa_brL89PyoJlM2xBdq6XtbvtjgZDnXx8Gk-lHOSr5TVMrqbqR4okPiQDM26aCBlNfhPhNVRpyYqj__54hoknsaLjuDJw2TBkm-XsjbiPOnL02xf-vwjNtMPAkEpEfcUnNxW_ML-ciBBRhcp0halX6LUE3PALfYEqEdaxzSLDswRUGaEqwiEJihp63o4NSzrx-8yRHrf6J6BH26VPkYVF6EIkRfWpV3DwNvqiHBe-vDIiLBj8BxPqVjaxR4SdhxuNStYG8W1LcZnVW1ODo-gAD5nqv7VB5T63fm2uJcMrJfy5vHT95nFf-XHBrURhmS6n390xuC2e9J02lSbVWl3aflhKqVbMrsdnFAzQ7ZCLDu-nRYKfvaNHGopkyi8EEFj-lg0I2jgywww1XIl7WJxC8B3-LrUNfU6uYG8g5UwZjOknPMWU4Tte0EYdI9sTspMRNMmFQtQUDuVGscZIH1iWf1wjI5VdYSKdgZhXee3Xi58dooNtpChbZIzoxHq0aazJwKG0bQrQUSg616rEmYwn-vuNm8Tqv-_Ef7Lf79vFCIJX7FF_qCn1uW5lh_cV9WvbDFx3xS-3oCLP7polOKDnKPOxDX0G3MgSiHGwEHDAWn-xWzjf4NAc2C13WRbOrDqjmmvg8fD76Zp4Nb_iuI4oqxnkMzNj_HEidCUYKdjUAP_EFJLW0dZD0TZgUKFW9Spt_WeuagzwEnK2wAZ9yL9Bt5JlxOvM1W3pBYx02ozgOBde1JSv7am_Fs9K-E32goisg5S6KdarTd2amEQiDFRG5J7eh6avsQoFJNHMLET7prVfD-D-4S2n3UrgVtqViBwQw5WCP-dT4d3934AoUiMmZWgQ5Lvw5QlhRYL22eSbgglzvHohZzIK5ahYD5YJb9tWqnpjWb_pUmWNGiwTD4zCnGF8lUU7pn0wx8udTK1RUjqzxrQRTU8RVO1D3FggYdyw3sAMWN1dBKdHpRLSBlb0WF13RvLZI2bpuK7hII1QEYY9aJkmvIBbtLzDPm4FTibMHJ6LxzQXsqWk7M1t03CI8VZD-osli2NNkpBcJibjajZxUw5-0BkCrRDxilR3N2knUMUcNlqMeJewArotNGhxfq6l8tcBSqwQdhQPDJfey-4FvWopuF2IO9ZYqO2zLtx3fvzL265i6eoZ38wzLAdC9kXIp9Tr-TtXe9RrsdkRmRg767xqBrxIgliSLNcSkBUhB1H3g5aQ1535GYUTRQxcHJJZtbdNKy79S4d0pFeVCzsmm3AFuVZTROYHdmZgVyri958nebwx4FU-rp6h4Woq-U_65onUodWOk7xZ-a5-Bli4lb9RUMxGi3L2k2cldpE-OwLHDLGHYYdo1MOZEXc_fqoarOT6EYCWG_lX5VkdAJU94XLT3F8a6DqNcuJ5gFEyn46ktQGW03vXiJvXBGVuP33vsPdz4NcQ-3T6i3hvlNWbwZ38D2cSq17SvA7v8ilQxt64bzFhmArD-DtY6jnqYY8U-HK1I0wTcgKTMP6moSUo0F8o0-YZh7WX2viXwtTgRJuNFtixKckQG5fAUHLAgF7TXFteREsWAWYUdgEAON4O2h8sft3MK6KmFkWsX6KTSJQvU2j99Ptr8IfJ_OxAqufZU0J7HFgsLanAIQIfwz8KD662_qQrsb5XqcQj_xHAllDuXaZXAz0VPIp0a0zVnCWrSzCXgvmlOxjW-3yXY1I-PZFR3w_3yYA8QRqdaosPONzFOngDSi_cpK8QGHXPxkIpC9_-7RkzuddQG7FJZimKkfEvCc9iu-YApKZUB02s547kGIm_3Cjwtq-9KBUKHusXBru5YdnUtrnhZx65-ZZdS6T6ZSN7wSU1JssWvtTrm_NGl6PkrfWUlqFVVSilA_9ds3TgrXR6-SZoevYhosmntGjQEsvBHB_7T_fGaPGHkKObVavLHva527HxB3lFd8VEGcnmbCB6v_IJFX5gd12L_a0M5PQn2K2VE4fXMxhpUAybquSyXXUm04QQObtJHeKszd4Qm6La8NanX3E88XwfhpibMXD0fqhWDCr5Nxeb2wqEbNtZcgpQfgtmF_ZBYamQPiQfxgNOuDJ4AKqdW-BheWH0XHS4SSuT-uYOmbS0gp7JivAHD642exQP0oHMK7P1h7SaJ0TqobzlMjgbtOmaJY-HNjXr2-VwTQFU727From_IqcDUvjMakWOGSwRV8ZrPZpB9DYbneh01-fzp8LLJ6wk0l1N6hB5Nj45jWU5OoCfXoeBRE_3Wx4V9jF1Gqz487QaP1LIwMlFWil15tDEaP95R5nShyY6v6L9sCMOvi3KKB7ENbvYtFWxLl5fEE6SsueC3ENbRtKUJ1iMFwVC2HzlUNzYos_tqAd4q7zRiqp8oNPn9nmPMZNPq2LEn5xDPlPluc5lVod8VB4v6oRfpzWyEfDi4JGUuohGJxF82N61J4aGhpYi6L9agrtCPYmxDQhEs1C3JMM-qyV4mIXyLW0wWld_CXL6eKMKy5UD-mYXjh8MCyqEfIFv5LLD_vSmIub8wePsSOkRV-Cb_e0Ppdcdx5RJdPdxPCffa4iINSypoehdkEjOG2pWhmCDF_toPma6crId4sZhBGFoEVOzNlZp8zxP4oToDyUd25QtMMFPm_4kS5-G3TJtwTlKfvSzupDLQunNNivROGf-IeXcJdmhS8iuYZQtb1RXH7WILQM4oKyybiqwjx0jsZcXCGamAQ-LGjTmhsIc0BfBeTB0km6_0Sl11Hx7mZKXqY9_v_eRUPU79XvL5X5lF9eLUn3DWzoJwrvr8xu15inoPWn7VUqfgt47aeZ5i7zUuzskByc9Ae_i6qSmzfsNWlNW7EsRh2cyozr0DjgrbCvDR24X_hW6-PBfZOjglbmOhhDZawcHNBb0yzuIdQtAWa_rEpydUWI-sWfq1qyNWgpKV4y6LKbYBINqrwt7taDfNKNSSfp4KTe6FEWwiJOABvvRrIylwrCkWyNALP7sr8kKw4I3mQCAWlK8zXgAf6lcnx586xMGLVhQrvME_pulXz6JT8OLQ0wNzce8TkvR6kUlBlxEdxETsjIYnNe9HuXGiWopzhl9RHD5XZzfd1tsbpn75i8EUmWhnoudbnaSRUZ3ei3AHOMtc_oO8f9IpR6qyCp_ssflLUW1i1i0JN_9tlejNlyQz-GSu9kZgkTHtYPvHA3qcmUZoCQVLFLi0HyEBV8qfzmRUzt4DWzhXShxdP4mCZecDdYEE9UYowv3j9nQtCAs1NneR35ezjtnzddn1WZJumTjcVnmZEolhkik3eWpHJWH6RjiWWsiJyApg572y5jsZXLSu2S0UKcawlLEgUB7oOI5HzKT-wXPhokGhF1N5Z0ZvCzup6lH6uT9E1XzqmOzF_rZfJhubvCao9uB6ZnKnVlgy8tg8hdhH59xjYDxvdzs9aj65SYhtdmlsYAL9-5bMYyOoapEGjsjaUxukaRaS5FSp9PHN5q867pzLCN9DdS7ejJc19YYKl_i3gSju5cTLv1qOQBzasumBDGwH-mOXwTlnXbzTapG9FOXueVvJhmD0-4dMJmfoNo4nmkLGmSKmPrO6MorHlJnmSMyL6S_NLgLGXloTC-eCKGnVPmW-S68P6iPWKK4dhYs8uocw02WTeRMh-TF6-bt7Dh430o8_v-n79veJLOycHDSSpAZtCfuj60OdBlJWfoWJLK0L-1whNH-iM0_GyDNH59TGwTJqjTj4sAHSc5TeTgc6lSZwFbut3Fp04gWUkOqRfxeRPkyUkqIQcDWgWODrqFB-SpCXtZHIPklYc48I2Tu9lKos_adG9iA-c9z8aPEr50GDwXs9UVVauiQxC_sPYVcgq_4ZOvfw2BZrNyKWY120Z-zy6Z1AmFkqPtM9-6hRZ_Q0rlxpgT-4oA3AFG-RwFbdnfrjcPm_qOapxEY8tpW8hTaXw-y0w-_tEvRO0uQZAB7dBTUKNSz61oxPkGjnpLxu3BoFo7WaysAXOZCRph7kwlVa_f80Oj5nIYVgJMjhoxjMBooFtr-S-Ojmko_U5w4PALMHASijcr8WwgavDqlwLb74f_5GiDgxW94xDUCkHE5faLaW2Spee8l6wsSpp-l9LA6xAaQVyKm_jJZp_MpnJf4aY5r8DkMWvaQvpxYaf3h6xJYj764p7eedaf0En1PMLp-TVzfskH8crKxZmz8kb-zraDnAdjRfwodBCr8khmJnJVjMDaYXsYjdf1kJ5KZ7ghT8B9cx3NKL645x1LO7FP4m5dpjhjmubTXBsWcBiO6AwS5rwx36elM5idGxsoZ_0C9wxLJ7o_NXUyRWYUklf1JKTdI12hIGAFF0wyEPv0e25mrU3A2d19ZJsnWFIuUlkMdUpcX77xnnU-0O2rHTDIzicIRg_GfHgiKEQsgXkdXfmT6P-l8BvcR0nQc_4m4IU9_DKCFCuxFy0ktjdxEiaI-mRTLA0emZrML6xwXVQen8TQ_TeTfOnwp5ckNXigbRy_ppGrHB37FQlPu9vs1I0dYSIBclUzLgPIl0iVn1XzDLkx9mRly1T2pbv_r-rNtkGPwkdXR40iQvGg4mRe4COJpv1ZHQePGnUCrXmsW1VDe9gaU0bwrUgU0ia8whmQggNvCt-YmrqZxDHwggNZVCoxqAIId3Ch_-HswM91KUrGpPl2Bu4fHtcWKCH8ToFcH5ilqzCvy4tl52x0HAhIwxN0L3gNctmawi_th0Z2KPlPybleqauxBs1OYN5ZHlPrNXNherb2V3bShCO4OlU5gE5Qo6twZCLcoPdXscXAeBhoSZKG4g4WBUvWdJc0IYoSflQmTbEHdRlywHOlS8N0URxR7XjdISzwfnvUDlbr8ZTgFtkl1kpF3A_-gc-Qw69U5-Btj5ikK3CW_b5Fs8xU4lYyi6XzozOS0h6xwgiaVgclm2t_KjwHDSO-rB4EzPRhqZfLmBzDcaEidHp9_qtdkfV-WyoV-9CMbvGDpuVbxr6Saaw-0mdJTyDhM3uff1GI_0pVLJrhxebFnIfZ6Vv0d5KuhkN2kDBTcxGHvXGitnkWlHNaPU=.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_042c9b3ec933c71f016acd0f9d9b0c87d19b47748a15f5a411",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 16466,
+  "completion_tokens": 557,
+  "total_tokens": 17023,
+  "cost": 0.000829485,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 13106,
+   "cache_write_tokens": 3357,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000829485,
+   "upstream_inference_prompt_cost": 0.000550985,
+   "upstream_inference_completions_cost": 0.0002785
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 298,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

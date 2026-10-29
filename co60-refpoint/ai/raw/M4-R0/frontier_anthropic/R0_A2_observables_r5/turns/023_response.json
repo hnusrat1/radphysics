@@ -1,0 +1,57 @@
+{
+ "id": "gen-1791830295-bM1rNxqhvL07Yo5LSymr",
+ "object": "chat.completion",
+ "created": 1791830295,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_016ARBYVTaP1eHtLV7ctgsA8",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport sys, pickle; sys.path.insert(0,'/tmp/work')\\nimport numpy as np, importlib\\nimport mcana, mcmod, ana as A, pdd as P\\nfrom mcana import *\\nfrom mcmod import *\\ntal=pickle.load(open('/tmp/work/tal_run1.pkl','rb'))\\nzm,Ktot,Ks,Kp = P.depth_profiles(tal, tal['nh'])\\nfor i in [0,2,4,5,6,8,10,15,20,30,40,50,60,80,99]:\\n    print(round(zm[i],2), round(Ktot[i]*1.602e-10*1e12,4), \\\"scat frac\\\", round(Ks[i]/(Ks[i]+Kp[i]),3))\\nprint(\\\"V-based Kcol_sc/Phi0 *1e12:\\\", tal['Kcol_sc']/tal['nh']/Phi0_src*1.602e-10*1e12, \\\" profile scatt at 5cm bin:\\\", Ks[50]/Phi0_src*1.602e-10*1e12)\\n\"}"
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 179617,
+  "completion_tokens": 394,
+  "total_tokens": 180011,
+  "cost": 0.0139952,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 172609,
+   "cache_write_tokens": 7006,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0139952,
+   "upstream_inference_prompt_cost": 0.0130102,
+   "upstream_inference_completions_cost": 0.000985
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 0,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

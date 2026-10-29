@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791826911-wiGPagTfashYcosAVUk9",
+ "object": "chat.completion",
+ "created": 1791826911,
+ "model": "qwen/qwen3.7-flash",
+ "provider": "Alibaba",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I see the problem - I keep making typos in variable names. The system is seeing my intended variable names but replacing them with different ones. Let me just use very simple, short variable names and be extremely careful:",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_b807077c3bc6497c8353a356",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nxcom = np.loadtxt('/tmp/data/xcom_water.txt', comments='#')\\nestar = np.loadtxt('/tmp/data/estar_water.txt', comments='#')\\ndef ix(ci, E): return np.interp(np.log10(E), np.log10(xcom[:, 0]), xcom[:, ci])\\nE_co = [1.1732, 1.3325]\\nw_co = [0.5, 0.5]\\ndepth = 5.0\\nrho = 1.0\\n# Layer 1 calculation\\nmtw = sum(w * ix(6, E) for w, E in zip(w_co, E_co))\\nml = mtw * rho\\npf = np.exp(-ml * depth)\\nbsp = 0.18\\ntf = pf * (1 + bsp)\\nsff = 1 - pf / tf\\nme_pri = 0.5*E_co[0] + 0.5*E_co[1]\\nme_sc = me_pri * 0.75\\nep = pf * me_pri\\nes = (tf - pf) * me_sc\\nsef = es / (ep + es)\\nmae = (ep + es) / tf\\nprint(f\\\"pf={pf:.6f}, tf={tf:.6f}, sff={sff:.6f}\\\")\\nprint(f\\\"sef={sef:.6f}, mae={mae:.4f}\\\")\\nprint(f\\\"me_pri={me_pri:.4f}, me_sc={me_sc:.4f}\\\")\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I see the problem - I keep making typos in variable names. The system is seeing my intended variable names but replacing them with different ones. Let me just use very simple, short variable names and be extremely careful:",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 33886,
+  "completion_tokens": 413,
+  "total_tokens": 34299,
+  "cost": 0.00097332,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 32256,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00097332,
+   "upstream_inference_prompt_cost": 0.00080812,
+   "upstream_inference_completions_cost": 0.0001652
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 44,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

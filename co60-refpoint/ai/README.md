@@ -8,6 +8,7 @@
 | `harness/sandbox.py` | Isolated Python for A1/A2: no network, the repository, transport codes and transcripts hidden, own PID space, 4 cores, 10 min per call |
 | `harness/providers.py` | Anthropic, OpenAI, Gemini and OpenAI-compatible (open-weight hosts) clients over HTTPS, with one tool loop |
 | `harness/run.py` | The run matrix. Every conversation is written once, read-only, to `raw/<tag>/<slot>/` |
+| `harness/cost.py` | The measured charge of a run (OpenRouter's `usage.cost` per response) and its projection to R0 |
 | `harness/mock.py` | Offline placeholder model for tests; never used for results |
 | `data/` | The A2 tables (see `data/README.md`) |
 | `models.yaml`, `prices.yaml` | Model slots and the cost model. Model IDs are filled in and `frozen: true` is set at launch |
@@ -31,8 +32,9 @@ Rules enforced in code:
    (D028 item 5).
 4. **Pilot.** Run P0 (excluded from analysis):
    `python -m ai.harness.run --tag P0-pilot --config P0 --k 1`.
-   Fix formatting problems only. Then replace `tokens_per_conversation` in `prices.yaml` with the measured usage, enter
-   official prices, and rerun `--dry-run` for the M4 estimate (current estimate: about $130, high case about $400).
+   Fix formatting problems only. Then `python -m ai.harness.cost --tag P0-pilot --k 5` gives the measured charge and
+   its projection to R0, and replace `tokens_per_conversation` in `prices.yaml` with the measured usage. With the D030
+   models and OpenRouter's listed prices, the pre-pilot `--dry-run` estimate is $2.03 for P0 and $4.25 for R0.
 5. **Approve.** Approve the budget (STUDY_PLAN 10.5). Set `frozen: true` in `models.yaml` and in `prompts/v1/MANIFEST.yaml`,
    and record both in DECISIONS.
 6. **Run M4.**

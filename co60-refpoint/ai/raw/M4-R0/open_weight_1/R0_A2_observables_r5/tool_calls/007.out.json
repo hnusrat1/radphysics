@@ -1,0 +1,9 @@
+{
+ "stdout": "",
+ "stderr": "/tmp/work/_call_007.py:8: RuntimeWarning: divide by zero encountered in log\n  return np.exp(np.interp(np.log(np.clip(E,1e-6,20.)), LE, np.log(mu)))\nTraceback (most recent call last):\n  File \"/tmp/work/_call_007.py\", line 300, in <module>\n    res = photon_mc(200000, seed=42, verbose=True)\n  File \"/tmp/work/_call_007.py\", line 112, in photon_mc\n    proc = np.digitize(rp, [c1,c2,c3])\n  File \"/opt/venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py\", line 5765, in digitize\n    mono = _monotonicity(bins)\nValueError: object too deep for desired array\n",
+ "exit_code": 1,
+ "timed_out": false,
+ "wall_s": 0.35,
+ "stdout_truncated": false,
+ "stderr_truncated": false
+}

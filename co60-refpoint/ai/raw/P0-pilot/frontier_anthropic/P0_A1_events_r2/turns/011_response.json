@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791815859-dlVi3z3UdCIHJe7YheFd",
+ "object": "chat.completion",
+ "created": 1791815859,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I've gathered events 0-64 and 65-134 so far; now I need to print the remaining range 135-200 to complete the full set of 200 events before assembling the final answer.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01HdVKF7BoLXYrG5C5e3nnUE",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"print(\\\"\\\\n\\\".join(L[135:200]))\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I've gathered events 0-64 and 65-134 so far; now I need to print the remaining range 135-200 to complete the full set of 200 events before assembling the final answer.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSsAgKEAgSGAI4AUIIdGhpbmtpbmcSDLQM4gu+JDpBQ8cwNBoM+8GT40DR4GsxOBIMIjAvH9jcF7SLVh/Ol4nZtsZCmGFOfLcnIEO9cIgydry3p2lQfIV9QaRxNUfbDjDyTBEqzQdrJR6b5/cJhLyqzKmGVIbZezhMYbltZCbc0ZKsBLUhJa0ayglP9EACvCJ1cRDNSFi0JYhBSjxs6lWbWbUMvdXQpYsImWH+f3Fzjint207QEZGbZCaIOh/u5ZGC+MTCeoj6rlqDzvTaPH14fK0kBHpeQjx490RcrmeNgDk/p2KwxU59OEvj+/h61lIMq/K6o13Fw+soqOnW4ygu+amZpnhYgtkvX12aAaD+HpGZGgLktwn8FHb/jRk7h3R7v6T5VnDZaorqrKOkIzND9MkPVXsH5YgwAjsWobnQ4gdYue1/GTlD7vounDckYH51vi6kZoV5f60utbfunlffQ9e9+8F7pjUd8XYhCyJEo+BHQQAtGPcCnz6P3XB+QDMABxoxFhJJdVX+NpHAc0rEOtU9Gm2jEm+Ls5aevgKQqwQ17Kj8/HOvTuJ4RtNHjTxOMQoncnbb+BNoRGUo28Ng+yrXFHZRuVURU0w5u58EFnoRQv/MTB4gxXQc5Mfm+QVX8CouMImvCRO4Jqzv4JyTZwoMblmtEtGF3K44ysW5Hfs16GnIWs4GuYPjNz7bRSgj0D1WwpIdmhVPdhbJrV0wv6JxyM7Kjm7xfxmVy+J1ryu8fLTzpaTaX99pOdZ1KDMbMxN7wivGBoaupLUnacK0nuxSYZK2TyP1k6JaRwegpwLzTKMfzpcNJTBm/mGvS57NTJohEmKEj3jtDqYvly6prjtidWPPUJ6Qb/fmd85ojvJ1s+tmsEFjFLO04jUfnYd3mLSkC7rlSZpZ9dtdJQqMQvqYHe2Qa5CDn50cwn+uCR61sANYfsUJRjf7QKJOdxqVWkWVe4kO89RaFemCutpVMhlU8CS136P55loonkQZjHvmFV3A/5+z8IlztgP5PjWzXFrK7neC85udOoaEdcOVo/5HV0yPJaGMWRJkrW0qMFi81i26P7v5/WD9njdq2WxzB4WZoWaHNLe88kk4aDXFuzhn1E4A63zllWWxWrOVYGuCAYYpOUaMHeraDgUpHhEnwckATUCnBHzRN8kXbf/ROvnPBY3PN1e+/HCGWd0UTs9b8EPwNVYluXfU+J8R5b5nBi+C48tZvRj8BZ+f5dLRBh23MfA4wx3F5CkbHAAPWJiDVxGHQz9IMbd4a1ixrUT7VOzBl9SVxShY1Lih9Omg74/aVFiYJybdeJ0Amgk8eoZCMu2d8jIXdCl00Ix5co3S5lByvhRM0TPgKdpQ3GQ4nnxCOl2sz26FVmT748AjIvAWnynovMviZZMj7TXx6nY6tpKmTxE08Q8Hi5khiZGzIUyBGAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 58063,
+  "completion_tokens": 166,
+  "total_tokens": 58229,
+  "cost": 0.0058893,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0058893,
+   "upstream_inference_prompt_cost": 0.0058063,
+   "upstream_inference_completions_cost": 8.3e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 107,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

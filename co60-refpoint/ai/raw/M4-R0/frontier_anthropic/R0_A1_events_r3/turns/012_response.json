@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791827781-sTLrn9TlJOQcT7bDKTXg",
+ "object": "chat.completion",
+ "created": 1791827781,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "The display truncated the middle of the file, so I'll print a compact version to copy the full list.",
+    "refusal": null,
+    "reasoning": "The output got truncated and I'm missing some of the list, so I'll print everything again as compact one-line JSON entries to make sure nothing is cut off.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01QzPsnFSUCwbUqu7TCoCo9e",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"print(json.dumps(out, separators=(\\\",\\\",\\\":\\\")))\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The output got truncated and I'm missing some of the list, so I'll print everything again as compact one-line JSON entries to make sure nothing is cut off.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSvwgKEAgSGAI4AUIIdGhpbmtpbmcSDKkQWXqQ5l1k/GyFAhoME0Ols+UXt07kqzHsIjDPB9hPzMb6TCFMwOna/lerZVOkoxZ0NbMjbtmfmHjXKbyzOi+LPB1zVeuDREPeb8Qq3AcbnHQCpEOE1M10ae5rs9eANLJtzo9HKqCwv/PcbJ/kYsFr0t7ggq7TjLconybexwFydk+rA8O4dIklnNLH9tF11aaaZ0Gdrpmt9nphX0Ok577QR77G53Op+T6VQ6JmESwzPBsMQkkfz9xQTCHJTXlFg0m+iE9WSh1LK1P4/pnAxfAfFi//jUJQ8RGsWHIDB1o2xRuwiFxnYGjisF77DQ9CYEj+WM6g3C0eqktxmt8DVEKmaepmk6PWiIZ6aapTUHfgYNHFnyfHYbalTaYVGajCR0FMsxukyIn0YzkipztMSUYWxQ3XaEKRBqgbmqKLZ381gyCG3H/AeDXhulN85aG10p1QQYFej6mX//xR8xfH3IrFpADjzHpI9/w/1NLvD4qUWSNy1IcqPh+PMJK4HB2zWHD/3qgShqo3F2UhS24BPYSwG4RM/JWr5PiXFT9nN9ICK/o3Ql3fZstspU5M0oKaf5Q3t/g+msvHifmACPnCK+uYStZ/72Qxj521Zjo3olw+qpfw3pq/+WOg4FGHPZHHHYeyal9uSVDdhsEbfBohNyjKEeimo7LVyBxymnZ9IS95+avfv9rSgP8WzuNam6am+OuaevOlL+V8fYY6SoaOqczmFjLRs2b/tCx+GmZhbpzy0iI6jTx1qL+rDaDMVpuSHml/C0PXPX0tokoZDzwIwq8fZuVD9YArqi/6jPz0o3vAWdffeWtm+u4iC6XSRuqlc7xhMtzwX6zDanpWsS3luBNb0SA1WXzUbssq4lGfBXJXI3eAaakWO48o/Xs0HkhSrgxKwGq3bKJN3iVV6gbf6XFxmFjf/rbhxGY/ubRHPkt987Yc3B25Ei8fVnqAT8MVCHN82TFecvOC9mltPMpdyv72AwpwC9/wFsJgQPC4Uha4hocTAS/7Pc0tbjPADRF+ISSg0GyzHuIpD/oGK9rLm6OQz4ZzKtt/4AiBSrR2U9EJsD5KvZmljEavu6sVjXqLJii0V/6YhepNO2LBYvxfXODZHCebqV4aqKTJABExZNAxdP2tqXBgfCsxPgQc6SH5cf6PYPJS9oqL5Z15vDDIfMtf+GBrSNBOM/H2LuEpSlGr5k0+LETlii7ieqk8Sah0C+2nLtHxamBbUCY6rypsCZW5QGTd/jK56LPpD8h6N/SbxGpMnHM687Ha3NEZVuTDaze+zLpkIx4TfyI/dXgTplZOAO05toqr+caOB62K5BoWGOenvK0tE6NFL1wKdMwtNp5hcreTCfl1DJG+0rcQfs3sjoUNSYCW/0VVf4bAYNIJCcsTBDH5LmipU/KbXZDs+We8iHg5bXcxIgDdGAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 69595,
+  "completion_tokens": 177,
+  "total_tokens": 69772,
+  "cost": 0.00245995,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 55025,
+   "cache_write_tokens": 14568,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00245995,
+   "upstream_inference_prompt_cost": 0.00237145,
+   "upstream_inference_completions_cost": 8.85e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 85,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

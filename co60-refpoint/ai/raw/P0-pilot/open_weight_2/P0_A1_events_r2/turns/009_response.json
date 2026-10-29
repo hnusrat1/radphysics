@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791815550-MXRRGK73Yg0Hfm17I8yp",
+ "object": "chat.completion",
+ "created": 1791815550,
+ "model": "qwen/qwen3.7-flash",
+ "provider": "Alibaba",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I have a typo `for _ in in range`. Let me fix it and run again.\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_67f4583bb0214236a4b38668",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport numpy as np\\nimport json\\n\\nme = 0.510998950\\nmu_compton = 0.0428\\nmu_photoelectric = 0.0001\\nmu_rayleigh = 0.0002\\nmu_pair = 0.0052\\nmu_total = mu_compton + mu_photoelectric + mu_rayleigh + mu_pair\\nprobs = [mu_compton/mu_total, mu_photoelectric/mu_total, mu_pair/mu_total, mu_rayleigh/mu_total]\\nn_events = 200\\n\\nnp.random.seed(42)\\ncounts = np.random.multinomial(n_events, probs)\\n\\ndef sample_kn(E):\\n    alpha = E / me\\n    for _ in range(1000):\\n        ct = 2*np.random.rand()-1\\n        Ep = E/(1+alpha*(1-ct))\\n        s2 = 1-ct**2\\n        f = (Ep/E)**2 * (E/Ep + Ep/E - s2)\\n        cts = np.linspace(-1,1,200)\\n        fs = [(E/(1+alpha*(1-c)))**2 * ((1+alpha*(1-c)) + (1/(1+alpha*(1-c))) - (1-c**2)) for c in cts]\\n        if np.random.rand()*max(fs) <= f:\\n            return ct, Ep\\n    return 0.0, E/(1+alpha)\\n\\nevents = []\\n# compton\\nfor _ in range(counts[0]):\\n    ct, Ep = sample_kn(2.0)\\n    events.append({\\\"process\\\":\\\"compton\\\",\\\"e_in_MeV\\\":2.0,\\\"e_out_MeV\\\":round(Ep,6),\\\"cos_scatter\\\":round(ct,6),\\n                   \\\"t_e_MeV\\\":round(2.0-Ep,6),\\\"cos_electron\\\":None,\\\"t_positron_MeV\\\":None})\\n\\n# photoelectric\\nfor _ in range(counts[1]):\\n    ue = 2.0-0.00053\\n    u = np.random.rand()\\n    ce = 1.0 - 2.0*u/(1.0+u)\\n    events.append({\\\"process\\\":\\\"photoelectric\\\",\\\"e_in_MeV\\\":2.0,\\\"e_out_MeV\\\":None,\\\"cos_scatter\\\":None,\\n                   \\\"t_e_MeV\\\":round(ue,6),\\\"cos_electron\\\":round(np.clip(ce,-1,1),6),\\\"t_positron_MeV\\\":None})\\n\\n# pair\\nfor _ in range(counts[2]):\\n    exc = 2.0 - 2*me\\n    fp = np.random.uniform(0.35,0.65)\\n    Tpos = fp*exc\\n    Tel = exc-Tpos\\n    cep = np.random.beta(1.5,0.5)*2-1\\n    ce = np.random.beta(1.5,0.5)*2-1\\n    events.append({\\\"process\\\":\\\"pair\\\",\\\"e_in_MeV\\\":2.0,\\\"e_out_MeV\\\":None,\\\"cos_scatter\\\":None,\\n                   \\\"t_e_MeV\\\":round(Tel,6),\\\"cos_electron\\\":round(ce,6),\\\"t_positron_MeV\\\":round(Tpos,6)})\\n\\n# rayleigh\\nfor _ in range(counts[3]):\\n    cr = 1.0 - np.random.exponential(0.05)\\n    cr = max(0.0,min(1.0,cr))\\n    events.append({\\\"process\\\":\\\"rayleigh\\\",\\\"e_in_MeV\\\":2.0,\\\"e_out_MeV\\\":2.0,\\\"cos_scatter\\\":round(cr,6),\\n                   \\\"t_e_MeV\\\":0.0,\\\"cos_electron\\\":None,\\\"t_positron_MeV\\\":None})\\n\\nnp.random.shuffle(events)\\nassert len(events)==200\\nassert all(e[\\\"t_e_MeV\\\"] is not None for e in events)\\n\\nout = {\\\"method\\\":\\\"Random sampling at 2.0 MeV using NIST XCOM cross sections. Compton angles from Klein-Nishina; pair energy sharing uniform; photoelectric angular distribution forward-peaked; Rayleigh coherent scatter forward-peaked.\\\", \\\"events\\\":events}\\nprint(json.dumps(out))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I have a typo `for _ in in range`. Let me fix it and run again.\n",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 35326,
+  "completion_tokens": 1001,
+  "total_tokens": 36327,
+  "cost": 0.00126036,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 33408,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00126036,
+   "upstream_inference_prompt_cost": 0.00085996,
+   "upstream_inference_completions_cost": 0.0004004
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 19,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

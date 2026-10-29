@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791816499-52B3mx2sGLGXkoaViWnF",
+ "object": "chat.completion",
+ "created": 1791816499,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I recall xs.py was written in call_003 before the import, with the code defined there. But the module seems to be missing mu_tot, so maybe there's a stale xs.py lingering from an earlier version\u2014I should check the file's actual contents.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_016egTK8k22zuHm6eqA1wkFF",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nprint(open('/tmp/work/xs.py').read()[:300])\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I recall xs.py was written in call_003 before the import, with the code defined there. But the module seems to be missing mu_tot, so maybe there's a stale xs.py lingering from an earlier version\u2014I should check the file's actual contents.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSiQgKEAgSGAI4AUIIdGhpbmtpbmcSDD3Hdo2ao0hxz9Bo4BoM0mlLbKZYLkIlp8r0IjBLFiV+bqgcclDAnGLhaLH0bZKpw1iwGZ4FDSGo1Q2z9YyUSdlZJTZHzNeQHp3ea0kqpgdTvcyq87m37Cs59z2zYcridfkZnO8mPgtSixta++BQW32hXZyiI/7GzVNlhOABIUMr+9dQl1rKUdGbkF5kKagI135kNSlPK2z2vtw2T7G40l9uWyAI8LNkDt/B92bpEowdEYND1NGcb1pn9ltV82gLKglMrd/ktYuwbSyjfSE2FKQ5FkQf2S/kvkXUZ7hfD1VOmDnq0N4hNHCkfuhgkWfke0p+JOu/P86r3t53bHCSZaJSIo3a/xZSfmRv+pA9Y5Pe5B++U6CT76SoMAGb+Mrd9HjPYbttIUIW4Agf33gSuwFaXB0d4TTdZ9spwyhGnK7yl6/BnEGKKyuvEPn8sQJyl/LO/JRxLrk9dZn00ltxeHc+PGIWyHByXOw4T3twbvVMh4g4UGGYUK2AwK1a83QAvR8W3Bb/xrHrnBPWnKgvkEh4pu3vsZmUYkXjKzsAHkMKWn+IlH+KvCRY7Ow1DB7QWd+jQp02YeYz6MZUrp0VNJ1G4tzowmu8tPZviBX+HPbv4UYzv74Lk4fa7Ks4CC9PUmPrSiLNLUof+jdvXEluNGUT/r+ysuLJjFlNLNYVJgMstupWIjyllmThfotVEzFmCqwpCRh/cr6m+AtVKMddG7ETebhMvNW4cH9neWt7ApnKO3tF8O9QCl/1GacuMwUTyrFWyfyUywoCwXWxTWX7yDpLF+kFn/elzE2jIpD9gZtBmCLQ02CGWFH9hSjVBtzKeRL7hi9VrEdr9UT8hsRfa8Zj2oAMXumgv9o5pF/SZ9MbwtwmnTOIlB5cznDaAl8zh/NIhwtp/chRIMZl/QvlsWf26e/w9f5uyIUfqqQs4X9KGdIckwExKWNA2Bc25icWGyL1oUbFmIYqENesdU7NORzOE7+A7OIb5yAzAZfh1Da12CP9TB9NeSjolj63qcUne7v3bqz2EkoLZQsvAx3jh0lfL00o27BZLz6Iw0tc6gVBIYjHOCvqYFABHorfln/Ou06iyQ2LVAo3zD/Uk5Yvo4YJ72KTJBPfI4va8p8mzj1ldhp10Zn96OHIzsznrIIfNiWE7+PQ7h/UQ61NUsCbKxORjYjymmFxbTBf+8O7icDWQWB0jLAErcJdwX2ofekbud/wgDxDh+1HiseXfXM1KpSZUiVLxS8uzww8ZH1nPn8XiQaapx/LOsmjXAZLC15JFA0rp/pk3ECQKDD06egB7KIoXW/TsM5eyHsarEGTOYRAV1YqFJxspaT5XIal8znE3hdGIKJMGAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 29577,
+  "completion_tokens": 174,
+  "total_tokens": 29751,
+  "cost": 0.0030447,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0030447,
+   "upstream_inference_prompt_cost": 0.0029577,
+   "upstream_inference_completions_cost": 8.7e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 105,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

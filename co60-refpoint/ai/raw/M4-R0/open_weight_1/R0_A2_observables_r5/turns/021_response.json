@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791831288-y53s7jfvxJIdvFSUezQw",
+ "object": "chat.completion",
+ "created": 1791831288,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "GMICloud",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Now no spurious pair events (int_all[3]=0 in 1M; pair should be rare anyway). etr_all no longer negative.\n\nBut hmm, in 2M we still see 0 pairs in scoring volume. The physical pair fraction at 1.33 MeV is ~0.075% of interactions; in the scoring volume the interactions are ~1070 in 2M, so expected pair count ~0.00075*1070 \u2248 0.8 \u2014 consistent with 0-2 observed. In the 6M run we had 3 pairs (which included the spurious ones). The real pairs will contribute ~1-2 per 6M. Stats will be noisy but pair is tiny anyway.\n\nNow let me rerun the full 6M photon MC with the fixed code and save. This time I'll also add the kerma(z) tallies for PDD? I decided to get D(z) from the electron MC, but I also want K(z) for cross-check. Let me add K(z) tally to the photon MC: for a set of depth positions, tally energy transfer in thin cylinders. That requires checking each interaction point against each depth cylinder \u2014 easy. Let me add this to the module before rerunning.\n\nDepths for K(z): I'll use the same as electron MC scoring depths: [0.2,0.35,0.5,0.65,0.8,1.0,1.5,2,3,4,5,6,8,10]. Radius 1, thickness 0.2. For each interaction in those cylinders, add Etr. Also count interactions per depth for the K(z) profile.\n\nLet me patch photonmc.py to add optional depth tally. I'll add a parameter pd_depths and arrays Kdep, and fill in the interaction block.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_465f935457f04839ab8e3810",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"code = open('/tmp/photonmc.py').read()\\n# add pd_depths parameter and tallies\\nold = \\\"def photon_mc(N, seed=42, region=4.5, region_zmax=13.0, save_src=True, verbose=True, debug=False):\\\"\\nnew = \\\"def photon_mc(N, seed=42, region=4.5, region_zmax=13.0, save_src=True, verbose=True, debug=False, pd_depths=None, pd_half=0.1, pd_r=1.0):\\\"\\nassert old in code; code=code.replace(old,new)\\n\\nold = \\\"    n_cyl_seg_prim=0; n_cyl_seg_scat=0\\\"\\nnew = \\\"    n_cyl_seg_prim=0; n_cyl_seg_scat=0\\\\n    if pd_depths is not None:\\\\n        pd_depths=np.asarray(pd_depths,float)\\\\n        Kdep=np.zeros(len(pd_depths)); Ndep=np.zeros(len(pd_depths))\\\\n    else:\\\\n        pd_depths=None; Kdep=None; Ndep=None\\\"\\nassert old in code; code=code.replace(old,new)\\n\\n# insert depth tally inside `if in_sc.any():` block? Actually tally Etr for all interacting photons in each depth cylinder.\\n# We'll add after the Layer3/etr computation, before `if in_sc.any(): ... int_all` block.\\nold = \\\"\\\"\\\"            if in_sc.any():\\n                psub = proc[in_sc]; prsub = prim_part[in_sc]\\n                np.add.at(int_all, psub, 1)\\n                np.add.at(int_prim, psub[prsub], 1)\\n                np.add.at(int_scat, psub[~prsub], 1)\\\"\\\"\\\"\\nnew = \\\"\\\"\\\"            if in_sc.any():\\n                psub = proc[in_sc]; prsub = prim_part[in_sc]\\n                np.add.at(int_all, psub, 1)\\n                np.add.at(int_prim, psub[prsub], 1)\\n                np.add.at(int_scat, psub[~prsub], 1)\\n            # PDD depth kerma tally: Etr per depth\\n            if pd_depths is not None:\\n                Etr = np.zeros(len(ii))\\n                mm = m_inc\\n                if mm.any():\\n                    # recompute Te for all compton (we have them only for m_inc subset); we stored Te wrt subset\\n                    pass\\n                # we recompute Compton Te for all interactions cheaply here\\n                # (already have newE for compton rows; Etr = E_int - newE for compton)\\n                Etr[m_inc] = E_int[m_inc]-newE[m_inc]\\n                Etr[m_pe] = E_int[m_pe]\\n                Etr[m_pair] = np.maximum(E_int[m_pair]-1.022,0)\\n                for kd,zd in enumerate(pd_depths):\\n                    in_d = (np.abs(p_int[:,2]-zd)<=pd_half)&(p_int[:,0]**2+p_int[:,1]**2<=pd_r**2)\\n                    if in_d.any():\\n                        Kdep[kd]+= Etr[in_d].sum()\\n                        Ndep[kd]+= in_d.sum()\\\"\\\"\\\"\\nassert old in code; code=code.replace(old,new)\\n\\n# add Kdep to result\\nold = \\\"        n_cyl_seg_prim=n_cyl_seg_prim, n_cyl_seg_scat=n_cyl_seg_scat\\\"\\nnew = \\\"        n_cyl_seg_prim=n_cyl_seg_prim, n_cyl_seg_scat=n_cyl_seg_scat, Kdep=Kdep, Ndep=Ndep, pd_depths=pd_depths\\\"\\nassert old in code; code=code.replace(old,new)\\nopen('/tmp/photonmc.py','w').write(code)\\nprint('patched')\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Now no spurious pair events (int_all[3]=0 in 1M; pair should be rare anyway). etr_all no longer negative.\n\nBut hmm, in 2M we still see 0 pairs in scoring volume. The physical pair fraction at 1.33 MeV is ~0.075% of interactions; in the scoring volume the interactions are ~1070 in 2M, so expected pair count ~0.00075*1070 \u2248 0.8 \u2014 consistent with 0-2 observed. In the 6M run we had 3 pairs (which included the spurious ones). The real pairs will contribute ~1-2 per 6M. Stats will be noisy but pair is tiny anyway.\n\nNow let me rerun the full 6M photon MC with the fixed code and save. This time I'll also add the kerma(z) tallies for PDD? I decided to get D(z) from the electron MC, but I also want K(z) for cross-check. Let me add K(z) tally to the photon MC: for a set of depth positions, tally energy transfer in thin cylinders. That requires checking each interaction point against each depth cylinder \u2014 easy. Let me add this to the module before rerunning.\n\nDepths for K(z): I'll use the same as electron MC scoring depths: [0.2,0.35,0.5,0.65,0.8,1.0,1.5,2,3,4,5,6,8,10]. Radius 1, thickness 0.2. For each interaction in those cylinders, add Etr. Also count interactions per depth for the K(z) profile.\n\nLet me patch photonmc.py to add optional depth tally. I'll add a parameter pd_depths and arrays Kdep, and fill in the interaction block.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 102538,
+  "completion_tokens": 1299,
+  "total_tokens": 103837,
+  "cost": 0.0033716592,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 85106,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0033716592,
+   "upstream_inference_prompt_cost": 0.0031352412,
+   "upstream_inference_completions_cost": 0.000236418
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 385,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

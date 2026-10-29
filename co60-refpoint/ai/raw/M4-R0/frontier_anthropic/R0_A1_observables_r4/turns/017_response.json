@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791826999-mRWq5TeyFVZTHYZFrDdo",
+ "object": "chat.completion",
+ "created": 1791826999,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Since state isn't persisted, I'll write everything into a module file I can import later, making sure the restricted energy loss and mass stopping power units stay consistent\u2014delta rays per electron times electrons per gram gives MeV cm\u00b2/g, matching the stopping power per gram.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01ExasizcN2SA7Zu3C9UZ8b6",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nelec = r'''\\nimport numpy as np\\nme=0.51099895; re=2.8179403e-13; alpha=1/137.036; NA=6.02214076e23\\ndef beta2(T):\\n    tau=T/me; return tau*(tau+2)/(tau+1)**2\\ndef density_delta(T, C,x0,x1,a,m):\\n    beta=np.sqrt(beta2(T)); gam=1+T/me; X=np.log10(beta*gam)\\n    mid=(X>=x0)&(X<x1)\\n    d=np.zeros_like(T)\\n    d=np.where(mid,4.6052*X-C+a*(x1-X)**m,d)\\n    d=np.where(X>=x1,4.6052*X-C,d)\\n    return d\\nWATER=dict(ZA=0.55509,I=75e-6,C=3.5017,x0=0.2400,x1=2.8004,a=0.09116,m=3.4773,ne=3.3428e23)\\nAIR  =dict(ZA=0.49919,I=85.7e-6,C=10.5961,x0=1.7418,x1=4.2759,a=0.10914,m=3.2125,ne=3.0062e23)\\ndef Scol_per_mass(T,mat):\\n    T=np.atleast_1d(np.asarray(T,float))\\n    tau=T/me; b2=beta2(T)\\n    F=1-b2+(tau**2/8-(2*tau+1)*np.log(2))/(tau+1)**2\\n    delta=density_delta(T,mat['C'],mat['x0'],mat['x1'],mat['a'],mat['m'])\\n    L=np.log(tau**2*(tau+2)/(2*(mat['I']/me)**2))+F-delta\\n    return 0.153537*mat['ZA']/b2*L\\ndef Srad_per_mass(T):\\n    T=np.atleast_1d(np.asarray(T,float))\\n    tt=T+me\\n    return 76*NA/18.015*alpha*re**2*tt*(4*np.log(2*tt/me)-4/3)\\ndef moller_dsig(T, eps):\\n    b2=beta2(T); tau=T/me\\n    x=eps/T\\n    f=1/x**2+1/(1-x)**2+(tau/(tau+1))**2-(2*tau+1)/((tau+1)**2*x*(1-x))\\n    return 2*np.pi*re**2*me/b2/T**2*f\\ndef Ldelta_per_e(T, Dcut=0.01):\\n    T=np.atleast_1d(np.asarray(T,float))\\n    out=np.zeros_like(T)\\n    for i,t in enumerate(T):\\n        if t/2<=Dcut: continue\\n        e=np.exp(np.linspace(np.log(Dcut),np.log(t/2),400))\\n        out[i]=np.trapezoid(e*moller_dsig(t,e),e)\\n    return out\\ndef Sres_mass(T,mat,Dcut=0.01):\\n    return Scol_per_mass(T,mat) - Ldelta_per_e(T,Dcut)*mat['ne']\\n'''\\nopen('/tmp/work/elec.py','w').write(elec)\\nimport sys; sys.path.insert(0,'/tmp/work')\\nimport elec, numpy as np\\nprint(elec.Sres_mass(np.array([0.02,0.1,0.5,1.0]),elec.WATER))\\nprint(elec.Scol_per_mass(np.array([0.02,0.1,0.5,1.0]),elec.WATER))\\n# check Moller normalisation: total delta cross section above Dcut vs known (T=1 MeV, Dcut 10 keV) ~ \\nT=1.0; e=np.exp(np.linspace(np.log(0.01),np.log(0.5),400))\\nprint('sigma_delta(T=1,>10keV) cm2/e', np.trapezoid(elec.moller_dsig(T,e),e), 'N_e*sigma', np.trapezoid(elec.moller_dsig(T,e),e)*3.3428e23)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Since state isn't persisted, I'll write everything into a module file I can import later, making sure the restricted energy loss and mass stopping power units stay consistent\u2014delta rays per electron times electrons per gram gives MeV cm\u00b2/g, matching the stopping power per gram.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS+AkKEAgSGAI4AUIIdGhpbmtpbmcSDFu3uZKN6pa+2JW8nRoM0EkeggX5gFhs77vqIjATSKQqKO18YM6+lWHxBnKc39qWCRyug4rg1gAxqvgaIR2xDFOpNdhHwsi92uzzX6QqlQmcxNJ3YZwvTCbPUGgZVzgt0N6ycb7nufCN/+r9Kg3QLNUspNwxbEj9Rx3Xxhzg4JxUYLvPardci5Iu/jfUWXPgVtjMxO12l9df3XxvghfvRxgIUNLc8tY1MibkAYMG5tDKdWRilK4IX8T6lFajPfO85LfpIWOT36R5mw3v8LFUKHsF5UQpFtPcw7gTWHvY2ZK1z1tQyHJXDj+IIy9ffo0z0sbqvTAkr+CZb5xz+Yuqw4Ej9QSh6xgUDexQsYLm6sOCmhojWKl/VU/mp34ymtBv+KWQTiEVomyc/0V0OlZBA7k6eSz6xLofS6BjwbRg+AOQFZnI6qIpo+rSJG7E54wuAI1HxBlK4QNI1m4gX8cruJssTbDf2inUHv0RXImCmeHVSpAtkQnvAdGiJUixkN7n0kVBMqxHcZxmShBTNmrKPiA8KBNNQZmMgPMFuhRrJFrMGYdnPDwEjwqFXrxj/edE/14EDpL/dU9hPnWFCvivf5hC2JHDwihg4qcfQRPU4KZL7yttIt79z6CdqkRqsE2mYYHZ7d9pXGljXEqqzRMXjj6IJnlQCpHavwPAf/8rFoHw1atT7empyc0rwCYPCTUw8/kPlUvE7XRqaZUWFczjK2SMYDCfGLg/q5icqbxApJKmBICZ7OQJ+TUiWwXwUW5VZ227dTk/0PqTI1hZXZnFU4xRLfjpsJHYnhmGVG1CTq1lVGqhouQGAs16OwlDVX4msBiwEzSob1A0BQaXBaN5QENOXYjhOGvduc3ZXVPu+t4XdwyQdbTykuVCWH09M5JyjqckN/RszV92lplRihkuVhSp5nP8bxlqPoc4a8fBnMUPLBX6sH7nX1ELELYEVLmzI2RCLLpLRHfZwuu3qQLiemfPhUAgRHNqb81/vcOsuG1FElgikYKryZbs7shmzY6SQbSqu8xsU6qkZWj+n8OlmwvmI3NyyF+oHqzpukZGddYYaNZ1s0DqvUB/zKkaAo0lHG4zMrwOiwc8e+41iUUc3x0nRVTEDHaDvHKrJnsUHrsJiTwpQdvd/ONeyadJQAmS86tC32wKJAbgw2iPHOxU94Tm7+Lnd15+Ptzj5KeXUC7eS7vRlhgK1+9u22xxLvpPnwaTLWeXV5tnhl385co+P/Ue++6aLi+hod7b10WoIc8cJOemMWzFwZZfWQppJHhqoPvlC8sVa8trnNowsTEg6d3kfIyDyC39YPjjXFEik1DbplUlAq+kIN3VtlU+u64OM+MfTWaLjvgrnDKnWDhm+LEUAU+OXG5W5j7IzO07ZRw4jdzs3kwmxvUG73SO6yzmmY2a5yrT7i8eCWQJ0OXI/JoYKE/tTGMiuFyerbmCXq3PnnBd8sOsXecmsc9NkMhSWnirPDEgRuffJHhd2yhx8kYIbmKifbQx5aQdgzrvDlH+jxOn8XpgHlxRUDfRCmlIPe0swn63z86j5hof4qBnwZXQt+pw0ver9f+j4r2OKgXmYuT2Sbi96dyoAkqrj/6HuIKcE8tvS9IQBcQN+Ap0PJ9exT49FVpS6Cj5du+lt+SQR8nZs6zux/tZzgfuU28m5OpqXeYYAQ==.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 110343,
+  "completion_tokens": 1590,
+  "total_tokens": 111933,
+  "cost": 0.010100825,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 109284,
+   "cache_write_tokens": 1057,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.010100825,
+   "upstream_inference_prompt_cost": 0.006125825,
+   "upstream_inference_completions_cost": 0.003975
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 199,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

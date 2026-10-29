@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791824329-3F0dYGtIK5BC60JhRLeM",
+ "object": "chat.completion",
+ "created": 1791824329,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_ncjSg0zMSwH6NCVZLuhWvi1D",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import numpy as np\\nm=.51099895\\nedges=np.array([.01,.05,.1,.15,.2,.25,.3,.35,.4,.45,.5,.55,.6,.65,.7,.75,.8,.85,.9,.95,1,1.05,1.1,1.15,1.2,1.4])\\nv=np.array([.0001,.0002,.0003,.0005,.0007,.001,.0012,.0015,.0018,.0022,.0026,.003,.0035,.004,.0045,.005,.0055,.0055,.005,.0045,.004,.0035,.003,.0025,.0015,.001,.0008,.0005]);v*=.075/v.sum(); epht=np.linspace(0,1.4,29);Ebin=(epht[:-1]+epht[1:])/2\\nx=np.loadtxt('/tmp/data/xcom_water.txt',comments='#'); logx=np.log(x[:,0]);\\ndef ci(E,j): return np.exp(np.interp(np.log(E),logx,np.log(np.maximum(x[:,j],1e-300))))\\ncc=np.linspace(-1,1,40001); dcc=cc[1]-cc[0]\\ndef rh(E, weight, hist):\\n ep=1/(1+E/m*(1-cc)); ds=ep**2*(ep+1/ep-(1-cc**2))/2; T=E*(1-ep); ww=ds*dcc;ww[[0,-1]]*=.5; norm=ww.sum();mask=T>=.01\\n hist+=np.histogram(T[mask],bins=edges,weights=weight*ww[mask]/norm)[0]\\n return weight*np.sum(T[mask]*ww[mask])/norm,weight*np.sum(ww[mask])/norm\\nhp=np.zeros(25);hs=np.zeros(25);mp=cp=ms=cs=0\\nfor E in [1.1732,1.3325]:\\n w=.3645*ci(E,2); a,b=rh(E,w,hp);mp+=a;cp+=b\\nfor E,f in zip(Ebin,v):\\n w=f*ci(E,2);a,b=rh(E,w,hs);ms+=a;cs+=b\\nq=hp+hs\\nprint(cp,cs,cs/(cp+cs),mp/cp,ms/cs, (q@((edges[:-1]+edges[1:])/2)/q.sum()))\\nprint('all', (q/q.sum()).tolist())\\nprint('parentprimary', (hp/hp.sum()).tolist())\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzRHLmlUQ54u3tVGt-bem4_AZn4hhtXGUbPZMRzFcsYeKZB5IOqF0DIPNGgGAYkpRKgni0wA7rI1rHitjnFAW3rxtDP2aBMxniv5J0C39XiopHChy2BJMWEaXMOdr0LoJ0a-Fv484FLZjTlLVHzpbglG99_f7pF2h41ov38TqUIF_S5AGamLKESiaZFPjJZoyM2Kn6zbPBI_5wI045qf4T4Knp4lN_g2JTWE2Fx3aoBc-IAnWwyRmo9sEJDWhnnZ7dvlaZ9Wuu6gvnRGdVgc5H9hIhImJeP4PfN2hSHzpvhYcZ8ha46n7NW42-nyRiKgu53y6qmGHhHeSyEWVzNb3OJSr8mNy7-awXwPVE1RmLYGEk7NQkC8gHKyvf_AV5mY4fB9MoK0gBDvstKC4S1ToFNNQ8lo0Pl7SwdwUABjTrgGrQ2-J3OYpIvJqloWFMoKRmN9f-5y904hWWMPDbbCrcOs9LSMrGZHJIB40AE7FnRJiUnUusWOUWCFYxmeLbRdHt-U7cwW8VBpZ13ia6omLL9GL__k-XH6B3GT7qfdTGI8s6pJ7hIvv6-5T8z215LV3muo2YNNd4s9eMryUhakNCcuIUupLfpu9G7e61gBIVyCM5v79ymza_NK_LU--zcajqOhAUBmce06FQpxxw1KhBQ2BU1IrvftxC8SgkxZHSvdiAmMIrx-pQ15bbGKhlf6Myje6y-4DUReIqDNrqamBUH7OYv9SQuCDPioARaH4QXQRJ38Ezxa54YEcP5qVtucNO-bmFcMgfNrHmpBxrd_TPeKlqGg2Ab9q8LeS5r7KqtIhts3j8PxS2C01Gf_axaZX9UZAQn1S-orBypg1OCmtzgJ0bTjROvy9YxxG1gJ4c0UpBUvpbxFv93eoeAAPbdQSOnOyWgAmQFXxw_mgGq8dX0EmWxCE7ZZgrkXUG0ZF7SQ59YBohbbDdJx2nytUF6AMxOrvhAcyHzBsESyPgMUNEF3hB9sJ5YMD_nVyQPxX3FflvJQW1a8b3lsI8kkV-tJG-F_sbPCVToigNT7rsv8Yeo6yUJkVWV4le7A9dk9Rmk4SA9gEJ_vQFqy3jQVItm1w1_G1Vi9XQlgjlb20D4RgedmpfcawSAVlSXwXxae8Sg_Y1kICz50_VcExV-cgaGoryS8FqBN9eC5yPbG8uqiNaPqsdQ8ZQ5-cM-mqpJUTNDcj_I29XhGSH3OzsP827AYY-pTCyLwR3xJkTaiYmc6d3R7OFDl0_SEimC_QOC0Hj14AO7faj7znAInCfvagMVIHz34npPhvLbRG3hSXUtwnaeWFXcCBpB47fEOprN0_MWeTsFZHTTPSzRtXKT01DQMBFxC-jbH6jtR6A9XgaJTqOmTHmuaSD2dbC2p2UJz2rVBQWLci4WZz9apzxMcnLqvzVVs2EGB5brpQx7LRzrV6WWHrnL6Fpcu_H1Q-Va383XiXBGjq0GGkKwE6zefxNHGaypZleEKICQN5wVBTrTn4JxtAhiwwq0pvYhZIHc8nt3G15qqiKuzpOVLcjk2lx7eZKqn8pAUi79WHGzwndDfrhk7UyMzrU8tZ9q9ENKeO_DdhiT7urEY15n4POV32OFKsNRAavR09VxdlxZLLbU9S6fZbNAW3q1N4pdCn3kPWJF-fVjNvgPlBrVsUT3BhpW6NPSPhk7dET7zxPuAcjAW0lbaUaV43M9cSYvrLqJs4RCFeqiRQdnpS39-FpQ-SNi-CB0VGgoneb9DQrmwvPqMBV3Fkmg==.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_0b98880d2ebb4a4d016acd11ca8c2087d18e0fd1ae77dc48ef",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 23025,
+  "completion_tokens": 605,
+  "total_tokens": 23630,
+  "cost": 0.000668375,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 21845,
+   "cache_write_tokens": 1177,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000668375,
+   "upstream_inference_prompt_cost": 0.000365875,
+   "upstream_inference_completions_cost": 0.0003025
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 13,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791833191-ODSlkj72qFLxnOcf6kQU",
+ "object": "chat.completion",
+ "created": 1791833191,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "SiliconFlow",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "The L4 cascade:\n- \u03a6_total (electron fluence per Phi0, >10 keV, positrons excluded) = 0.01575.\n- \u03a6_primary = 0.01526.\n- delta fraction = 0.031 (3.1%).\n- mean electron energy = 0.438 MeV.\n- radiative/collision = 0.00234.\n\nHmm, delta fraction 3% seems low. Let me sanity check with CPE: electron fluence \u2248 Kcol / S? Kcol/Phi0 \u2248 \u03a3 \u03a6_\u03b3 \u03bcen E \u00d7 conv... Let me compute: Kcol per Phi0 in MeV cm\u00b2/g: primary: 0.7285\u00d70.0298\u00d71.25=0.02714; scattered contributes ~0.0032; total ~0.0303 MeV cm\u00b2/g. D=Kcol (CPE) \u2192 MeV/g per Phi0: 0.0303. Electron fluence \u03a6_total\u00d7S ~ 0.01575\u00d71.7 (average S_col weighted) \u2248 0.0268 MeV/g. Close to Kcol 0.0303 (difference due to restricted vs total and the D integral). OK consistent-ish.\n\nDelta fraction 3%: is that plausible? The delta fluence = \u03a6_total - \u03a6_primary = 0.000487. Hmm, that's smaller than expected. Let me think: the energy going to deltas >10 keV from the primary spectrum ~ maybe 20% of energy loss, but delta TRACK LENGTH is a smaller fraction of total track length because the total track length includes many low-energy primary electrons with large 1/S. The primary fluence spectrum is dominated by low energies (\u03a6_primary spectrum: bins increasing toward low E: bin 0 (0.01-0.05) = 3.35e-4? actually the spectrum: [5.69e-4, 8.33e-4, ...] total 0.0157; the shape shows \u03a6(E) ~ relatively flat in these bins with higher at low energy). Delta fraction of 3% plausible? In EGS simulations for Co-60, the delta-ray fraction of electron fluence... I recall delta ray contributions to dose ~5-10%; to fluence maybe similar. Hmm 3% seems low-ish but let me sanity check via track lengths:\nTotal track length per Phi0 = \u03a6_total = 0.01575 cm\u207b\u00b2/Phi0... i.e., per unit Phi0. Actual per history: \u00d70.00907=1.43e-4 cm\u207b\u00b2 per photon... \nThe energy in deltas: \u222b q_sec(E0) E0 dE0 per Phi0: The primary electrons lose to deltas >10 keV ~ (S_col-S_rest)\u00d7... For the whole spectrum, \u222b \u03a6(E)(S_col-S_rest)dE = \u222b \u03a6(E)\u222b_\u0394^{E/2} E0 d\u03a3 dE0 dE. Let me compute: this is the energy going to deltas. Total primary energy (Kcol) = 0.0303 MeV/g per Phi0. Fraction going to deltas >10 keV: \u222b\u03a6(Scol-Srest)dE / \u222b\u03a6 Scol dE. From Scol vs Srest at 0.5-1 MeV: Scol-Srest ~0.32-0.34; fraction ~ 0.33/1.9 \u2248 17%? But \u03a6 weighted low energies where Srest\u2248Scol... Let me estimate: the fraction of Kcol energy transferred to deltas>10keV is maybe 10-15%. Those deltas (avg energy maybe 0.15 MeV, 1/S~0.6 cm/MeV? avg range ~0.05 cm?) produce track length: energy 0.13\u00d7... The delta track length per unit Kcol: For each MeV transferred to deltas, the delta track = \u222b_0^E0 (1/S)dE \u2248 range ~ 0.03-0.2 cm. Primary track per MeV of Kcol: 1/S_avg ~ 0.54 cm/MeV (S~1.85 at 0.9 MeV). Hmm so delta tracks comparable per MeV but delta energy fraction ~10-15% \u2192 delta track fraction ~10%. But we got 3%. \n\nWait, maybe the q_sec energy: let me compute \u222bq_sec(E0)E0dE0 / \u222bq(E0)E0dE0. Let me check quickly. Also the iteration might underestimate q_sec because \u03a6 uses S_rest (which includes local losses) and the deltas are separate \u2014 that should be consistent.\n\nLet me compute the energy balance in the cascade: \u222bq E0 dE0 (initial kinetic energy of electrons from photons per Phi0) vs \u222b\u03a6 S_rest dE + TE. Let me verify physically: If our delta model is right, \u222b q E0 dE0 = \u222b \u03a6 S_rest dE + \u03a6(\u0394)\u0394 (track end). And \u222b q_sec E0 dE0 = \u222b \u03a6 (S_col - S_rest) dE (energy transferred to deltas). Let me verify in code.\n\nLet me also reconsider whether the delta fraction should include the fact that deltas' further deltas... we iterated to convergence, yes.\n\nLet me quickly verify energy conservation and compute delta energy fraction.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "01a13194efacba8e5813f8f107dbbc29",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport numpy as np\\nd = np.load('L4_data.npz')\\nEg = d['Eg']; Phi = d['Phi']; Phi_p = d['Phi_p']; q = d['q']\\nS_rest = d['S_rest']; Scol = d['Scol']; Srad = d['Srad']\\ndE = 0.002\\n# energy checks\\nKcol_elec = np.sum(q*Eg)*dE   # MeV/g per Phi0 (electrons only source, no positrons)\\nprint(\\\"energy injected in electrons (per Phi0, MeV/g):\\\", Kcol_elec)\\nD_elec_rest = np.sum(Phi*S_rest)*dE\\nTE = Phi[np.argmin(np.abs(Eg-0.010))]*0.010  # track end approx\\nprint(\\\"D via Phi*S_rest + TE:\\\", D_elec_rest, \\\"+\\\", TE, \\\"=\\\", D_elec_rest+TE)\\n# energy transferred to deltas\\n# recompute q_sec from Phi (single pass)\\nmec2=0.5110\\nN_e_per_g=6.02214076e23*10/18.01528\\nn_e=N_e_per_g\\nC=0.4987e-24*0.511\\ndef moler_dsde(T,E0):\\n    if T<=0.011 or E0<=0.010 or E0>=T/2: return 0.0\\n    beta2=1.0-1.0/(1+T/mec2)**2\\n    if beta2<=0: return 0.0\\n    return C*n_e/beta2*(1/E0**2 - 1/(E0*(T-E0)) + 1/(T-E0)**2)\\nqsec=np.zeros(len(Eg))\\nstart=np.searchsorted(Eg,0.010,side='right')\\nfor ite in range(start,len(Eg)):\\n    T=Eg[ite]\\n    if T<0.012: continue\\n    max_idx=np.searchsorted(Eg,T/2,side='right')-1\\n    for ie in range(start,max_idx+1):\\n        E0=Eg[ie]\\n        if E0>=T/2-1e-12: continue\\n        dsd=moler_dsde(T,E0)\\n        if dsd>0: qsec[ie]+=Phi[ite]*dsd*dE\\nprint(\\\"energy to deltas (q_sec*E):\\\", np.sum(qsec*Eg)*dE)\\nprint(\\\"Scol-Srest energy from Phi:\\\", np.sum(Phi*(Scol-S_rest))*dE)\\nprint(\\\"delta energy fraction of injected:\\\", np.sum(qsec*Eg)*dE/Kcol_elec)\\nprint(\\\"delta track / primary track:\\\", (Phi.sum()-Phi_p.sum())*dE/(Phi_p.sum()*dE))\\nprint(\\\"q_sec integral:\\\", qsec.sum()*dE, \\\" vs Phi_total-Phi_p integrated:\\\", (Phi.sum()-Phi_p.sum())*dE)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The L4 cascade:\n- \u03a6_total (electron fluence per Phi0, >10 keV, positrons excluded) = 0.01575.\n- \u03a6_primary = 0.01526.\n- delta fraction = 0.031 (3.1%).\n- mean electron energy = 0.438 MeV.\n- radiative/collision = 0.00234.\n\nHmm, delta fraction 3% seems low. Let me sanity check with CPE: electron fluence \u2248 Kcol / S? Kcol/Phi0 \u2248 \u03a3 \u03a6_\u03b3 \u03bcen E \u00d7 conv... Let me compute: Kcol per Phi0 in MeV cm\u00b2/g: primary: 0.7285\u00d70.0298\u00d71.25=0.02714; scattered contributes ~0.0032; total ~0.0303 MeV cm\u00b2/g. D=Kcol (CPE) \u2192 MeV/g per Phi0: 0.0303. Electron fluence \u03a6_total\u00d7S ~ 0.01575\u00d71.7 (average S_col weighted) \u2248 0.0268 MeV/g. Close to Kcol 0.0303 (difference due to restricted vs total and the D integral). OK consistent-ish.\n\nDelta fraction 3%: is that plausible? The delta fluence = \u03a6_total - \u03a6_primary = 0.000487. Hmm, that's smaller than expected. Let me think: the energy going to deltas >10 keV from the primary spectrum ~ maybe 20% of energy loss, but delta TRACK LENGTH is a smaller fraction of total track length because the total track length includes many low-energy primary electrons with large 1/S. The primary fluence spectrum is dominated by low energies (\u03a6_primary spectrum: bins increasing toward low E: bin 0 (0.01-0.05) = 3.35e-4? actually the spectrum: [5.69e-4, 8.33e-4, ...] total 0.0157; the shape shows \u03a6(E) ~ relatively flat in these bins with higher at low energy). Delta fraction of 3% plausible? In EGS simulations for Co-60, the delta-ray fraction of electron fluence... I recall delta ray contributions to dose ~5-10%; to fluence maybe similar. Hmm 3% seems low-ish but let me sanity check via track lengths:\nTotal track length per Phi0 = \u03a6_total = 0.01575 cm\u207b\u00b2/Phi0... i.e., per unit Phi0. Actual per history: \u00d70.00907=1.43e-4 cm\u207b\u00b2 per photon... \nThe energy in deltas: \u222b q_sec(E0) E0 dE0 per Phi0: The primary electrons lose to deltas >10 keV ~ (S_col-S_rest)\u00d7... For the whole spectrum, \u222b \u03a6(E)(S_col-S_rest)dE = \u222b \u03a6(E)\u222b_\u0394^{E/2} E0 d\u03a3 dE0 dE. Let me compute: this is the energy going to deltas. Total primary energy (Kcol) = 0.0303 MeV/g per Phi0. Fraction going to deltas >10 keV: \u222b\u03a6(Scol-Srest)dE / \u222b\u03a6 Scol dE. From Scol vs Srest at 0.5-1 MeV: Scol-Srest ~0.32-0.34; fraction ~ 0.33/1.9 \u2248 17%? But \u03a6 weighted low energies where Srest\u2248Scol... Let me estimate: the fraction of Kcol energy transferred to deltas>10keV is maybe 10-15%. Those deltas (avg energy maybe 0.15 MeV, 1/S~0.6 cm/MeV? avg range ~0.05 cm?) produce track length: energy 0.13\u00d7... The delta track length per unit Kcol: For each MeV transferred to deltas, the delta track = \u222b_0^E0 (1/S)dE \u2248 range ~ 0.03-0.2 cm. Primary track per MeV of Kcol: 1/S_avg ~ 0.54 cm/MeV (S~1.85 at 0.9 MeV). Hmm so delta tracks comparable per MeV but delta energy fraction ~10-15% \u2192 delta track fraction ~10%. But we got 3%. \n\nWait, maybe the q_sec energy: let me compute \u222bq_sec(E0)E0dE0 / \u222bq(E0)E0dE0. Let me check quickly. Also the iteration might underestimate q_sec because \u03a6 uses S_rest (which includes local losses) and the deltas are separate \u2014 that should be consistent.\n\nLet me compute the energy balance in the cascade: \u222bq E0 dE0 (initial kinetic energy of electrons from photons per Phi0) vs \u222b\u03a6 S_rest dE + TE. Let me verify physically: If our delta model is right, \u222b q E0 dE0 = \u222b \u03a6 S_rest dE + \u03a6(\u0394)\u0394 (track end). And \u222b q_sec E0 dE0 = \u222b \u03a6 (S_col - S_rest) dE (energy transferred to deltas). Let me verify in code.\n\nLet me also reconsider whether the delta fraction should include the fact that deltas' further deltas... we iterated to convergence, yes.\n\nLet me quickly verify energy conservation and compute delta energy fraction.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 161682,
+  "completion_tokens": 1858,
+  "total_tokens": 163540,
+  "cost": 0.00574114,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 154880,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00574114,
+   "upstream_inference_prompt_cost": 0.0052209,
+   "upstream_inference_completions_cost": 0.00052024
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 1154,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

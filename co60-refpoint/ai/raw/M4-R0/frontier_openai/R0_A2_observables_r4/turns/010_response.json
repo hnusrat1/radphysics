@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791824536-4FMv5UDV6fXwiJA3oW79",
+ "object": "chat.completion",
+ "created": 1791824536,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Calculating scatter rates**\n\nI'm sharing interactions and looking to compute the scatter rate, which is around 0.1395. I see low E interaction coefficients around 0.1 versus 0.063, possibly leading to a final value of 0.014. After calculating, I find the total primary as 0.729 multiplied by 0.063, which gives me 0.046. I also want to factor in the nearby scatter rates and ensure I have a clear sum of all categories to analyze.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_XAWGAlNHG6Z3mmlEjvtQon9u",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \" \"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Calculating scatter rates**\n\nI'm sharing interactions and looking to compute the scatter rate, which is around 0.1395. I see low E interaction coefficients around 0.1 versus 0.063, possibly leading to a final value of 0.014. After calculating, I find the total primary as 0.729 multiplied by 0.063, which gives me 0.046. I also want to factor in the nearby scatter rates and ensure I have a clear sum of all categories to analyze.",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzRKcN33OqOvaC1Z7I-JJ77IFrKV0ZAGj5SZKTL68HEtNtsTxX7XCRDY7WAc5ecGLoZ9E7F7jzXWwdRUJ5L6lH3IHwxamzZOkh8oA_opxbJqpI_P5wRfpWB5v0VBXj-NmMoiZPHvJS1WXlRP9B4TQiDTDujoKUPXYRFWWjQK_4GnuksJ_4aIGc1lDLlmXRe-KvZ3G9wAKrrcB09WwlCrjB0pz06oA4_PKlK2Uv8tchmAQvTNoTGAyjIm-ss6zznSqNsDERZUGsYHeLM1fIH375RHFq95lkTh85GBSH_bVyfpVgjxqhH301hllmLtcqI0UkCvQGoPeIxNMG6h5j6Us4DO-l-cG1I7-D1N2BygC0mgzmqQafm3W_aSBzHyphdAzOs0-JaBZ9FZq4GQi-I_Co_L8fSWzqNzuGomJxZqO--bM3Wp4ZoI6NnZA4MgpgQcTVfOMtaczOc5HFprQ5bUyfB-rIoB_PLas_DraidT0jJWQA_ut780YP8-zveXrwKvVgwj4BTA0PzCHvwVTxRQ9Vo2UsAfgHM3G3-hNCfEEJ4zvRXIuAAuxQAPH0FgNYt4dVU2HjAHd-cOsBRUjeUp1DdhYEsWd--v1QL7ffMswYQsVvXnUkU-QaQFPiQH8VWdZi4xG67bcR4ZgN9JOHxYsK8WbnG8bgzpfHAerG73pBeHz9-NV50SlkICXSfmrzj1jdMqgLnmGGUJ64skC2bQT8NcXOsh-eMh_sBl-lABGMHHz1Mep6OqoK0setVVxbUUf99ONERaPg-SVmVen1W7DmN5dxzVZCw5jwxrh811UNro1nPyXfR8sen68eNFx_-sQokjhVd8mfUju_ZMJmWW1JZr9o-egLyO_Jx0H7wbAyVsmPMqgfeNmt2J1GXIln3wQnwLngoSzgKBpjp72IuFJz3MUW5awMOBkUynhlKZh7EPG4p9C7oz0ljQuMmkwWWlNaTTJOLz84x5V8MTkVDeEMyA6wIjE-dVbonIhLKbVqWS9hYVOyDId21RBypcnj_25VQb7B2vgtIdXwZuG8_ocauK_qVgq18mqkVDewfsiUmVGBcOEm9x-zIAE_YjFM293GjTU9hPGg9F8Ah1kv566Km9GAFsOPuvPHe_U-No3Go8UvoX8CRUGQ1dkIHKLtKB3IDygP733mqqbUPXnHhVjZIYsTGecrS5XwWN02DAJ466gzwO_rwvlkQENmv4NbOwWKYWl8m28fsHaWHul3_0VzDzxAxmTy35bGLxQF9J2XVDAUzYICzmK0kMuLWvpSW-2xaeYp6uCV69OoDn9_gV2HXAJaj6HVA0fX_d9pIfq0rFoHmr0uoToI-t3PH6V2EXw442c6D3SM1i2HK5t1mzgEusKiEDaZFK-cYfDGFNUHE3Iigv_pmq9X5bjPZDjG66ThAahLCRX6FUIr9RMggM5m9oKmIzUP1XfNek72fpepzCUI3Ocqv7TWI5iDLM2E9R8mNSfUhCFcpw666bLuk7wa2CiM9hgoeNIvBC8267qgmGeopU-6V0S5xAG3wEIeLVeWKCnIy2wAToIDmHNLb2YMrBNk2Ayf9T0pZDk4o7J1ob_3KrReslPKwiE3vry4Ax7TC5J-PsFWfZBzov2vxc5fwyW6Act12a2LarggzjHOw8nIIdeuc3AH2x0Tzz5ALC7O1nRx16fXw11Jov-NuzPwZIHo7wXZdCegelxVgDse0Zi7kvsrceNROU2u4Q_IjrmU3geD3kIf5WejrvVRmrscbcO99fHOa7J53kw7Up0DUxlxshCfxoliUcW_Qrw0iOpBige1jdAH3dUlW2yWhq-3Z9MCo55fyaXlimbn8DUt1Bq8GRJdv3t9PjWxQjPgWFWs3rYquMT2F5PXgvbCLAf7JakZxNfIm0dfN4XjIPlMkfsYDZ8DkTtj1nfHkFRqIVYuJ7c134eP-2Lqs47yiY56Mot4ReYtfVRdLk6DI3CC21nAcINKf6cPZa6k3w1yTPMSCH2ZlETpGjM1G5x-KolHRA_R0_Y46ikbt54UxySK3Cvxjwv_RR2ydTiQg-uJbgq6Ecc7HYwt8OJ2H637DoEvmmti0Xn_hq71ofcvBZd0w0uKU64GbS0sZGRnGbeZq2azItkUu2Y1bn72hWpPrn-Fvl0KxyBs2Mwx4w2zljaGWfujIZi_v6NphXn6XGSJFxTh8lhNFCwpCSSGTEjKJZaOeN2Q444F1Xd3qtbDnKnAdlgpeoFw0hHhBcWmIF9034RylGtvUL532IIg-S7XjHw-yMBTJUoc52id-E12VNQwvFBWL-JWdi_9qNQi4B2k9nq7ppIET_2oStbMX6nOW9IR0DpUrMQQ_mmOLT7sBjFA3KpFXC4OQXmZn1A8S1VJ-GKL7K6VXXWjZtUGeCcOEi6cRFqCx4bxjvbTwbzNCz20Q2ytJfA667QLuciCxFD6lgMuj-SnpOoj4NBrRUlU3JMY8f7qsDyurr-lffFHzm7OElH9_PIprt02mlfKhNueDOFE38VCD70fNWTbgk1qov0qIc9lS1iImyzv-e5p8w7lS1jsUM=.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_0c995b1150585540016acd1299ce5487d1a9d7ac3e1d9dbd83",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 18784,
+  "completion_tokens": 97,
+  "total_tokens": 18881,
+  "cost": 0.000260645,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 18572,
+   "cache_write_tokens": 209,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000260645,
+   "upstream_inference_prompt_cost": 0.000212145,
+   "upstream_inference_completions_cost": 4.85e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 78,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

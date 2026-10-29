@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791827089-EVVBVdhenud2saASrVhS",
+ "object": "chat.completion",
+ "created": 1791827089,
+ "model": "qwen/qwen3.7-flash",
+ "provider": "Alibaba",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "The output is truncated again due to length limits. I will construct the JSON string programmatically and ensure it's printed in full by avoiding `indent=2` which increases size, or I'll just use compact JSON. Actually, the prompt doesn't require pretty printing. I'll generate compact JSON to fit within limits. I will also verify the count and structure one last time.\n\nLet's regenerate with compact format and save/print.\nI'll write a script that produces the exact JSON required.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_0b82a5a350f64e5a924fefe2",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import json\\nwith open(\\\"events.json\\\", \\\"r\\\") as f:\\n    data = json.load(f)\\n# Compact JSON\\nout = json.dumps(data, separators=(',', ':'))\\nprint(len(out))\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The output is truncated again due to length limits. I will construct the JSON string programmatically and ensure it's printed in full by avoiding `indent=2` which increases size, or I'll just use compact JSON. Actually, the prompt doesn't require pretty printing. I'll generate compact JSON to fit within limits. I will also verify the count and structure one last time.\n\nLet's regenerate with compact format and save/print.\nI'll write a script that produces the exact JSON required.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 30653,
+  "completion_tokens": 171,
+  "total_tokens": 30824,
+  "cost": 0.000459516,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 20096,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000459516,
+   "upstream_inference_prompt_cost": 0.000437286,
+   "upstream_inference_completions_cost": 2.223e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 100,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

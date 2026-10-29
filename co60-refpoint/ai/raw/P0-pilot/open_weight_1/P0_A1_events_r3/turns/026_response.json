@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791824791-w3FVaI3HXNWvcA8bVODn",
+ "object": "chat.completion",
+ "created": 1791824791,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "There's a Unicode character issue (a full-width period instead of a regular period). This is from copying. Let me be extremely careful and write everything in one clean go without any copy-paste of code with funny characters.\n\nLet me write the complete program as a single block, typing each line carefully.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_103526ef19154054a46c6b10",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np, math, time, json\\nfrom collections import Counter\\n\\nrng = np.random.default_rng(12345)\\nme = 0.51099895\\nre = 2.8179403262e-13\\nNe = 3.343e23\\n\\ndef kn_f(mu, E):\\n    a = E/me\\n    r = 1.0/(1.0 + a*(1.0 - mu))\\n    return r*r*(1.0/r + r - (1.0 - mu*mu))\\n\\nEgrid = np.logspace(np.log10(0.001), np.log10(10.0), 300)\\nsig_grid = np.empty(300)\\nfor j in range(300):\\n    E = Egrid[j]\\n    mus = np.linspace(-1, 1, 3001)\\n    sig_grid[j] = np.pi*re**2 * np.trapezoid(kn_f(mus, E), mus)\\n\\nE_ph = np.array([0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.08, 0.10, 0.15, 0.20, 0.30, 0.50, 0.80, 1.0, 1.5, 2.0])\\nmu_ph = np.array([4.90, 0.506, 0.162, 0.0712, 0.0375, 0.0223, 0.00988, 0.00547, 0.00240, 0.00128, 0.000526, 0.000151, 5e-5, 3e-5, 1e-5, 4.7e-6])\\nE_pa = np.array([1.022, 1.25, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 6.0, 8.0, 10.0])\\nmu_pa = np.array([0.0, 3.1e-5, 1.32e-4, 4.1e-4, 8.1e-4, 1.39e-3, 2.69e-3, 4.32e-3, 6.19e-3, 1.05e-2, 1.55e-2])\\nE_co = np.array([0.01, 0.02, 0.03, 0.05, 0.08, 0.10, 0.15, 0.20, 0.30, 0.50, 0.80, 1.0, 1.5, 2.0])\\nmu_co = np.array([0.30, 0.060, 0.022, 0.0098, 0.0046, 0.0034, 0.0017, 0.0011, 0.0006, 0.0003, 0.00015, 0.00012, 8e-5, 4.5e-5])\\n\\ndef mu_comp(E):\\n    return Ne * np.interp(np.log(np.clip(E, 1e-3, 10)), np.log(Egrid), sig_grid)\\n\\ndef mu_photo(E):\\n    return np.exp(np.interp(np.log(np.clip(E, E_ph[0], E_ph[-1])), np.log(E_ph), np.log(mu_ph)))\\n\\ndef mu_pair(E):\\n    res = np.zeros_like(E)\\n    mask = E > 1.022\\n    if mask.any():\\n        logE = np.log(np.clip(E[mask], E_pa[1], E_pa[-1]))\\n        res[mask] = np.exp(np.interp(logE, np.log(E_pa[1:]), np.log(mu_pa[1:])))\\n    return res\\n\\ndef mu_coh(E):\\n    return np.exp(np.interp(np.log(np.clip(E, E_co[0], E_co[-1])), np.log(E_co), np.log(mu_co)))\\n\\ndef sample_compton(E):\\n    n = len(E)\\n    mu = np.empty(n)\\n    alive = np.ones(n, bool)\\n    a = E/me\\n    while alive.any():\\n        idx = np.where(alive)[0]\\n        mu_try = rng.uniform(-1, 1, len(idx))\\n        f = kn_f(mu_try, E[idx])\\n        acc = rng.uniform(0, 2, len(idx)) < f\\n        mu[idx[acc]] = mu_try[acc]\\n        alive[idx[acc]] = False\\n    Ep = E / (1.0 + a*(1.0 - mu))\\n    te = E - Ep\\n    num = E - Ep*mu\\n    den = np.sqrt(E*E + Ep*Ep - 2.0*E*Ep*mu)\\n    cos_el = np.where(den > 1e-15, num/den, 1.0)\\n    return mu, Ep, te, cos_el\\n\\ndef rotate_dir(ux, uy, uz, mu_s, phi):\\n    d = np.column_stack([ux, uy, uz])\\n    d = d / np.linalg.norm(d, axis=1, keepdims=True)\\n    ref = np.tile(np.array([0.0, 0.0, 1.0]), (len(d), 1))\\n    near_z = np.abs(d[:,2]) > 0.9\\n    ref[near_z] = [1.0, 0.0, 0.0]\\n    e1 = np.cross(d, ref)\\n    e1 = e1 / (np.linalg.norm(e1, axis=1, keepdims=True) + 1e-30)\\n    e2 = np.cross(d, e1)\\n    st = np.sqrt(np.clip(1.0 - mu_s*mu_s, 0, 1))\\n    newd = (st*np.cos(phi))[:, np.newaxis]*e1 + (st*np.sin(phi))[:, np.newaxis]*e2 + mu_s[:, np.newaxis]*d\\n    newd = newd / np.linalg.norm(newd, axis=1, keepdims=True)\\n    return newd[:,0], newd[:,1], newd[:,2]\\n\\ndef inside_cube(x,y,z):\\n    return (np.abs(x) < 15) & (np.abs(y) < 15) & (z > 100) & (z < 130)\\n\\ndef in_scoring(x,y,z):\\n    return (x*x + y*y < 1.0) & (z > 109.9) & (z < 110.1)\\n\\ndef run_batch(n_prim, events_out):\\n    x = rng.uniform(-5, 5, n_prim)\\n    y = rng.uniform(-5, 5, n_prim)\\n    z = np.full(n_prim, 100.0)\\n    dist = np.sqrt(x*x + y*y + z*z)\\n    ux = x/dist; uy = y/dist; uz = z/dist\\n    E = np.full(n_prim, 2.0)\\n    alive = np.ones(n_prim, bool)\\n    ex=[]; ey=[]; ez=[]; eux=[]; euy=[]; euz=[]; eE=[]\\n    \\n    for _ in range(80):\\n        n = np.sum(alive)\\n        if n == 0:\\n            break\\n        idx = np.where(alive)[0]\\n        Ea = E[idx]; uxa = ux[idx]; uya = uy[idx]; uza = uz[idx]\\n        xa = x[idx]; ya = y[idx]; za = z[idx]\\n        \\n        mc = mu_comp(Ea); mp = mu_photo(Ea); mpp = mu_pair(Ea); mco = mu_coh(Ea)\\n        mall = mc + mp + mpp + mco\\n        \\n        s = -np.log(rng.uniform(1e-10, 1, n)) / mall\\n        xa += s*uxa; ya += s*uya; za += s*uza\\n        \\n        inside = inside_cube(xa, ya, za)\\n        in_idx = idx[inside]\\n        n_in = len(in_idx)\\n        \\n        if n_in > 0:\\n            Ei = E[in_idx]; uxi = uxa[inside]; uyi = uya[inside]; uzi = uza[inside]\\n            xi = xa[inside]; yi = ya[inside]; zi = za[inside]\\n            mci = mc[inside]; mpi = mp[inside]; mppi = mpp[inside]; mcoi = mco[inside]\\n            malli = mall[inside]\\n            \\n            scoring = in_scoring(xi, yi, zi)\\n            \\n            u = rng.uniform(0, malli, n_in)\\n            cum_c = mci\\n            cum_ph = mci + mpi\\n            cum_pa = mci + mpi + mppi\\n            \\n            proc = np.full(n_in, 3)\\n            proc[u <= cum_c] = 0\\n            proc[(u > cum_c) & (u <= cum_ph)] = 1\\n            proc[(u > cum_ph) & (u <= cum_pa)] = 2\\n            \\n            # Compton\\n            mask = proc == 0\\n            if mask.any():\\n                idx_c = in_idx[mask]\\n                Ec = Ei[mask]\\n                mus, Ep, te, cel = sample_compton(Ec)\\n                scm = scoring[mask]\\n                if scm.any():\\n                    for i in np.where(scm)[0]:\\n                        events_out.append({\\n                            'process':'compton', 'e_in_MeV':float(Ec[i]), 'e_out_MeV':float(Ep[i]),\\n                            'cos_scatter':float(mus[i]), 't_e_MeV':float(te[i]),\\n                            'cos_electron':float(cel[i]), 't_positron_MeV':None\\n                        })\\n                phi = rng.uniform(0, 2*np.pi, len(Ec))\\n                unx, uny, unz = rotate_dir(uxi[mask], uyi[mask], uzi[mask], mus, phi)\\n                E[idx_c] = Ep\\n                ux[idx_c] = unx; uy[idx_c] = uny; uz[idx_c] = unz\\n                x[idx_c] = xi[mask]; y[idx_c] = yi[mask]; z[idx_c] = zi[mask]\\n            \\n            # Photoelectric\\n            mask = proc == 1\\n            if mask.any():\\n                idx_pe = in_idx[mask]\\n                Epe = Ei[mask]\\n                scm = scoring[mask]\\n                if scm.any():\\n                    for i in np.where(scm)[0]:\\n                        events_out.append({\\n                            'process':'photoelectric', 'e_in_MeV':float(Epe[i]), 'e_out_MeV':None,\\n                            'cos_scatter':None, 't_e_MeV':float(Epe[i]),\\n                            'cos_electron':float(rng.uniform(-1,1)), 't_positron_MeV':None\\n                        })\\n                alive[idx_pe] = False\\n            \\n            # Pair production\\n            mask = proc == 2\\n            if mask.any():\\n                idx_pa = in_idx[mask]\\n                Epa = Ei[mask]\\n                scm = scoring[mask]\\n                tavail = np.maximum(Epa - 1.022, 0.0)\\n                share = rng.uniform(0, 1, len(Epa))\\n                t_pos = share * tavail\\n                t_e = tavail - t_pos\\n                Etot = t_e + me\\n                th0 = me / np.clip(Etot, 1e-10, None)\\n                th_e = th0 * (-np.log(rng.uniform(1e-10, 1, len(Epa))))\\n                c_el = np.cos(th_e)\\n                if scm.any():\\n                    for i in np.where(scm)[0]:\\n                        events_out.append({\\n                            'process':'pair', 'e_in_MeV':float(Epa[i]), 'e_out_MeV':None,\\n                            'cos_scatter':None, 't_e_MeV':float(t_e[i]),\\n                            'cos_electron':float(c_el[i]), 't_positron_MeV':float(t_pos[i])\\n                        })\\n                for k in range(len(Epa)):\\n                    for _ in range(2):\\n                        u1 = rng.uniform(-1, 1); u2 = rng.uniform(0, 2*np.pi)\\n                        nx = math.sqrt(1-u1*u1)*math.cos(u2)\\n                        ny = math.sqrt(1-u1*u1)*math.sin(u2)\\n                        ex.append(xi[mask][k]); ey.append(yi[mask][k]); ez.append(zi[mask][k])\\n                        eux.append(nx); euy.append(ny); euz.append(u1); eE.append(0.511)\\n                alive[idx_pa] = False\\n            \\n            # Rayleigh\\n            mask = proc == 3\\n            if mask.any():\\n                idx_r = in_idx[mask]\\n                Er = Ei[mask]\\n                scm = scoring[mask]\\n                th0 = np.clip(0.0007/Er, 1e-6, 0.5)\\n                th_r = th0 * (-np.log(rng.uniform(1e-10, 1, len(Er))))\\n                mu_s_r = np.cos(th_r)\\n                if scm.any():\\n                    for i in np.where(scm)[0]:\\n                        events_out.append({\\n                            'process':'rayleigh', 'e_in_MeV':float(Er[i]), 'e_out_MeV':float(Er[i]),\\n                            'cos_scatter':float(mu_s_r[i]), 't_e_MeV':0.0,\\n                            'cos_electron':None, 't_positron_MeV':None\\n                        })\\n                phi = rng.uniform(0, 2*np.pi, len(Er)]\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "There's a Unicode character issue (a full-width period instead of a regular period). This is from copying. Let me be extremely careful and write everything in one clean go without any copy-paste of code with funny characters.\n\nLet me write the complete program as a single block, typing each line carefully.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 86350,
+  "completion_tokens": 3259,
+  "total_tokens": 89609,
+  "cost": 0.003078845616,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 73728,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.003078845616,
+   "upstream_inference_prompt_cost": 0.002486620136,
+   "upstream_inference_completions_cost": 0.00059222548
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 61,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

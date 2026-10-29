@@ -1,0 +1,2 @@
+import subprocess, time
+st=time.time();p=subprocess.run(['/tmp/mc','30000000'],capture_output=True,text=True,timeout=570);print('time',time.time()-st,'rc',p.returncode);print(p.stdout);print(p.stderr[:1000])

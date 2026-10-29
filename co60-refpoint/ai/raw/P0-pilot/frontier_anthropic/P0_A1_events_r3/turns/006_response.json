@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791816182-wKSkNAscZ5ZFn0CGFsVl",
+ "object": "chat.completion",
+ "created": 1791816182,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I should scale down to a manageable run size\u2014maybe 5 million photons instead of 20 million\u2014to balance memory usage and event yield, since each million gives roughly 300 events and 5M should produce enough samples for analysis.\n\nBefore scaling up, I want to sanity-check the physics: the escape count of about 286k out of 300k seeds seems consistent, and the exponential attenuation for primaries reaching 10cm checks out roughly against expectation. I'll proceed with a fixed seed run of 5M photons.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_019ruYZCYsam2qKxrL1i5PAP",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nt=time.time()\\nr=subprocess.run(['python','mc.py','6000000'],capture_output=True,text=True)\\nprint(r.stdout, r.stderr[-2000:], time.time()-t)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I should scale down to a manageable run size\u2014maybe 5 million photons instead of 20 million\u2014to balance memory usage and event yield, since each million gives roughly 300 events and 5M should produce enough samples for analysis.\n\nBefore scaling up, I want to sanity-check the physics: the escape count of about 286k out of 300k seeds seems consistent, and the exponential attenuation for primaries reaching 10cm checks out roughly against expectation. I'll proceed with a fixed seed run of 5M photons.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "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.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 27149,
+  "completion_tokens": 454,
+  "total_tokens": 27603,
+  "cost": 0.0029419,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0029419,
+   "upstream_inference_prompt_cost": 0.0027149,
+   "upstream_inference_completions_cost": 0.000227
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 340,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791816719-vjcX4yM4uvI7V0bRJZTW",
+ "object": "chat.completion",
+ "created": 1791816719,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Looking at roughly 44.5k pooled events, I see compton dominating at 96.6%, with pair production 1.3%, rayleigh 1.2%, and photoelectric 0.8%. The rayleigh fraction is higher than my expected 0.2%, which makes sense since scattered photons at lower energies have larger coherent scattering cross-sections scaling as E^-1.33.\n\nThe other fractions seem plausible too \u2014 photoelectric picks up low-energy scattered photons, and pair production relative share works out given primary versus scattered photon mixing in the volume. I need to sample 200 events without replacement from this pool using a fixed seed, then assemble the JSON output, making sure field conventions match each event type: rayleigh events get cos_electron as None and t_e as 0.0, photoelectric events get cos_scatter and e_out as None, and annihilation photons carry e_in of 0.511. I'll combine the pickled data, draw my sample, and write out the final JSON with the method description.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01QbuZgx43aAsgNFbTuNfV9b",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport pickle, json, numpy as np, glob\\npool=[]\\nfor f in sorted(glob.glob('/tmp/work/events_1[1-4].pkl')):\\n    pool+=pickle.load(open(f,'rb'))\\nprint(len(pool))\\nrng=np.random.default_rng(2024)\\nidx=rng.choice(len(pool),200,replace=False)\\nsample=[pool[i] for i in idx]\\nfrom collections import Counter\\nprint(Counter(e[0] for e in sample))\\nevents=[]\\nfor (pr,ein,eout,cs,te,ce,tp) in sample:\\n    events.append({\\\"process\\\":pr,\\\"e_in_MeV\\\":round(ein,5),\\n                   \\\"e_out_MeV\\\":None if eout is None else round(eout,5),\\n                   \\\"cos_scatter\\\":None if cs is None else round(cs,6),\\n                   \\\"t_e_MeV\\\":round(te,5),\\n                   \\\"cos_electron\\\":None if ce is None else round(ce,6),\\n                   \\\"t_positron_MeV\\\":None if tp is None else round(tp,5)})\\nmethod=(\\\"Analog Monte Carlo (own numpy code, no transport package). Point source at 100 cm SSD, directions sampled uniformly in solid angle \\\"\\n        \\\"within the 10x10 cm^2 pyramid; 2.0 MeV photons transported through the 30 cm water cube (vacuum outside) with exponential free paths \\\"\\n        \\\"(total mu/rho from Klein-Nishina incoherent with ~2% binding reduction, Rayleigh, photoelectric and pair/triplet-free pair estimates). \\\"\\n        \\\"Compton: Klein-Nishina rejection sampling, no binding/scattering function; Rayleigh: small-angle Gaussian; pair: energy split uniform, \\\"\\n        \\\"two 511 keV annihilation photons isotropic; photoelectric angle from Sauter-like law. All interactions in the 1 cm radius, 0.2 cm slab at 10 cm depth \\\"\\n        \\\"were recorded (~1.2e8 histories, ~44,000 events); 200 were drawn at random without replacement.\\\")\\nprint(len(method.split()))\\nout={\\\"method\\\":method,\\\"events\\\":events}\\ns=json.dumps(out,indent=1)\\nprint(s[:800])\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Looking at roughly 44.5k pooled events, I see compton dominating at 96.6%, with pair production 1.3%, rayleigh 1.2%, and photoelectric 0.8%. The rayleigh fraction is higher than my expected 0.2%, which makes sense since scattered photons at lower energies have larger coherent scattering cross-sections scaling as E^-1.33.\n\nThe other fractions seem plausible too \u2014 photoelectric picks up low-energy scattered photons, and pair production relative share works out given primary versus scattered photon mixing in the volume. I need to sample 200 events without replacement from this pool using a fixed seed, then assemble the JSON output, making sure field conventions match each event type: rayleigh events get cos_electron as None and t_e as 0.0, photoelectric events get cos_scatter and e_out as None, and annihilation photons carry e_in of 0.511. I'll combine the pickled data, draw my sample, and write out the final JSON with the method description.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "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.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 41146,
+  "completion_tokens": 1269,
+  "total_tokens": 42415,
+  "cost": 0.0047491,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0047491,
+   "upstream_inference_prompt_cost": 0.0041146,
+   "upstream_inference_completions_cost": 0.0006345
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 489,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791817699-q6Es24GtCswbaxTIZN8E",
+ "object": "chat.completion",
+ "created": 1791817699,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "The photon transport runs at about 4 segments per photon. Next I'll compute track lengths in the scoring cylinder and check the scattered-to-primary ratio at 10 cm before scaling up.",
+    "refusal": null,
+    "reasoning": "I'm checking whether the pair-production count of 621 per 1e5 photons makes sense relative to the Compton event count of roughly 286,000, estimating the expected number of collisions per photon given water's mean free path at this energy over a 30 cm path length.\n\nScattered photons at lower energies have smaller attenuation coefficients and accumulate more collisions, so ~2.9 collisions per photon seems plausible given escape probabilities from the 30 cm cube. I'm satisfied this checks out, so now I'll move to running a larger simulation with 1e6 photons to examine the cylinder fluence and track lengths.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01U5DycYWkt3QZMUtYrRJcyX",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\ncode3 = r'''\\nimport numpy as np\\ndef cyl_track(r,d,l,zc,R=1.0,h=0.1,xc=0.0,yc=0.0):\\n    # track length of segments (r + s d, s in [0,l]) inside cylinder axis z, radius R, centre z=zc, half thickness h\\n    x0=r[:,0]-xc; y0=r[:,1]-yc; z0=r[:,2]\\n    dx,dy,dz=d[:,0],d[:,1],d[:,2]\\n    lo=np.zeros(len(l)); hi=l.copy()\\n    # z slab\\n    zlo=zc-h; zhi=zc+h\\n    with np.errstate(divide='ignore', invalid='ignore'):\\n        sa=np.where(dz!=0,(zlo-z0)/dz,np.where((z0>=zlo)&(z0<=zhi),-np.inf,np.inf))\\n        sb=np.where(dz!=0,(zhi-z0)/dz,np.where((z0>=zlo)&(z0<=zhi),np.inf,-np.inf))\\n    s1=np.minimum(sa,sb); s2=np.maximum(sa,sb)\\n    lo=np.maximum(lo,s1); hi=np.minimum(hi,s2)\\n    # radial\\n    A=dx*dx+dy*dy; B=2*(x0*dx+y0*dy); C=x0*x0+y0*y0-R*R\\n    disc=B*B-4*A*C\\n    with np.errstate(divide='ignore', invalid='ignore'):\\n        sq=np.sqrt(np.where(disc>0,disc,0))\\n        r1=(-B-sq)/(2*A); r2=(-B+sq)/(2*A)\\n    inside_rad = np.where(A>1e-14, (disc>=0), C<=0)\\n    r1=np.where(A>1e-14, r1, -np.inf); r2=np.where(A>1e-14, r2, np.inf)\\n    r1=np.where(inside_rad,r1,np.inf); r2=np.where(inside_rad,r2,-np.inf)\\n    lo=np.maximum(lo,r1); hi=np.minimum(hi,r2)\\n    return np.clip(hi-lo,0,None)\\n'''\\nopen('/tmp/work/track.py','w').write(code3)\\nimport track; importlib.reload(track)\\nimport numpy as np\\nOm=0.009975072683099257; S_phi0=Om*110.0**2; V=np.pi*1.0**2*0.2\\nmu_p=phys.mu_all(np.array([2.0]))[4][0]; Phi_p=np.exp(-mu_p*10.0)\\nprint(\\\"Phi_p/Phi0\\\", Phi_p, \\\"S_phi0\\\", S_phi0)\\nt=time.time()\\nres=photon.run_photons(400000, seed=2)\\nprint(\\\"time\\\",time.time()-t, len(res['E']))\\nlin=track.cyl_track(res['r'],res['d'],res['l'],10.0)\\nsel=lin>0\\nFsc=(lin*res['f']).sum()/res['N']*S_phi0/V\\nprint(\\\"scattered fluence/Phi0 (contains only segments with f=1)\\\",Fsc, \\\"nseg hits\\\", sel.sum(), \\\"hits scattered\\\", (sel&res['f']).sum())\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I'm checking whether the pair-production count of 621 per 1e5 photons makes sense relative to the Compton event count of roughly 286,000, estimating the expected number of collisions per photon given water's mean free path at this energy over a 30 cm path length.\n\nScattered photons at lower energies have smaller attenuation coefficients and accumulate more collisions, so ~2.9 collisions per photon seems plausible given escape probabilities from the 30 cm cube. I'm satisfied this checks out, so now I'll move to running a larger simulation with 1e6 photons to examine the cylinder fluence and track lengths.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "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.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 98995,
+  "completion_tokens": 1837,
+  "total_tokens": 100832,
+  "cost": 0.010818,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.010818,
+   "upstream_inference_prompt_cost": 0.0098995,
+   "upstream_inference_completions_cost": 0.0009185
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 619,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

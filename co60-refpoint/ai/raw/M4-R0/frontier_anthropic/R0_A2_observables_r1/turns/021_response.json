@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791827347-J6i5c9eoiJJsT12uNQzM",
+ "object": "chat.completion",
+ "created": 1791827347,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Only one output actually printed, so the others likely crashed silently without errors. I should check whether the H_r*.npz files exist and look for any error output to figure out what happened to the other runs.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_0133GYNoCXZiMHzht8ZszxJ1",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport glob\\nprint(sorted(glob.glob('/tmp/work/H_*.npz')))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Only one output actually printed, so the others likely crashed silently without errors. I should check whether the H_r*.npz files exist and look for any error output to figure out what happened to the other runs.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQShwgKEAgSGAI4AUIIdGhpbmtpbmcSDETg5+gzRsWrKXValRoMXcelw6rp7xXKeqrPIjB5dVFZmK6dxRqfu2NDXvjf0nfgZg86riz2uE96cJyX8ZxtS19D5GRv6jdZ3f8lH2AqpAcVx5VQ7FczGJtyWFPbdoAcS25Wg19ljlfugy0f/odLDKBiNF7WYDmQAsNz36xfAnaS6Riv/8hzZzIGI2WmeNszgQNFDx+yam8QxxTbB5BvfdthIqaZUzEHHLu0Ozj8nbhvgyBX+27ftwm7qss/KajrkJXaAc3vk2GfbqoIQsAjjEjs+hbLyZuL6Ges8GFAJOu0892c5RPGq2LJX1LjrMySIO/9v1EqA2Q/Pk7VGCYgOyYayvyrCVETVNYCCcDLi64eBmN/NQxaGhQc8zjy7sJGSuhXHDs3hGrNt91Py5oV6kRXbYBPmTZooQnbtDnQSH4JBME2PnMTIJ1Vq4IBAc0Owm1bn7vju4qlb2fCsSCZf1Q8Uuwl3j4kJt1TAMWBsTXzhj8O9ak/XnOBzcAUW1WKm7mM8D2b9MlXl97Mn2mQ7TE5G9mB8TDwX8J3RXEQGAHrCD0ESmFUjxADhhqjbdto6sIx4LkBMqRfJLOfp/mKIcpQaRdDT9PMoVNDzDEyf8LesHwByrnlMQc8Db9FCRoz8KK6xJ+GCIaBREyovJp0rzcADimOCTg/w7O/y5YzY1g41lRaa0eTVkQjJLclIJI7t83YV+YQBiAv+JUhX6RPQxvUrGH3ZOvk6REUUQ3n8Jwa2hjlsPZlZ/tlxs2GwOU1737g6NjKtNkCTihCdo2SpqXOhOmeqVDNOefIeSgaN9uUIWB1D5PHaDRbnjExHVX5w2+OSumgGV2+tWTE3V/yxxekThtSw07tM1iDmFBDfyzxo1jZJZZ9+H5NiaA8+VRO+RYPorD2XKTWm6mIdV6nEvzC5nJ/7i+AKJ7hIGABd2RKM6jEM3v6h1Lk9R2iZuqhGkoQyhmm+omuSo/JUOHu3jUhqg35dsLKwa+7i6h2dpeWJyquRKZjYZsHCtLZU3pnfw46vGjzD6EM2V4digMdDnT2+VCXs63QAmvIzgimSgATkGZoGkIc+YAlpmCOs/xCwKueZFSY/L+SdWCd5RiDeK9tguGnkGDgdYA0i3G0nAtSAu/RkBaabUp/7RcQ708MBwOel1/7Af2kyzkmoOnz0EaPrqwFpJCuv6Goc/Fep4EC6NAlVGNLLlrH403vVsE+1KpC2qcGCsU+yJKDItQyfHUtb9k4xzckEOb5Mxhoga+0yXs+UdaMsta6YWSrkbfq9dZZzrnfXaRzNMkZsAz/0hcIgJJZ62DuQOJliysza98Ft7bip1/A4wB4qfhpwBPQ/yfDPBgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 139226,
+  "completion_tokens": 145,
+  "total_tokens": 139371,
+  "cost": 0.00761565,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 138718,
+   "cache_write_tokens": 506,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00761565,
+   "upstream_inference_prompt_cost": 0.00725315,
+   "upstream_inference_completions_cost": 0.0003625
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 67,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

@@ -1,25 +1,23 @@
-# Cost model for the M4 estimate (STUDY_PLAN Section 5.4). Unverified: list prices change, and the October 2026
-# figures found disagree between sources. Prices are per million tokens in USD; they are tier assumptions, not
-# quotes. Replace both blocks with official prices and the token counts measured in the P0 pilot before
-# Humza approves the budget (STUDY_PLAN Section 10.5).
-checked_on: 2026-10-11
+# Cost model for the M4 estimate (STUDY_PLAN Section 5.4). Prices are OpenRouter's listed per-token prices for the
+# models in ai/models.yaml (D030), in USD per million tokens, read from the public models endpoint. OpenRouter may
+# route a call to an upstream whose price differs; the charge per call is recorded in ai/raw/ and summed by
+# ai/harness/cost.py. tokens_per_conversation are the P0 pilot means; list prices ignore caching and the 100k-token tier.
+checked_on: 2026-10-12
 sources:
-  - https://www.morphllm.com/llm-api (third-party table, about 105 days old when read)
-  - https://www.opslyft.com/blog/llm-pricing-comparison-cost-per-token (third-party, June 2026)
-  - https://www.developersdigest.tech/blog/frontier-model-api-pricing-june-2026 (third-party)
-verified: false
-prices:          # central assumption; the high case is 3x (see analysis in STATUS M3)
-  frontier_anthropic: {input_per_mtok: 5.0, output_per_mtok: 25.0}
-  frontier_openai: {input_per_mtok: 5.0, output_per_mtok: 30.0}
-  frontier_google: {input_per_mtok: 2.0, output_per_mtok: 12.0}
-  open_weight_1: {input_per_mtok: 0.6, output_per_mtok: 2.5}
-  open_weight_2: {input_per_mtok: 0.6, output_per_mtok: 2.5}
+  - https://openrouter.ai/api/v1/models (pricing.prompt and pricing.completion, read 2026-10-12)
+verified: true
+prices:          # USD per million tokens
+  frontier_anthropic: {input_per_mtok: 0.10, output_per_mtok: 0.50}     # anthropic/claude-haiku-5.5
+  frontier_openai: {input_per_mtok: 0.10, output_per_mtok: 0.50}        # openai/gpt-6-luna
+  frontier_google: {input_per_mtok: 0.10, output_per_mtok: 0.40}        # google/gemini-2.5-flash-lite
+  open_weight_1: {input_per_mtok: 0.0173, output_per_mtok: 1.28}        # deepseek/deepseek-v4-flash
+  open_weight_2: {input_per_mtok: 0.03, output_per_mtok: 0.13}          # qwen/qwen3.7-flash
   mock: {input_per_mtok: 0.0, output_per_mtok: 0.0}
-tokens_per_conversation:   # assumed; output includes reasoning tokens; tool conditions re-send a growing context
+tokens_per_conversation:   # P0 pilot means over the five D030 models (prompt and completion tokens, all turns)
   observables:
-    A0: {input: 6000, output: 30000}
-    A1: {input: 300000, output: 45000}
-    A2: {input: 320000, output: 45000}
+    A0: {input: 19004, output: 31276}
+    A1: {input: 930053, output: 66961}
+    A2: {input: 1106637, output: 58206}
   events:
-    A0: {input: 5000, output: 35000}
-    A1: {input: 200000, output: 45000}
+    A0: {input: 13374, output: 40083}
+    A1: {input: 431834, output: 42739}

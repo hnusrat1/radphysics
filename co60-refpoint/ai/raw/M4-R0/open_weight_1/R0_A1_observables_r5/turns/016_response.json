@@ -1,0 +1,57 @@
+{
+ "id": "gen-1791836004-mmH6jYD2I3vgkScnQAQJ",
+ "object": "chat.completion",
+ "created": 1791836004,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "SiliconFlow",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "01a131bfa5c11a69bcb107a425364aa9",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import sys, os, time\\nsys.path.insert(0, '/tmp/work'); os.chdir('/tmp/work')\\nimport numpy as np\\nimport mcbeam as mb\\nt0=time.time()\\nr=mb.photon_mc(300000, rng=np.random.default_rng(42))\\nprint('time',time.time()-t0,'niter',r['niter'])\\nprint('L0_sum',r['L0_sum'])\\nprint('ph_p_tot',r['ph_p_tot'],'ph_s_tot',r['ph_s_tot'])\\nprint('prim ratio',r['ph_p_tot']/r['L0_sum'], 'total ratio',(r['ph_p_tot']+r['ph_s_tot'])/r['L0_sum'])\\nprint('L2p',r['L2p'],'L2s',r['L2s'])\\nprint('nL3',r['nL3'],'Kdep',r['Kdep'],'sumE_all',r['sumE_all'])\\nsrc=r.get('src')\\nif src is not None:\\n    print('src n',len(src['E']),'Emean',src['E'].mean(),'zmean',src['Z'].mean(),'frac_pos',src['pos'].mean(),'prim frac',src['prim'].mean())\\nprint('spec_p sum',r['spec_p'].sum(),'spec_s sum',r['spec_s'].sum())\\nprint('ang_p sum',r['ang_p'].sum(),'ang_s sum',r['ang_s'].sum())\"}"
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 96897,
+  "completion_tokens": 378,
+  "total_tokens": 97275,
+  "cost": 0.002884338,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 96256,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.002884338,
+   "upstream_inference_prompt_cost": 0.002778498,
+   "upstream_inference_completions_cost": 0.00010584
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 1,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

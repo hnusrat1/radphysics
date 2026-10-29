@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791815483-mPoNTXIQeQWDaUch6h04",
+ "object": "chat.completion",
+ "created": 1791815483,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Good, that bound-checking block was already removed since it fell within the section I replaced, so I can just write the file without worrying about it further.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01VigCujTh8kyJr9iFg7cBRn",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport subprocess,time\\ncode=open('mc.py').read()\\nprint('check the bound' in code)\\nt=time.time()\\nr=subprocess.run(['python','mc.py','1','20000'],capture_output=True,text=True)\\nprint(r.stdout[-2000:], r.stderr[-3000:], time.time()-t)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Good, that bound-checking block was already removed since it fell within the section I replaced, so I can just write the file without worrying about it further.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSyQcKEAgSGAI4AUIIdGhpbmtpbmcSDHeCertgQ6uW8ax0lBoMzwroC/kfa6/XRLIEIjCnOOYqeaUkJhe1SZ8bwQQALn/GCWZ9D+Ukx5T9g+q0eeVhEUGqvzvc6BWmtSpD3DIq5gZeMt7PFd/qNzVGLKaV/RsMQhJ7kR17wMDUkpNTif0liQ4lyD+RlvLCm/Lj0Gk0ST34FIgkJyfMCIovPStSuSBSL+4I/3L71Jc2A0ipjCO5LAqbaHs5aNRcQlz8pI+R/rRsk/cSkIBx+6SQWqBr+z20xx0+ISIpT6S/HHppZEkICpZs7x4J7G6bzjRcsVJr8AfsCOJF98ijWVTPHnGt48ZXC0nBPM53aqNIS6k2TyvD4eAam2nx1la1MX9BnMo2EqkRHj1UrvoBdy7Dj+3AA6n8xLuqQdJFLsqPPO+o9+xrBOdfG0c9VtkAMUFomYiUARUxzv+EqfuZvDGtuPmj+fyh7YFcJT+1TM5YMNVtBYEtysH3JIWDHF05W3UssGF8UrwBRMTsg+B6nwy+YOYKHT4nHVytXADRDkAoC0sqwN3lcRnNsGG8h0I/gz0pfuaFUKxV7eecJfDr7r60AVlqaUoGoTktVz6P7APLRiCNhNgWqt7aH48J9vU/31npPLqp7VuOmZopqauhHIMyqxPCSS9Pp4GBPp4SF0bBbr02EdXirf97yR02G6TBx7VbXRpDWupdTQD2pdz7QRPx0r9dyVab1mjikZdQYeiDkAfIjMaa3Y9lhxWBTMDJC28vmtTfZtESWV2OxYIOoSh4fRMDk2hbgZYNdDGW8aEsMOfh/S2RF32Fg6HVLXP9ljHPQQ4OMMhPO/vhrpIc0B0O4mDmtpy8eZ7UNQ5Qfp7xMsTsxNqs5O/DdZUw5VUfse77sQb/qWmm4TZNwa+477YruVYi4LIayPZW/UJR3ZJcG67zEXoiRpxQaJ5Lh+tRWgXKsVB6W1Ue7jeSgVM8HJyKSccroOAWc1cWjfK6HWzkIXAKkODljYQrD05N6TDus2kq+EkB+I9uLhRBvcKoZzlBk6w2B3kPdgvWBXCiS/5CQkrs72WM6OHGWdi90KW3WTdOx88N2of8vmHwnyiHS/mSAdaRq2zkDVs+OlaKJyjLq9kXbHp6RpsdHRBgTIHm/M9AhG2ol0ZXlo2O1QDW3tTDPlrS1BCMGsctMkez71IYyTJiXIpIVtz1NirqQxehn4cPdclbR7RA7fcFKPlhSJ1TDFtiZ060Z2UWu4MbkWLoIJv7WU5NsPBKj3+F4smke3fmtS6QXy3jTxll2skYAQ==.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 32240,
+  "completion_tokens": 220,
+  "total_tokens": 32460,
+  "cost": 0.003334,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.003334,
+   "upstream_inference_prompt_cost": 0.003224,
+   "upstream_inference_completions_cost": 0.00011
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 69,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

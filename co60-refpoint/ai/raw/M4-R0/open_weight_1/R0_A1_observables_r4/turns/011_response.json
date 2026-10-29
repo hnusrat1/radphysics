@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791834891-BbpNLOgxOfilClNEK5N5",
+ "object": "chat.completion",
+ "created": 1791834891,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "SiliconFlow",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Bug: I use random(n) but mu has length N (full array including dead). `s = -np.log(rng.random(n))/mu` with n=alive.sum() but mu length N. Since dead have E=0, mu at E=0 is defined and nonzero (interp at 0.01 = 1.23). So mu has length N. For dead photons, we set s=0 after via `s = np.where(alive, s, 0.0)`. But the random(n) is shorter. Fix: use rng.random(N) for all.\n\nAlso x, y, z updates `x = x + ux*s*alive` fine with full length.\n\nLet me fix: s = -np.log(rng.random(N))/mu.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "01a131aec9d828681de9901f663ed406",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport numpy as np, time\\n\\nme = 0.51099895\\nre = 2.8179403262e-13\\nNA = 6.02214076e23\\nn_e_g = NA*10/18.01528\\n\\ndef kn_total(E):\\n    eta = np.asarray(E,dtype=float)/me\\n    a = 1.0+2.0*eta\\n    return 2*np.pi*re**2*((1+eta)/eta**2*(2*(1+eta)/a - np.log(a)/eta) + np.log(a)/(2*eta) - (1+3*eta)/a**2)\\n\\nEgrid = np.array([0.01,0.02,0.03,0.05,0.08,0.1,0.15,0.2,0.3,0.4,0.5,0.6,0.8,1.0,1.1732,1.25,1.3325,1.5,2.0,3.0])\\nmuR  = np.array([0.028,0.012,0.0085,0.0060,0.0052,0.0045,0.0033,0.0028,0.0022,0.0019,0.0017,0.0015,0.0012,0.0010,0.0009,0.00085,0.0008,0.00075,0.00055,0.00040])\\ntau  = np.array([0.60,0.15,0.045,0.0093,0.0026,0.0019,0.00070,0.00042,0.00016,0.000085,0.000052,0.000036,0.000021,0.000013,0.000010,0.000009,0.000008,0.000007,0.000004,0.0000015])\\nkap  = np.zeros_like(Egrid)\\nsel = Egrid>1.022\\nkap[sel]=np.interp(np.clip(Egrid[sel],1.1732,3.0),[1.1732,1.3325,1.5,2.0,3.0],[0.00012,0.00075,0.0011,0.0026,0.0055])\\n\\ndef interp1(x, xp, fp):\\n    return np.interp(np.clip(x, xp[0], xp[-1]), xp, fp)\\ndef mu_comp(E): return kn_total(np.clip(E,0.01,3.0))*n_e_g\\ndef mu_ray(E): return interp1(E, Egrid, muR)\\ndef mu_photo(E): return interp1(E, Egrid, tau)\\ndef mu_pair(E):\\n    E=np.asarray(E,float)\\n    return np.where(E>2*me, interp1(E, Egrid, kap), 0.0)\\ndef mu_totX(E):\\n    return mu_comp(E)+mu_ray(E)+mu_photo(E)+mu_pair(E)\\n\\neta_grid = np.linspace(0.02, 3.0, 400)\\nxi_grid = np.linspace(0.001, 0.999, 512)\\nmu_grid = np.linspace(-1, 1, 4001)\\ndef kn_dsdmu_vec(eta, mu):\\n    r = 1.0/(1.0+eta*(1.0-mu))\\n    return np.pi*re**2 * r**2 * (r + 1.0/r - (1.0-mu*mu))\\nQ = np.zeros((len(eta_grid), len(xi_grid)))\\nfor i,eta in enumerate(eta_grid):\\n    d = kn_dsdmu_vec(eta, mu_grid)\\n    c = np.cumsum(d); c = c/c[-1]\\n    Q[i,:] = np.interp(xi_grid, c, mu_grid)\\n\\ndef sample_kn_cos(E, xi):\\n    eta = np.clip(E/me, eta_grid[0], eta_grid[-1])\\n    ie = (eta - eta_grid[0])/(eta_grid[-1]-eta_grid[0])*(len(eta_grid)-1)\\n    i0 = np.clip(np.floor(ie).astype(int),0,len(eta_grid)-2)\\n    f = ie-i0\\n    ix = xi*(len(xi_grid)-1)\\n    j0 = np.clip(np.floor(ix).astype(int),0,len(xi_grid)-2)\\n    fx = ix-j0\\n    v0 = Q[i0,j0]*(1-fx)+Q[i0,j0+1]*fx\\n    v1 = Q[i0+1,j0]*(1-fx)+Q[i0+1,j0+1]*fx\\n    return v0*(1-f)+v1*f\\n\\ndef rotate(u, cosT, phi):\\n    ux,uy,uz = u[...,0],u[...,1],u[...,2]\\n    e1x = uy; e1y = -ux; e1z = np.zeros_like(ux)\\n    n = np.sqrt(e1x*e1x+e1y*e1y)\\n    e1x=np.where(n>1e-30,e1x/n,1.0); e1y=np.where(n>1e-30,e1y/n,0.0)\\n    e2x = uy*e1z-uz*e1y; e2y = uz*e1x-ux*e1z; e2z = ux*e1y-uy*e1x\\n    st = np.sqrt(np.clip(1-cosT*cosT,0,1))\\n    cphi = np.cos(phi); sphi = np.sin(phi)\\n    nx = e1x*(st*cphi)+e2x*(st*sphi)+ux*cosT\\n    ny = e1y*(st*cphi)+e2y*(st*sphi)+uy*cosT\\n    nz = e1z*(st*cphi)+e2z*(st*sphi)+uz*cosT\\n    return np.stack([nx,ny,nz],axis=-1)\\n\\ndef score_cylinder(x,y,z,ux,uy,uz,s):\\n    zlo=4.9; zhi=5.1; rad=1.0\\n    tz1=(zlo-z)/uz; tz2=(zhi-z)/uz\\n    tza=np.minimum(tz1,tz2); tzb=np.maximum(tz1,tz2)\\n    tza=np.clip(tza,0.0,s); tzb=np.clip(tzb,0.0,s)\\n    uz0 = np.abs(uz)<1e-9\\n    tza=np.where(uz0, 0.0, tza); tzb=np.where(uz0, s, tzb)\\n    tza=np.where(uz0 & ((z<zlo)|(z>zhi)), 0.0, tza)\\n    tzb=np.where(uz0 & ((z<zlo)|(z>zhi)), 0.0, tzb)\\n    a=ux*ux+uy*uy\\n    b=2.0*(x*ux+y*uy)\\n    c=x*x+y*y-rad*rad\\n    disc=b*b-4*a*c\\n    a0 = np.abs(a)<1e-9\\n    sq=np.sqrt(np.clip(disc,0,None))\\n    den=2.0*a+1e-30\\n    t1=(-b-sq)/den; t2=(-b+sq)/den\\n    neg = disc<0\\n    tlo=np.where(neg, 0.0, np.minimum(t1,t2))\\n    thi=np.where(neg, np.where(c<0, s, 0.0), np.maximum(t1,t2))\\n    start_in = c<0\\n    tlo=np.where(start_in & ~neg & ~a0, 0.0, tlo)\\n    thi=np.where(start_in & ~neg & ~a0, np.maximum(t1,t2), thi)\\n    tlo=np.where(a0, 0.0, tlo)\\n    thi=np.where(a0, np.where(c<0,s,0.0), thi)\\n    tlo=np.maximum(tlo, tza); thi=np.minimum(thi, tzb)\\n    return np.maximum(thi-tlo,0.0)\\n\\nph_bins=np.array([0,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1,1.05,1.1,1.15,1.2,1.25,1.3,1.35,1.4])\\nct_bins=np.array([-1,-0.8,-0.6,-0.4,-0.2,0,0.2,0.4,0.6,0.8,1])\\n\\ndef run_chunk(N, seed, Hp, Hcnt, stats):\\n    rng = np.random.default_rng(seed)\\n    x0=rng.uniform(-5,5,N); y0=rng.uniform(-5,5,N)\\n    d=np.sqrt(x0*x0+y0*y0+1e4)\\n    ux=x0/d; uy=y0/d; uz=100.0/d\\n    E=np.where(rng.random(N)<0.5, 1.1732,1.3325)\\n    x=np.zeros(N); y=np.zeros(N); z=np.zeros(N)\\n    scat=np.zeros(N,bool)\\n    alive=np.ones(N,bool)\\n    pending=[]\\n    nit_tot=0; npair_tot=0\\n    it=0\\n    while True:\\n        if not alive.any():\\n            if len(pending)==0: break\\n            arr = np.concatenate(pending,axis=0); pending=[]\\n            x=np.concatenate([x,arr[:,0]]); y=np.concatenate([y,arr[:,1]]); z=np.concatenate([z,arr[:,2]])\\n            ux=np.concatenate([ux,arr[:,3]]); uy=np.concatenate([uy,arr[:,4]]); uz=np.concatenate([uz,arr[:,5]])\\n            E=np.concatenate([E,arr[:,6]]); scat=np.concatenate([scat,np.ones(len(arr),bool)])\\n            alive=np.concatenate([alive,np.ones(len(arr),bool)])\\n        Ncur = len(alive)\\n        mu = mu_totX(E)\\n        s = -np.log(rng.random(Ncur))/mu\\n        s = np.where(alive, s, 0.0)\\n        tex = np.full(Ncur, np.inf)\\n        tz = (30.0-z)/uz; ok = uz>0\\n        tex = np.where(ok, np.minimum(tex, np.where(tz>0,tz,np.inf)), tex)\\n        tz = (0.0-z)/uz; ok = uz<0\\n        tex = np.where(ok, np.minimum(tex, np.where(tz>0,tz,np.inf)), tex)\\n        tx = (15.0-x)/ux; ok = ux>0\\n        tex = np.where(ok, np.minimum(tex, np.where(tx>0,tx,np.inf)), tex)\\n        tx = (-15.0-x)/ux; ok = ux<0\\n        tex = np.where(ok, np.minimum(tex, np.where(tx>0,tx,np.inf)), tex)\\n        ty = (15.0-y)/uy; ok = uy>0\\n        tex = np.where(ok, np.minimum(tex, np.where(ty>0,ty,np.inf)), tex)\\n        ty = (-15.0-y)/uy; ok = uy<0\\n        tex = np.where(ok, np.minimum(tex, np.where(ty>0,ty,np.inf)), tex)\\n        s_eff = np.minimum(s, tex)\\n        s_eff = np.where(alive, s_eff, 0.0)\\n        tl = score_cylinder(x,y,z,ux,uy,uz,s_eff)*alive\\n        eb = np.clip(np.searchsorted(ph_bins, E, side='right')-1, 0, 27)\\n        cb = np.clip(np.searchsorted(ct_bins, uz, side='right')-1, 0, 9)\\n        cat = scat.astype(int)\\n        np.add.at(Hp, (eb, cb, cat), tl)\\n        Hcnt[0]+= tl[~scat].sum(); Hcnt[1]+= tl[scat].sum()\\n        interact = (s < tex) & alive\\n        nit = interact.sum(); nit_tot+=nit\\n        x = x + ux*s*alive; y = y + uy*s*alive; z = z + uz*s*alive\\n        dead = alive & (s >= tex)\\n        if nit>0:\\n            ind = np.where(interact)[0]\\n            xi=x[ind]; yi=y[ind]; zi=z[ind]; ui=np.stack([ux[ind],uy[ind],uz[ind]],axis=-1); Ei=E[ind]\\n            mui = mu_totX(Ei)\\n            pc = mu_comp(Ei)/mui\\n            pr = pc + mu_ray(Ei)/mui\\n            pp = pr + mu_photo(Ei)/mui\\n            r = rng.random(nit)\\n            mC = r < pc\\n            mR = (r>=pc)&(r<pr)\\n            mPh = (r>=pr)&(r<pp)\\n            mPa = (r>=pp)\\n            if mC.any():\\n                cosT = sample_kn_cos(Ei[mC], rng.random(mC.sum()))\\n                phi = 2*np.pi*rng.random(mC.sum())\\n                un = rotate(ui[mC], cosT, phi)\\n                ii = ind[mC]\\n                ux[ii]=un[:,0]; uy[ii]=un[:,1]; uz[ii]=un[:,2]\\n                E[ii] = Ei[mC]/(1.0+(Ei[mC]/me)*(1.0-cosT))\\n                scat[ii]=True\\n            if mR.any():\\n                cosT = 1.0 - 2e-5*rng.random(mR.sum())\\n                phi = 2*np.pi*rng.random(mR.sum())\\n                un = rotate(ui[mR], cosT, phi)\\n                ii = ind[mR]\\n                ux[ii]=un[:,0]; uy[ii]=un[:,1]; uz[ii]=un[:,2]\\n                scat[ii]=True\\n            if mPh.any():\\n                dead[ind[mPh]] = True\\n            if mPa.any():\\n                npa = mPa.sum(); npair_tot+=npa\\n                dead[ind[mPa]] = True\\n                th = rng.random(npa)*np.pi\\n                ph = rng.random(npa)*2*np.pi\\n                d1 = np.stack([np.sin(th)*np.cos(ph), np.sin(th)*np.sin(ph), np.cos(th)],axis=-1)\\n                d2 = -d1\\n                for dd in (d1,d2):\\n                    pending.append(np.column_stack([xi[mPa],yi[mPa],zi[mPa],dd[:,0],dd[:,1],dd[:,2],np.full(npa,0.511)]))\\n            lowE = E[ind] < 0.01\\n            dead[ind[lowE]] = True\\n            if dead.any():\\n                E[dead]=0.0\\n                ux[dead]=0; uy[dead]=0; uz[dead]=0\\n        alive = (~dead) & alive\\n        it+=1\\n    stats['events']+=nit_tot; stats['pair']+=npair_tot\\n    return\\n\\ndef run_total(Ntot, chunksize=2_000_000, seed=123, verbose=True):\\n    t0=time.time()\\n    Hp = np.zeros((28,10,2))\\n    Hcnt = np.zeros(2)\\n    stats={'events':0,'pair':0}\\n    nchunks = int(np.ceil(Ntot/chunksize))\\n    for i in range(nchunks):\\n        Nc = min(chunksize, Ntot-i*chunksize)\\n        run_chunk(Nc, seed+i, Hp, Hcnt, stats)\\n        if verbose: print('chunk',i,'done, Hcnt',Hcnt,'events',stats['events'],'time',round(time.time()-t0,1))\\n    Vcyl=np.pi*0.2\\n    f_prim=Hcnt[0]/Vcyl*110.25\\n    f_scat=Hcnt[1]/Vcyl*110.25\\n    sp_prim=Hp[:,:,0].sum(axis=1)/Vcyl*110.25\\n    sp_scat=Hp[:,:,1].sum(axis=1)/Vcyl*110.25\\n    ang_prim=Hp[:,:,0].sum(axis=0)/max(Hcnt[0],1e-30)\\n    ang_scat=Hp[:,:,1].sum(axis=0)/max(Hcnt[1],1e-30)\\n    print('events',stats,'time',round(time.time()-t0,1))\\n    print('primary fluence/Phi0',f_prim,'scattered',f_scat,'total',f_prim+f_scat,'scat fraction fluence',f_scat/(f_prim+f_scat))\\n    print('ang prim:',np.round(ang_prim,4))\\n    print('ang scat:',np.round(ang_scat,4))\\n    print('spec prim:',np.round(sp_prim,4))\\n    print('spec scat:',np.round(sp_scat,4))\\n    return dict(f_prim=f_prim,f_scat=f_scat,sp_prim=sp_prim,sp_scat=sp_scat,ang_prim=ang_prim,ang_scat=ang_scat,Hp=Hp,Hcnt=Hcnt)\\n\\nr = run_total(2_000_000, chunksize=2_000_000, seed=7)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Bug: I use random(n) but mu has length N (full array including dead). `s = -np.log(rng.random(n))/mu` with n=alive.sum() but mu length N. Since dead have E=0, mu at E=0 is defined and nonzero (interp at 0.01 = 1.23). So mu has length N. For dead photons, we set s=0 after via `s = np.where(alive, s, 0.0)`. But the random(n) is shorter. Fix: use rng.random(N) for all.\n\nAlso x, y, z updates `x = x + ux*s*alive` fine with full length.\n\nLet me fix: s = -np.log(rng.random(N))/mu.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 95891,
+  "completion_tokens": 4314,
+  "total_tokens": 100205,
+  "cost": 0.004482326,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 90112,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.004482326,
+   "upstream_inference_prompt_cost": 0.003274406,
+   "upstream_inference_completions_cost": 0.00120792
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 166,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

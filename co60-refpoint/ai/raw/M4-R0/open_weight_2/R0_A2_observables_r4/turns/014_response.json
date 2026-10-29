@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791827463-zSf02gBwnv352oqmZQ5B",
+ "object": "chat.completion",
+ "created": 1791827463,
+ "model": "qwen/qwen3.7-flash",
+ "provider": "Alibaba",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I need to define T_primary earlier in the script. Let me fix this and continue with a complete, self-contained calculation script.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_ca1afa5bb7594e5a9b454d95",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nfrom scipy.interpolate import interp1d\\n\\n# Load data\\nxcom = np.loadtxt('/tmp/data/xcom_water.txt')\\nestar = np.loadtxt('/tmp/data/estar_water.txt')\\n\\ne_photon = xcom[:, 0]\\ncoherent = xcom[:, 1]\\nincoherent = xcom[:, 2]\\nphotoelectric = xcom[:, 3]\\npair_nuclear = xcom[:, 4]\\npair_electron = xcom[:, 5]\\ntotal_with_coherent = xcom[:, 6]\\ntotal_without_coherent = xcom[:, 7]\\n\\ne_electron = estar[:, 0]\\ns_col = estar[:, 1]\\ns_rad = estar[:, 2]\\ns_tot = estar[:, 3]\\ncsda_range = estar[:, 4]\\nrad_yield_data = estar[:, 5]\\n\\ndef f_interp(xdata, ydata, xval, kind='cubic'):\\n    return interp1d(xdata, ydata, kind=kind, fill_value='extrapolate')(xval)\\n\\nf_mu_total = lambda e: f_interp(e_photon, total_with_coherent, e)\\nf_mu_tr = lambda e: f_interp(e_photon, total_without_coherent, e)\\nf_mu_comp = lambda e: f_interp(e_photon, incoherent, e)\\nf_mu_coh = lambda e: f_interp(e_photon, coherent, e)\\nf_mu_pe = lambda e: f_interp(e_photon, photoelectric, e)\\nf_mu_pair = lambda e: f_interp(e_photon, pair_nuclear, e) + f_interp(e_photon, pair_electron, e)\\n\\nf_s_col = lambda e: f_interp(e_electron, s_col, e, 'linear')\\nf_s_rad = lambda e: f_interp(e_electron, s_rad, e, 'linear')  \\nf_s_tot = lambda e: f_interp(e_electron, s_tot, e, 'linear')\\nf_rad_yld = lambda e: f_interp(e_electron, rad_yield_data, e, 'linear')\\n\\nsource_to_surface = 100.0\\ndepth = 5.0\\nrho = 1.000\\nE1, E2 = 1.1732, 1.3325\\nw1, w2 = 0.5, 0.5\\n\\n# Primary transmission\\nmu1, mu2 = f_mu_total(E1), f_mu_total(E2)\\nT1, T2 = np.exp(-rho * mu1 * depth), np.exp(-rho * mu2 * depth)\\nT_primary = w1 * T1 + w2 * T2\\nSPR = 0.18  # Scatter-to-primary ratio\\n\\nprint(\\\"Layer 2 calculations:\\\")\\n\\n# Interaction coefficients at Co-60 energies\\nmu_coh_1, mu_comp_1, mu_pe_1, mu_pair_1 = f_mu_coh(E1), f_mu_comp(E1), f_mu_pe(E1), f_mu_pair(E1)\\nmu_coh_2, mu_comp_2, mu_pe_2, mu_pair_2 = f_mu_coh(E2), f_mu_comp(E2), f_mu_pe(E2), f_mu_pair(E2)\\nmu_total_1, mu_total_2 = f_mu_total(E1), f_mu_total(E2)\\nmu_tr_1, mu_tr_2 = f_mu_tr(E1), f_mu_tr(E2)\\n\\n# Weighted averages for primary photons\\nmu_comp_avg_prim = w1 * mu_comp_1 + w2 * mu_comp_2\\nmu_coh_avg_prim = w1 * mu_coh_1 + w2 * mu_coh_2\\nmu_pe_avg_prim = w1 * mu_pe_1 + w2 * mu_pe_2\\nmu_pair_avg_prim = w1 * mu_pair_1 + w2 * mu_pair_2\\nmu_total_avg_prim = w1 * mu_total_1 + w2 * mu_total_2\\nmu_tr_avg_prim = w1 * mu_tr_1 + w2 * mu_tr_2\\n\\n# For scattered photons (approximate, lower energy ~0.4 MeV)\\nmu_comp_scatter_est, mu_coh_scatter_est = 0.06, 0.005\\nmu_pe_scatter_est, mu_pair_scatter_est = 0.01, 0.005\\nmu_total_scatter = mu_comp_scatter_est + mu_coh_scatter_est + mu_pe_scatter_est + mu_pair_scatter_est\\nmu_tr_scatter_est = mu_comp_scatter_est * 0.25 + mu_pe_scatter_est * 1.0  # rough estimate\\n\\n# Overall interaction fractions\\ntotal_interaction_rate = T_primary * mu_total_avg_prim + SPR * T_primary * mu_total_scatter\\n\\nL2_compton_all = (T_primary * mu_comp_avg_prim + SPR * T_primary * mu_comp_scatter_est) / total_interaction_rate\\nL2_photoelectric_all = (T_primary * mu_pe_avg_prim + SPR * T_primary * mu_pe_scatter_est) / total_interaction_rate\\nL2_pair_all = (T_primary * mu_pair_avg_prim + SPR * T_primary * mu_pair_scatter_est) / total_interaction_rate\\nL2_rayleigh_all = (T_primary * mu_coh_avg_prim + SPR * T_primary * mu_coh_scatter_est) / total_interaction_rate\\n\\n# Energy transfer fractions\\net_compton = T_primary * mu_comp_avg_prim * 0.35 + SPR * T_primary * mu_comp_scatter_est * 0.25\\net_photoelectric = T_primary * mu_pe_avg_prim * 1.0 + SPR * T_primary * mu_pe_scatter_est * 1.0\\net_pair = T_primary * mu_pair_avg_prim * 0.95 + SPR * T_primary * mu_pair_scatter_est * 0.95\\net_rayleigh = 0.0\\net_total = et_compton + et_photoelectric + et_pair + et_rayleigh\\n\\nL2_et_compton = et_compton / et_total\\nL2_et_photoelectric = et_photoelectric / et_total\\nL2_et_pair = et_pair / et_total\\nL2_et_rayleigh = et_rayleigh / et_total\\n\\n# Primary-only interaction fractions\\nL2_prim_compton = mu_comp_avg_prim / mu_total_avg_prim\\nL2_prim_photoelectric = mu_pe_avg_prim / mu_total_avg_prim\\nL2_prim_pair = mu_pair_avg_prim / mu_total_avg_prim\\nL2_prim_rayleigh = mu_coh_avg_prim / mu_total_avg_prim\\n\\n# Scattered-only interaction fractions\\nL2_scat_compton = mu_comp_scatter_est / mu_total_scatter\\nL2_scat_photoelectric = mu_pe_scatter_est / mu_total_scatter\\nL2_scat_pair = mu_pair_scatter_est / mu_total_scatter\\nL2_scat_rayleigh = mu_coh_scatter_est / mu_total_scatter\\n\\n# Scattered share of all interactions\\nL2_scat_share = SPR * T_primary * mu_total_scatter / total_interaction_rate\\n\\nprint(f\\\"L2_interaction_fractions: compton={L2_compton_all:.6f}, pe={L2_photoelectric_all:.6f}, pair={L2_pair_all:.6f}, rayleigh={L2_rayleigh_all:.6f}\\\")\\nprint(f\\\"L2_energy_transfer_fractions: compton={L2_et_compton:.6f}, pe={L2_et_photoelectric:.6f}, pair={L2_et_pair:.6f}, rayleigh={L2_et_rayleigh:.6f}\\\")\\nprint(f\\\"L2_primary: compton={L2_prim_compton:.6f}, pe={L2_prim_photoelectric:.6f}, pair={L2_prim_pair:.6f}, rayleigh={L2_prim_rayleigh:.6f}\\\")\\nprint(f\\\"L2_scattered: compton={L2_scat_compton:.6f}, pe={L2_scat_photoelectric:.6f}, pair={L2_scat_pair:.6f}, rayleigh={L2_scat_rayleigh:.6f}\\\")\\nprint(f\\\"L2_scattered_share_of_interactions = {L2_scat_share:.6f}\\\")\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I need to define T_primary earlier in the script. Let me fix this and continue with a complete, self-contained calculation script.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 29141,
+  "completion_tokens": 1835,
+  "total_tokens": 30976,
+  "cost": 0.00111278,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00111278,
+   "upstream_inference_prompt_cost": 0.00087423,
+   "upstream_inference_completions_cost": 0.00023855
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 26,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

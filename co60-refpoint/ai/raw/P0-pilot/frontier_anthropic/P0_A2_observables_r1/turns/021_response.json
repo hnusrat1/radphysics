@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791818022-zHoFWCoyFbrvvEBJia5B",
+ "object": "chat.completion",
+ "created": 1791818022,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "Python state does not persist between calls, so I'll put the final assembly into a script file and rerun it from scratch each time.",
+    "refusal": null,
+    "reasoning": "Since state isn't persisting between tool calls, I'll write one complete script that reimports everything and computes all the outputs together, double-checking the cylinder volume formula with R=1cm, h=0.2cm giving V=\u03c0\u00d70.2.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_018AFwm31qgAyVxUvZnznSob",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\ncode_final = r'''\\nimport sys, pickle\\nsys.path.insert(0,'/tmp/work')\\nimport numpy as np\\nimport phys, deposit, electrons, sources\\nfrom phys import mu_all, Yrad, Stot, Scol, Srad\\nS_phi0=0.009975072683099257*110.0**2; V=np.pi*1.0**2*0.2; Ntot=4000000\\nD=pickle.load(open('/tmp/work/photon_tallies.pkl','rb'))\\ntot=D['tot']; seg=D['seg']\\nL4=pickle.load(open('/tmp/work/L4.pkl','rb'))\\nEB=np.array([0,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1,1.05,1.1,1.15,1.2,1.25,1.3,1.35,1.4])\\nCB=np.array([-1,-0.8,-0.6,-0.4,-0.2,0,0.2,0.4,0.6,0.8,1.0])\\nEBe=electrons.EBe\\nPhi_p=float(np.exp(-mu_all(np.array([2.0]))[4][0]*10))\\nmu2=[float(x[0]) for x in mu_all(np.array([2.0]))]\\ncoh2,inc2,pe2,pr2,mt2=mu2\\nEl=seg['E']; ll=seg['l']; dl=seg['d']\\n# ---- scattered spectrum & angular (recomputed from segments)\\nebin=np.digitize(El,EB)-1\\nspec_s=np.zeros(28); ok=(ebin>=0)&(ebin<28); np.add.at(spec_s,ebin[ok],ll[ok])\\nspec_s*=S_phi0/V/Ntot\\nFs=ll.sum()*S_phi0/V/Ntot\\nFs_check=float(tot['Fl_sc'])\\nEFs=(ll*El).sum()*S_phi0/V/Ntot\\nang=np.zeros(10); cb=np.clip(np.digitize(dl[:,2],CB)-1,0,9); np.add.at(ang,cb,ll)\\nang_s=ang/ang.sum()\\nprint(\\\"Fs MC (recomputed)\\\",Fs,\\\"vs earlier\\\",Fs_check,\\\"spec sum\\\",spec_s.sum(),\\\"over1.4\\\",ll[El>1.4].sum()*S_phi0/V/Ntot)\\nFtot=Phi_p+Fs\\nEFp=Phi_p*2.0\\nL1=dict(L1_primary_fluence_per_phi0=Phi_p, L1_total_fluence_per_phi0=Ftot, L1_scattered_fraction_fluence=Fs/Ftot,\\n        L1_scattered_fraction_energy_fluence=EFs/(EFs+EFp), L1_mean_photon_energy_MeV=(EFs+EFp)/Ftot,\\n        L1_photon_fluence_spectrum_primary=[0.0]*28, L1_photon_fluence_spectrum_scattered=list(spec_s),\\n        L1_angular_primary=[0.0]*9+[1.0], L1_angular_scattered=list(ang_s))\\nprint(L1)\\n# ---- Layer 2\\nprim_counts=np.array([coh2,inc2,pe2,pr2])*Phi_p\\nscat_counts=np.array(tot['mu_sc'])\\nallc=prim_counts+scat_counts\\ndep2=deposit.transfer_coeffs(np.array([2.0]))\\nprim_tr=np.array([0.0, float(dep2['tr_c'][0])*Phi_p, float(dep2['tr_pe'][0])*Phi_p, float(dep2['tr_pa'][0])*Phi_p])\\nscat_tr=np.array([0.0, tot['tr_sc'][0], tot['tr_sc'][1], tot['tr_sc'][2]])\\nctr=prim_tr+scat_tr\\nkeys=['rayleigh','compton','photoelectric','pair']\\ndef fd(v): v=np.asarray(v,float); return {k:float(x) for k,x in zip(keys,v/v.sum())}\\nL2=dict(L2_interaction_fractions=fd(allc), L2_energy_transfer_fractions=fd(ctr),\\n        L2_interaction_fractions_primary=fd(prim_counts), L2_interaction_fractions_scattered=fd(scat_counts),\\n        L2_scattered_share_of_interactions=float(scat_counts.sum()/allc.sum()))\\nprint(L2)\\n'''\\nopen('/tmp/work/final1.py','w').write(code_final)\\nimport subprocess\\nr=subprocess.run(['python3','/tmp/work/final1.py'],capture_output=True,text=True,cwd='/tmp/work')\\nprint(r.stdout[-4000:], r.stderr[-3000:])\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Since state isn't persisting between tool calls, I'll write one complete script that reimports everything and computes all the outputs together, double-checking the cylinder volume formula with R=1cm, h=0.2cm giving V=\u03c0\u00d70.2.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQStAkKEAgSGAI4AUIIdGhpbmtpbmcSDAjAP5rv42FY6o/pthoMSI+nNtz1ur/hBPjqIjC0ASh1Yj7m556YuKKZE5Cv/P3iIdVXEPcw1MSktRpnY89IWApfIqO02bxNUyqjtkMq0QiW9AeddJUKzAqZLTXEWGVy9I6hOOoyc+O4tsOTx6AwwZ3pVChiVx4mViU8x0exmBLKoTclzdggmF7Lc8tTxaPCrB+/H+U8GuXIwkLDniVRPVYnjNZ8YP+M3ELsXnw9nURiTczvsPfSiTjoDKSLoCR3I/5o8S/c6HSmZcoUNaxWIq7T0KOoVdAYU/1gL8RnMI26sFGnzj+ohv4ez0gLnq8gZzeguWDOT1uB/heOM8DTum0Zp0xjvK0QTik77MpFqomWjaMCKun7fsw5lnyExqfbumU55rphjKo8/utCjbvdYfjdiy5h9RnTf3E70w4vHaDskHISjBuIhMDCLkOXevaqMS/FUeUCTP/ocntmFGIUKnP0puGT1+LPdgq1qrtc8kLCEifufDOfnwG9YrWcloHZjD8mbpLS4PIp7urqlNk4NxN+tcIf4x1XWradBgEK9X/wIhwtdWQVrDLCc3oDH6kima4Ieqp3IZudKqq9tUy5Cc24jny5OCB3PyHSqNeR7TrVXZJE4RyfnBt/v2HMkNw52rkbDpe0mPYjSHI302+qbDxtG5EaG9/1uoZI/0hZkHrvRws/iORMXOZTbADPm6FBx1Rbto8/3nW/fAT6Kclf1Dfmp45upL3j0VsdMYJrFlaCey5DCZvknGzc2qkimFTvkd3wjViytcq+HmyomHpnmAgHlQFoCkozGaNWPyNIx1W+9BfkaUYkHG1v+0wm8GopYIXddduPMlXBC+uYqS3GIIza/GqqG3PwvS0BQZWip2gbRnZTaL/2GbXfJAJy/9NT1oicUwXRJu1hJ+onGRgw953voyIryEcFKWWDxDIOx5/zlAIrSRLPjNNKqg0DdB8KNbwoTii7cKPIlBQJm0VgjNxKpMKoClYiCLkn9tr2jkNv9BpbPOyM55Ary81eA0l2bboHQfP1Y8qwmhMZ3PtTGgFPlLkSXKZs4MZ5F9rAoL6cnwhzpGwZguhDwkYQA7/2Ez5ERjBX52kviPkLZdfVVZfJpDGC0ojnOtP76TKHHfvNbdArGSzvadr4pEheyZ/JLzEio0/o7WqGl+XSDDKmDAgMhEWXclJYn6B0je6RhR6oY6Y+SUerrb32s3vVLYK08G+JZ5LGC4sHYMy813JTKqQ9Q3DDUQAA7nkxuaKeomQlb5jRHoPw37xjJApMccbRTaCMhDyDPzRCVpUswo4w2PP6zL+TIApOkQ2QdIiGib3h9zg2edfbRrcqoCn+kFEjhnfIDZlgCK9fbozvXiIfN1QGvCJeQ4RQGIAKRyhi8fRWPnrapP/25FdC17bWx8Y+T2CLwNHg8zRIej14hMPStOG4idoRoBh1c98bCLdXsn7u25PSmbRJBv/bUIA5ldIRZoGHK+usP7S75nFukKx3X8qo9WtUnaYIApuiOC2mCGHjDfqxOnm9C3+nDNhfsZ613UPisbs0+mqe/KqlgvWo+ElLrsy5oL8ueaW8D7wxnRwAGAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 135633,
+  "completion_tokens": 1928,
+  "total_tokens": 137561,
+  "cost": 0.0726365,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0726365,
+   "upstream_inference_prompt_cost": 0.0678165,
+   "upstream_inference_completions_cost": 0.00482
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 158,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

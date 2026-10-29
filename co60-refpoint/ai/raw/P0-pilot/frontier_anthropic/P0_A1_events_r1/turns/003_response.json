@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791815448-nENptSe0zljWFj6SwO3J",
+ "object": "chat.completion",
+ "created": 1791815448,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "State doesn't seem to persist between runs, so I'll just write the full script to a file each time instead of relying on earlier state.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01QLuhqv51qcSXUnpd5GgcX3",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport numpy as np\\nfrom scipy.integrate import quad\\nre=2.8179403e-13; me=0.510998950\\ndef sigKN(E):\\n    k=E/me\\n    t1=(1+k)/k**2*(2*(1+k)/(1+2*k)-np.log(1+2*k)/k)\\n    t2=np.log(1+2*k)/(2*k)-(1+3*k)/(1+2*k)**2\\n    return 2*np.pi*re**2*(t1+t2)\\ndef shape(eps,k):\\n    c=1-(1/eps-1)/k\\n    return 1/eps+eps-(1-c*c)\\ndef sig_from_shape(E):\\n    k=E/me; emin=1/(1+2*k)\\n    val,_=quad(lambda e: shape(e,k),emin,1,limit=200)\\n    return np.pi*re**2/k**2*val\\nprint(sig_from_shape(2.0), sigKN(2.0), sig_from_shape(0.1), sigKN(0.1))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "State doesn't seem to persist between runs, so I'll just write the full script to a file each time instead of relying on earlier state.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS/AUKEAgSGAI4AUIIdGhpbmtpbmcSDCV5zIQW/0oM1tBUEhoMlkS2Jlwt2HATbywdIjCVSXiZsxsTBU1/UGsAXCyVaEZ2a9YHEq4QS0RU2ljAIK0jOUg7sr4fHKEcZTNBs00qmQUICCRV1hnozvBJzhl4xG9GYxDBiho3tHsnbdoAmuHPIjlrcn6ebFFF9UqzfatqhknGgLE61ieuY85fkqaTr9XBd4Rtcb7msT6SoqBFtj4syxJFR0QFQRfRyZD7aJ8QqDXpf/ZVSH9jhI6vGbbAlIes4oO8JTsXPjlQK7gJFO7RH0wwcMMaQMGuj6j0V1e/0bBVoQmq72FBjBVgUoPijHLonQr93wzu7Rb0UvIUx5xBO09qgvcc/IglYy4zQAxN4qQo3RzSPg3d71W+tIH+2z5rTl50BUrgSJmLTFog7MUMF8JV79yx2R0IGiyTVQzIHYQfE75WbYRgGCBGK7V7KzaO0MVFUfsJTRa7Gj+sE5On5Z6CLT0QGJ9F7ased11CCNJt8P/v9j6mRoKW2DFmL7pporq/Vb3bySSJbe4LBBcN7JADWP55KpgO2sXnnTXTVoZg4Qku13WVNL1rHjFcJAVzmOh3Ca70l7SImQprfi26oi1E5thcAeKi5umlXByvwEbTrkBDSNZv5OcqCgt3+gI+Q35h8Jng1IzVvEO3I5CQO5UXMI7srxqmgPW2g6eRpyzniGKC8JuIo3cDK8cwAZgEAjnPehLCSnKmMtFBsEuSvqbZyF3kV/RhNa83qnEFnT9sbLMDjKybf47bfSC77WEIL8laso6vHv90DIsK9wdEmNYxik5l20CtU8bPeTIZR57UGLEBNgtu+YVi/3tDXnbhaknjfuBpvVUbf59PSbl69g1TBoJ/ha8bb03XO9zHoyl+eF5l2zjMOmYGo/Wt6UCe41WJE59XkEbjJmrR4HSI13ge40J1cBQCfjI9I0ikK/QgGIGr4nUonCTjX2mZTs3dm0dMdtlInK4OLDS7ZX4kNiRc7LcZGnKgehgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 24882,
+  "completion_tokens": 396,
+  "total_tokens": 25278,
+  "cost": 0.0026862,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0026862,
+   "upstream_inference_prompt_cost": 0.0024882,
+   "upstream_inference_completions_cost": 0.000198
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 20,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

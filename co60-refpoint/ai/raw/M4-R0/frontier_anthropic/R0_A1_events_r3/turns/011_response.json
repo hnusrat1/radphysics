@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791827776-Fo7k4YTL8tshl0keJwZL",
+ "object": "chat.completion",
+ "created": 1791827776,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "The sample counts (199 Compton, 1 Rayleigh, 0 pair, 0 photo) match expectations given the low probabilities for those rare interactions. I should present the result while being upfront that the cross sections used are rough approximations, with no electron transport or bremsstrahlung modeled.\n\nNow I'll write out the complete JSON with all 200 events.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01LmaVLu83bJHXzM1bHeFg7T",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"print(open(\\\"answer.json\\\").read())\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The sample counts (199 Compton, 1 Rayleigh, 0 pair, 0 photo) match expectations given the low probabilities for those rare interactions. I should present the result while being upfront that the cross sections used are rough approximations, with no electron transport or bremsstrahlung modeled.\n\nNow I'll write out the complete JSON with all 200 events.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSvgsKEAgSGAI4AUIIdGhpbmtpbmcSDBv+CwBNjuhCJSccMRoM2Zu7pXsd6yrN829vIjCwOFydKtp5axQqj/u6uRp1IYUmA53m4HvnBadMMCAJM2TnLOyzKdB56DeJ7Ge/5b0q2wqciGpQRzBUssehetrsI/8cN2Ilj6sZJ0eIGFjM8+Mj7m1icI16XjZnQ4QRgZtxFZCfhBUhzpNqCPoLIKoSj2P7pqc9bjmIdtmzjKaY4LEZOOwf+E4L6bdOUjBzDTv2hTPc0zrlUKw5iMppqmCGuOo8KU546/78f7+Tu/W2EI7zfaNusFJ4FYRPHpdHbnlqWWUqJpWsqvKO9V0xTKpGtJ9h7KYPmbankBMhkZXuIdwK1vcnFi7J03CyO91D6SOLMlBeIFH9YmHRIpZXk4DGpo5t8XOw9sqyp1QcQtDrUhH9Gz6UnFr56qBsUlg8aAJtPgjFIeq78pNAER0x1xPpG4mNzb24ENzWVff0laI8DYiTrXuaC5+ptUvA/TLFNn+V9jfifUhqbwZluOFC6sHUauNqnAQNFyPyF0DxWBUqxUXExv/WfzpwSIaM74nKK1SO8Yl60ozCzExI6DZRUIaODXIFoq+LPWY4+bqMgBJ8Gdw0rFlXy9XbznG4j4HL3SEBuX5qt8DZH9uz+rHIn0rCDmcNWZ1OlfDmICJ0S/fW3MomJ4oKgNX3q1j4GccoqX4HPQlTuXtudqjuI/fo/zzSfAvUyKiFAiwY0uxo+N4FSAltyeOe9Ck4+mwePvzNUvbdcKZvBDeAQzP6CRIqpJTOP/xiSWUd5yZwUlraKZqpm0PExrWo4JaJILS7OR4iFB1OFVAmaXl7Zftn5cxU2LvU9AIh3fIOlOm5O5dmaVggKZWFbFIWApycfWfGOXFsAWxsBs6zpJmv0xY/dEWMTj1JOu5is44qKyZDqHCaxg1S4IM1sxlTI03gaze9y8fzlBQb8Wp+ZSA3CQTVhcTG3ONioMfDvzmAuJpXnpAksX5R3BsNzpW4Bu/ZPjRLOE0T11Dp4g0aQxHGmRbzs6M5HcNm919xMT3sLHzE7SCIy/AVGs8SBIXYhZDiH18NnOZAszaCoW9DLs6HLw8IHhBxn7kMi1BTYCVFfmLN6dOm/lt5r85k9yZXOBe7H+RihtuWhnpNevOn21Y0HdkX9HhURvfnKBWK0rS9wM2AKJ4PAdlgtfMM29XBnSRUoVypiehEvmS/563eyZM+eFF+4lFR2wnjl9khWXkIzVMmWIWRx5GUpus10ghkD5E9U6GuFXM//MS2sFpLbNiHX9CZ+dhVUfWQTRmnSVVK9x5pTzTskfXu19VC4BHEjH8suZqWuRDfBm9fhrR6b/7VxbFdsj+0jhgOV6dcOBf66XYc4plbfg3oqcMUxhNbojF24uL2KTqCRoYeGL/cZLV/ZhYXvyGzWEbx/HQVC5RqWJPS961Rtq19bCblziNvX9K+iVG5lwnoADcQ5xhMqg+jfSmsPV0CQjs7Jvzn9Wo5T5SUAwAudAMmS4VTpLh4vKFQXWNcQSGXdZM+kdhU3jskJrfmi3+OZxxNJQrIZqoD5WpQtDKwfLnqrAz6rx0tjJdsrazwSsRy3ELZv6s7LoiS8loiR02sqCcYRnRCguJRcVicGsq++KmNCHo+EY0b9p/NhNB9T7Y/jqCU8kC314pZAmXRsnm0VgaI1+1OIVNYmhDAtRJnEbY3+HOMO9j4NNOXQNSNceGvKsk9K9NY+76Aq3pGR82OOLSKLoPipz4GedvKFAtUJsEXIBGgz6Ujn3OaGsspUoOebGbLkDJZ1ozomF7fLu/6KlTJ8ZX/mjfPmd2b8FsiRDUF8LABsvaRSjS2zx/MrKdeTdRFcTxj6TabqpNMQ6QuMPNRFi+LUv7Z4y93YTC4p4XXgkLTZ0d7Qg5CE8txzilHu91kqiZVQifWff4oAyz7ApBpoK03ayBbMHNneFlt8x8YAQ==.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 55027,
+  "completion_tokens": 315,
+  "total_tokens": 55342,
+  "cost": 0.00099154,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 52559,
+   "cache_write_tokens": 2466,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00099154,
+   "upstream_inference_prompt_cost": 0.00083404,
+   "upstream_inference_completions_cost": 0.0001575
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 259,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

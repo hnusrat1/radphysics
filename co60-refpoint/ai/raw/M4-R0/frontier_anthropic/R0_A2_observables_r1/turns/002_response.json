@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791826767-TY5evnR30ASCkxqDa5pO",
+ "object": "chat.completion",
+ "created": 1791826767,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "The data are XCOM-style water coefficients and ESTAR-style electron tables. Next I'll set up interpolation and the primary-beam quantities.",
+    "refusal": null,
+    "reasoning": "I'm checking the XCOM data columns and units, noting the coherent scattering value at 1.25 MeV is negligible, and verifying the ESTAR table range needs log-log interpolation to fill in intermediate energies.\n\nNow I'll plan the code: build interpolation helpers for stopping power and attenuation data, then set up primary attenuation calculations and analytic quantities before writing it all step by step.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_014hDYMH7Q8t7mZToDz2Wn4d",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport numpy as np\\nfrom scipy import integrate\\ndef load(fn):\\n    rows=[l.split() for l in open(fn) if l.strip() and not l.startswith('#')]\\n    return np.array([[float(x) for x in r] for r in rows])\\nX=load('/tmp/data/xcom_water.txt')   # E, coh, incoh, pe, pair_n, pair_e, tot_with, tot_without\\nS=load('/tmp/data/estar_water.txt')  # T, Scol, Srad, Stot, range, yield, delta\\nEx=X[:,0]\\ndef lli(x,y,xn):\\n    return np.exp(np.interp(np.log(xn),np.log(x),np.log(np.maximum(y,1e-300))))\\ndef mu(E,which):\\n    cols={'coh':1,'inc':2,'pe':3,'pair':None}\\n    if which=='pair': return lli(Ex,X[:,4]+X[:,5],E)\\n    return lli(Ex,X[:,cols[which]],E)\\ndef mutot(E): return lli(Ex,X[:,6],E)\\nrho=1.0\\nprint(mutot(np.array([1.1732,1.3325])), mu(np.array([1.1732,1.3325]),'pair'), mu(np.array([1.1732,1.3325]),'inc'))\\n# primary attenuation to depth 5 cm\\nEa,Eb=1.1732,1.3325\\npa=np.exp(-mutot(np.array([Ea]))[0]*5); pb=np.exp(-mutot(np.array([Eb]))[0]*5)\\nprint(\\\"primary per Phi0 (ratio to 105 cm, both lines):\\\",0.5*(pa+pb), pa,pb)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I'm checking the XCOM data columns and units, noting the coherent scattering value at 1.25 MeV is negligible, and verifying the ESTAR table range needs log-log interpolation to fill in intermediate energies.\n\nNow I'll plan the code: build interpolation helpers for stopping power and attenuation data, then set up primary attenuation calculations and analytic quantities before writing it all step by step.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSuwkKEAgSGAI4AUIIdGhpbmtpbmcSDHGaRkDmEv1SEe/MzxoM/e1Uy7ZugvA71xCeIjCuBLG7R1IKulVu5j2OCr9cUXsorlB2N7qQklcPCHyYKzuoJoo8ABT7xPA8cngOtwQq2Aj9Kht3ommPLOTPfBV56KJjyBhA80ZlahlI+kXQiDLHa9K4gcUNxkUbt2BFURIbEq5+EMKvkI434n4khbJ0tg0G/G8TrxZB2tysN//GlCtfOtWNaf/wVYYTHt3B9urAtB1UA+A2AMU38uUwF4T0sjq8w9BxkQnl8VbKs4n5TrhezkvAqe+60UvZomIe9WeazuN6PUWYQ1/hzZH9KdGQ8Ej9peGcayjQsGRoVBW8ov30Lneb4I2DBJ7rpNh6oQ+YolPiv94MeWhgTr7Gyvq2EIfxCZDDxS7MK1E9QF62h7XKuZokaSqyATOSXCUtMx1HrVkPoLauv0pquynYu6nyALEwKxgJEBhai8aGTyAOc6bKBdii9VYlLxlQXY9AHyA8HWRaxnbkgZs4RT4j5Y9abYfEq5FmSuGLJZQWVGY0Y74n3iGZL0ak02UYusSwXNwkK5PCp7TIBQ1EibiIDmGFK4RTr2plc4oMQyjvBPG10HxIIy2VN/9AxrACHvIUaTrYZwPt/p5fiZxfe20QilU3IIxpIt7KmYqOnBBspTKyTH4Fr35s/kGzGleUN/DCpvtMSCFMyOC0K37SBmFHAAWOZ54/LERlfgMxt/vUve0RyMQ8K+Zmcr73/0kvWhuX66oFRVAMnpUxPG5iw3jTzodxL2MO2o8KpT0GT5E16dr9/J5kHK2Yu83C/YWhGL8NkuPFUhya7WLcmV31YsYKA2Ss22Am3o3sFSnv0YZNMjyHgLzhJEk/ShMPYS1DKhnJJ2dFnMl9lLRA0MQCEb9+dD/pKPaL7kksZ8Bmi9FjQ8K9Py+QDX+1Qg+usAnUKGHYdC+KK6VIZNrIoahBkVxG0Ra3TEBr2gW/jO+DZJ6DgMzdvdRhXNPo0YfDKpsne8Ejczo9+5Bqau4eFpOkWk0csDi3pR3kGF8/tL1tffioLHjVax768H/R6NEk1FfZm2oWlVtqsocQ9dtC07R13v7FDHQLpwTapjAae4+etye0CGyALbw0CRQ099L/fIJn+Rf4/HQNZlp/AhMAUn0TqKCk+JW/bhWNupK+v44tj/wNL/Pp4g9OhsPXM9xl0kHtO+x9VflsIUNDCSA+nYcgSJj/wjuva3P2XiPFZdLUglGCJ1Oa0kdzgT1Ji0ntQ9LI/gYGh0DrOTBVZqGcTwrErojSRAAcZE3UyQbqoa18oVpNZcOeMxBFLbuymP/w5056rj3i4/hfI6hdojFetTDzbwBm8vHHhetxBiSQ37QzVwGYqoKUw8bkK2Gt+I+BUAfytfpCUaQUT+UMIXBSWBKY6MmZH0dsShZaFvnLDsg7E8n9SyHOyyxTG2MH+Rp2P3Regaw+n7ZdZljIRwBbAoOJjgu6JP1EWn5jna9zA8FknLLoZUNerf/VhEb08jGZoPidNkn4H0HX3fv8WOFKGUinBEN4e+fH9bg8z9tncxMpVGUfYC0r+Abfo7pFl6/a3rbMePtywtdHMpqvjlDl2q+0UBgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 60637,
+  "completion_tokens": 868,
+  "total_tokens": 61505,
+  "cost": 0.00723767,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 6747,
+   "cache_write_tokens": 53888,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00723767,
+   "upstream_inference_prompt_cost": 0.00680367,
+   "upstream_inference_completions_cost": 0.000434
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 202,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

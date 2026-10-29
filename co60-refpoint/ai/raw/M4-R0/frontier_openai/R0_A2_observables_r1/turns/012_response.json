@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791823640-XAl66Ducyv4i1NPzZlJ4",
+ "object": "chat.completion",
+ "created": 1791823640,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Calculating energy deposition**\n\nLooks reasonable to me. Using weighted electron stopping, I might be able to calculate energy deposition per e fluence. At a mean energy of 0.3, with collision stopping around 2.4, the product of bins might indicate a stopping value of about 0.027 MeV/g per photon. That gives an equivalent dose of 4.3e-12, which matches. I need to compute using the ESTAR stopping values integrated and track the array to get the coll dose.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_he0hgi7jtyU4bQH6vxllkH71",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import numpy as np\\nest=np.loadtxt('/tmp/data/estar_water.txt',comments='#')\\n# log interpolate collision SP\\nmid=(ee[:-1]+ee[1:])/2\\nSc=np.exp(np.interp(np.log(mid),np.log(est[:,0]),np.log(est[:,1])))\\nprint(np.dot(v,Sc),np.dot(v,Sc)*1.602176634e-10)\\nprint(Sc)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Calculating energy deposition**\n\nLooks reasonable to me. Using weighted electron stopping, I might be able to calculate energy deposition per e fluence. At a mean energy of 0.3, with collision stopping around 2.4, the product of bins might indicate a stopping value of about 0.027 MeV/g per photon. That gives an equivalent dose of 4.3e-12, which matches. I need to compute using the ESTAR stopping values integrated and track the array to get the coll dose.",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzQ8bhXe9peP70_micthlXkqQz24YIp-4bLhUmfJJfjtgD5eTYAP7L_HlJ83aUYZYqIvH4z3weAJW0ucsnoE5YjoZ6wfzCaO1IrxRwnoQ9MWM3WOXBlMk9Ascv4cr32MwRxPAONPurqFwGcJrsrfHaCSEU-kUex_vGEPGr_MtLFQXeOAU9Ka26hGZ18pLDhr_HzB4DeAD_FaKEsgOUYO-_SXmydDYmfGxpy1vlAu-XvqXnwaoSF8W7uz7kgPYZtbqLA_7hIAIKKYPCkOcU7JnXBC6B3Oe7_Sz4OaFTHPb6F1SNbmROiuTaLkl9F9d1WvEcKTDQLZgyLlj9IOM6SYI4MJ3-IMKgoWAGPo5MXeNKgm-JmmjymTlcU9CLZuAIXpaCmzyGvbMKx6fKxNvCB8rYX-fKJGnyPgqjSbVjM6MGRqterbpHzROQDeI3zTrt9PxT-tN9j2LbblH3Zlxc2NwanN_NpEPpGvLYihwd2Ld8xR3p7U-Qq9a0VGEhpHU-wwokJ75a1ema-y36BPP9NdZ_49ZijfzNCPoOYRtDzeBqsOhQMoEccGA0Y9s6lereOydR8LkgwQGZ7DqeZW0wyyyLJzqL3hT4ZUWReQZMri9gF1cNamfwQfVFqeatz9rgxiGm0c5EtysYOkJJfpvswKYLEFdHctEeU74bdR1Ua_E6iOUvgTm_Zl5YmhLyP3t7hNyXkx8iX8PebgStPE6o4XWtwkibHRZzBEO7audf8xHVWtdGb03v4vuGr5_16QBJU3-0-gUR7lHAxopPt891mktdYxlNkw218Lb4lM_PH_1iUlNmlVajGdKPlt5EKU7_BKG9OjcHR76JfHa3BJssXBg9FIs1qq96wF2FJb595Hm6ocdGwfvSUcDqY1WLSJDaDXYSDhwZiH_b3mo-wnHNnuBGWrd1tSLAZQ5lesP0IwvX9HCBcrJaWsu3GLXy7vTJxRgnL7ws1Qy6DEGhZ-F5PROj1WMi6MTmYt2CPfYaumBSI3os4g04qp4bs3zRV1C03cKOMQNZOuRJF5apzYTaW9gdKJWydpijXTKcKvy-TYaifpPIKsIsZDFE68WMJLl3SbB2PbcEWQzXNj-8G5SkgUapqOMzet1xIoMJdTiOJXBRdpayxYwhj4M0M9wPrfLZOk3raaWseOixfi318AQq_zwxLdQJNXc9HxNElNTsKgL2L9frw7vomJ7uyttnBuM4xVvRae17mmlyL5qX5Fz8dLgSQp98UG0JSMeTvnR2rDazh9avbQP43_HQ_NrJynMyUslUvO2OJtwtOZQE7D5MMx9so6ToU9-_NfglI3BVr27vHpkqXC9-YdxJ38D19tjAZ4RfvjAq5wdOqYAIjl9_KK-PAJySK_fMCOXSkywjSsHlOY0tOlIyaQqxzBiZ-ocB-HT_Kbb6u3iVn5HJiLiRLqC-8QnuuHvSEZOH6xJhiCRj4LAhdsLnXL5O9gsK3K_KEPpPekpfM56_2SkJZmQ8K0X69cA6Z4c8-QfJipc1a6dPuCWNb3H27DQQhjf_1wWFMZGlVWScaUuw8BSi0wqRAPwz-Y-xt26dKx_Yx2GvW39dU1xRFfGLo4MId-1obxhFjakP5OIZkLMNhTQ2KiJw010WSENTdk012z5JWS_3yTAbmYcTt5lG-OtX5GyHoaPNt_VLhL7tlH5YVAo07nXT6sI4HodEqsyjDW9ZVMLJCYsinijuUGzpBb6STcAmybWT2OuPzY-r7oeK6tTWK-KL_SVQrspFuGvyuH-eB0yKQBD2ggtgaqZvuXHTiqeyY-kofaDkHgWlcBHiePrHhlbTYiy7PlLlyN_HdeGNgPnFU1mehGdLVR4-b5AwcRVwr-kGDL0JnfEuTsaYPBUdrBmSBJt_oBW9675487LXR3xYt_eZ6EKkvJbD-wBuHwqjbrdx63GDtVA_ya7aBJqXd6AVculePxiEHBtInKQGId_dQOlEy2_2rxx-xmwd0xP30k5J7lIbsM9ASj1DOOLYLRFNVtBXuwU13FrJYVkZ57OrUopkUILf9Zb-Mkag5QiXV5w609qIaZ3Q8QbYvocKPqNsHdBOj9KyGtoUOqmVfYFXpbe6hfG0NrAd7RDvfujyJi7KbgqwVfdb6vf7rKuKSaeSK7BIOFKJsh_9zT7oobMwsTcVC27BYtB8rIh2lMpHylz7WIYe4EHOd3hSCvqtaP16p6LMQC79hYi_PXKsy2tVTBN8kq7DSnB2aekM6BuXvcYT-AGTolBvZdoYWflFT_SVgQBLXREb9DDdlSFPOt_jaP6qaFWkw-x27fw7PrLBc-qXW2k92lKH2JGkE-s6qo9MHypAvg0-QU4Ehlik87PRTjnX9WnDJ5YXtsXnSiwIcXea9cFVtZbV-E-HHDcukI389GXavPnI5XHReoiLiLjr1ojUx25mpFJUNAOcl1xuKGrPYq-vsNRPVW0wtpWOxwOIQ5okvJoZ1HQq1RGblJEcFXzMO2xTvj9BeAdMwXRChEUzjxg9Z_N.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_08b25cd38fe34654016acd0f1a2ab487d195467abf9e466c8b",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 18888,
+  "completion_tokens": 188,
+  "total_tokens": 19076,
+  "cost": 0.00031351,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 18621,
+   "cache_write_tokens": 264,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00031351,
+   "upstream_inference_prompt_cost": 0.00021951,
+   "upstream_inference_completions_cost": 9.4e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 77,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

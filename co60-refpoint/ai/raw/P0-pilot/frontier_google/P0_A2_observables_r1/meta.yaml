@@ -1,0 +1,61 @@
+slot: frontier_google
+provider: Google via OpenRouter
+api: openai_compatible
+model_requested: google/gemini-2.5-flash-lite
+settings:
+  reasoning:
+    effort: high
+  usage:
+    include: true
+condition: A2
+task: observables
+config: P0
+prompt_version: v1
+prompt_sha256:
+  system_A2.txt: fecd42c2861a3dc409de3e724bc896d6d29cab00ceabdd504cf75f0e535743a7
+  task_observables_P0.txt: 82ca43297fc8cba782d2c4bc779390b111825c9625d68f2dc81110178428984a
+started_utc: '2026-10-12T14:21:46Z'
+turns:
+- n: 1
+  usage:
+    input_tokens: 0
+    output_tokens: 0
+    reasoning_tokens: 0
+  stop: error
+  wall_s: 5.75
+  http_attempts: 1
+  model_reported: google/gemini-2.5-flash-lite
+  tool_calls: 0
+- n: 2
+  usage:
+    input_tokens: 4878
+    output_tokens: 22877
+    reasoning_tokens: 19839
+  stop: tool_calls
+  wall_s: 60.99
+  http_attempts: 1
+  model_reported: google/gemini-2.5-flash-lite
+  tool_calls: 1
+- n: 3
+  usage:
+    input_tokens: 0
+    output_tokens: 0
+    reasoning_tokens: 0
+  stop: error
+  wall_s: 2.49
+  http_attempts: 1
+  model_reported: google/gemini-2.5-flash-lite
+  tool_calls: 0
+tool_calls: 1
+retries: 1
+outcome: parse_failure
+model_reported: google/gemini-2.5-flash-lite
+first_parse_errors:
+- no JSON object found in the reply
+parse_errors:
+- no JSON object found in the reply
+finished_utc: '2026-10-12T14:22:56Z'
+usage_total:
+  input_tokens: 4878
+  output_tokens: 22877
+  reasoning_tokens: 19839

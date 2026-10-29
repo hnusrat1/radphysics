@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791828749-Z7MqAfJPm5n1wTGHnckh",
+ "object": "chat.completion",
+ "created": 1791828749,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": "Python state does not persist between calls, so I'll write a driver script that saves results to disk.",
+    "refusal": null,
+    "reasoning": "Since state doesn't persist across calls but files do, I need each call to run a complete script. I'll write a driver script that handles everything and saves results to an npz file, using multiprocessing for the run.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01JP8TASck2kMV3pv5oGVTV9",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\ndriver = r'''\\nimport sys, numpy as np, time, pickle\\nsys.path.insert(0,'/tmp/work')\\nimport mc\\nfrom multiprocessing import Pool\\ndef job(seed_n):\\n    seed, n = seed_n\\n    rng = np.random.default_rng(seed)\\n    return mc.run_batch(n, rng)\\nif __name__=='__main__':\\n    nb = int(sys.argv[1]); n = int(sys.argv[2]); tag=sys.argv[3]\\n    t=time.time()\\n    with Pool(4) as p:\\n        res = p.map(job, [(1000*nb+i+int(tag[1:] if tag[1:].isdigit() else 0)*7919, n) for i in range(nb)])\\n    # combine\\n    out = {}\\n    for k in ['Tsc','Tco','Kdep','Tdep','Esum_w']:\\n        out[k] = sum(r[k] for r in res)\\n    for k in ['cnt','etr']:\\n        out[k] = {kk: sum(r[k][kk] for r in res) for kk in res[0][k]}\\n    for k in ['birth_T','birth_w','birth_proc','birth_cos','birth_sign']:\\n        out[k] = np.concatenate([r[k] for r in res])\\n    out['N'] = nb*n\\n    pickle.dump(out, open(f'/tmp/work/res_{tag}.pkl','wb'))\\n    print('done', time.time()-t, out['N'])\\n'''\\nopen('/tmp/work/driver.py','w').write(driver)\\nimport subprocess\\nr=subprocess.run(\\\"cd /tmp/work && python driver.py 4 250000 t0\\\",shell=True,capture_output=True,text=True)\\nprint(r.stdout, r.stderr[-2000:])\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Since state doesn't persist across calls but files do, I need each call to run a complete script. I'll write a driver script that handles everything and saves results to an npz file, using multiprocessing for the run.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSpwgKEAgSGAI4AUIIdGhpbmtpbmcSDDj45bsZUgBCy+9XBhoMsgFziQhv3jgf0f2DIjDBYrNOJfjqhkGB4AELbYCZnBhCnsUqQtwamo36lzAH8NX+ysIM/OsgvBWs3HtyTWYqxAeHgs8G/vyr4X5aLfx1p8utEyPok70dfJVt+3aRMELd5JshCLCxFNOxLgWc+bgDIGFXK8TmXn1mbDWTilc/P02f5tmKB59avuOSAcwxQhAOhAhw5o/By4rs9HdbuQ8/MzJGHSFPpf/0/lAhhxPmyub4HgbL+ujeQcz8FoS/QVm4lLUMWaSrIGtgKhXDY2tkbK56LqUeqvKSpSAKKvN4SaZj1XN5SVMaPZF+YQwMHBIemqDG5f1XhA5SLn3hNhBEmYpzWwUYW3i7zDAqFO1rZLpS++tT7ipnR0MnlmW96BzTaYhG54nSUwSYpjVvVND03Iuja+CKH4GZ+WKRDjDr8DRqFD1yBUAsPaUOsxaeRvz1E60BNt33z6pfrLbKOhuTZci+qSzGaoBmL1UpGIio8kdwspc1t114A1B3KJqcQt6Z5NJtLJ5syFXusVEsSf4/fNw43ricP7SCCrKqgAqw1EGoqxSj5c40WGDLeZbRU7g7uZP8EGo40VnuL6wDhr5fkGZqvJpKfOeRk8WNcfv5kK/HZ5nAVuc+8hrQe62ZHxWwrs3Bt5lRYj2kZLK+Vk7heHDwW8j8vIgCNyWtioynx/2V4K6p0ozmsmT6Yj0MREJrN0AZHPh8E1nyE/FNoggqmrmX2xP/QL9SrS0mFxtceQztblXjZbYjlPSB2g2Tjuv8v+LWBk8NyalYBp4BgyzwQ19zKArScypDeViGl6BS3M4af7nbuin3zGkbXW68LSCkDWmEyNszIMW6c9qj+RLLsoQxs4v4yxFySJvpTinUAsBTCJVDWcQkqvnkgVfJR2mEdQJvP+ddmfBTJlyGHK2fFLZIHHzd8UZsZGk6q1I0FPqEAsp4lOm+1dwMuCiJ5IXWoXXENIuWHHsh6bZdM5kzrfhsubuIcQyJ1pryn2YCyDkoYl7W/eWomUBoTmBUqUa9WX/OQ/PrO2sSC/c+UmlefxnPsZ5++ee1hyfOeaBbv65nHwTWWVDZK02mSQzL25fkQ5UjMdWqz1yyssLq+dd2zBvcnS2vuE9vm/ZOGM8h8qoAv1QpmVe2kIzovofViz56niN5ygoQJVBoQMpxdhox0Bt4ErN1ZXudplZP+NLHMzajMf1yfKJbVHys5lcP6BQ3YroordyLRYS8CvKtFmeTwLYugVlvFnepNqJ74H1RNahzW++eyHvCdhLoHw/YYw7w6o2xxNrOOM6A1DjJRVXif5DyoJ+nsf5QdsqNLbARLjOkuWDoE526dC3Oq0NiSAlNxkDQcfuynU+5yRy/BPQofDnnTfMZGAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 94024,
+  "completion_tokens": 728,
+  "total_tokens": 94752,
+  "cost": 0.001481865,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 92479,
+   "cache_write_tokens": 1543,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001481865,
+   "upstream_inference_prompt_cost": 0.001117865,
+   "upstream_inference_completions_cost": 0.000364
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 72,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

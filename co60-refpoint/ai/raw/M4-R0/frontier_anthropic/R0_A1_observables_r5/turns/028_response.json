@@ -1,0 +1,57 @@
+{
+ "id": "gen-1791827916-WSqR9Pjc745A6Fc09fs5",
+ "object": "chat.completion",
+ "created": 1791827916,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01Q5CJRFgSQAUXPB8Gt5otxm",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport subprocess, sys\\ndef runpy(path):\\n    r=subprocess.run([sys.executable,path],capture_output=True,text=True,cwd='/tmp/work')\\n    return r.stdout, r.stderr[-3000:]\\ncode = open('/tmp/work/an2.py').read()\\nprint('Stot=Scol+Srad' in code, 'Mdel' in code)\\n\"}"
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 128564,
+  "completion_tokens": 170,
+  "total_tokens": 128734,
+  "cost": 0.008775175,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 125221,
+   "cache_write_tokens": 3341,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.008775175,
+   "upstream_inference_prompt_cost": 0.008350175,
+   "upstream_inference_completions_cost": 0.000425
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 0,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

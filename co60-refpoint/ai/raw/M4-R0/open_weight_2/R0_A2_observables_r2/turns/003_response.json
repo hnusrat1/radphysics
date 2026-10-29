@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791826723-G2DTLsiBJLPdixKw1qSU",
+ "object": "chat.completion",
+ "created": 1791826723,
+ "model": "qwen/qwen3.7-flash",
+ "provider": "Alibaba",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Let me fix the typo:",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_4ea0b743c6464636ae85c509",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\n\\nestar = np.loadtxt('/tmp/data/estar_water.txt')\\nprint(\\\"ESTAR data shape:\\\", ester.shape)\\nprint(\\\"\\\\nColumn descriptions based on file name:\\\")\\nprint(\\\"Col 0: Electron kinetic energy (MeV)\\\")\\nprint(\\\"Col 1: Collision stopping power (MeV cm^2/g)\\\")\\nprint(\\\"Col 2: Radiative stopping power (MeV cm^2/g)\\\") \\nprint(\\\"Col 3: Total stopping power (MeV cm^2/g)\\\")\\nprint(\\\"Col 4: CSDA range (g/cm^2)\\\")\\nprint(\\\"Col 5: Radiation yield\\\")\\nprint(\\\"Col 6: Density-effect parameter\\\")\\n\\nprint(\\\"\\\\nEnergy range:\\\", ester[:, 0].min(), \\\"to\\\", ester[:, 0].max(), \\\"MeV\\\")\\nprint(\\\"\\\\nStopping powers at ~1.2 MeV:\\\")\\nfor i, row in enumerate(estar):\\n    if 1.15 <= row[0] <= 1.2:\\n        print(f\\\"E={row[0]:.4f} MeV:\\\")\\n        print(f\\\"  Collision: {row[1]:.4e}, Radiative: {row[2]:.4e}, Total: {row[3]:.4e}\\\")\\n        break\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Let me fix the typo:",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 7215,
+  "completion_tokens": 310,
+  "total_tokens": 7525,
+  "cost": 0.000112366,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 6016,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000112366,
+   "upstream_inference_prompt_cost": 7.2066e-05,
+   "upstream_inference_completions_cost": 4.03e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 6,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

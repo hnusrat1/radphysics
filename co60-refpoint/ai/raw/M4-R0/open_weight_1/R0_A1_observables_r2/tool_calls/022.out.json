@@ -1,0 +1,9 @@
+{
+ "stdout": "",
+ "stderr": "  File \"/tmp/work/_call_022.py\", line 1\n    \\nimport sys, os\\nsys.path.insert(0, os.getcwd())\\nsrc = open('mc_photon.py').read()\\nold = src[src.index('def seg_in_cyl_vec'):src.index('def run_mc')]\\nnew = '''def seg_in_cyl_vec(p0,p1):\\n    d=p1-p0; dx,dy,dz=d[:,0],d[:,1],d[:,2]\\n    x0,y0,z0=p0[:,0],p0[:,1],p0[:,2]\\n    a=dx*dx+dy*dy; b=2*(x0*dx+y0*dy); c=x0*x0+y0*y0-CYLR*CYLR\\n    t0=np.zeros(len(d)); t1=np.ones(len(d))\\n    disc = b*b-4*a*c\\n    has_xy = a>1e-14\\n    no_hit = has_xy & (disc<=0)\\n    t1[no_hit]=0\\n    mask = has_xy & (disc>0)\\n    sq=np.sqrt(np.maximum(disc,0)[mask])\\n    ta=(-b[mask]-sq)/(2*a[mask]); tb=(-b[mask]+sq)/(2*a[mask])\\n    t0[mask]=np.maximum(t0[mask],np.minimum(ta,tb)); t1[mask]=np.minimum(t1[mask],np.maximum(ta,tb))\\n    outside = (~has_xy) & (c>0); t1[outside]=0\\n    az=np.abs(dz)>1e-12\\n    dzz=np.where(az,dz,1.0)\\n    tza=np.where(az,(CYLZ0-z0)/dzz,0); tzb=np.where(az,(CYLZ1-z0)/dzz,0)\\n    t0=np.maximum(t0,np.minimum(tza,tzb)); t1=np.minimum(t1,np.maximum(tza,tzb))\\n    zin = az | ((z0>=CYLZ0)\n     ^\nSyntaxError: unexpected character after line continuation character\n",
+ "exit_code": 1,
+ "timed_out": false,
+ "wall_s": 0.05,
+ "stdout_truncated": false,
+ "stderr_truncated": false
+}

@@ -1,0 +1,1 @@
+lines=open('compact.txt').read().split('\n'); print('\n'.join(lines[100:]))

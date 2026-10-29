@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791824540-Uhyw3QLPQYll8g1x5vTP",
+ "object": "chat.completion",
+ "created": 1791824540,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Calculating electron interactions**\n\nI'm looking to compute electron interactions by considering the primary electron direction weighted for line flux cross sections. I think using a recoil helper could help refine this process. Also, I should include interaction fractions for better accuracy. For the L4 spectra, I'll aim to compute with simple approximations. Overall, it seems like it's time to code all these calculations together and see how everything works out!",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_kC8keaaR2FChVfD4Vwd1rOqd",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import numpy as np\\nfrom scipy.integrate import quad\\nfrom scipy.interpolate import interp1d\\nx=np.loadtxt('/tmp/data/xcom_water.txt')\\nEe_edges=np.array([.01,.05,.1,.15,.2,.25,.3,.35,.4,.45,.5,.55,.6,.65,.7,.75,.8,.85,.9,.95,1,1.05,1.1,1.15,1.2,1.4])\\nph_edges=np.arange(0,1.4001,.05); centers=(ph_edges[:-1]+ph_edges[1:])/2\\ns=np.array([.005,.006,.008,.009,.009,.009,.009,.008,.008,.007,.007,.006,.006,.005,.005,.005,.004,.004,.004,.004,.003,.003,.003,.003,.003,.002,.002,.002]);s*=.14/s.sum()\\np=np.zeros(28);p[23]=.5*np.exp(-.06514178121359064*5);p[26]=.5*np.exp(-.061047572748315*5)\\n\\ndef sigs(E):\\n return np.array([np.exp(np.interp(np.log(max(E,0.001)),np.log(x[:,0]),np.log(np.maximum(x[:,i],1e-300)))) for i in range(1,6)])\\ndef cfrac(E):\\n a=E/.51099895\\n def kn(m):\\n  q=1/(1+a*(1-m)); return .5*q*q*(q+1/q-(1-m*m))\\n den=quad(kn,-1,1)[0]\\n return quad(lambda m:kn(m)*(1-1/(1+a*(1-m))),-1,1)[0]/den\\ncats={};trs={}\\nfor label, spectra in [('primary',[(1.1732,p[23]),(1.3325,p[26])]),('scattered',list(zip(centers,s)))]:\\n cc=np.zeros(4);tt=np.zeros(4)\\n for E,fl in spectra:\\n  if fl==0:continue\\n  co,inc,photo,pn,pe=sigs(E)\\n  rates=np.array([inc,photo,pn+pe,co])*fl\\n  transfer=np.array([inc*E*cfrac(E),photo*E,(pn+pe)*max(E-1.022,0),0])*fl\\n  cc+=rates;tt+=transfer\\n cats[label]=cc/cc.sum();trs[label]=tt/tt.sum()\\n print(label,'interaction categories',cats[label], 'transfer',trs[label], 'rate',cc.sum())\\nprint('scatter interaction share',(.14*sum(sigs(e)[1:].sum() for e in []) if False else 0))\\n# by process total rates\\nrates_by={'primary':0,'scattered':0}\\nfor label,spectra in [('primary',[(1.1732,p[23]),(1.3325,p[26])]),('scattered',list(zip(centers,s)))]:\\n rr=0\\n for E,fl in spectra:\\n  if fl: rr+=fl*sigs(E).sum()\\n rates_by[label]=rr\\nprint(rates_by, rates_by['scattered']/sum(rates_by.values()))\\n# electron spectra hist from KN in each incident energy, weights per Compton interaction\\ndef recoil_hist(E,n=12000):\\n mu=np.linspace(-1,1,n);a=E/.51099895; ep=E/(1+a*(1-mu))\\n kn=.5*(ep/E)**2*(ep/E+E/ep-(1-mu**2))\\n te=E-ep; mom=np.sqrt(np.maximum(E*E+ep*ep-2*E*ep*mu,0));cost=np.divide(E-ep*mu,mom,out=np.ones_like(mu),where=mom>1e-12)\\n h=np.histogram(te,bins=Ee_edges,weights=kn)[0]\\n d=np.histogram(cost,bins=np.linspace(-1,1,11),weights=kn)[0]\\n return h,d\\nhp=np.zeros(25);dp=np.zeros(10);hs=np.zeros(25);ds=np.zeros(10)\\nfor E,fl in [(1.1732,p[23]),(1.3325,p[26])]:\\n h,d=recoil_hist(E)\\n wt=fl*sigs(E)[1]\\n hp+=h*wt;dp+=d*wt\\nfor E,fl in zip(centers,s):\\n if E<=.005:continue\\n h,d=recoil_hist(E,3000)\\n wt=fl*sigs(E)[1]\\n hs+=h*wt;ds+=d*wt\\nhp/=hp.sum();hs/=hs.sum()\\nshare=rates_by['primary']/(rates_by['primary']+rates_by['scattered'])\\nht=share*hp+(1-share)*hs;ht/=ht.sum()\\nmeanp=np.dot(hp,(Ee_edges[:-1]+Ee_edges[1:])/2)\\nmeant=np.dot(ht,(Ee_edges[:-1]+Ee_edges[1:])/2)\\nprint('electron share primary',share,'means',meanp,meant)\\nprint('hp',hp.tolist());print('ht',ht.tolist())\\nprint('direction primary', (dp/dp.sum()).tolist(), 'scatter',(ds/ds.sum()).tolist(), 'total',((share*dp/dp.sum()+(1-share)*ds/ds.sum())).tolist())\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Calculating electron interactions**\n\nI'm looking to compute electron interactions by considering the primary electron direction weighted for line flux cross sections. I think using a recoil helper could help refine this process. Also, I should include interaction fractions for better accuracy. For the L4 spectra, I'll aim to compute with simple approximations. Overall, it seems like it's time to code all these calculations together and see how everything works out!",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzRKhw3nxoLPP_VmfGEgGAonJNSEZMYNPP_HqSNaqIxRvDV8-O0tAi5BpUkpjpgpcjyAgzZp7kgzg5Rk3Jtbt29MUwVbEKM5yDV_zbGcd-DQsBxX2Mrl0W8cSJ_bNzdmmTZAs7ENW-xDQQgCjKesX1ZOhC_H_cXKIxk7TA7VWzvneXMNkMrFXK-22_TeP_fjy-qEVnvSbQfOuHg11VYAT5hT3iEXLLrEe9ha58mlZrSMiLys7-B6nM8sOW-RcB_3pvaNDNe-T1zaeDF4IPavM61r-DHCkUZJa8T0HB44SEkmgAaVCPBxEZ2q7_lElTBxo4T9BsmqcST_YNNC36xuwy5Bv6UKZ7xH2gMBaw7AAeGDTyGDPS8Xck0lLSiJKoWb5HU06gND7vrTRMGKoD6YBYi_hgEOxuBAqk2OD602KY_m2SiFkJxESrmlZLX9fK1NbSWjxR8eDhJH9zr-wnlts3UeGtHKRpBGmrQ-QcGaryTW8AvbqCAI-F5TKPFR5Gv-g1oYpEF42iEyAg2wgFzUZI2Ybt_waVZQ4wh6dqB91i9aEmy6qbYsVV6UmFRPYiP7E1pxRJwonnpFsBdAO1BusnDSaUcG693GhjwoZCZNJMkUt7wTUbkgH9ctisM8uMx5_KVRlWNXCBc1-tQ1ObvOPO3beTj4enekhZUQqknpoDQdO2n2BFWYFTbxEiKifkiTv6gpBrxLcXQXI8A099o6cXBkmM9y39oLhxyOhMppo5ahIaYaueD0sK-PtE_nF5_RzjxmEUpju65rmfO2hVQ5zsuLKoiqPVy3J3idu_TG9D9PlURY5_JTOO3rbAt2fTnG3pl5t5niiQZRLiMU4141zSy6iXj2g-xCJc4bP63_Q4rfMG2yG9gJiFujV3_n8bZgWBykBpvZr40MHw-qYf507Cumh22q14XYw-DDjjRr50iD5IvXDvtnkcwAhaiwAy6zHZLkh1hcoyqeqFCwH4_n_g8N9G5_UnGbW-oaXiNxGsKsG45iMbdQMlU6EiagMSnVDfqZSjMEumoNaSTOTvrRhuj1GFcy4g4vLI-B0M88-L5PcWVN4y8brau4sAgQXSrvQpBIMYaz1x1Q5SO5lB_ybRfvnzFz51JiKArAIK-qUeLoLr8lbrv8HKuFD4pUMLtk35ylr2AXqQmnlaR77OBTKemvifLHZ-CMxNdlAHqOB82IJD63fSaHIpTQwla6PzXC-Hu7bL9poEnf0XJYrczUZcB76dqh94JzFscvi-Xdj48ZK8yK5yy0nK5HGqZwh8Q4EtScXz6XoWnhw8AqFd4sBUqvzTU2DYyX4EUVJ-AzixqOacgdiNgJH_NtN3TrqAIbcCbUocou8crHCoTtX71vmLAWaoSY0R_87yI6J3yKOTMX1u-TaZ-7AE90QD_D_tdNjzp3xhbcPPQaJTRb6Aodrgj6QYCftLBRjhp7vnU4scDAWb8s_d-MWHNS8UcnBx284Ic4Gm0OCDaSkAmbSlmfqGZus7aOnheL5FhSk5y60U26QBbyO-mQ2lc45hXE76MBDWpH55k8Eyh_saC6W4NMPrkLWplKiAOGe_zBAz3cHlD0fCJBXEvocJoafND2CtFKbv4-UMA5usbPUsPEnTsVX9o8sTosC3gIm5-MaCKsXsm0ux8frDllQ49LAEOgd8mOyf6WVfT0HEgsmKcc5sPF014YEBVO6efFxYnozjPbOQAWTg0-Xphag5-X2BsonmZzzIw3wmJ_CEAISn80_nO88X_w4xwNFJnGfBtwBXWVtGEquPBI9qdtKAPLUuCKVA6Fp_jiTDjae4xIdbU27iz9AHz62AjAEbAmLM4UXiV_fEeScvswp72jaJN089w7XDMT2MuL6n8LLywFA9Ebo0KHX0E2Qlpb18kTCieSebDgImSJDPdVNT0hQssCAG2wc_Y57BoeuEUOMXYUdlF9LLuPWFGhCC0_CU3kxAG3S1piKSDVLzeZcDmLldS__sose1Iy87YTgzElTu2koe48Tqn3XvzUrM2okCAEvhBIqgme3dqBlzsDeYg933v_lXizut1nLIwBW1gfgVq0HKEAN6Q_iUpzqj4c1gqPQQ7CcsGIJdMEuCfWYalBjdC07_mNqGyqPj4JW-TiEXApC1DoJwJSijIv-ME1Y9mK6L5DaeajtLnB0Hak-MinNjuOQOMHEvE2lm9M93AdlkYsduzMRzC8Sz4avJK6NHAGqmhAFg6wC8F2IIxVRjaNcg_slIZUvGkFmi1w1gMTVAi95_CLCl7cyQqg4S_0_I3_a3P8Al1F84hLDqrbDdOu8KPqno8b8I-R6uxtUxMRjXYoHy9Wlj1L05hh9HCaDb8WAgpkIKhdHQbTgytcixnZDHImRohPtmR6jE_OvmxPCi1Qxs0UhEjyLIxyrZkqMzyOrUvEogI9BGczNe7jSQuZCHeF6bkNMWhWMWt07R4MRsfbvlrxfXVvD94aWyLhpUFSpmgBco9fMM9LK7945S_EjgI8zi2Syt6nUlOVMf8DxPFF7qYgm29kyV2qUSjPg44xclqFdjWKxkrED3dV2Fsc7Z9nzlm9HTUbZMH1DKWGERLTNkajZQZHToI7BVmDf1l24u6FOYwWh0Zn_dACJoV04LgrUpMziGxmH81rx5WJ7KH3PRhIZ8FuTi31CfAZsW-B7oBNzoIy_BaGL4lkQuCW0c_96_GF5MvMxbNI5tXznXzNkvxgFIlUx6Z95NFLZJyawDW-ccCvTqKsxfeLrHOtRW6TiD2M98pESUfCSiZ4Cd3RsP34e1qVT5AhP9o35Pa0NpJ9bYJtjkk4ZLBsCONzHcWNYnhw4CwyxjfjsfWG5vpldEvPL4gIyzfrzxma5OIJR90d0iEw0BNkIL39XYdU4l7Kop0bB9ozsbCvqb-BNnCl3ZqgKHZ27Pq-vzdzxP3-WoM1mH67FNsJ3LmURa4AefCbeiAekK59eQEiOEjat7CWSZ9fHgz2bbRKmcP-rWhjY5uU8ybY__K_Hbj41YoI5EM7CewvTVrZRsTAQZQ8cNC8_1sZCrZxzTcNDqN4YTs6gZgPRshGfN1hcDpnAubZTHt_SERgY5f7yeIrT4WZ3za74p2sdo0mhuJr27HqTFozSJaU3ZeHMTRKsO2jNrtXz1cP-2oz8wYHwlJdEkyK_TqXGdhu9bdJopHQO0uDIRV1jpkJy2YTHvmbj-dcpLrapdVd8EUCJdt0IPYsjd6QmhE94XE4_V_5MPprAWT_UFq_Zle2_mHjit8KIP-Feozr7hUoQGYcf_LdjZwZw07YgkS20uzua27gd5XaIxmri5RLepHdCs6bXz4t0qS1jqak5gpBrL775PpIwSG9X1BfwJt3ysjsAcusB8rYOGecw9_9co5v_hSrFdAGJ1RSMZ8KP2vScWVqGDdD2yqd9eJ-3JSvCdGbURP8YYdR6G7RwMxKhuYScevRZ7xVaL7L_BryY5X2D42X1a-55xtLax_da7lTpGO3J-1Hr3z-XuttvaSP-PMr1QBLZjgJTRb7yI2Jnku2I7SwFdtNlIAySfy2MEtqiU0u2gLffJMijLES7q8Kw8dGXB5Jnv_X8EQ61B6crFK_sQ8tr3RN3MYpJ_dQzy0vqJxaPPzUichcDIy1MUkcpppoC8Q6JYnVMuGzXchC1HplVtZGgMyxZCAOD_adal8clW3PQeoRc0kW-pgylmAhqcDAd_EvMQaDVFvnuvLsR3PQ0zqGbJ4r79DhnJQhK6ruPiq7JjE5fbjhiVgql4t3moPreJAljadRrHAP-eli5AfsdA2bPYsI4mlgYM7hDt8428Yr2CT390TeMaDXWTFXP0iCKVePmYqfcvjZWtyMdeLHottHCO4i4DawRmmj46LlKIoNX_GTRxkXnWFSyOdeEY0HRhX4GwHGAN_zt_dJCOK65HzF4Bq-lQwZ44OO2H-6HMIh7ijxCafiCmuE86WatlwNEzs6hZdAUxgjYXgBd3tpYVrrVe-z7CJm8Pzi1YQF3UOpcUVxpffCBXehP-TObpCJ1urE7_Xw7d_Q3GxF8gYdAEKst9ZTtXHC_1Q6sDeiUCPB5JnmopkwzWAeLdUUhrOGPUGzZuCFpEX4e10mUYejD157rfpUCjACCRaAmTQ5zaqEo9VD46gpxxC8mrfdE9y4LpawQcp1QEwihufeYA-ZGGwzUGeaFqJSDdX4_T7qgVfkr-OF70vDe_Q-pnJYqcD4W4YETVwwCrqLXCJ6t2Tsy-OUpNBTx6UlPcsRFkeT5_4yisThq5rr6ijJbW_KfLC_rffKce3fuCFhPFkRVedXTnzFEnth_ZbkR4MMW5RgjDdx2nHugRaLcKKSzkuz8WCLBEo94y8PWbi6rgjQt7aMwttJMv2YLLefpxClbrTeWMtF-pBDP-H-NT3npFcSpGZzG78iUlcBhjFTPo5eFLvTRCfEhGfpLWX_ZA-x3-UYTr7E4AmxCT3aJU2ipC8B8PXo3tbgoEaCtBbSwRWVTSmnG8mPvpL9ARdMQvc0tQf2BvRdHeY2-ZMFF98z3_SZv-TUuSp8eA9fIwpiMqjaqDXgF1Tab_JJmaupmOUD3VwbpRQ41Pd8PKcqxWvId9fNqB6BM7RwYTyn60lCeGPtLlmn0UospFLp2obZ_B-SbaOtrTecgHVgNrs14O7KqfspCDfRqXAUIjq8kui3n201g4Mf2oRLqeqNr-NPwIdW-pDp0AIbKNyfitQJC3JhX5-LI1LbcbUqyaiGxv0uyJT26r9VkLpKi_oHFbQNNT_6fyjetd-YTx89DJsztSS2eBCVLO3OiaQgutOUQrm5YSAJuVsMZjtZ6SoUXRpdQraABktU8_Vl3U-xuCC2oii5eFR-MVkvKpUdzeT31dOnScXHhdnvlTUYvmtEUc8cr.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_0c995b1150585540016acd129d87d487d1bf5a2d138166cac6",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 18935,
+  "completion_tokens": 1480,
+  "total_tokens": 20415,
+  "cost": 0.000946985,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 18781,
+   "cache_write_tokens": 151,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000946985,
+   "upstream_inference_prompt_cost": 0.000206985,
+   "upstream_inference_completions_cost": 0.00074
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 255,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

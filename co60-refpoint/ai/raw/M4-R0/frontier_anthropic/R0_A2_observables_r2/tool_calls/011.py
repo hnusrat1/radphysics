@@ -1,0 +1,12 @@
+
+src=open('/tmp/mc.py').read()
+src=src.replace("fl=flag[sel]; dz=d[sel,2]","fl=flag[sel].astype(np.int64); dz=d[sel,2]")
+src=src.replace("fl=flag[idx]","fl=flag[idx]")
+open('/tmp/mc.py','w').write(src)
+import importlib; importlib.reload(M)
+t=new_tallies()
+t0=time.time()
+M.run(20000,1,t)
+print('time',time.time()-t0)
+print(t['fl_E'].sum(axis=1), t['W_int'])
+print(M.OMEGA)

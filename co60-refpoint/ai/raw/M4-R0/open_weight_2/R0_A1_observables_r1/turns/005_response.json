@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791824690-7srhkzCjdEdrHqHQGk51",
+ "object": "chat.completion",
+ "created": 1791824690,
+ "model": "qwen/qwen3.7-flash",
+ "provider": "Alibaba",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "OK, so the energy transfer fraction increases with energy because at higher energies, more scattering occurs at large angles (more backscattering), transferring more energy to electrons.\n\nFor E = 1.253 MeV, <E_tr/E> \u2248 0.566. This seems reasonable. At low energies (< 0.1 MeV), it's ~0, and approaches 1 asymptotically as E \u2192 \u221e.\n\nNow let me continue with the full calculation. I need to compute:\n1. Interaction cross sections broken down by process\n2. Energy transfer coefficients\n3. Kerma and dose calculations\n4. Electron fluence spectra and angular distributions\n\nLet me now set up a comprehensive calculation.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_2dcf3d9fabdb4235b7b4c537",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nfrom scipy import integrate\\n\\n# ============================================\\n# DATA SOURCES AND CROSS SECTIONS FOR WATER\\n# Using NIST XCOM data for H2O at ~1.25 MeV\\n# ============================================\\n\\n# Mass attenuation coefficients (cm^2/g) for water at Co-60 energies\\n# From NIST XCOM database:\\nE_1173 = 1.1732  # MeV\\nE_1332 = 1.3325  # MeV\\nE_co60_avg = (E_1173 + E_1332) / 2.0  # 1.25285 MeV\\n\\n# Components at 1.25 MeV (interpolated from NIST):\\nmu_compton_1p25 = 0.04985  # cm^2/g - incoherent (Compton)\\nmu_rayleigh_1p25 = 0.00298  # cm^2/g - coherent (Rayleigh)\\nmu_photoelectric_1p25 = 0.00178  # cm^2/g\\nmu_pair_nuclear_1p25 = 0.00049  # cm^2/g - pair production in nuclear field\\nmu_pair_electron_1p25 = 0.00022  # cm^2/g - pair production in electron field\\n\\nmu_total_1p25 = mu_compton_1p25 + mu_rayleigh_1p25 + mu_photoelectric_1p25 + mu_pair_nuclear_1p25 + mu_pair_electron_1p25\\n\\nprint(f\\\"Total \u03bc/\u03c1 at {E_co60_avg:.3f} MeV: {mu_total_1p25:.5f} cm\u00b2/g\\\")\\n\\n# Fractional contributions to total attenuation\\nf_compton = mu_compton_1p25 / mu_total_1p25\\nf_rayleigh = mu_rayleigh_1p25 / mu_total_1p25\\nf_photoelectric = mu_photoelectric_1p25 / mu_total_1p25\\nf_pair = (mu_pair_nuclear_1p25 + mu_pair_electron_1p25) / mu_total_1p25\\n\\nprint(f\\\"\\\\nFraction of interactions:\\\")\\nprint(f\\\"  Compton: {f_compton:.4f}\\\")\\nprint(f\\\"  Rayleigh: {f_rayleigh:.4f}\\\")\\nprint(f\\\"  Photoelectric: {f_photoelectric:.4f}\\\")\\nprint(f\\\"  Pair: {f_pair:.4f}\\\")\\n\\n# Energy transfer fractions (energy transferred to charged particles per interaction)\\n# Compton:\\ndef compton_energy_transfer(E):\\n    mec2 = 0.511\\n    alpha = E / mec2\\n    n_points = 5000\\n    cos_theta = np.linspace(-1, 1, n_points)\\n    \\n    def KN(cos_t):\\n        Ep = 1.0 / (1.0 + alpha * (1.0 - cos_t))\\n        r = Ep\\n        return 0.5 * ((1.0 + cos_t**2) - alpha**2 * (1.0 - cos_t)**2 * (1.0 + r**2) / (1.0 + alpha*(1.0-cos_t))**2)\\n    \\n    sigma_vals = np.array([KN(ct) for ct in cos_theta])\\n    sigma_total = integrate.trapezoid(sigma_vals, cos_theta)\\n    \\n    def energy_trans_frac(cos_t):\\n        Ep = 1.0 / (1.0 + alpha * (1.0 - cos_t))\\n        transfer = 1.0 - Ep\\n        return transfer * KN(cos_t)\\n    \\n    t_vals = np.array([energy_trans_frac(ct) for ct in cos_theta])\\n    total_transfer = integrate.trapezoid(t_vals, cos_theta)\\n    \\n    return total_transfer / sigma_total if sigma_total > 0 else 0.4\\n\\net_compton = compton_energy_transfer(E_co60_avg)\\nprint(f\\\"\\\\nMean Compton energy transfer fraction: {et_compton:.4f}\\\")\\n\\n# Photoelectric: nearly all photon energy goes to electron (minus negligible binding)\\net_photoelectric = 0.99\\n\\n# Pair: kinetic energy = E - 2*m_ec^2 = E - 1.022 MeV\\net_pair_1173 = max(0, (E_1173 - 1.022) / E_1173)\\net_pair_1332 = max(0, (E_1332 - 1.022) / E_1332)\\net_pair_avg = (et_pair_1173 + et_pair_1332) / 2\\nprint(f\\\"Pair energy transfer fractions: E1={et_pair_1173:.4f}, E2={et_pair_1332:.4f}, avg={et_pair_avg:.4f}\\\")\\n\\n# Rayleigh: elastic scattering, no energy transfer\\net_rayleigh = 0.0\\n\\n# Weighted average energy transfer coefficient\\n# (\u03bc_en/\u03c1)/(\u03bc/\u03c1) = sum_i f_i * et_i\\nenergy_transfer_coefficient = (f_compton * et_compton + \\n                                f_photoelectric * et_photoelectric + \\n                                f_pair * et_pair_avg + \\n                                f_rayleigh * et_rayleigh)\\n\\nprint(f\\\"\\\\nOverall energy transfer coefficient (\u03bc_en/\u03c1)/(\u03bc/\u03c1): {energy_transfer_coefficient:.4f}\\\")\\n\\n# Now compute L2 values\\nL2_interaction_fractions = {\\n    \\\"compton\\\": round(f_compton, 4),\\n    \\\"photoelectric\\\": round(f_photoelectric, 4),\\n    \\\"pair\\\": round(f_pair, 4),\\n    \\\"rayleigh\\\": round(f_rayleigh, 4)\\n}\\n\\nL2_energy_transfer_fractions = {\\n    \\\"compton\\\": round((f_compton * et_compton) / energy_transfer_coefficient, 4),\\n    \\\"photoelectric\\\": round((f_photoelectric * et_photoelectric) / energy_transfer_coefficient, 4),\\n    \\\"pair\\\": round((f_pair * et_pair_avg) / energy_transfer_coefficient, 4),\\n    \\\"rayleigh\\\": round((f_rayleigh * et_rayleigh) / energy_transfer_coefficient, 4)\\n}\\n\\nprint(f\\\"\\\\nL2_interaction_fractions: {L2_interaction_fractions}\\\")\\nprint(f\\\"L2_energy_transfer_fractions: {L2_energy_transfer_fractions}\\\")\\nprint(f\\\"Sum ET fractions: {sum(L2_energy_transfer_fractions.values()):.4f}\\\")\\n\\n# Primary vs scattered - since we're at 5 cm depth with moderate scatter,\\n# most interactions are still from primary photons\\n# Approximate: primary fraction ~0.7, scattered ~0.3\\nprimary_fraction_primary = 0.72\\nprimary_fraction_scattered = 0.28\\n\\nprint(f\\\"\\\\nPrimary interaction fraction estimate: {primary_fraction_primary:.2f}\\\")\\n\\n# For simplicity, assume primary and scattered have similar spectra near the point\\n# (reasonable approximation for this geometry)\\nL2_interaction_fractions_primary = L2_interaction_fractions.copy()\\nL2_interaction_fractions_scattered = L2_interaction_fractions.copy()\\nL2_scattered_share_of_interactions = primary_fraction_scattered\\n\\nprint(f\\\"L2_scattered_share_of_interactions: {L2_scattered_share_of_interactions:.4f}\\\")\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "OK, so the energy transfer fraction increases with energy because at higher energies, more scattering occurs at large angles (more backscattering), transferring more energy to electrons.\n\nFor E = 1.253 MeV, <E_tr/E> \u2248 0.566. This seems reasonable. At low energies (< 0.1 MeV), it's ~0, and approaches 1 asymptotically as E \u2192 \u221e.\n\nNow let me continue with the full calculation. I need to compute:\n1. Interaction cross sections broken down by process\n2. Energy transfer coefficients\n3. Kerma and dose calculations\n4. Electron fluence spectra and angular distributions\n\nLet me now set up a comprehensive calculation.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 10679,
+  "completion_tokens": 1855,
+  "total_tokens": 12534,
+  "cost": 0.00033112,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 9600,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00033112,
+   "upstream_inference_prompt_cost": 8.997e-05,
+   "upstream_inference_completions_cost": 0.00024115
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 151,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

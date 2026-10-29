@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791822182-xp9dtLIR6tQURFhaRT0N",
+ "object": "chat.completion",
+ "created": 1791822182,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Determining photon effects**\n\nI'm thinking about how scattered photons from fluorescence can diminish. So, I need to come up with a list related to this. I wonder what specifics I should consider to accurately determine the effects and implications of this phenomenon. There may be various factors to keep in mind. Let's explore what should be included to fully understand the implications of scattered photons in this context!",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_xlGR7Ni8yKK6GU64yt9FlUih",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import numpy as np\\nw=np.array([.005,.01,.02,.035,.05,.06,.06,.055,.05,.045,.04,.04,.04,.04,.04,.04,.04,.04,.04,.04,.04,.04,.04,.04,.035,.03,.025,0]); s=.1*w/w.sum(); print(w.sum(),s.sum(), np.dot(s,(np.array([0,.05,.1,.15,.2,.25,.3,.35,.4,.45,.5,.55,.6,.65,.7,.75,.8,.85,.9,.95,1,1.05,1.1,1.15,1.2,1.25,1.3,1.35,1.4][:-1]+np.array([0,.05,.1,.15,.2,.25,.3,.35,.4,.45,.5,.55,.6,.65,.7,.75,.8,.85,.9,.95,1,1.05,1.1,1.15,1.2,1.25,1.3,1.35,1.4][1:])/2))/.1);print([round(x,9) for x in s])\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Determining photon effects**\n\nI'm thinking about how scattered photons from fluorescence can diminish. So, I need to come up with a list related to this. I wonder what specifics I should consider to accurately determine the effects and implications of this phenomenon. There may be various factors to keep in mind. Let's explore what should be included to fully understand the implications of scattered photons in this context!",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzQlrVTn_0plm8suUuWevoMS_0kAu0uYpnVJPlV-i32-0VzKflkhVH-poo0HzwrBwVGC_s_hu015k6GrM-8WYIjcwLc81EZ7YGuYnNS8gnFqTb9ixhNQgUwVg1bYCRrZJRxHsQ_6qatJhHAOZD488HAxn9YIGFt0D4-nVI17N1B3ve2x-WqRql1ET7vhk9Gtcb_0qKtOIyTUlWvGmpjLylZhxzuU_LAdiSdDNgwouvAQgMSb-vtqyPG51ItRlFo2HkmJOh7y-YzR4QYIqY4ns9Vh23M-zx_ZKXcwZQLo1nNXCjX_aoWI8zU2R2WhOqG7HyarWIdnFN6EH2mtzrKBeOXKLT4-J7aNfALQ6OwCa1spnxOz5U-OJrbZ8EyIsOGHdoY50ts1il2QK5xolL4W7blm7GFbf33HOfuGJ_8F-rc_-T-Yty8-0XcklgVf553ovgRB8HP-Zo_AyuIUuOAZf2aczFzaf-JwLC9uDlFpJcEsahvOQv5ao4wwFSkc8L3p38eujrTVV4lz5PJt6fvEKxYpTGbReNxL2iYAmZ2p9UihQVrLnI-rtAG95p-K_8ErZsuzwBQW_ATWMXLPftxQM7WA_PSHPYLUEZKaTs3yMII-oxFXO4WNxKN7u1FKobasvIjXQ917PgRhBgpJxvufPhKVGJz9PRYTUKYN6Bi_KzwHY1OJ9YVoi29yUZfjp0t_OC-df8gs1M4LBNwU903om-LtAYO0Zc5Xp4P2nmOWqV9FkHA8xuZisFWAy7Ihey4NPctuwS0Rgmpt6g2ObS38ESn8xf5ggRHzbjrj5FwGQ485rE1Zid4605v5C8KSNnuO4UalZr48XJfGOVOZlclYpv8ezcjlL18VF1YTlTnZ5tUFwcrb9YGiTG-rXZbYxCFY5WA1ynyrPfWIVMRA3dCgfoT1dxlLlQNjjwgrECJqF9NaTkthk9Nq0xTF_ADza84SCR4ybZfd9R9fMKcjTGnX8AImFBH3xmcTwohcisxIFvlF3UB6gYDAbmPG76siGx6k1BwhIKuzVIdLVLX_nfgmF9PIfz6Q-N-5GkslBtYKmigQbb8Er8vpWVllA43VijrHjxNxG_IA97NfCKeOnBSJRI9DEhZpDywaFquOneDrpcHJhuFc5im4cJOfP3ahr9jhrxID9JMOvG2VeMPbynI8kNhqxQqsImuazBYTHJwpSTZVLYsUd6PY5SlRZtnAJyonhw1xOVwvGhbScc4gp1myohS9s3a3b1yyW7X1aTPpx8sT5YifEHXFW1bj2Gf3TFYkABFnVYShLtDzZma9XV_50viHWS5CcvPzWvg935PdCOuLZze1_iNUP0KdIhOpR7zrV3k2zF_p0a0_A5sxh2Bw41Wf4w_YKjPb7Ax6QUnsacXbznjl2GMn0ZcM3e5FMK00kg1M7BjR6KcisT9fDWImEmv5KDHRivB5B7mXHJle0cxYmeRJ_kf7HePZ1yDSZ0vlPfsLqAPDlQh_nAvqHdTnq3WvXmL1payZZOF67XHWajNTTeytpWTha7muj63wpl9uQoP6EEWcIANaPN4WWqTpewfhtxAjAEYKjoy3v3bpaxTisE3I-0VMvYHOnlYkKaD_EgAPzE8iIVLaiiMiCVLxyIAKHWyrmZXAlTvdgB-Clq7hFHFx7Z6VWvl8yYn_wk8PTW_2a-W0UGwwN3qtavOHC9QH9XxPjxr_RCwSpLZUbr4Sh9JiPWFrA2PX8AzO_XtIeVbiJO9gNBjC-onmE9f4vH0IkAXa2O8Y7BWOa2gb_Hk5Q-tOIUi-CZEdOQrE1ooz1cIahFaqkkLdQn_5dEW-oEPXS4bD_8js2uLUnypL4BcGTN-B_kaEQV87hpM3oFVKuD7CQgAVUToS5Euk-fXgweGgixDUkg6rLyTlYv2pIdvEEWzjv86efYX43hdXSvCeg5EPQtql8fyZQewwbih_9jWeX2w-95iEi0ztGR5e0h50OXSpo6V2IVcw1DZQbyCd7-SO9wKxvF87KxIIFMuQ-Iinb4HYH6r8H24RvIXFGXO_mA5HLDvR46Sxal_G47tW36BBcOwxfKBLso0zCOYoxdQuG8Mq6aMWEI5QoL-4J8BOy65HytuCiDwqvW9QBrlOp8lGvJNYx65zg7iYeIcP-K06hPNA2vTgMLKO0YJGIbOnX6g3rYiGuSJdaeojeDyB0F7FxlTI4WfZPQK98XSiLt25HUuPhxKfwCfTH0_0s0cVEtxp12sn9CBElYUSdSPL8EHTUE9oy5zo5Euzg7Vz5AOtearrnzeT3E2tyXpgmg2BGKBlQpwXh2CvoELJELA9afMWY1UC-iV6MAhUtUwdu_DnXCDK3FZEw_EfcUfsVZWSGEDhzj3AzfH9zmPeye3FdYPpJ7IY35DhDfI5EkMwbDqwRVYOjrV3pUYS1G7X6QGNue-bWoG8co9VNjPlT0ta66wPjdkwfzWZXiBespid-lHmPDFTvpkwKwARRcPepHkzuU_ASC0oGjZK0rRU5ASwZVCGtwDp-RqRAG-au8Zu3d-ZFHyzaeGk3pyG0pkW_VrRBB2rMfxQSHA0vWYHKUvfUqiSsgp7y1r_zD2AKEsQdAUIkovEGylUB5hPC7E_LTXBidijckhcYSZz0vKbWr02ppkvWNZ5dWf9-8oGfThhdx5xnaoxae8XQNcnYkBWU_hfxxuUO1XlnANseoR0MNFvNrwL47RDMRHLhlLKP5d1H6mztmUVeJxkTCMvFG3ou-Y7IHUAFEogOMy0cjcdqEDp9PbONmDO5djqm9Nf5jJg_yEkmr9ZTBSkTfKzoyqdyeHa-psuCA_T5kYJC1gEUeTWIpmqVoZqE5XP9CMRiiuY3dyRGOo9HcUgI8quFuhMOrrjrNBbMKpL2DZsT_12zhJ7rWiX79Cp81k0tdT7_kZnxcE2ImBy9hf_7_w1w9By93Lb6M5-MFK_ox2luonCEwPUvkjHSNLtU3arYRAmGhZiC8j0tTtRhm3-3doY3Gn2rS_l8PcFgkudXfjq7ivje_KpF-MtiPe8Tj2FNIaNGmdhXbdwSyLGATIGBLWcMe7BMB3UFddBKHEYBCB6pT1oGYerELPgieYauAiSMggpW-vapEcAShljj9v1fKfpydVUT6dj1QOTeYcwT7JPJR12DeHbM9RJDcz31j-k1q9fP7oZl4-C4dXgD_YJr3BXhbiZTsli0K4ibfAwrYYhUuZ0fw3atInwtEFMkNYdd81x3SMItOZqyXUI20MgblzJnF67Vq6m_raT5NQY0Kokv7b8q4USRRmVduXQwcA1V5tFJg6f0c8RD9iLhyvD9dqh54ePvDj3WCU8tnmiEYUmSVHN0Ms7OPHeLfxOxCT7CUkrK_qPVbhlHvXvC5DAGAv7U5WN4sjrbR2NfTToyonQW-FAJD4Vndr_B4TpgIKk2-tlRXperyOsQymLy08WeJ79exEMJuZb64wqXrxyJFkvkES8_X1XaNBCBQtd6NNG2rAR8wTZ91wRIpJRAeJpMcEFwBvdWIs7JmOfqX_5oMGCEbhueyFn6UoYJcgQJtJWE0oOhGS5B0HPkVbU_-Ns_Bbh6yRbNscu1pkOZ4bsQ0YFadNBEqPZmFPtgpG-EpGvY5VZ7uCZKDBxrzo0JUcUwd_jYFe6JlaitE7XnsIl6q7b9vqFLjMvskCi9O6Uw-yA9Skd8xxKrpDYjZeJlq-byT_kQAVLm22rJYh8NGYOSCB0dChUxH9pVmVCRwILfG6k8J26LGvRfHA4nkkA8pHyUotkcDW8YVAm-qEDpixZLRV1vlYIpW6Wuxic7Qk3FuwcaXjytJCCxAt136BQ2ChfrrEnK5b-VKJFa8uAA93PpSaAQHam1vxXC4TZyclDwyJjlu-T35tCQ3ykArUOlSFdYdzRKEeAmtZq19V15EYrgoeKVr6dBj4U3ZAlvDoW-DDz0F7RpVzA9KdWNnsBn-8Gr2Gk5GLDIPb_ANJg05MDRhCUsQqtgclSU7Ol1a30U_ZxeR3eyGCS3Dl7u95c2YpfTAPNu9bKUQkm6A3gIQesYYvYY9Z5pPPb-TkLX_m8CtMn8FbjLl2Dqh--zn5nl91X-gnfNmQpmO2mbYw4lhxy9FMu5V5ALK6BPQPBKdZYOyuxtcBN2EYxFxuHXQVf23hlnVg74cirIfPtN3AhJkwGm3yFjbI6MJiLl81xTxqLX25yy_U8rCXoy9Ds5FGd-uS9zKMZbg6q2aJSNrFgGsWCUyjVvXrPET6UXvDdaLZ16wlV8h_GqEx01FCEBQsTOYU5A79fCIBDpQtEr8KTjP2-AbLBvjYxKiSq0QDyvYRl7mHZBd81j7aY5grlMhTAVHUaTXdAy-8bKaW4GtnyQ0CyoasGHls3Kir5ghADvD62LMdwuFMgO5EFXu9GyZe5eS713j-rPP9jgWfENcbdgKdcs2Djom9hS1C0R0_0iiWCTrDtF7oMEPOATFQwdZgLqmMO95pOUzWKBfirePnMW0DkboGO6aPJuWlgroPdQcfztdnTsTElccy1ra15x_v1of7qfDgRKJ78ReHojjq_BMws1T-0KBF-Ste1c_QJ59wzFB1OeJ_tcMuZK3WTIGgKI8Wi3s4iTUBg4WgCd3CvoDh5bmzzSx2Qp2nOdyzWvJhUK0ka4PbSnexWuqkS1i5852WIj_5Njn0IxNm1Km_ZUyHQoUhTsCvDGE-yZyF0TINzk8jZGn2spsHCgsueFFvgYliubvIW_ZAU2BM5VlaRZAxveou3T3SBG79Gcxebxc7WcTwJJWs8RtT3OcrgPOQ==.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_093b05492dcaab5c016acd0967750087d1a67cf790d93a5a12",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 21007,
+  "completion_tokens": 557,
+  "total_tokens": 21564,
+  "cost": 0.000843615,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 17919,
+   "cache_write_tokens": 3085,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000843615,
+   "upstream_inference_prompt_cost": 0.000565115,
+   "upstream_inference_completions_cost": 0.0002785
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 278,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

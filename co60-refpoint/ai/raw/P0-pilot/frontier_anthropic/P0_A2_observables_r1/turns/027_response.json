@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791818120-xMP6N5lVDPP3PNHmvMGT",
+ "object": "chat.completion",
+ "created": 1791818120,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I need to explicitly import the underscore-prefixed name since the wildcard import won't pick it up. I'm also double-checking the transport loop logic to make sure the conditional variable definitions are consistent and don't cause reference errors.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01BudinA2uaHyCd1UzR2n9Fk",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\ns=open('/tmp/work/depthk.py').read()\\ns=s.replace(\\\"from electrons import *   # EBe\\\",\\\"from electrons import *\\\\nfrom electrons import _orth\\\\n# EBe\\\")\\nopen('/tmp/work/depthk.py','w').write(s)\\nimport sys, importlib, time, pickle\\nsys.path.insert(0,'/tmp/work')\\nimport numpy as np\\nimport sources, depthk\\nfrom phys import mu_all\\nseg=pickle.load(open('/tmp/work/photon_tallies.pkl','rb'))['seg']\\nPhi_p=float(np.exp(-mu_all(np.array([2.0]))[4][0]*10))\\nrng=np.random.default_rng(5)\\ncat=sources.build_sources(seg,4000000,rng,Phi_p)\\nt=time.time()\\nrng2=np.random.default_rng(7)\\nhist=depthk.transport_depth(cat['T'],cat['u'],cat['w'],rng2)\\nprint(\\\"time\\\",time.time()-t, \\\"sum hist\\\",hist.sum(), \\\"sum expected\\\", (cat['w']*cat['T']).sum())\\npickle.dump(dict(hist=hist,ZB=depthk.ZB),open('/tmp/work/kern.pkl','wb'))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I need to explicitly import the underscore-prefixed name since the wildcard import won't pick it up. I'm also double-checking the transport loop logic to make sure the conditional variable definitions are consistent and don't cause reference errors.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQS+wgKEAgSGAI4AUIIdGhpbmtpbmcSDMCX4co3nuyLgv05YBoMoekvD+LWiBgFCIRFIjCBgZJVOplCLp4xl2LOAxhxsqciJAyn25evUD2/n/+cOCwfgpuVBFbuY8BgMxa0YcsqmAg9vdj817aRuCIUCdu3MIy3RE+iDlxRd82F9wPhJqcaNc/I6TCHNio4hL0J3usZlrfI/KR8OLLCQZc2b5oVsZqtcN7bVSelkvQVxAan6f4cFYcF8u9ZhzOVkYGTu3IF8G+Hb0wgkiAWksssOPE0SzsOoNSpy2/nTLdptF5dPEGANlQb1RXeBcK1tfliZNcYbtW+xnC0OX+tJk1zTXIKD4l72Us+UyXMg8i8CW7pj/blhkUmTVgXRdYDp+8D3DyaRCHpg617yrT2/UzXwRfZ295qMl/JbNWWijoRO6y9SuB87t09vjEyhEpb1FIxTE6F3Q+HzBLDLMNLWsn8hfYUMW+R7tsAjo6izWClQ6UiLu57KOLMxO3XTqCgqPF92MnrneuoAP1M6EUrNK5c4O37nAljjg16LrSe5ZI9NeXbtHizKKGh2id/WwjfVcQvqZafMRTTd9UGET0F2/Qzv0XAofn3IIuIZyMpf5gd0oVkk1UyLubuOJPm5e/5MJmAi3YOFlzXy2MQCp/Stac+fpvDKhjS1jtOWvm2EGSUGN3TGq8gG6UjbVHGEYbQ4N9ZMnrUAub9jxbSRXPUkPHdYhdd7hIPkVz9IRSoCPJPuFjH+ds3jjEJ8s0bMUU3LdQu6IlekZcPjJTJIfA0cnsLT/viExIX/iysJx7cTulpJQGGzALkm5Y2VbGvSOaOQvof9yPPz8pk32pIsCmRrnAavDLaabCETjETXSHelOo3qqSUYv+aCS9TzGSD+FMjuSlKZ2Vk8SBMUMtFbAdAvdXRM3syiIPpL8KFoYE944pQNocSzYpIDa0w4yna1qbYFMD5rIBV/txdRNu0hSQnGYE/OuYz7G5Vr1usMefiLTM4ljw/SHp9yLtAlW0M8PgltyOAxszPT2Uyc0SXyvTfMH2Ibq/VT0WVMi/O3nt/1XqfZ6UBlqhT40MB7hZsd3GRiMJ0BkUrUUfPZppYpQB/Wj0xv0DcTQbwcda7m5Ug41mNw8nq7sp93zcEs93uCa3iwh9YHgLfbSkv1dffd0ARnS5YFtkJ/fHXhuSWuCToEpz/i9xY8VRU9IRvfKy6P52IGzwpQNVTf/PRVSaDJHau+vBjte6MIao0NPPP08D/CeDOgTO25hLFMF9eobm0tRjNr9QoRwJR+wLNsT7hJwrwJMz16UoxJ/qcuxccySY+r7ovnPhVk3ISTIQ//lg0E8LOX5WNhEMpwMg+V8UpKb68Mi3iRiZ2MpCElcT28JuukOyZYjfEQaPiuUTcHw3+W0NProqDnHJawIPG/+k+pwNQUWv2trl2g6VYMiBGRM6ccpxthkKBpNUDA92QH+wSCVZG6eNMKLV0UIRr+geogePX/3S4OU5+ALMCrM+aLzFSyznTQKPNVmA/qqVArnEGHKiNGAE=.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 159493,
+  "completion_tokens": 616,
+  "total_tokens": 160109,
+  "cost": 0.0812865,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0812865,
+   "upstream_inference_prompt_cost": 0.0797465,
+   "upstream_inference_completions_cost": 0.00154
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 153,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

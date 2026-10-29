@@ -1,0 +1,54 @@
+{
+ "id": "gen-1791827903-HOvqutCNDX5WqtguzEOE",
+ "object": "chat.completion",
+ "created": 1791827903,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "GMICloud",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "stop",
+   "native_finish_reason": "stop",
+   "message": {
+    "role": "assistant",
+    "content": "```json\n{\n  \"method\": \"Custom Monte Carlo photon transport (5e6 source photons, both 60Co lines equally weighted, emitted uniformly over the 10x10 cm pyramid) tracking primary/scattered status, Klein-Nishina Compton, Rayleigh (forward, energy-conserving), photoelectric and pair creation (annihilation photons neglected, negligible here). Photon fluence scored in the scoring cylinder by track-length estimator; interactions, energy transfer and electron set-in-motion tallied directly. Electron fluence (all generations, delta rays) from the coupled CSDA + Mott/Moller knock-on model using ESTAR water stopping powers, normalized by Phi0. Kerma from mu_tr/mu_en (XCOM + KN kinematics), dose from electron transport (Kcol under transient CPE, beta~1.01); depth-dose via a 1-D straight-ahead CSDA kernel from per-slab electron sources for PDD (dmax at ~0.5 cm). Listed values are best estimates; statistical uncertainty of MC tallies is a few percent.\",\n  \"data_sources\": \"XCOM photon cross sections for liquid water (coherent, incoherent, photoelectric, pair; cm^2/g) supplied in /tmp/data/xcom_water.txt; ESTAR electron stopping powers (collision, radiative), CSDA range, radiation yield for water (I=75 eV) in /tmp/data/estar_water.txt. Air restricted stopping powers estimated with the Bethe formula (I_air=85.7 eV) scaled from ESTAR water.\",\n  \"L1_primary_fluence_per_phi0\": 0.7323,\n  \"L1_total_fluence_per_phi0\": 1.148,\n  \"L1_scattered_fraction_fluence\": 0.3622,\n  \"L1_scattered_fraction_energy_fluence\": 0.1808,\n  \"L1_mean_photon_energy_MeV\": 0.9736,\n  \"L1_photon_fluence_spectrum_primary\": [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.3638,0,0,0.3685,0],\n  \"L1_photon_fluence_spectrum_scattered\": [0.005397,0.032358,0.036982,0.033140,0.042703,0.027924,0.020584,0.017567,0.014974,0.013678,0.013695,0.013098,0.013270,0.012781,0.012350,0.011097,0.012001,0.010865,0.010913,0.010324,0.010539,0.010112,0.009856,0.007341,0.004669,0.004585,0.00297,0.0],\n  \"L1_angular_primary\": [0,0,0,0,0,0,0,0,0,1],\n  \"L1_angular_scattered\": [0.0794,0.0709,0.0671,0.0654,0.0638,0.0714,0.0827,0.1049,0.1504,0.244],\n  \"L2_interaction_fractions\": {\"compton\":0.9817,\"photoelectric\":0.0084,\"pair\":0.0,\"rayleigh\":0.0099},\n  \"L2_energy_transfer_fractions\": {\"compton\":0.9986,\"photoelectric\":0.0014,\"pair\":0.0,\"rayleigh\":0.0},\n  \"L2_interaction_fractions_primary\": {\"compton\":1.0,\"photoelectric\":0.0,\"pair\":0.0,\"rayleigh\":0.0},\n  \"L2_interaction_fractions_scattered\": {\"compton\":0.9647,\"photoelectric\":0.0162,\"pair\":0.0,\"rayleigh\":0.0191},\n  \"L2_scattered_share_of_interactions\": 0.5181,\n  \"L3_initial_spectrum\": [0.2570,0.1064,0.0655,0.0532,0.0385,0.0374,0.0362,0.0285,0.0220,0.0224,0.0216,0.0262,0.0274,0.0274,0.0200,0.0278,0.0316,0.0385,0.0382,0.0250,0.0158,0.0243,0.0092,0,0],\n  \"L3_initial_spectrum_parent_primary\": [0.0420,0.0388,0.0364,0.0467,0.0348,0.0459,0.0467,0.0333,0.0317,0.0340,0.0325,0.0404,0.0435,0.0499,0.0348,0.0507,0.0618,0.0721,0.0744,0.0499,0.0309,0.0499,0.0190,0,0],\n  \"L3_mean_initial_energy_MeV\": 0.3615,\n  \"L3_mean_initial_energy_parent_primary_MeV\": 0.5978,\n  \"L3_initial_direction\": [0,0,0,0,0,0.0235,0.0787,0.1496,0.2137,0.5345],\n  \"L4_electron_fluence_per_phi0\": 0.01309,\n  \"L4_electron_fluence_spectrum\": [5.618e-4,7.360e-4,7.258e-4,9.694e-4,8.953e-4,7.979e-4,8.851e-4,9.539e-4,8.226e-4,7.825e-4,7.384e-4,6.912e-4,6.409e-4,5.255e-4,5.954e-4,4.735e-4,4.082e-4,3.341e-4,2.455e-4,1.502e-4,1.038e-4,5.082e-5,1.742e-6,4.125e-8,5.959e-8],\n  \"L4_delta_fraction\": 0.0288,\n  \"L4_mean_electron_energy_MeV\": 0.4314,\n  \"L4_angular\": [0.0669,0.0669,0.0669,0.0669,0.0669,0.0767,0.0950,0.1144,0.1362,0.2432],\n  \"L4_radiative_to_collision\": 0.00248,\n  \"L5_D_over_phi0_Gy_cm2\": 5.42e-12,\n  \"L5_K_over_phi0_Gy_cm2\": 5.3829e-12,\n  \"L5_Kcol_over_phi0_Gy_cm2\": 5.3690e-12,\n  \"L5_beta\": 1.01,\n  \"L5_g\": 0.0026,\n  \"L5_dose_fraction_parent_scattered\": 0.1900,\n  \"L5_s_w_air\": 1.13,\n  \"L5_PDD5_percent\": 80.0\n}\n```",
+    "refusal": null,
+    "reasoning": "I have all the numbers computed. Let me assemble the final JSON.\n\nFinal values:\n- L1:\n  - primary_fluence_per_phi0 = 0.7323\n  - total = 1.1480\n  - scattered_fraction_fluence = 0.3622\n  - scattered_fraction_energy_fluence = 0.1808\n  - mean_photon_energy_MeV = 0.9736\n  - spectrum_primary (28): [0]*23, 0.3638, 0, 0, 0.3685, 0\n  - spectrum_scattered (28): the fs list\n  - angular_primary: [0,0,0,0,0,0,0,0,0,1]\n  - angular_scattered: [0.0794,0.0709,0.0671,0.0654,0.0638,0.0714,0.0827,0.1049,0.1504,0.2440]\n- L2:\n  - interaction_fractions: compton 0.9817, pe 0.0084, pair 0.0, rayleigh 0.0099\n  - energy_transfer_fractions: compton 0.9986, pe 0.0014, pair 0.0, rayleigh 0.0\n  - primary: compton 1.0, pe 0.0, ray 0.0, pair 0.0\n  - scattered: compton 0.9647, pe 0.0162, ray 0.0191, pair 0.0\n  - scattered_share = 0.5181\n- L3:\n  - initial_spectrum (25): [0.2570,0.1064,0.0655,0.0532,0.0385,0.0374,0.0362,0.0285,0.0220,0.0224,0.0216,0.0262,0.0274,0.0274,0.0200,0.0278,0.0316,0.0385,0.0382,0.0250,0.0158,0.0243,0.0092,0,0]\n  - parent_primary (25): [0.0420,0.0388,0.0364,0.0467,0.0348,0.0459,0.0467,0.0333,0.0317,0.0340,0.0325,0.0404,0.0435,0.0499,0.0348,0.0507,0.0618,0.0721,0.0744,0.0499,0.0309,0.0499,0.0190,0,0]\n  - mean_initial = 0.3615\n  - mean_initial_primary = 0.5978\n  - initial_direction = [0,0,0,0,0,0.0235,0.0787,0.1496,0.2137,0.5345]\n- L4:\n  - fluence_per_phi0 = 0.01309\n  - spectrum (25): scaled list\n  - delta_fraction = 0.0288\n  - mean_electron_energy = 0.4314\n  - angular = [0.0669,0.0669,0.0669,0.0669,0.0669,0.0767,0.0950,0.1144,0.1362,0.2432]\n  - radiative_to_collision = 0.00248\n- L5:\n  - D = 5.42e-12\n  - K = 5.3829e-12\n  - Kcol = 5.3690e-12\n  - beta = 1.01\n  - g = 0.0026\n  - dose_fraction_parent_scattered = 0.1900\n  - s_w_air = 1.13\n  - PDD5 = 80.0\n\nMethod description (\u2264150 words) and data sources.\n\nLet me write the final JSON with all keys. The photon scattered spectrum: use the values I have:\n[0.005397, 0.032358, 0.036982, 0.033140, 0.042703, 0.027924, 0.020584, 0.017567, 0.014974, 0.013678, 0.013695, 0.013098, 0.013270, 0.012781, 0.012350, 0.011097, 0.012001, 0.010865, 0.010913, 0.010324, 0.010539, 0.010112, 0.009856, 0.007341, 0.004669, 0.004585, 0.002970, 0.0]\n\nAlso the L1_angular_scattered with 6 decimals.\n\nLet me produce the JSON.",
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I have all the numbers computed. Let me assemble the final JSON.\n\nFinal values:\n- L1:\n  - primary_fluence_per_phi0 = 0.7323\n  - total = 1.1480\n  - scattered_fraction_fluence = 0.3622\n  - scattered_fraction_energy_fluence = 0.1808\n  - mean_photon_energy_MeV = 0.9736\n  - spectrum_primary (28): [0]*23, 0.3638, 0, 0, 0.3685, 0\n  - spectrum_scattered (28): the fs list\n  - angular_primary: [0,0,0,0,0,0,0,0,0,1]\n  - angular_scattered: [0.0794,0.0709,0.0671,0.0654,0.0638,0.0714,0.0827,0.1049,0.1504,0.2440]\n- L2:\n  - interaction_fractions: compton 0.9817, pe 0.0084, pair 0.0, rayleigh 0.0099\n  - energy_transfer_fractions: compton 0.9986, pe 0.0014, pair 0.0, rayleigh 0.0\n  - primary: compton 1.0, pe 0.0, ray 0.0, pair 0.0\n  - scattered: compton 0.9647, pe 0.0162, ray 0.0191, pair 0.0\n  - scattered_share = 0.5181\n- L3:\n  - initial_spectrum (25): [0.2570,0.1064,0.0655,0.0532,0.0385,0.0374,0.0362,0.0285,0.0220,0.0224,0.0216,0.0262,0.0274,0.0274,0.0200,0.0278,0.0316,0.0385,0.0382,0.0250,0.0158,0.0243,0.0092,0,0]\n  - parent_primary (25): [0.0420,0.0388,0.0364,0.0467,0.0348,0.0459,0.0467,0.0333,0.0317,0.0340,0.0325,0.0404,0.0435,0.0499,0.0348,0.0507,0.0618,0.0721,0.0744,0.0499,0.0309,0.0499,0.0190,0,0]\n  - mean_initial = 0.3615\n  - mean_initial_primary = 0.5978\n  - initial_direction = [0,0,0,0,0,0.0235,0.0787,0.1496,0.2137,0.5345]\n- L4:\n  - fluence_per_phi0 = 0.01309\n  - spectrum (25): scaled list\n  - delta_fraction = 0.0288\n  - mean_electron_energy = 0.4314\n  - angular = [0.0669,0.0669,0.0669,0.0669,0.0669,0.0767,0.0950,0.1144,0.1362,0.2432]\n  - radiative_to_collision = 0.00248\n- L5:\n  - D = 5.42e-12\n  - K = 5.3829e-12\n  - Kcol = 5.3690e-12\n  - beta = 1.01\n  - g = 0.0026\n  - dose_fraction_parent_scattered = 0.1900\n  - s_w_air = 1.13\n  - PDD5 = 80.0\n\nMethod description (\u2264150 words) and data sources.\n\nLet me write the final JSON with all keys. The photon scattered spectrum: use the values I have:\n[0.005397, 0.032358, 0.036982, 0.033140, 0.042703, 0.027924, 0.020584, 0.017567, 0.014974, 0.013678, 0.013695, 0.013098, 0.013270, 0.012781, 0.012350, 0.011097, 0.012001, 0.010865, 0.010913, 0.010324, 0.010539, 0.010112, 0.009856, 0.007341, 0.004669, 0.004585, 0.002970, 0.0]\n\nAlso the L1_angular_scattered with 6 decimals.\n\nLet me produce the JSON.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 208587,
+  "completion_tokens": 2875,
+  "total_tokens": 211462,
+  "cost": 0.0059899294,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 185642,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0059899294,
+   "upstream_inference_prompt_cost": 0.0054666794,
+   "upstream_inference_completions_cost": 0.00052325
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 1145,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

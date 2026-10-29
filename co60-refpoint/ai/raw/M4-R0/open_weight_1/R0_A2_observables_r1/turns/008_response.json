@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791827019-0R42L7KmkfFHxjavTrR0",
+ "object": "chat.completion",
+ "created": 1791827019,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "GMICloud",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I forgot to define `survive` \u2192 renamed to surv. Let me fix in the actual function (it's still in the cell). I'll rewrite the final lines: alive[idx]=False; alive[idx[~exit_before & ~dead_proc]]=True.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_0ef81f04c19a496b91746c40",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np, math, time\\nmc2=0.5109989461; RHO=1.0\\nd = np.loadtxt('/tmp/data/xcom_water.txt', comments='#')\\nE_x=d[:,0]; mu_co=d[:,1]; mu_in=d[:,2]; mu_pe=d[:,3]; mu_pn=d[:,4]; mu_pef=d[:,5]; mu_tot=d[:,6]\\ndef interp1(x,xx,yy): return np.interp(x,xx,yy)\\ndef mu_total(E): return interp1(E,E_x,mu_tot)*RHO\\ndef mu_coh(E):   return interp1(E,E_x,mu_co)*RHO\\ndef mu_inc(E):   return interp1(E,E_x,mu_in)*RHO\\ndef mu_pe_(E):   return interp1(E,E_x,mu_pe)*RHO\\ndef mu_pair(E):  return (interp1(E,E_x,mu_pn)+interp1(E,E_x,mu_pef))*RHO\\nV_cyl=math.pi*0.2; PHI0=1/10.5**2\\nZMINC,ZMAXC,RC=4.9,5.1,1.0\\nph_edges=np.array([0,.05,.1,.15,.2,.25,.3,.35,.4,.45,.5,.55,.6,.65,.7,.75,.8,.85,.9,.95,1,1.05,1.1,1.15,1.2,1.25,1.3,1.35,1.4])\\nel_edges=np.array([0.01,.05,.1,.15,.2,.25,.3,.35,.4,.45,.5,.55,.6,.65,.7,.75,.8,.85,.9,.95,1,1.05,1.1,1.15,1.2,1.4])\\ncos_edges=np.linspace(-1,1,11)\\nNB_PH=len(ph_edges)-1; NB_EL=len(el_edges)-1; NB_COS=len(cos_edges)-1\\ndef ph_bin(E): return np.clip(np.searchsorted(ph_edges,E,side='right')-1,0,NB_PH-1)\\ndef el_bin(E): return np.clip(np.searchsorted(el_edges,E,side='right')-1,0,NB_EL-1)\\ndef cos_bin(c): return np.clip(np.searchsorted(cos_edges,c,side='right')-1,0,NB_COS-1)\\ndef KN_f(alpha,cos):\\n    x=1+alpha*(1-cos); r=1/x; return r*r*(r+x-(1-cos*cos))\\ndef sample_compton(E,rng):\\n    n=E.size; cos_s=np.zeros(n); Epr=np.zeros(n); cose=np.zeros(n); done=np.zeros(n,bool); idx=np.arange(n)\\n    while True:\\n        sub=idx[~done]\\n        if sub.size==0: break\\n        alpha=E[sub]/mc2; cs=rng.uniform(-1,1,sub.size)\\n        acc=rng.random(sub.size) < (KN_f(alpha,cs)/2.0)\\n        if acc.any():\\n            ai=sub[acc]; cos_s[ai]=cs[acc]; Ep=E[ai]/(1+alpha[acc]*(1-cs[acc])); Epr[ai]=Ep\\n            cose[ai]=(E[ai]-Ep*cs[acc])/np.sqrt(E[ai]**2+Ep**2-2*E[ai]*Ep*cs[acc]); done[ai]=True\\n    return cos_s,Epr,cose\\ndef rotate_dir(d,cos,phi,rng):\\n    sin=np.sqrt(np.maximum(0,1-cos*cos)); sinp=np.sin(phi); cosp=np.cos(phi)\\n    kx,ky,kz=d[:,0],d[:,1],d[:,2]; nearz=np.abs(kz)>0.999\\n    nrm=np.sqrt(kx*kx+ky*ky); e1x=np.where(nearz,1.0,-ky/np.maximum(nrm,1e-12)); e1y=np.where(nearz,0.0,kx/np.maximum(nrm,1e-12)); e1z=np.zeros_like(kz)\\n    e1x[nearz]=1; e1y[nearz]=0\\n    e2x=ky*e1z-kz*e1y; e2y=kz*e1x-kx*e1z; e2z=kx*e1y-ky*e1x\\n    nx=cos*d[:,0]+sin*(cosp*e1x+sinp*e2x); ny=cos*d[:,1]+sin*(cosp*e1y+sinp*e2y); nz=cos*d[:,2]+sin*(cosp*e1z+sinp*e2z)\\n    out=np.stack([nx,ny,nz],1); return out/np.sqrt((out**2).sum(1))[:,None]\\ndef cyl_track_vec(P0,D,L,zmin,zmax,rmax=1.0):\\n    n=P0.shape[0]; x0,y0,z0=P0[:,0],P0[:,1],P0[:,2]; dx,dy,dz=D[:,0],D[:,1],D[:,2]\\n    a=dx*dx+dy*dy; b=2*(x0*dx+y0*dy); c=x0*x0+y0*y0-rmax*rmax\\n    t_in=np.zeros(n); t_out=L.copy(); par=a<1e-14; npar=~par\\n    idx=np.where(npar)[0]\\n    if idx.size>0:\\n        aa=a[idx];bb=b[idx];cc=c[idx];LL=L[idx];disc=bb*bb-4*aa*cc;ok=disc>=0; ii=idx[ok]\\n        if ii.size>0:\\n            sq=np.sqrt(disc[ok]); t1=(-bb[ok]-sq)/(2*aa[ok]); t2=(-bb[ok]+sq)/(2*aa[ok]); tl=np.minimum(t1,t2); tu=np.maximum(t1,t2)\\n            t_in[ii]=np.maximum(0,tl); t_out[ii]=np.minimum(LL[ok],tu)\\n        t_in[idx[~ok]]=0; t_out[idx[~ok]]=0\\n    ip=np.where(par)[0]\\n    if ip.size>0:\\n        inside0=c[ip]<=0; t_in[ip[inside0]]=0; t_out[ip[inside0]]=L[ip[inside0]]; t_in[ip[~inside0]]=0; t_out[ip[~inside0]]=0\\n    adz=np.abs(dz); small=adz<1e-12; loz=np.zeros(n); hiz=L.copy()\\n    iz=np.where(~small)[0]\\n    if iz.size>0:\\n        z0i=z0[iz];dzi=dz[iz];Li=L[iz];t1=(zmin-z0i)/dzi;t2=(zmax-z0i)/dzi;tl=np.minimum(t1,t2);tu=np.maximum(t1,t2)\\n        loz[iz]=np.maximum(0,tl); hiz[iz]=np.minimum(Li,tu)\\n    ism=np.where(small)[0]\\n    if ism.size>0:\\n        inw=(z0[ism]>=zmin)&(z0[ism]<=zmax); t_out[ism[~inw]]=0\\n    lo=np.maximum(t_in,loz); hi=np.minimum(t_out,hiz); return np.maximum(0,hi-lo)\\n\\ndef run_batch(N, rng):\\n    flu_p=np.zeros((NB_PH,NB_COS)); flu_s=np.zeros((NB_PH,NB_COS))\\n    inter_all=np.zeros(4); inter_prim=np.zeros(4); inter_scat=np.zeros(4); trans=np.zeros(4)\\n    e_all=np.zeros(NB_EL); e_prim=np.zeros(NB_EL); e_cos=np.zeros(NB_COS)\\n    e_sum=0.0; e_sum_prim=0.0\\n    slab_src=np.zeros((150,NB_EL))\\n    E=np.where(rng.random(N)<0.5,1.1732,1.3325)\\n    xt=rng.uniform(-5,5,N); yt=rng.uniform(-5,5,N)\\n    pos=np.stack([xt,yt,np.zeros(N)],1)\\n    dirv=np.stack([xt,yt,np.full(N,100.0)],1); dirv/=np.sqrt((dirv**2).sum(1))[:,None]\\n    status=np.zeros(N,int); alive=np.ones(N,bool)\\n    while alive.any():\\n        idx=np.where(alive)[0]\\n        Ea=E[idx]; pa=pos[idx]; da=dirv[idx]; sa=status[idx]\\n        mut=mu_total(Ea)\\n        Lstep=-np.log(np.maximum(rng.random(Ea.size),1e-30))/mut\\n        tlen=cyl_track_vec(pa,da,Lstep,ZMINC,ZMAXC,RC)\\n        if tlen.sum()>0:\\n            eb=ph_bin(Ea); cb=cos_bin(da[:,2])\\n            m0=(sa==0)&(tlen>0)\\n            if m0.any(): np.add.at(flu_p,(eb[m0],cb[m0]),tlen[m0])\\n            m1=(sa==1)&(tlen>0)\\n            if m1.any(): np.add.at(flu_s,(eb[m1],cb[m1]),tlen[m1])\\n        tx1=(-15-pa[:,0])/da[:,0]; tx2=(15-pa[:,0])/da[:,0]\\n        ty1=(-15-pa[:,1])/da[:,1]; ty2=(15-pa[:,1])/da[:,1]\\n        tz1=(0-pa[:,2])/da[:,2];   tz2=(30-pa[:,2])/da[:,2]\\n        tmax=np.minimum(np.minimum(np.maximum(tx1,tx2),np.maximum(ty1,ty2)),np.maximum(tz1,tz2))\\n        exit_before = Lstep > (tmax+1e-9)\\n        interact = ~exit_before\\n        iE=Ea[interact]; ipos=pa[interact]; idir=da[interact]; ist=sa[interact]\\n        n_i=iE.size\\n        rproc=rng.random(n_i)*mu_total(iE)\\n        muc=mu_coh(iE); mui=mu_inc(iE); mup=mu_pe_(iE)\\n        proc=np.zeros(n_i,int)\\n        proc[(rproc>=muc)&(rproc<muc+mui)]=1\\n        proc[(rproc>=muc+mui)&(rproc<muc+mui+mup)]=2\\n        proc[rproc>=muc+mui+mup]=3\\n        incl = (ipos[:,2]>=ZMINC)&(ipos[:,2]<=ZMAXC)&(ipos[:,0]**2+ipos[:,1]**2<=RC**2)\\n        slab_idx = np.clip((ipos[:,2]/0.2).astype(int),0,149)\\n        if incl.any():\\n            pr=proc[incl]; st=ist[incl]; tr=np.zeros(incl.sum())\\n            comp_in=pr==1; pe_in=pr==2; pair_in=pr==3\\n            sel=incl&(proc==1)\\n            if sel.any():\\n                cs,Ep_,cse=sample_compton(iE[sel],rng)\\n                Te=iE[sel]-Ep_\\n                tr[comp_in]=Te\\n                eb=el_bin(Te); ceb=cos_bin(cse)\\n                np.add.at(e_all, eb, 1.0); np.add.at(e_cos, ceb, 1.0)\\n                e_sum += Te.sum()\\n                pm=ist[sel]==0\\n                if pm.any():\\n                    np.add.at(e_prim, eb[pm], 1.0); e_sum_prim += Te[pm].sum()\\n                np.add.at(slab_src, (slab_idx[sel], eb), 1.0)\\n            if pe_in.any():\\n                Te=iE[incl][pe_in]-0.0005\\n                tr[pe_in]=Te\\n                eb=el_bin(Te)\\n                np.add.at(e_all, eb, 1.0); np.add.at(e_cos, NB_COS-1, 1.0); e_sum += Te.sum()\\n                pm_=ist[incl][pe_in]==0\\n                if pm_.any(): np.add.at(e_prim, eb[pm_], 1.0); e_sum_prim += Te[pm_].sum()\\n                np.add.at(slab_src,(slab_idx[incl][pe_in], eb),1.0)\\n            if pair_in.any():\\n                Ee_=(iE[incl][pair_in]-1.022)/2.0\\n                tr[pair_in]=iE[incl][pair_in]-1.022\\n                eb=el_bin(Ee_)\\n                for k in range(2):\\n                    np.add.at(e_all, eb, 1.0); np.add.at(e_cos, NB_COS-1, 1.0); e_sum += Ee_.sum()\\n                    pm_=ist[incl][pair_in]==0\\n                    if pm_.any(): np.add.at(e_prim, eb[pm_],1.0); e_sum_prim += Ee_[pm_].sum()\\n                    np.add.at(slab_src,(slab_idx[incl][pair_in],eb),1.0)\\n            np.add.at(inter_all, pr, 1.0)\\n            m0=st==0\\n            if m0.any(): np.add.at(inter_prim, pr[m0], 1.0)\\n            m1=st==1\\n            if m1.any(): np.add.at(inter_scat, pr[m1], 1.0)\\n            np.add.at(trans, pr, tr)\\n        comp=proc==1\\n        if comp.any():\\n            cs,Ep,cse=sample_compton(iE[comp],rng)\\n            iE[comp]=Ep\\n            phi=rng.uniform(0,2*np.pi,comp.sum())\\n            idir[comp]=rotate_dir(idir[comp],cs,phi,rng)\\n            ist[comp]=1\\n        if (proc==0).any(): ist[proc==0]=1\\n        dead_proc=np.zeros(len(idx),bool)\\n        dead_proc[interact]=(proc==2)|(proc==3)\\n        Ea[interact]=iE; da[interact]=idir; sa[interact]=ist\\n        alive[idx]=False\\n        alive[idx[(~exit_before)&(~dead_proc)]]=True\\n    return flu_p,flu_s,inter_all,inter_prim,inter_scat,trans,e_all,e_prim,e_cos,e_sum,e_sum_prim,slab_src,N\\n\\nrng=np.random.default_rng(12345)\\nt0=time.time(); res=run_batch(100000,rng); t1=time.time()\\nprint('100k photons took', round(t1-t0,2), 's')\\nflu_p,flu_s,inter_a,inter_p,inter_s,trans,e_all,e_prim,e_cos,e_sum,e_sum_prim,slab_src,N=res\\nprint('primary flu/Phi0 (expected ~0.7288):', flu_p.sum()/N/V_cyl/PHI0)\\nprint('scattered flu/Phi0:', flu_s.sum()/N/V_cyl/PHI0)\\nprint('total flu/Phi0:', (flu_p.sum()+flu_s.sum())/N/V_cyl/PHI0)\\nprint('inter_all', inter_a, 'sum', inter_a.sum())\\nprint('trans', trans)\\nprint('e_all sum', e_all.sum(), 'e_prim sum', e_prim.sum())\\nprint('mean init E all', e_sum/max(e_all.sum(),1), 'prim', e_sum_prim/max(e_prim.sum(),1))\\nprint('e_cos', e_cos)\\nprint('slab_src sum', slab_src.sum())\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I forgot to define `survive` \u2192 renamed to surv. Let me fix in the actual function (it's still in the cell). I'll rewrite the final lines: alive[idx]=False; alive[idx[~exit_before & ~dead_proc]]=True.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 76020,
+  "completion_tokens": 3774,
+  "total_tokens": 79794,
+  "cost": 0.0030112992,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 63096,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0030112992,
+   "upstream_inference_prompt_cost": 0.0023244312,
+   "upstream_inference_completions_cost": 0.000686868
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 57,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

@@ -1,0 +1,9 @@
+{
+ "stdout": "",
+ "stderr": "/tmp/work/_call_009.py:68: RuntimeWarning: divide by zero encountered in divide\n  tz1=(zmin-r0[:,2])/dz\n/tmp/work/_call_009.py:69: RuntimeWarning: divide by zero encountered in divide\n  tz2=(zmax-r0[:,2])/dz\n/tmp/work/_call_009.py:85: RuntimeWarning: invalid value encountered in subtract\n  track=np.maximum(0.,hi-lo)\nTraceback (most recent call last):\n  File \"/tmp/work/_call_009.py\", line 379, in <module>\n    r=photon_mc(100000, rng=np.random.default_rng(1))\n  File \"/tmp/work/_call_009.py\", line 366, in photon_mc\n    src=dict(E=np.concatenate(srcE),X=np.concatenate(srcX),Y=np.concatenate(srcY),Z=np.concatenate(srcZ),\n               ~~~~~~~~~~~~~~^^^^^^\nValueError: need at least one array to concatenate\n",
+ "exit_code": 1,
+ "timed_out": false,
+ "wall_s": 0.32,
+ "stdout_truncated": false,
+ "stderr_truncated": false
+}

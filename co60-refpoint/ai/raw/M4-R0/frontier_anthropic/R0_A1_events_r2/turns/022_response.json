@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791827427-5hS7J141dlgufXKxX1qx",
+ "object": "chat.completion",
+ "created": 1791827427,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "This is a lot of data to assemble. I need to pull the remaining events from lines.txt to compile the full JSON, since the earlier output only covered the first ~150 lines before truncating.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01MpSUffiaqNW5XiF7BmRPmz",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nL=open('lines.txt').read().split('\\\\n')\\nprint('\\\\n'.join(L[100:200]))\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "This is a lot of data to assemble. I need to pull the remaining events from lines.txt to compile the full JSON, since the earlier output only covered the first ~150 lines before truncating.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "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.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 147063,
+  "completion_tokens": 389,
+  "total_tokens": 147452,
+  "cost": 0.010149875,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 143890,
+   "cache_write_tokens": 3171,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.010149875,
+   "upstream_inference_prompt_cost": 0.009177375,
+   "upstream_inference_completions_cost": 0.0009725
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 309,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

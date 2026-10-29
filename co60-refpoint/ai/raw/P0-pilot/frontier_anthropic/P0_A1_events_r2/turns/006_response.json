@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791815843-BsDJsKS9V655K1WkKqep",
+ "object": "chat.completion",
+ "created": 1791815843,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Claude Platform on AWS",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I need to print out the file content so it's ready to copy into the JSON answer.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_013tBimfr94BTE5rjJmRypV1",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"print(open('answer.json').read())\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I need to print out the file content so it's ready to copy into the JSON answer.",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSvgYKEAgSGAI4AUIIdGhpbmtpbmcSDAQwGJ2yHILIlq036xoMA9KEX3Eej1+SCz4kIjBvoZim9AQX8EpXDFbYffuJmFKhpIrKQeS2dLrZ2zSsv/awDIAqyAYgPoos6oldmTIq2wXgjsdsdnduiTbj8/5BFACrSkgiwBpLMKZR0y1i0fe0S5C0sN0FtDU6qDlDCAM93jLyWSDwF2qET6oJq7011mY6US5cV2z8fOpl1xw7xPqaB1Y50YcA+/5nnuTBR+687PUdURhIkCaqOhxNZH3H9h81P12uN/i5kKxrXwd2v7Cw3EqD5yN7HmswGfpU4Ae/OSmY15W6ggIaI2qd52j+MvmebduU3qnG3XzGdPXezz7hyhvRqtkEdxjh0ib6wENA7t1JV3kAUnERB11x9gRlBiOALCS0gcjyqvzTwRY/MhvbRj6M90VwlZF900VIQm3afNjfCfxet4HU353AMEMmQ3oOq2WQQM9SwsCDngQnAnmHAZev6cawYxe9mtyE4z6RG/TceqgeHW7F9y5ekk4XqqmlRYzUPVo519/1Y0NS6JfF9fOqjJbzJ/pxYH/eeZ0TqTuIccn8YlZBpbKahPZiRJHTvqyVgmvEer7kz+A5OayyTRLPXbQpvIQ63JgVFMXsKM+bPsOkO/FcLKMjoCl4hRm46W47Yrknme6w49mx8cQo7KSqafPcLuxO1kyYOlOJ05qlDpwkc3qGFjkC+5L8nNmqS4+2wI8nWDuAsOiTYY24GngzNB8yP+XJdCMciK42vWL5q85GGhLJNngXskJ/eTSfl23jyepwtYuKIvyph4Fy/ChZA+Bs3hx9EWbZNGNQxHWJ9B4M9/e/aC+AYk6XiIunob80CZ7MWe8AP9aX4hujLtLgRyNkMNKVUy3B9pqfuHrtWsMy93BA6zrQL3OgFYsVOw7O7mRuvxnuNDskvCuGHejWxSj28THSTxmEYA2cI/M5X9gr5WOaNPsuHRJx5hMyWstp2brz2pCI0aiUVY70mLETXoYL6dlpu3JbxdHmxNOv/ExMxTkQAULz4bgQHZbtbgXG+oll6hCNJ6rCJh7qNWsZrOryAHmhN7WCQQdgBFTMaboOiK+MhLBQqhgB.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8Y2xhdWRlLW9uLWF3cyJ9"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 28117,
+  "completion_tokens": 86,
+  "total_tokens": 28203,
+  "cost": 0.0028547,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0028547,
+   "upstream_inference_prompt_cost": 0.0028117,
+   "upstream_inference_completions_cost": 4.3e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 30,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

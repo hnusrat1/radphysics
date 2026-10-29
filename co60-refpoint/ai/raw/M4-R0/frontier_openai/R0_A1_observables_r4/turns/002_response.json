@@ -1,0 +1,72 @@
+{
+ "id": "gen-1791822436-roOAitZngalElujLqUSt",
+ "object": "chat.completion",
+ "created": 1791822436,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "**Figuring out print issue**\n\nI\u2019m wondering why the standard output is empty \u2014 oh no, I forgot to include a print statement! I need to estimate the sum, which I think is around .137, but I really need to get the exact value. It\u2019s crucial to ensure I have the right output. Let\u2019s make sure I include that print statement and check the calculations properly this time. I don\u2019t want any more empty outputs!",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_jlYxki47mQjJEjK1lS77a7gY",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"a=[.00005,.00015,.00035,.0007,.0012,.002,.003,.004,.0055,.007,.0085,.0095,.010,.0105,.0105,.010,.009,.008,.0065,.005,.0038,.0028,.002,.0015,.0008,.0005,.0003,.0001];print(sum(a))\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.summary",
+      "summary": "**Figuring out print issue**\n\nI\u2019m wondering why the standard output is empty \u2014 oh no, I forgot to include a print statement! I need to estimate the sum, which I think is around .137, but I really need to get the exact value. It\u2019s crucial to ensure I have the right output. Let\u2019s make sure I include that print statement and check the calculations properly this time. I don\u2019t want any more empty outputs!",
+      "format": "openai-responses-v1",
+      "index": 0
+     },
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzQpolgUu84K2tj0DQuGxEDvXIvetyMYsPPttKOj0Lq2PyZR848Eg7PluCbpcg7DsoX2zihU_y0mD6XAvxh-H5C400856pTjkyIwnFzs96KiVukt7VN4QuwFTBJwClzST6w7PLqMPfILpdbupy9LaaQ0MEw7VGkssWiOKPsi0HQPPWuZMqiudNxom_5GlWAIE_rZwyoYmg2ljQeGyRL3bR16lVor_4lFiup_gj65GpkD3y_NDjIjiif-QzLaccIHtHbP3NmPreomq2X5kePz5ZgZip17KDbILl_6vyczytGndnaObWQ__NzUXbAWxO0OfrNzCAlQ3B7ec3ECUH4LsamHXMGGyDWFpMSD_nu-3EuCmezknE78CyFhYIAPPZhWc38dRux-GVjs6VUdmR14bNBdrKZa-HG-B4Gsz7FtE5v8RwQQ1H5syM5NWXu_nnLvgxXskO2FrOwwoPm8m7ISApPMyos5DJ5ih8ZpVyDRzNYoZIzjVHJb-5GhhCvS-jBzjs3-O3OoEzhUQLt3Wz1yOv1uR_AodC-5GNs5zAIwv0Hm2UcoZ0S1E2cS_IzgPKzVQJCvYBzTfQ4pSWW1lBQSuSmC0PT9pHWqPEZRsWWJvKMtP-bu6iklWv5LpKw6wwwdEHiSQiwVuYpTI6qGY4VCQ49zdlJEpja91yRhqCID6v9GrGdYkQ0l4sBhxGdHSYyjfO8F319eZEoVJr-3hq0TNATi7rH-aNtrihiEAczwweRlzzKPMD2ihbHBXZEvqlh-nm1Krl6yK0PwvdF5ZiEkYsA-9c_ybyIOqDFmZzGZSbRcGDV_ZOuU9TRmrMx7rZ36vFjPna963F3J4_baqBfyZwwcUFyUueoDr9dR0vBA9CmcPu0qONngiVOs7H2gjW-f_KKbsbSgIxucm45vyJiBA4YeNYdwRzPidkDlvhvnIxS8d1x0doj0fM1OrtvzmB_3mBq27gYlCrHf7zTQ9tN-Q2U02hK7fFxWVhCowgqrBzgbWRwSIW1SvHZ4V61LUO2okP112ZaP1ntz4rlNkHAxO1iem9S5ILuAX0mezavUloYuFROjJqXvdovhYltReviGwweHDC6AMMTVIgICJPvUv-TCoeXz4AC8HBEMGTIp-Zlnou4re4cqsJPy9xBgPUSwcqzOr_4Pex3FZgr9yJ0PykS4kxk2UixJjvSIMS8O6C507ETXBGgdAZZN0mD3zDOemljfyo9dn9kBZaDj59mi130-lEwoFXFqQfCUb5OdeWlUgvI2YIE81X6rcn0_d-HxLI6y-dIbpIsZw7vQWCk4jaRRF65sGo7i-RosKHPNegFQ19UhUtYEGl6Wd4UJCHVd5GFmk_GwxXki3-guinNJRFYSxFASg_n7KRxXnYAIRYM4uWHauXJvKPkGGbtXQcBPC7npISxlP1c2U7dtjJn9_ZSQ0JJdNrcyXnWnScTHEdEhwNV9lMO-EDz0s87GknqOJuqT83pfW0v5hS_d8GGlywJ3x6z5kb3vos_6QQBgGr798Uh7R5NUwGab2upTsagcKMZLLEXuulU_A2glKOr-x0u1OvL7SmHTcVV5tLmfzq-RDzOKoIy1R2aNYOFwgM7aPma7LSwOkjlZc0KtCVxwZeJwEuKveAjrVvHQFFlqR2s3ARa4vTn-_RKIP9D3UL9dXQ6Um7kf3BeXhXO2JHweOcWbJobcTS6dKUGDrGwD0oK71uZLDW-KOdg5O_NhwTVjxuQfVW0ShVgeB5XQO42UXvBp6VosIto2hAdmO5EQXWC_BpJCsK6R-fVjL17FgsGyp-oDSD0-Ek8jFUSgRGdn7y80OdQ==.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_0489e75b4db6a3f8016acd0a64ff9887d18216ad79383b02a8",
+      "index": 1
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 8147,
+  "completion_tokens": 119,
+  "total_tokens": 8266,
+  "cost": 0.000595375,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 4195,
+   "cache_write_tokens": 3949,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000595375,
+   "upstream_inference_prompt_cost": 0.000535875,
+   "upstream_inference_completions_cost": 5.95e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 20,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

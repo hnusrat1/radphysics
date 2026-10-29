@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791829316-h31G6q4dvfIOHxhXdC2p",
+ "object": "chat.completion",
+ "created": 1791829316,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "GMICloud",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Need to re-read electron file with numpy import.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_af514563b7714ea7818b3614",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nhdr_el = []\\nwith open('/tmp/data/estar_water.txt') as f:\\n    for line in f:\\n        if line.startswith('#'):\\n            hdr_el.append(line)\\n        else:\\n            break\\nprint(''.join(hdr_el))\\ndata_el = np.loadtxt('/tmp/data/estar_water.txt', comments='#')\\nprint(\\\"cols:\\\", data_el.shape)\\nprint(data_el[:8])\\nprint(data_el[-5:])\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Need to re-read electron file with numpy import.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 23739,
+  "completion_tokens": 159,
+  "total_tokens": 23898,
+  "cost": 0.000668395,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 20890,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000668395,
+   "upstream_inference_prompt_cost": 0.000639457,
+   "upstream_inference_completions_cost": 2.8938e-05
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 9,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

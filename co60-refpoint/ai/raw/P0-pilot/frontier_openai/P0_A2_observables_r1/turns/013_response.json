@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791814058-QLIHVvPyRKqXxRI7ziXV",
+ "object": "chat.completion",
+ "created": 1791814058,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_Yss0HSXfu6PWAI8mKU7rOCZ6",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import numpy as np\\nx=np.loadtxt('/tmp/data/xcom_water.txt');\\ndef interp(E,col): return np.exp(np.interp(np.log(E),np.log(x[:,0]),np.log(np.maximum(x[:,col],1e-300))))\\ndef transfrac(E):\\n m=.51099895;u=np.linspace(-1,1,30001); ep=E/(1+E/m*(1-u)); r=ep/E; w=r*r*(r+1/r-(1-u*u));return np.trapezoid(w*(1-ep/E),u)/np.trapezoid(w,u)\\n# all values point\\nfor EE in [.3,.5,.8,1.1,1.3,1.7,2]:\\n print(EE,transfrac(EE),[interp(EE,j) for j in range(1,7)])\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzOmwy7pHwv4vx0gqXAOYCYdyfc4xZ6xE0ONaPCoX_zIbekuNYBcz0xws07gI-td05JMwzNH5Hcb76R196nZsnq8ZlosUklMB8Bh1BoqXRnGpIx4ogvvzlbtJUP3PSXNriT-MdgkqgeYpcRbHGM6hcrr6ldqo5aPJ9AX3WUN_xtW3uno7LAHhzLyBIb9L8aa5gIwfOw3O7KTp_YUQNPYcNJu3JuFQ09tYGNVpgZo6ywRpUPFEhmTBcC_ixR0hgGXwNar3weoyOJ2nEkVaFO1N8aYMza0s-5BsWdo-70AI9znvqdWGFCgQGrYLkftTtqVAv2er2crNw7l1zwzfdXAXfTi8tPA2fSyN2QpywDWlgaaPCV0f6U17sle6uklbZ2A_4HEX4ubCAXns2X1SWM7vZ32f8tPfQr0D0WolDHU2iSH0xB-WQuwW6tRVc2gZEXJF1tObH9dyfhPG8TB9vMwzrb2kNC8ewmMwOaT_dmtNQ5WB9uRQilHcb1MYh_J3nOsM7ekCncklDqrKs8mbW_G1a2n8JApyLAeOenq0X0h66hmZJ6JZJM42T5gO5jI0jHqrSf16irw4FWyGylUKp3OA7osks0_VUPdkVBEszxoLooIsGrdhVjWmIV6tTIctYfCnAd8sqU_zmRhKQ6L-Gwnfs2mrk-VJDVA7GROsh-j5i7eaHqEeQ0q8DYjVDmVH7dNJwsNvsnSYsf5n8UGhRQVp2gR1ChduW9PbAND4CpcCCkepXKcFnDNpXjaeO5LB-91l6h1D4GbaAamTzIOlIN60lAMgfRMTWCiFEYDph7NyLqaCxwIrnHCwpqXQf7d9oSYJgYbGV037d-aCSL2Hyp8id5O66zif6TR1ViXM9oXdE2rl0nrEJu8lZLbgFGybFXHxFwLzBJYEL9sA3C5ksVRMCRmXR3yMlaG7pl22nQMIyeerI9qwAeDHmRHjwgGIv1cDhdOqWqD3YuuxpOxahKI1AvI3aMkg8qeBjTSpks5RNmU9RXW3AQPgbEfJRU99vXrcB06lknx3V3x0JdkFqQWAvakycB8Yga4KMgios0H46GvSrR6DFKYaBkkSpfzDlMlNnLQyvRvKUK5w_Fzl_3Nm5VfIs6b_dKwYs_gEntXWpDys0lWryXzVc8wMkejQxn6mTbVQ1XA8DQLTNTyzwdfgniUwy8vJarK8iJOi2zcfcGfPfpEvXDoVBTuTKwdZjdZmshebFN4icLT4wEzQaNiP59b7SDQu6Lq6PjoJBVWwgtrlQZ7J9biJskQXYEQ_WhqA1rXD3J2t3UxTmetqh5k36K-6ocGLvNolIdFGd7FscGKU3f82055WWZsni6K9mIy_M79NMSynEVy84UG9ECTs0zssGpKOyELWvcfMSp6EWztWG_i8uUyJ6-Thc5QQfTXareTjJGwLrhq5AxI6ZbC6YLqjcPXwNToW0IJty5aB_JgsZ4MECAbxtkev1yXyXmf_1t7agw8fVijLhVz9D1N7OwVaZiqTQ38pf05csNsE3rQ3b8h9IuZKmXUPkJF2pdARvch46TnWdtWS6Crz_FNapaECGEgBMICoecBye0tmRIwJxYxp47kzFRNF-flcCzliMdrVJrsw1LxQ-ET540cg3AS_DV4oEmDPaptSnpZJRAfxG_6dMf6S5tvNHbdRGqLPLh093i4ftOO9IpVUyRoasHN-gG7DwyoZR7kJBcPF9k93Fn-dt0kxN_H8YZy8THe_0V1dEq19rFEqBd3UjYojFhhp-Gzqa89xyryLaISkZdeNUfxsC6hOpBCkEiB8mDxcC8J-d-bRdYMcvE9-tnZXMVRfkEQ-XzkHYWAvWDb8FrwXiQCYSydRnvWdqFy67QDfGA2cRqb5s-tN3tpmRop1MKiMdKUjBo6NbO4hLVgtiJMJKZ__GBqnN_yHdZM6gHL4cS40CGTFGbJRlysTZ3zirmhmwGtyuulSzG7g7a9j9ivzgjWUsAuNCjLkY1u6C-lQY6pIYdyeVY59Oo6YvrRl-y1K4zf22CaBSp9K2aDZrn280A1NMjxaGvoqtbmEVgnHRlUc9-EjODH3j7UewmOQU5RvlJzMVMLw9D1oLvFq3gAny4RO3Y16rDWOnVs52r608IahKlma5Fp0mHtMU_n4-jCiErSoL38VKSy2umxuss3D_5QJNgp9oy9blQrI9i7OYn9uCh-JaGVcj0pp5WhGTXfQihFF6cRs570Fs5rVabUqJ1AwmtzHVXEEMKbpGzljppett97eGXKyT-4U2IYVdRGpq-0wsbR7H8zuRiyIsYkAUCNJK6N9X-uYL0lN5M6_nA6pClbySFX03L7Ey5cofyHQQTGA-dG-pEE4AmG6J6BDLPzQNKhLsTXo06hg1oORDW55G5267IJ2p8SZK--gnsxcKepTnvDRvK1RuYOCiM5xMVY3Nh1bXeJrh03S5K2uhhDT59GVmpmfbZ9FuhGGb__kBJIVZlNM0elWqRLWH_VpLQzHEziAFCFjrl1Uq_Mm76EOSAijIs5bvPDv8as0NpL0EpbjIspj2S0nBTifsvzm0PerpQzKOlDc1nyB-9q9DcVHZE-G2-bhQfBqu_99N1eJ_yrmBi7zdfTJ7xGPrpqi9GgQDKKpxykMXonk8fwJ3fCByF6FG6EVvqSXeV4dONrbmgJ7yw6-q0YQHX6u-fkQx3hJaNaUxbrA5ZnvFB_GIVjiAqEtqu3E4LGWBVpUu3XG_L3P_YkDmVCpyozHo_TqMReDY0RYtFvZq2Ya9QODDiNGfMHjBuQra53UzwaAp9PalgcIAAbIUqoS_unkNqQUToxUjCS0MwfGS8I1wV3IuOyzPxh7IzCtDFoEo7rA74FCcDj1WSuqCtxWqmJc2oPtH4QCRcFdBw6cApa-i6HdZnPFGWYe_0eVLGyoE_lEEo-uBqCkpNcFJ9DidY1mQ_QFLLOgKsQKwegKLIF4u7FrG1p8aqhSASEMrxbB_Ie8YJgD99JaM6oxmqG6YanWDipppw_SdKNi4wdNBo0QR61t0V-_CIv4VuF1pMycHUJFh1687hQMQs_wbN5uaF8bsrbISwT9seZSQXOQsy2s6HCYhKoRD1UwKQ-3zhMVFJpMN1ml-pCGCDK2yygbm-_oRhc_Fl62eIMm6p8EXylG4wAdR5jYvKBMzEGU2Mj3GQ5fIbQ8bQx3EjV_4GbOWXyp91tyb-EQbk3ThdgeNyOFnD7HvrB4WnC2xvXCpp85mlPqNx8NJyzHtErF9d6i7ZJ4P5fdu08GD0d2P2W_JFNHuVS_nEkvsn8QshkVmGb8jBV4AsYoqeCS5h9xblF1inHj5gkmzXOC2D3ciBR4Qwbv2KC_RgxUeQvtw0zH4hmSGKSGnRmdUuQxreMs4we_47RHrPU7Pmgrwp6lPKFZZIi71nBCsqgP3yrwvXTDWe1uf07YRvrCvyVEvmyIUtn2fVfWVkDN_z2eR2-UX6QfOU5jVku1xac5RcJulWfwul8bf9i7NZGX5TFwz4f_8u6VQmOLHsn7K3Geo0TAJG9x7Wws1oMM6I5gw3cZYdGmxMWjHX02gClYIZ3DySeI-uUrWtytuzvpe4mT1r56JY_FOkLBKaoeAY4Zz-SAFEw5SqOR_e_4NqiPeZXs5LmCwjX0YL5F6juM_mfyW-yXCl_pw-P42aibR9yTSqXUqCzh_MR8ITDmDSO357z2-lxparAoehfwGWHJQ4aMurRM57rux0WpRzSwhwr4rmEz-9QnW4aR23JZ5zZydvY-GvjyQk9SRQzu-2nBBGA06iDJgORjwHn5_EeKGmb8Ty5MZ0g4nBRbNdljN7LILoLTRJMQsaCo2BdnzueXl2Q8XvTGSZNQW-iZ-W3EZCSCrFNkBfTQpy_cJ7-7uqTYQpNQhcsPNoqe4_HOVFypfsknkfaHP8WYTLwS5nZvtpHaKi-bSeuayJ-5PdUi8sfysbr5SS9PVNxA1jMUYF5JJc1oA4fngApUxitB3krf-gd-ebab1_oHKtLi8wxSUC84ogjclel3cs1ke_3PQU_ItxH-lUXFQX8T0uwQI4sQ2OoL_5bHkHkW9BBsjcLm8o2IrWH9CFs6xXqWf1b7J7vzv62l_eA_sT-7xsb-wYVGq344pzgY4ACYMc7pEP9Mb4Vq70ndMxcEt905v40Qo1ecGkaEoB57yXg_s0OWm-1Ifn8o6cOzgDminLMbLpHPymSxNl7X2a-NrHXiliaH_UyYBpR6WUk0Y2f7HW5-YoqzmUx_7AM5XaVSln4pIKZo0cB5lzlXXgoYvUA53tPA7jEsmW1kh3dENCwGzI5RfOmGflbEo58AGO_ftU4k6v7PXIxB8_vghGKRGFtxcrZ-XnSyCfxDRVnLDVOvdy6OF2gPPv5NQOKYyqwj-itLF3D1LfQywJhMRf7n26jp88M8K0J0B4GPmgx-Q2uGsxqu9krxz8WzBYNF4eD4vl7X1-XAdOHeDqi-w_33TeDSrIpcT5LxF6ubfYjlIKBZ9g6KwHvVRyod0rCiAQSJNeOn51Be0vsThg==.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_01093ad1e47df242016acce9ad5c6c87d1a85287ec0ec9c719",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 17898,
+  "completion_tokens": 446,
+  "total_tokens": 18344,
+  "cost": 0.000485855,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 17168,
+   "cache_write_tokens": 727,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.000485855,
+   "upstream_inference_prompt_cost": 0.000262855,
+   "upstream_inference_completions_cost": 0.000223
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 242,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

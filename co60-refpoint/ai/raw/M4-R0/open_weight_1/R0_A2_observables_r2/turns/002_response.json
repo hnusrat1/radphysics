@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791828159-VSyoGLjnXxccgWlPBKlu",
+ "object": "chat.completion",
+ "created": 1791828159,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "GMICloud",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "Data loaded. \u03bc_tot at 1.1732 = 0.06536 cm\u00b2/g, at 1.3325=0.06123 cm\u00b2/g. So primary fluence at 5 cm = exp(-0.06536\u00d75)=0.7215, exp(-0.06123\u00d75)=0.7363, average 0.7289.\n\nNow let me build the KN functions and single-scatter integration.\n\nFor the single-scatter integration, I need:\n- \u03bc in cm\u207b\u00b9 = \u03bc/\u03c1 \u00d7 1 g/cm\u00b3.\n- KN differential cross section and total.\n- Scattering geometry.\n\nLet me write the integration for multiple depths zP, but start with zP=5.\n\nAlso for scattered fluence at P, the contribution from points x where the scattered photon direction is toward P: r_sp, cos\u03b8_sc, E'.\n\nLet me implement with arrays. Use z grid: 0.05 to 29.5, maybe 100 points; \u03c1: 0..\u03c1max 50; \u03c6: 40. That's 200k points per line; might be slow but OK with vectorized numpy (memory 200k \u00d7 few arrays ~ fine). Actually do per-line; 200k \u00d7 2 = 400k; each has several operations. OK.\n\nBut for accumulating spectra in 28 photon-energy bins and 10 cos\u03b8 bins, we can use np.histogram with weights. Fine.\n\nAlso accumulate for L2/L3 later, the joint (E', \u03bc\u03b3) distribution of scattered photons at P. Let me store a 2D histogram (photon energy edges \u00d7 cos\u03b8 edges) for scattered fluence, plus primary separately.\n\nLet me define photon energy fine grid for later processes: maybe use the 28 bins plus finer for accurate integrals. For L2/L3 we need \u222b\u03a6(E) \u03bc(E) dE etc. Primary lines are delta; we handle them analytically. Scattered continuum: accumulate on a fine grid (e.g., 0.01-1.4 with 500 bins) to allow accurate integrals, then bin into the 28 bins for reporting. Let me accumulate scattered fluence on fine energy grid with cos\u03b8 bins.\n\nLet me code the single-scatter for zP=5 first, then for other depths.\n\nAlso I realize: the scattered photon fluence arriving at P from a scatter at x\u2014the attenuation of the scattered photon along path x\u2192P uses \u03bc_tot(E'). But the scattered photon could scatter again before reaching P (that's multiple scatter, handled separately). Single-scatter ignores that.\n\nAlso, the primary fluence at scatter point x should be attenuated by the path in water from surface to x. Also, we should exclude interactions that occur... no, all good.\n\nLet me also consider: would scattered photons from points BEHIND P (z>5) travel backward to P (cos\u03b8<0)? Yes, and we include them. Also points beyond the phantom side (z>30) don't exist; P at 5 so r_sp<25 anyway.\n\nLet me write the code.\n\nFor Rayleigh: implement w_R(\u03b8) shape with form factor. Let me first see XCOM coherent at 1.17: 4.2e-5 cm\u00b2/g \u2014 that's tiny (0.06% of total). At 1.33: probably ~3e-5. So Rayleigh fluence contribution is negligible (<0.1%). I can include it with a simple forward model but it hardly matters. I'll include it for completeness with a rough form factor.\n\nActually wait, \u03bc_coh from XCOM at 1.17 MeV is 4.2e-5 cm\u00b2/g vs incoherent 0.0653. So Rayleigh is 0.064% of total cross section. Definitely negligible for fluence but present in interaction fractions (L2). We'll include it in interaction fractions as ~0.06% of interactions.\n\nNow, the mean energy transfer for Compton: need <E'>.\n\nLet me write helper functions and the integration. I'll run it for zP=5.\n\nAlso we need, for PDD, Kcol(z) at dmax. Let me first get main results then handle PDD.\n\nLet me code step by step.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_eb40f6095e8d411b95ca8f05",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\n\\n# ------------------------------------------------ data\\ndef load_xcom():\\n    with open('/tmp/data/xcom_water.txt') as f:\\n        lines = [l for l in f if not l.startswith('#') and l.strip()]\\n    x = np.loadtxt(lines)\\n    return x[:,0], x[:,1], x[:,2], x[:,3], x[:,4], x[:,5], x[:,6]\\nE_x, mu_coh, mu_incoh, mu_pe, mu_pairn, mu_paire, mu_tot = load_xcom()\\n\\ndef mu_interp(E, col):\\n    # log-log interpolation\\n    return np.exp(np.interp(np.log(E), np.log(E_x), np.log(col)))\\n\\ndef mu_total(E): return mu_interp(E, mu_tot)\\ndef mu_incoh_E(E): return mu_interp(E, mu_incoh)\\ndef mu_coh_E(E): return mu_interp(E, mu_coh)\\ndef mu_pe_E(E): return mu_interp(E, mu_pe)\\ndef mu_pair_E(E): return mu_interp(E, mu_pairn+mu_paire)\\n\\ndef load_estar():\\n    with open('/tmp/data/estar_water.txt') as f:\\n        lines = [l for l in f if not l.startswith('#') and l.strip()]\\n    est = np.loadtxt(lines)\\n    return est[:,0], est[:,1], est[:,2], est[:,3], est[:,4], est[:,5], est[:,6]\\nEe, Scol, Srad, Stot, csda, yld, den = load_estar()\\ndef interp_estar(E, col):\\n    return np.exp(np.interp(np.log(E), np.log(Ee), np.log(col)))\\ndef scol_w(E): return interp_estar(E, Scol)\\ndef srad_w(E): return interp_estar(E, Srad)\\n\\nrho = 1.0  # g/cm3\\nmc2 = 0.51099895  # MeV\\nre2 = 7.9408e-26  # cm^2\\n\\n# ------------------------------------------------ KN\\ndef kn_dsig(E0, cosT):\\n    # dsigma/dOmega (per electron) for photon scattering angle theta, cosT = cos theta\\n    a = E0/mc2\\n    Ep = E0/(1.0 + a*(1.0 - cosT))\\n    r = Ep/E0\\n    return 0.5*re2 * r**2 * (r + 1.0/r - (1.0-cosT**2))\\n\\ndef kn_total(E0):\\n    # numeric integrate over theta\\n    th = np.linspace(1e-6, np.pi, 20000)\\n    c = np.cos(th)\\n    return np.trapz(kn_dsig(E0, c)*2*np.pi*np.sin(th), th)\\n\\ndef compton_Eprime(E0, cosT):\\n    a = E0/mc2\\n    return E0/(1.0 + a*(1.0 - cosT))\\n\\ndef compton_T_e(E0, cosT):\\n    return E0 - compton_Eprime(E0, cosT)\\n\\ndef compton_phi_e(E0, cosT):\\n    # recoil electron angle from incoming photon direction\\n    a = E0/mc2\\n    th = np.arccos(np.clip(cosT,-1,1))\\n    # cot(phi) = (1+a) tan(theta/2)\\n    cotp = (1.0+a)*np.tan(th/2.0)\\n    return np.arctan2(1.0, cotp)  # phi in [0, pi/2]\\n\\n# check KN total for E0=1.1732: compute vs XCOM total incoherent per electron\\nfor E0 in [1.1732, 1.3325]:\\n    print(E0, \\\"KN total per electron cm2:\\\", kn_total(E0))\\n    # xcom incoherent total per molecule /10 electrons:\\n    print(\\\"  xcom incoh per electron:\\\", mu_incoh_E(E0)/ (3.343e23*1e-24*1))  # mu cm2/g / (electrons/g) -> cm2/e ... rough check\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "Data loaded. \u03bc_tot at 1.1732 = 0.06536 cm\u00b2/g, at 1.3325=0.06123 cm\u00b2/g. So primary fluence at 5 cm = exp(-0.06536\u00d75)=0.7215, exp(-0.06123\u00d75)=0.7363, average 0.7289.\n\nNow let me build the KN functions and single-scatter integration.\n\nFor the single-scatter integration, I need:\n- \u03bc in cm\u207b\u00b9 = \u03bc/\u03c1 \u00d7 1 g/cm\u00b3.\n- KN differential cross section and total.\n- Scattering geometry.\n\nLet me write the integration for multiple depths zP, but start with zP=5.\n\nAlso for scattered fluence at P, the contribution from points x where the scattered photon direction is toward P: r_sp, cos\u03b8_sc, E'.\n\nLet me implement with arrays. Use z grid: 0.05 to 29.5, maybe 100 points; \u03c1: 0..\u03c1max 50; \u03c6: 40. That's 200k points per line; might be slow but OK with vectorized numpy (memory 200k \u00d7 few arrays ~ fine). Actually do per-line; 200k \u00d7 2 = 400k; each has several operations. OK.\n\nBut for accumulating spectra in 28 photon-energy bins and 10 cos\u03b8 bins, we can use np.histogram with weights. Fine.\n\nAlso accumulate for L2/L3 later, the joint (E', \u03bc\u03b3) distribution of scattered photons at P. Let me store a 2D histogram (photon energy edges \u00d7 cos\u03b8 edges) for scattered fluence, plus primary separately.\n\nLet me define photon energy fine grid for later processes: maybe use the 28 bins plus finer for accurate integrals. For L2/L3 we need \u222b\u03a6(E) \u03bc(E) dE etc. Primary lines are delta; we handle them analytically. Scattered continuum: accumulate on a fine grid (e.g., 0.01-1.4 with 500 bins) to allow accurate integrals, then bin into the 28 bins for reporting. Let me accumulate scattered fluence on fine energy grid with cos\u03b8 bins.\n\nLet me code the single-scatter for zP=5 first, then for other depths.\n\nAlso I realize: the scattered photon fluence arriving at P from a scatter at x\u2014the attenuation of the scattered photon along path x\u2192P uses \u03bc_tot(E'). But the scattered photon could scatter again before reaching P (that's multiple scatter, handled separately). Single-scatter ignores that.\n\nAlso, the primary fluence at scatter point x should be attenuated by the path in water from surface to x. Also, we should exclude interactions that occur... no, all good.\n\nLet me also consider: would scattered photons from points BEHIND P (z>5) travel backward to P (cos\u03b8<0)? Yes, and we include them. Also points beyond the phantom side (z>30) don't exist; P at 5 so r_sp<25 anyway.\n\nLet me write the code.\n\nFor Rayleigh: implement w_R(\u03b8) shape with form factor. Let me first see XCOM coherent at 1.17: 4.2e-5 cm\u00b2/g \u2014 that's tiny (0.06% of total). At 1.33: probably ~3e-5. So Rayleigh fluence contribution is negligible (<0.1%). I can include it with a simple forward model but it hardly matters. I'll include it for completeness with a rough form factor.\n\nActually wait, \u03bc_coh from XCOM at 1.17 MeV is 4.2e-5 cm\u00b2/g vs incoherent 0.0653. So Rayleigh is 0.064% of total cross section. Definitely negligible for fluence but present in interaction fractions (L2). We'll include it in interaction fractions as ~0.06% of interactions.\n\nNow, the mean energy transfer for Compton: need <E'>.\n\nLet me write helper functions and the integration. I'll run it for zP=5.\n\nAlso we need, for PDD, Kcol(z) at dmax. Let me first get main results then handle PDD.\n\nLet me code step by step.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 38545,
+  "completion_tokens": 1846,
+  "total_tokens": 40391,
+  "cost": 0.0014022918,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 33534,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.0014022918,
+   "upstream_inference_prompt_cost": 0.0010663198,
+   "upstream_inference_completions_cost": 0.000335972
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 890,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

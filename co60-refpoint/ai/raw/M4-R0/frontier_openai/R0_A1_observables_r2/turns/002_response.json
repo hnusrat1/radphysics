@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791822080-FPxfhe4sizDtFIMatP42",
+ "object": "chat.completion",
+ "created": 1791822080,
+ "model": "openai/gpt-6-luna",
+ "provider": "OpenAI",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "completed",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": null,
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_5aTyKfGpNLtqLPFBYjwTVtJl",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\":\"import numpy as np\\nph_edges=np.array([0,.05,.1,.15,.2,.25,.3,.35,.4,.45,.5,.55,.6,.65,.7,.75,.8,.85,.9,.95,1,1.05,1.1,1.15,1.2,1.25,1.3,1.35,1.4])\\nw=np.array([.005,.01,.02,.035,.05,.06,.06,.055,.05,.045,.04,.04,.04,.04,.04,.04,.04,.04,.04,.04,.04,.04,.04,.04,.035,.03,.025,.015]); w=w/w.sum()\\nscat=.1*w\\nprim=np.zeros(28); prim[23]=.364;prim[26]=.364\\n# bins e spectrum\\nEe=np.array([.01,.05,.1,.15,.2,.25,.3,.35,.4,.45,.5,.55,.6,.65,.7,.75,.8,.85,.9,.95,1,1.05,1.1,1.15,1.2,1.4])\\ncb=np.linspace(-1,1,20001); dc=cb[1]-cb[0]\\ndef kndist(E):\\n    alpha=E/.51099895\\n    ep=1/(1+alpha*(1-cb)); r=ep\\n    d=r*r*(r+1/r-(1-cb*cb))\\n    T=E*(1-r)\\n    p=np.sqrt(np.maximum(E*E+(E*r)**2-2*E*E*r*cb,0))\\n    c_el=np.divide(E-E*r*cb,p,out=np.ones_like(p),where=p>1e-12)\\n    hist,_=np.histogram(T,bins=Ee,weights=d)\\n    # ignore under 10kev, normalized later\\n    hdir,_=np.histogram(c_el,bins=np.linspace(-1,1,11),weights=d*(T>=.01))\\n    return hist,hdir,d.sum()\\n# primary electron spectra\\nhp=np.zeros(25); hd=np.zeros(10); totp=0\\nfor E, weight in [(1.1732,.5),(1.3325,.5)]:\\n    h,_,tot=kndist(E); hp += weight*h; totp += weight*h.sum()\\n    # direction\\n    # redo\\n    alpha=E/.51099895; r=1/(1+alpha*(1-cb)); d=r*r*(r+1/r-(1-cb*cb)); T=E*(1-r)\\n    p=np.sqrt(np.maximum(E*E+(E*r)**2-2*E*E*r*cb,0)); ce=(E-E*r*cb)/np.maximum(p,1e-15)\\n    hd+=weight*np.histogram(ce,bins=np.linspace(-1,1,11),weights=d*(T>=.01))[0]\\nhp/=hp.sum(); hd/=hd.sum()\\n# scattered electron energies approximated scatter spectrum centers; weight with incoherent interaction proxy mass attenuation rising at low E, use broad approx factor\\nhs=np.zeros(25); hds=np.zeros(10); ts=0\\nfor E, weight in zip((ph_edges[:-1]+ph_edges[1:])/2,scat):\\n    if E<.01: continue\\n    h,_,tot=kndist(E)\\n    # interaction rate weighting extra low energy approx relative to primary ~ 1+(1-E)/1.2 capped\\n    fac=weight*(.063 + .015/(E+.08))\\n    hs+=fac*h; ts+=fac*h.sum()\\n    # direction\\n    alpha=E/.51099895; r=1/(1+alpha*(1-cb)); d=r*r*(r+1/r-(1-cb*cb)); T=E*(1-r)\\n    p=np.sqrt(np.maximum(E*E+(E*r)**2-2*E*E*r*cb,0)); ce=(E-E*r*cb)/np.maximum(p,1e-15)\\n    hds+=fac*np.histogram(ce,bins=np.linspace(-1,1,11),weights=d*(T>=.01))[0]\\nhs/=hs.sum(); hds/=hds.sum()\\nprint('primary spec',hp.tolist(), 'mean',sum(hp*(Ee[:-1]+Ee[1:])/2), 'ang',hd)\\n# totals parent weights primary events ~ .728*.063 =.0459, scattered event estimate via sum scatter*mu\\nws=np.sum(scat*(.063+.015/(((ph_edges[:-1]+ph_edges[1:])/2)+.08)))\\nwp=.728*.063\\nf=ws/(wp+ws)\\nht=(1-f)*hp+f*hs\\nhdt=(1-f)*hd+f*hds\\nprint('fscat',f,'total spec',ht.tolist(),'mean',sum(ht*(Ee[:-1]+Ee[1:])/2),'dir',hdt.tolist())\\nprint('scatter',scat.tolist(), 'sum',scat.sum(), 'mean',sum(scat*(ph_edges[:-1]+ph_edges[1:])/2)/.1)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.encrypted",
+      "data": "gAAAAABqzQkEcLnUfr1D-tomcuyu9dwioylMc-HR9l1pZerAmQfCYDtwrHmWI86pMhroFxoTKrMvR2l3hzRcZ6I7_FKmiFG9qpRg2goVctoZCK51X_4_odxMAK6hCxYraueAT1tD8ac_o0lDIAk3iSTcI5JHAAvcg2qaMWjdOa0e5YZS3jXPuJPn0BGjUfa4KqUe0h73NIiyx6AEgzgQUEN_yaHMmh8vDawX8kVWLVbcrvZyj4lnk37s4rsaOmnDq4w4M3VW9Ngmzf_NmjTlGJQz2Y9NoW0R0HSFVIdcLjze39X7AgcmhgjNgFuDrxvTnR91QwciCbb6D6QZ2wN3gZhYc9VcYgzgY-eIzxJa0agqDv87MWpMsDEYEC5ySwY-OTXbcxLh5TBE6MYDtsBbradgldWb9EokKsM_DyujheVJm3XExX82HumYQUpnpmaDFfdntFPsTbLiAUQpMFVh0P5B5JUYhT6NngudIanetNw16lGiOoG2dDq5BkEpaQ7ndOgGh6eARt0Z-e5POSNmDtctoH0V-G4Nlm4zD3hakwnjFGHNjAXyKx69XUY6ecrLrMpXyWfc96KWb_AZSy0haQtE0FbG7Rn_KKk68Xg4Oe8wKAqxXuIm9GY7QJNDP5dnxBW2Bq4mLpTyIJ_lCJ_V_PIfmRBqEeATr5NQkEUIaYz9tucZxJU7WF6PCglWUKoFnR-rMZpEb2RTi7SkO93vtlPPWRMYDm0TuNXa7YRbZfUQnN2AoI2s0uwGAsIlnCJQCyY9VRcsHUpE1dGCP7stsxJZQ3oP2Mzl41_HtlQQ9a9rKvzbSZA40iC6kbUtqvOmFnIG3XTeClfumyv8Ez9GQ9DzM0R-vE-zn4eS4Aeex6wqS5JKJsDuSPrWr7-qXKtwkstZVjPL6Qi9_T4LmUhXaso_qeNWF4Ax2Z4_VcdlDtBuoY-AuBYXeCdA2kdr1YrFvIibsmgbmSzn_WlY5X_GSEeULZRprVZdzgovJ22HzdUFbAuN44zBTkODn9NlRhbEg4y7zR62q3ZuLUSZcoTpW-ruROqF2b3AqmlqBxhkc_1ICXVKkOZGtSXYHmnpzCXtRwGoeJuySeqmSrs6-ZsHubrB8lnAtrJ-0_AVhe_GP5ReHyL1Hwt07pTjPQt1epWq06F_56T5BYLUZgB_r1cL9basUiHwkmH92mbyiNnNhPeTKGGrcWigyeuNPYYKXSN_R4B6lUHVtLRMU2NNWh6LOfCjCWvBp0Z9-yD9onZmGeJIi7mwJzbGvcEKDjUCkf1v0QAAIYqe2V5eVedDN3F7WbC2KhRAqGwJcfpXH-jccnXP4OG3r0EhBmbIEzZg3UmtjbsJx_hJz4-rVTapDB3f4Mdy0L7VPHIaAE6W5OOOaJDa5jGV50dv_i0yvwF5xVd9hkQgcftXEE8Dle9diFSd1qM-Mp057U3cC6E_0tQlCPUniszKJjGE4hO7EmRApzToFBINLS2k2_IbWI-aUPfzoJSGmXzjTHv2aRhVn9Ht0DkcIPBu-bXqKsgdth3_M7DqFIHp3S_E5HYXTXYfS1SUoW5Z30M4kycCrzXANQtmjC1hdsbVjhhk7aBFaa5TGXOgo_biLIHGqs1fp8p9oS5OtgwRuumAi1gA47yxGwsMAUMvIG4XhNzCrXA6fuvnWok6UxTJJ5bNMFAZT4m81mhx6sn8CWWFiW1T2cantyKDisB4oTgu8X9sC4tK9dWZHsK-qaNYWMk-jGvY4xcqwKHeUGJ6_omD4QidU8bayvl2EbIX8HwwLYXJC03i3K32N-csguDWS-b2FJbmj-HSffFCXzFC4hE7zx0SJYHty7aRKj7V3qnHAfLjBry_whEn3mKFlO2ZbxeB5p52fle3XurErNqaJPyt_0vVtnVRgzsjo3iT3eNYAcY5YeY5c1uiJSO-0s72I6y103gO25Gz_S1kA-H5HyFv3Ukcx1GxhzYJUIYw2OFNE_xnMm47RipcMnhtM2GbpipSDDri6eRbbnGgPJXIEIrov8g_Ska0K3yRWSeJGfcfqlgFcHIAGQRgLD8JBhgnpfyd2E_akxTC4kEJxCvvheoO_8eyyzTXZlC3iUWj8aRj6PyFQgrMaJ1Yp9F71BqLCQ6mDLZlurMHtxTi-w_SLZuuY_OqTExsSv8W2-cR5W9-JIdfh3tVxW8mh3EzK85udRjfyxw-eNVrGqN_TVrwxZsp1mpcWekWQC8PZCSxVL8cN-MXc8FhNCdBaPqY3a_Fh3lg-rOF0nwJT_VKpbqI-as4rgrCN-RvP21vGU5jR6paH-STHmNrMMjjLac_0dhrUb_PFR3LOsroSX0I7gGYczgO8CcBuhcOCRfgqCGZgCKSRE12kjrvFk4-2Al-po14rZJecLhBwiw2bh32roIPNaKQxTQf3TVOQnbs000GENrCSDuiR9RudIOnxsoL6rUjLAh1yOZgxZP9DfloqYcfGOb1hRhPPc8QMMVg1Cn3CHSsdm2iYJldQ4SNZ10Tt3P_3nW3X4cajLX4F0N-kYWH68uJHiFUX-rGNu04UwxXFM4bFkb_YGPiOjpLpd_F98kc-QFeplvz6bdhd9notuk3njm67cg8NRUO-bYE1U0a3ozPl6ZtyuReH6nwLGaGkcTznJJ6alXkLaXsnM9pRWquBZ-n_UlxFtFeIl8KQ0eMH5Yt6qp9OAA2ZrCtpyJSQe6u94886ZshjPNumLfchnpYgSR36wLODHVqpc4X8Y54af_byEsiWK6RLRUFwsAhae00qzIWOFnNO7ErF6uMG9z-RZTJbIZJ2ZBICgSVsLppVZPsuL9_RdmecqgOdAMaMvYxrnunBNGPNEUnLwxjWkZ3CGZX6EoBkpRPPOfO-TOT5DcNjNF0bbIiSjRu2l3nWD-y0lVbhOrppHv5ueSDbgGdBVpXA_eXUP7vFDIU4Jqs5S1m1Pj4d7q7we6vSrlnCROlnm6XzNUunkq3tSecRrneVDPqBEPibk6GVthcTU4lmc5bEh4jKL7Gq7Dk_X7pcRAWXzVUPziqiRj1eoUCTRVHR7bQCDAQ7ZJDFOgUtHP2q8Lyrfx_CSNMIRL41WAjY8KmB1KKODjMuRMOxcbSWdDcOl2xMc0Yg3slvJLCBaL9FmM7rUttQXk9lzrthSOBL5VmSFfqDQm1PNFamBhU94AlXrw9fif0QK3F0Hjy5EEYjkY4MWYaGP4PepbpBMFHX--AQHglI8OTD9QGebJN1XPPXPK8rFxnOm99ARturvuTmYQI5GeBKD6Dn1LRS4d2EBaj8Vo7gME92UBA4uFDQ5F85HU2UVpHKQVAZE63DCyrdjpAOURVFj8G4t04zw22L5-XsVtVQZrRIJTFzp0d2U2jYa63xlH8StAdwKoFIguqqfdjLJcak6OZ5ZSLa21SBr8Rf4Rp8O-1DrahGwWoIZyq5wviIOQZ8mEH4Fz_8nlMrAv9Xwn8o4g6C7BQ_H6M-FpsPPxV2zUVRtIDHlocn8la_Nx6rS9uJCXBdS0-FsgsyHqGzI_5m-gv4qQjlYSCqH68W9JNxYcdmja5LYV9YmOKbmKXmcuLXd0iP4wxGbc--WEaLxcjoeFWQVhALGC7mwT0YSsi0OqvEsmVF4M_SIExJ2WnTrgZkv4a9Jcb68IZHo10sC5Hn0gmLMNQ98TRGQcmeRrN0UQhEb0CbbKPBPWde5TQEJlakChbVKiIHgvBKybSAl5OS0FoPPDBWEZvHqxV9gd20F5Jcsj0tw4zHvNcVPA6gkybl57AaavtQJK6LBxOFmcW6wAZiEdu0p7iwraGgchK3-Qr1z6vstmuSOKbz2wS_1b_-gQUqD6toEhd5NijmrB1t_VPa76TvY2DW-kNtXjHNdcZIaZppBxUI2wszB7vYgHqJmOM4cqkx0fJrVt7xLn1-cPUAk1trv4uFOoHx5B-ckmuorE7z9ghCJtzX9U0CKayxt7cJdeoKbT5HMz0UuNB5xzp2b0MWcRpXtIo9p4n3_Qs64TBod4Bw5vXJqjj-ltrCfry-KTuUHW0GO29m39aBZzd06XF_HQx_eurs81wlhh0KzmINdbvjUJxkmsmeiqi_Q-aqPdlC6n7dhc49SAxyTLrUGQYdGSgXmoMy7PHCYzLoy23UoH4JLVsWgBlerLsAjD_rMvKBfZD0batB5H0FP2sn58uiouJKfv2zX2ygdFRSYMC307ABzGC57GEuWJct_tJDdR8P0ekVv-7ViguVAhrIqEQKoVdT8KyZJsVoBbWlQL8Yo7IwEKfWS2vX8N9yNDQCOt-uWpk82jghBJCM7vnEvJvBqPZ9u9gZ1h1t-DvwzAa7NTyLp5i13TS9YW9jnKC41WzNhwz2U_kpfvQjjM-MTl66xDlnY-aDnOwrGgGxaw-NQq56WOYghLyiKZVAA==.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC02LWx1bmEtMjAyNjA5MjJ8b3BlbmFpIn0",
+      "format": "openai-responses-v1",
+      "id": "rs_093b05492dcaab5c016acd0902061087d189d785c99b82bec5",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 8776,
+  "completion_tokens": 1393,
+  "total_tokens": 10169,
+  "cost": 0.001311,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 4195,
+   "cache_write_tokens": 4578,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.001311,
+   "upstream_inference_prompt_cost": 0.0006145,
+   "upstream_inference_completions_cost": 0.0006965
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 230,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

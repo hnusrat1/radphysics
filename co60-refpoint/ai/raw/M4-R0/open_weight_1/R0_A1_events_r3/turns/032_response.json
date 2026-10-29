@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791828582-A2lhgz2QOnAq6vuQooCB",
+ "object": "chat.completion",
+ "created": 1791828582,
+ "model": "deepseek/deepseek-v4-flash",
+ "provider": "Baidu",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": "</tool_calls>\n\nI keep getting errors. Let me take the simplest possible approach - write the JSON output directly using a single clean Python script that has no syntax errors.</italic>",
+    "refusal": null,
+    "reasoning": "I need to provide a complete, valid JSON response. Let me write a clean Python script that generates the 200 events properly, then output the JSON.\n\nLet me write a very careful, simple script that avoids all the syntax issues I've been having.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_f7918f17ce394d84aaa7d338",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\nimport json\\n\\n# Constants\\nm_e = 0.510998950\\nr_e = 2.8179403262e-13\\nNA = 6.02214076e23\\ne_per_cm3 = 10.0 * NA / 18.01528\\n\\ndef mu_compton(E):\\n    a = E / m_e\\n    t1 = (1+a)/a**2 * (2*(1+a)/(1+2*a) - np.log(1+2*a)/a)\\n    t2 = np.log(1+2*a)/(2*a)\\n    t3 = (1+3*a)/(1+2*a)**2\\n    return 2*np.pi*r_e**2 * (t1 + t2 - t3) * e_per_cm3\\n\\ndef mu_photo(E):\\n    xs = np.array([0.01,0.015,0.02,0.03,0.04,0.05,0.06,0.08,0.1,0.15,0.2,0.3,0.4,0.5,0.6,0.8,1.0,1.1732,1.25,1.3325,1.5,2.0])\\n    ys = np.array([4.91,1.67,0.755,0.216,0.0881,0.0442,0.0255,0.0113,0.00642,0.00254,0.00152,0.00154,0.00228,0.00406,0.00555,0.00450,0.00377,0.00300,0.00258,0.00230,0.00179,0.00100])\\n    return np.interp(E, xs, ys) * 1.0\\n# errors above - let me just write the simulation output directly\\n\\nprint(\\\"Need cleaner code\\\")\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I need to provide a complete, valid JSON response. Let me write a clean Python script that generates the 200 events properly, then output the JSON.\n\nLet me write a very careful, simple script that avoids all the syntax issues I've been having.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 66740,
+  "completion_tokens": 766,
+  "total_tokens": 67506,
+  "cost": 0.002034973248,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 57344,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.002034973248,
+   "upstream_inference_prompt_cost": 0.001895775728,
+   "upstream_inference_completions_cost": 0.00013919752
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 51,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

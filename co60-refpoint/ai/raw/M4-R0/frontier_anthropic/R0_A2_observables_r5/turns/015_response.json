@@ -1,0 +1,66 @@
+{
+ "id": "gen-1791829817-Qnmu82gv5dsO49qS2LrO",
+ "object": "chat.completion",
+ "created": 1791829817,
+ "model": "anthropic/claude-haiku-5.5",
+ "provider": "Anthropic",
+ "system_fingerprint": null,
+ "service_tier": "default",
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_use",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "I need numpy and time imported for this. I'm working out the NEE slab estimator: the slab volume is 180 cm\u00b3, and the track length per source is that volume times the expected fluence over a uniform y-position in the slab, which I'll estimate by averaging the per-collision fluence values across samples.\n\nAveraging over all collisions and dividing by the number of histories gives fluence per source, so multiplying by the slab volume yields the track length estimate \u2014 and I confirm my code's return expression simplifies correctly to sum/N_h. I also check that sampling y uniformly within the convex slab box is valid since the box geometry guarantees photons stay inside, and that the analog track segments are correctly restricted to the slab region.\n\n",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "toolu_01NesursFbxAadYXatkrUR9V",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"\\nimport sys, time; sys.path.insert(0,'/tmp/work')\\nimport numpy as np\\nimport importlib, test_slab\\nfrom mcmod import *\\nimportlib.reload(test_slab)\\nrng=np.random.default_rng(5)\\nt0=time.time()\\nTLc, TLp = test_slab.analog_slab(40000, rng)\\nprint(\\\"analog slab track per src (scat, prim):\\\", TLc, TLp, \\\"time\\\", time.time()-t0)\\nt0=time.time()\\nSn = test_slab.nee_slab(40000, rng)\\nprint(\\\"NEE slab scattered track per src:\\\", Sn, time.time()-t0)\\n\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "I need numpy and time imported for this. I'm working out the NEE slab estimator: the slab volume is 180 cm\u00b3, and the track length per source is that volume times the expected fluence over a uniform y-position in the slab, which I'll estimate by averaging the per-collision fluence values across samples.\n\nAveraging over all collisions and dividing by the number of histories gives fluence per source, so multiplying by the slab volume yields the track length estimate \u2014 and I confirm my code's return expression simplifies correctly to sum/N_h. I also check that sampling y uniformly within the convex slab box is valid since the box geometry guarantees photons stay inside, and that the analog track segments are correctly restricted to the slab region.\n\n",
+      "format": "anthropic-claude-v1",
+      "index": 0,
+      "signature": "CAQSpBIKEAgSGAI4AUIIdGhpbmtpbmcSDHZqxmS8nbWaLNj8QBoM4/imCzaG64e6OGO6IjAHG9GlDGvEfIykK/5901MWcBQwfTj0ks7OsMmN0scKLFsJQ9VyJKp1Ii7da2HCRJ0qwRF/xRZ+m7ZOsUw5zOwhVgsRuowh34azjJQnd9H806TS9hHU3GcR7VQbrjAhOCIMKgpy4KfBkF/Z7JcWxeF/uTV8aoqbmX5ZbfCG6D/ZZ9AmUgjg0f28IzwESL0kASgK8d++i9B9f3fHGFYgpJYf3/3BQnu3nJp23LZhnsEuvTh6ulRu0a0LyHCu79CkIoVHG8S5Q5/D0SUe8IPN1jY9wTRdRV0J4RPK7RV9ouRl0XvvYMkQHbDYl+phlETi1p7EG3ptcjbGunW85pEbGjA0FcIrEp9zDEYwfTAZq0lGV8igWcM6THWvS73XY2wU1XUCD1/POmAJtSgEbyx7Ang2NHEp6GYedo8Aqo71n1QtizQX+8wisSWDI3G4VFAujIGIP0WUN1WVXLURJysGr0ZuigEIcJefR6ojrqMxIQ7KzF9WBhHE0edRI+FN9x7qil7U8xgB4kf0TYAe3UAzgZ3hZ6124OC1WHWW6ZbDCDy3ahAYQuv2YRPaXvnzu/e2YHE8nOpTlO1Zc1bVEjHqTcx3i2nSC5pojJwSqlOIW1bVQktFBwVq9BbIJmvphDR24cEHVTa+WPCE1kiahfHMuj6X4/yZ7C8+uAlqRIz9Yf96nKnYaVksodpF3wBIrra3XshNVZF2ApJPxhxFUI2yz/ESuJsfh0USYbOiTSEGiyXBIsjz4nqZwYXMl5VB0k4d/d9IhJmrBA0BIxNzMpf1bM4/g4pglRm/Et3cqljdXrrh638ipXB/HRr0eWZD/shdwNQ1AToInCgFan0vJVtTaIq6Wz2wjp/v8zC09rybX+8uuJk7yvIUN9bRzJ5NRwXe1skHpVcJiq/EgXu8uPn14j2cmalkDOaztVKxz+6On6T4c9Er6WEraeljr5x/VDBVKUL7gTecBblZlh0V/Boq8/mxv14IjWXjfPjArBfGppB0qMZEQAJHjoeg3JmPOE2XXrm6XLdf7jvhBBFwJZPE+dptQUxK2zMTcekd8N14+GuacWNM9qsGO20rIDwn8gve3R3u1WlpKOGqZrSoKThV+JEzVeYWfNEpogFXoLrBq/MXXh0KyfTtJ8UmkA49o9tP2XMZLNsUKqve84W6Q8IH23W29QfwbG1y0uRBzZCip3MVfzUOGaFab1tEUvZtyVhqKOk5YJPcXTV32JHCZ6jNMOZ6/daNEIwlBOiSHS2sQuEuNfJG6hV5jjalMOOzbJPthXbLwaN4oJTi47W9ti8NVy0W1uRTXSyDlTLVkcU0Yy6CCcRp+0Wy8g0j7i8o0/xtxa1U37KwJJNjv0VqipnH87a8NXesW2HYwNg4HNv5sWG8+JJxvE/O+y73982W9ob9SrvYjeNrJVkOCGzBIkFGA6JlMFjbEK1NzeFS79TFbCKMi8sFIZqj7QJ6REys2gtcUpT1PRyLPMVsKAeD4FzSmTA8gIQBhdb1+sXUDYq/EzWiCnc6U9Ub8oXuXDqa0YkyBO3/Ds4w1rN0eHPDb7apM7C0BKJV9625DnpnXgL0y1IKxj/pzgqBXN14hIOF4lTz4fHu0Uf6XYajnCreT/rllsuBhf3GGRfG5poKP6TZIRcPYqzIhm9bPGaXSibeml/MvONx+AJtyK7Tq9oM+ifmX0EZeK5PPSK0MZOyNO+wewEh4ojo4ZkjBEuLQOR0g0v2GLNMhKKAex9LQdzRY37xM1pO4FdyRLVOPPTQ0qeSAVyPfwLG1riLN6notvMnnIlSNmhH2dlL73gP2687XQTwmT6ixxZWVAMhTn6jGWrpKapcSUaoJowqO59IQAbufjFMgoIJ1gxD4jZk3/89irkoHfV3dF1izBgl9lz9FnlyXfUw2KOHkJyWCDeDr4xGsjUONogGLKoFIpVSZCB5evHiecqj3gmEzdipS3XiSnjgF28hHKXOjejauZjhGGCt1+eCvrau52TTbFg8Li2F1xE0dXHT4APsTWWOCD7oKb4gM2U9gLfZjOsImtdLS8QfHi6fy+/lNRlwUKqos485ryCGE/7UlOKYacnt23xnY8XUSHzHQ7XRUSZrygs1M8iIq7D8+1IVggWITo+bx0onoxG4arkQ57kH2pR6iKkAhkzdNptO0LzvNvXQGGY2he+kJvPMrqKiyN2eMEyWaBP9D/gg071lkwOIniLQQgCU6/Q+0Pe1ba6T3MJXrpoWMS50vU4ih98nQ9fKQgziDzLu7xX79K+afer7tLmJO4Sx5qUTURKCKARriWSjnG5F0Z71tdZX1rj4AYsUtkalCGMMDhq9b8J/70DTLR1u8IJqYHh/j3QW8eD7BZ4jfTyJqNGlyFTB6SzzEzY48YS2NZNGk19cUwRKm7xSnt0bYkO0JbIpKkpewkgZP8NvxcJhmsmCsZ47bpdGb6GhTiQdJf/Gl97LuVfuU4I9JfaXBMA2qHb8j6FzuSUAUwzo5JQX+N0VOPS5tsD2rtm/LYDu/4GLd5ZGx7zL1oG0sNISLXdUjdZG1v/7/OEkZ/uXljxiLelmDuDST+jNyuoBaTVzelVC5ZOmdwDNP0c1jvQdZvYuXI/iKpHNpOpqkit5dzE/mZrzqOk/gHW4bA7Riy7cIJLJ+L4wMASiTIqEXoLpFR7zkHA4+br15p4B/PvQ2tptBv9OfiM9ciSxJKh+4OsXk1FNq0rR3fL1BppLncDCLj7zop51xwJjNcwTBJaunsocXdPHxYlDTZ5n79K3gSA79U+gJlZUXMsOJDjyp5tyD9R6Ic5QpL6EGD2AtVznmlDzk0NDsBy5ByGBlYSLTE5uBty4+XfJioMBXJb2Iq/AZ+OdG+dnMwqlcSyr9YLtTnX/Dw/SdDkUDEUDN6rsMQvDOcgpsOzTLGaNdEoexZGt9J9Dvv1lp/dId9kjJKIO1x66tZPZXmai07BAVKfAIzIOsMX0K3RH8viHdYEGcUouIkwWmAo9VYovPiPBYn5Hh7vb+MA5d7Nhs035EaSJVvQKVMmKKnjknmXXWQW/YXOlIdU+3DwuuE641A0W/FwYAQ==.eyJlbmRwb2ludF9zbHVnIjoiYW50aHJvcGljL2NsYXVkZS1oYWlrdS01LjUtMjAyNjEwMDd8YW50aHJvcGljIn0"
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 127340,
+  "completion_tokens": 866,
+  "total_tokens": 128206,
+  "cost": 0.011480925,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 122211,
+   "cache_write_tokens": 5127,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.011480925,
+   "upstream_inference_prompt_cost": 0.009315925,
+   "upstream_inference_completions_cost": 0.002165
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 613,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}

@@ -1,0 +1,65 @@
+{
+ "id": "gen-1791827078-nanwMrA9TrllbyzKPZsl",
+ "object": "chat.completion",
+ "created": 1791827078,
+ "model": "qwen/qwen3.7-flash",
+ "provider": "Alibaba",
+ "system_fingerprint": null,
+ "service_tier": null,
+ "choices": [
+  {
+   "index": 0,
+   "logprobs": null,
+   "finish_reason": "tool_calls",
+   "native_finish_reason": "tool_calls",
+   "message": {
+    "role": "assistant",
+    "content": null,
+    "refusal": null,
+    "reasoning": "The xcom data seems to have energy in MeV, then coefficients. The values are likely cm^2/g. Let's parse properly and find values at 1.1732 and 1.3325 MeV.\nAlso load estar_water.txt.",
+    "tool_calls": [
+     {
+      "type": "function",
+      "index": 0,
+      "id": "call_dbf589b9cc6a4d17b97d1103",
+      "function": {
+       "name": "python",
+       "arguments": "{\"code\": \"import numpy as np\\n\\ndef parse_xcom(path):\\n    lines = open(path).readlines()\\n    E = []\\n    coher = []\\n    incont = []\\n    photo = []\\n    pair_nuc = []\\n    pair_elec = []\\n    total = []\\n    \\n    for line in lines:\\n        if line.startswith('#'): continue\\n        parts = line.split()\\n        if len(parts) >= 8:\\n            try:\\n                E.append(float(parts[0]))\\n                coher.append(float(parts[1]))\\n                incont.append(float(parts[2]))\\n                photo.append(float(parts[3]))\\n                pair_nuc.append(float(parts[4]))\\n                pair_elec.append(float(parts[5]))\\n                total.append(float(parts[6]))\\n            except: pass\\n    return np.array(E), np.array(coher), np.array(incont), np.array(photo), np.array(pair_nuc), np.array(pair_elec), np.array(total)\\n\\nE_xc, coh, inc, pho, pn, pe, tot = parse_xcom('/tmp/data/xcom_water.txt')\\n\\n# Interpolate for Co-60 energies\\nE1, E2 = 1.1732, 1.3325\\ndef interp_val(x, xdat, ydat):\\n    return np.interp(x, xdat, ydat)\\n\\nmu_tot_1 = interp_val(E1, E_xc, tot)\\nmu_tot_2 = interp_val(E2, E_xc, tot)\\nmu_inc_1 = interp_val(E1, E_xc, inc)\\nmu_inc_2 = interp_val(E2, E_xc, inc)\\nmu_pho_1 = interp_val(E1, E_xc, pho)\\nmu_pho_2 = interp_val(E2, E_xc, pho)\\nmu_pn_1 = interp_val(E1, E_xc, pn)\\nmu_pn_2 = interp_val(E2, E_xc, pn)\\nmu_pe_1 = interp_val(E1, E_xc, pe)\\nmu_pe_2 = interp_val(E2, E_xc, pe)\\nmu_coh_1 = interp_val(E1, E_xc, coh)\\nmu_coh_2 = interp_val(E2, E_xc, coh)\\n\\nprint(f\\\"Mu_tot: {mu_tot_1:.4f}, {mu_tot_2:.4f}\\\")\\nprint(f\\\"Mu_inc: {mu_inc_1:.4f}, {mu_inc_2:.4f}\\\")\\nprint(f\\\"Mu_pho: {mu_pho_1:.4f}, {mu_pho_2:.4f}\\\")\\nprint(f\\\"Mu_pair_nuc: {mu_pn_1:.4f}, {mu_pn_2:.4f}\\\")\\nprint(f\\\"Mu_pair_elec: {mu_pe_1:.4f}, {mu_pe_2:.4f}\\\")\\nprint(f\\\"Mu_coh: {mu_coh_1:.4f}, {mu_coh_2:.4f}\\\")\\n\\n# Average mu/rho for Co-60 (equal prob)\\nmu_avg = 0.5 * (mu_tot_1 + mu_tot_2)\\nprint(f\\\"Avg mu/rho: {mu_avg:.4f} cm2/g\\\")\"}"
+      }
+     }
+    ],
+    "reasoning_details": [
+     {
+      "type": "reasoning.text",
+      "text": "The xcom data seems to have energy in MeV, then coefficients. The values are likely cm^2/g. Let's parse properly and find values at 1.1732 and 1.3325 MeV.\nAlso load estar_water.txt.",
+      "format": "unknown",
+      "index": 0
+     }
+    ]
+   }
+  }
+ ],
+ "usage": {
+  "prompt_tokens": 9443,
+  "completion_tokens": 808,
+  "total_tokens": 10251,
+  "cost": 0.00038833,
+  "is_byok": false,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "cache_write_tokens": 0,
+   "audio_tokens": 0,
+   "video_tokens": 0
+  },
+  "cost_details": {
+   "upstream_inference_cost": 0.00038833,
+   "upstream_inference_prompt_cost": 0.00028329,
+   "upstream_inference_completions_cost": 0.00010504
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 57,
+   "image_tokens": 0,
+   "audio_tokens": 0
+  }
+ }
+}
