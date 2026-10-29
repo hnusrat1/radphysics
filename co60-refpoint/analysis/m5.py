@@ -293,8 +293,11 @@ def main():
     if a.controls or not a.tag:
         ctl = control_answers(ref)
         result["controls"] = {name: summarize(v["control"], ref) for name, v in ctl.items()}
-        for name, s in result["controls"].items():
-            print(f"{name:28s} breakpoint layer {s['breakpoint_layer']}  counts {s['verdict_counts_by_layer']}")
+        result["controls_revised"] = {name: summarize(v["control"], ref, "revised") for name, v in ctl.items()}
+        for crit in ("controls", "controls_revised"):
+            for name, s in result[crit].items():
+                print(f"{crit:16s} {name:24s} breakpoint layer {s['breakpoint_layer']}  counts "
+                      f"{s['verdict_counts_by_layer']}")
         mc = mc_event_view()
         if mc is not None:
             dc = ref.get("events", {}).get("delta_c", 0.01)

@@ -3,8 +3,8 @@
 
     python analysis/study_page.py     # writes analysis/results/co60_study_review.html
 
-Reads analysis/results/{M1_results, M2_results, reference_R0, published_comparison, M5_controls}.json,
-analysis/M1_fano_summary.yaml, the M2 queue and run manifests, ai/ (observables, prompts, models, prices).
+Reads analysis/results/{M1_results, M2_results, reference_R0, published_comparison, M5_controls, M5_M4-R0}.json,
+analysis/M1_fano_summary.yaml, the M2 queue and run manifests, ai/ (observables, prompts, models, prices, raw charges).
 Parts whose runs are not finished are shown as running; no number on the page is typed by hand.
 """
 import html
@@ -101,6 +101,7 @@ def main():
     ref = load("reference_R0.json")
     pub = load("published_comparison.json")
     ctl = load("M5_controls.json")
+    m4 = load("M5_M4-R0.json")
     fano = yaml.safe_load(open(ROOT / "analysis" / "M1_fano_summary.yaml"))
     models = yaml.safe_load(open(ROOT / "ai" / "models.yaml"))
     prices = yaml.safe_load(open(ROOT / "ai" / "prices.yaml"))
@@ -176,6 +177,22 @@ def main():
                            f"<td class='n'>{100 * (r_ - 1):+.2f}% ± {100 * s_:.2f}%</td></tr>")
         else:
             b0_rows.append(f"<tr><td>{label}</td><td colspan='3'>{chip('run', 'running')}</td></tr>")
+    chk = b0.get("s_w_air_check", {})
+    if "sprrznrc_over_calc_on_egsnrc_fluence" in chk:
+        c_, r_ = chk["calc_on_egsnrc_fluence_2keV"], chk["sprrznrc_over_calc_on_egsnrc_fluence"]
+        b0_rows.append(f"<tr><td>s_w,air: our calculation on EGSnrc's own fluence (2 keV bins) against SPRRZnrc (D039)</td>"
+                       f"<td class='n'>{sig(c_['mean'], 6)} (calc.)</td><td class='n'>{sig(b0['egsnrc_s_w_air']['mean'], 6)}</td>"
+                       f"<td class='n'>{100 * (r_['ratio'] - 1):+.4f}% ± {100 * r_['sem']:.4f}% ({r_['z']:+.1f}σ)</td></tr>")
+    sm = b0.get("spectra_metrics", {})
+    spec_rows = []
+    for key, label in (("photon", "Photon fluence"), ("electron", "Electron fluence (CSDA-weighted estimator, D020)"),
+                       ("electron_linear_estimator", "Electron fluence (linear estimator)")):
+        x = sm.get(key)
+        if x:
+            spec_rows.append(f"<tr><td>{esc(label)}</td><td class='n'>{1000 * x['w1_MeV']:.2f}</td>"
+                             f"<td class='n'>{1000 * x['half_sample_egsnrc']['w1_MeV']:.2f} / {1000 * x['half_sample_geant4']['w1_MeV']:.2f}</td>"
+                             f"<td class='n'>{100 * (x['mean_energy_ratio'] - 1):+.2f}%</td>"
+                             f"<td class='n'>{100 * x['max_abs_bin_ratio_dev']:.1f}% at {1000 * x['at_MeV']:.0f} keV</td></tr>")
 
     # ------------------------------------------------ charts (shown once the runs exist)
     from analysis.svgplot import CHART_CSS, spectra_with_ratio
@@ -255,15 +272,18 @@ def main():
                           f"<td class='n'>{fmt_val(o, r.get('mc'))}</td><td>{esc(tol_text(o, r))}</td>"
                           f"<td class='n'>{esc(floor_text(o, r))}</td><td>{esc(', '.join(o['tags']))}</td></tr>")
     ctl_rows = []
+    ctl_rev = ctl.get("controls_revised", {})
     expect = {"identity": "no breakpoint", "negative_dose_plus5pct": "breaks at Layer 5",
               "negative_uniform": "breaks at Layer 1", "positive_livermore": "no breakpoint (pass or unresolved)",
               "positive_penelope": "no breakpoint (pass or unresolved)"}
     for name, s in ctl.get("controls", {}).items():
-        bp = s["breakpoint_layer"]
-        got = "no breakpoint" if bp is None else f"breaks at Layer {bp}"
-        ok = got.split(" (")[0] == expect.get(name, "").split(" (")[0]
-        ctl_rows.append(f"<tr><td class='n'>{esc(name)}</td><td>{esc(expect.get(name, ''))}</td><td>{esc(got)}</td>"
-                        f"<td>{chip('ok', 'as expected') if ok else chip('bad', 'unexpected')}</td></tr>")
+        gots = []
+        for x in (s, ctl_rev.get(name)):
+            bp = (x or {}).get("breakpoint_layer")
+            gots.append("–" if x is None else "no breakpoint" if bp is None else f"breaks at Layer {bp}")
+        ok = all(g.split(" (")[0] == expect.get(name, "").split(" (")[0] for g in gots)
+        ctl_rows.append(f"<tr><td class='n'>{esc(name)}</td><td>{esc(expect.get(name, ''))}</td><td>{esc(gots[0])}</td>"
+                        f"<td>{esc(gots[1])}</td><td>{chip('ok', 'as expected') if ok else chip('bad', 'unexpected')}</td></tr>")
     ev = ctl.get("event_controls", {})
     ev_rows = []
     for name, v in ev.items():
@@ -279,18 +299,48 @@ def main():
     total_p, _ = estimate_cost(pilot, prices["prices"], prices["tokens_per_conversation"])
     layer_counts = {L: sum(1 for o in OBS if o["layer"] == L) for L in range(1, 6)}
 
+    # ------------------------------------------------ M4 at a glance
+    from ai.harness.run import spent
+    from analysis.m4_page import NAMES, ORDER
+    raw = ROOT / "ai" / "raw"
+    cost_r0 = spent(raw / "M4-R0")
+    cost_p0 = sum(spent(raw / t) for t in ("P0-pilot", "P0-pilot-cache", "P0-pilot-killed"))
+    n_conv = sum(1 for _ in (raw / "M4-R0").glob("*/*_r*/meta.yaml"))
+
+    def d_err(sm):
+        o = (sm or {}).get("observables", {}).get("L5_D_over_phi0_Gy_cm2", {})
+        x = o.get("rel_diff_median")
+        if x is None:
+            return "<td class='n'>–</td>"
+        txt = "zeros" if x <= -0.999 else f"{100 * x:+.1f}%" if abs(x) < 10 else "unit error"
+        return f"<td class='n'>{txt} {chip('ok', 'pass') if o.get('verdict') == 'pass' else ''}</td>"
+
+    def bps(group, slot):
+        return "<td class='n'>" + " ".join(
+            f"L{(group.get(slot, {}).get(c) or {}).get('breakpoint_layer') or '–'}" for c in ("A0", "A1", "A2")) + "</td>"
+
+    m4_rows = []
+    for slot in ORDER:
+        mm = m4.get("models", {}).get(slot, {})
+        m4_rows.append(f"<tr><td>{esc(NAMES[slot])}</td>{d_err(mm.get('A0'))}{d_err(mm.get('A1'))}{d_err(mm.get('A2'))}"
+                       f"{bps(m4.get('models', {}), slot)}{bps(m4.get('models_revised', {}), slot)}</tr>")
+    sens = m4.get("sensitivity_no_compiler", {})
+    bf = load("M4_methods.json").get("by_photon_field", {})
+    d_sim = bf.get("simulated", {}).get("median_abs_rel_diff", {}).get("L5_D_over_phi0_Gy_cm2", float("nan"))
+    d_asm = bf.get("assumed", {}).get("median_abs_rel_diff", {}).get("L5_D_over_phi0_Gy_cm2", float("nan"))
+
     milestones = [
         ("M0", "Environment", chip("ok", "done"), "Geant4 11.4.3 and EGSnrc v2026 pinned; examples reproduce; Fano test reported."),
         ("M1", "Monte Carlo at R0, option4", chip("ok", "done"),
          "All five layers; S1, S2; analytic primary fluence; statistical targets met; boundary-free dose adopted (D027)."),
         ("M2", "Monte Carlo validation", chip("ok", "done") if m2_done else chip("run", "running"),
          "Livermore and Penelope at R0, EGSnrc B0 benchmark, M2 stepping (range factor 0.04), published values."),
-        ("M3", "AI harness", chip("warn", "built; pilot blocked"),
-         "Prompts, schema, sandbox, clients, runner, A2 data, cost estimate. The pilot needs API keys and network access."),
-        ("M4", "AI runs at R0", chip("warn", "ready to launch"),
-         "One OpenRouter key (D029); openrouter.ai is reachable. Starts in a new session with the key as an environment secret: pilot first, then the low-cost run under your $10 cap."),
-        ("M5", "Analysis", chip("warn", "built; no AI data"),
-         "Scorer, breakpoints, H1–H3 and event tests are built and pass their controls. Waiting for M4 answers."),
+        ("M3", "AI harness", chip("ok", "done"),
+         "Prompts, schema, sandbox, clients, runner, A2 data. P0 pilot run and its fixes (D031). Compilers removed from the sandbox after M4 (D037)."),
+        ("M4", "AI runs at R0", chip("ok", "done"),
+         f"{n_conv} conversations with five low-cost models (D030), measured charge ${cost_r0:.2f} under your $10 cap."),
+        ("M5", "Analysis", chip("ok", "scored"),
+         "M4-R0 scored under the pre-set criterion and a revised shape criterion (D038, exploratory). Code audit (D036) and compiler sensitivity (D037)."),
     ]
     ms_rows = "\n".join(f"<tr><td class='n'>{a}</td><td>{esc(b)}</td><td>{c}</td><td>{esc(d)}</td></tr>"
                         for a, b, c, d in milestones)
@@ -301,12 +351,12 @@ def main():
         ("R0 geometry", "SSD 100 cm, vacuum", "Plan defaults; air adds a 0.1%-level term the AI could get wrong outside the physics chain.",
          "Rerun M1/M2 at SSD 80 or with air."),
         ("Tolerances", "2% dose; max(5%, 0.005) other scalars; 3 × half-sample distance for distributions",
-         "Plan defaults; the absolute floor keeps near-zero fractions testable.",
+         "Plan defaults; the absolute floor keeps near-zero fractions testable. The distribution rule proved too strict after M4; D038 adds W1 within 5% (exploratory here, pre-registered for later runs).",
          "Rescoring only; no rerun."),
         ("Resolution floor", "Largest list-to-option4 difference + 2σ; EGSnrc via B0",
          "Differences inside the codes' own spread cannot be read as AI error.", "Rescoring only."),
-        ("Models", "Top model from Anthropic, OpenAI, Google; two open-weight from different labs",
-         "Covers the frontier and open weights; IDs fixed and recorded at launch.", "Edit ai/models.yaml before launch."),
+        ("Models (D030, your call)", "Each provider's fast, low-cost tier, under a $10 cap",
+         "Replaced D028's frontier choice; results are reported as this tier.", "A higher-tier run with the same frozen prompts (paid)."),
         ("s_w,air basis", "ICRU 90 primary, ICRU 37 alongside (D024)", "Current data; TRS-398 numbers are ICRU 37.", "Rescoring only."),
         ("M2 stepping", "Range factor 0.04 for all Geant4 lists (D026 as decided)",
          "Removes the Fano deviation; M1 (0.08) kept as the step-size sensitivity.", "M2 reruns at 0.08."),
@@ -330,6 +380,7 @@ def main():
   <span class="t">Review</span>
   <a href="#state">Where it stands</a>
   <a href="#you">What needs you</a>
+  <a href="#m4">AI results</a>
   <a href="#d028">Choices made for you</a>
   <a href="#reference">MC reference</a>
   <a href="#validation">Code-to-code</a>
@@ -344,9 +395,9 @@ def main():
   <span class="eyebrow">Co-60 reference point · AI against Monte Carlo · review</span>
   <h1>Co-60 Study Review</h1>
   <p class="lede">The Monte Carlo reference is final and validated against two other Geant4 physics lists and EGSnrc.
-  The AI harness is built and tested without any API call. The model runs go through one OpenRouter key (D029) and
-  start in a new session once the key is stored as an environment secret. This page covers each part, the choices
-  I made under your delegation, and what is left for you.</p>
+  Five low-cost models answered the R0 questions ({n_conv} conversations, ${cost_r0:.2f}), and their answers are scored.
+  This page covers each part, the choices made under your delegation, the fixes after the AI runs (D037–D040), and
+  what is left for you. The full AI results are on the M4 results page.</p>
   <div class="meta"><span>Generated {now}</span><span>commit {esc(head)}</span><span>R0: Co-60, 5 cm depth, 10 × 10 cm², SSD 100 cm</span>
   <span>reference {'final (M2)' if m2_done else 'provisional (M1 parts)'}</span></div>
 </header>
@@ -362,11 +413,33 @@ def main():
 <section id="you">
   <h2>What needs you</h2>
   <ul class="tight">
+    <li><b>Review the AI results and the decisions made after them</b> (D030–D040). Two of them change how the results read: the revised shape criterion (D038) and the H3 caveat (D040). Both are marked exploratory.</li>
     <li><b>Confirm or reverse the choices below (D028).</b> Each row says what a reversal would cost. Most are rescoring only.</li>
-    <li><b>Verify refs.yaml (Section 10.1).</b> Every external number is still unverified. Agreed order: line energies, TRS-398 s_w,air (and whether its 2024 revision uses ICRU 90), I-values, normalisation constants, the rest. Two values are still missing: a published PDD(5) for SSD 100 cm, and the NIST μ/ρ and μ_en/ρ at the two lines.</li>
-    <li><b>Launch M4.</b> Store <span class="n">OPENROUTER_API_KEY</span> as a Network secret in the environment settings, then start a new session. It runs the P0 pilot (under $0.50), reports the measured cost, and runs the low-cost R0 matrix if it fits your $10 cap. Current live-price estimate for five low-cost models: about $4. The frontier run can follow later with the same frozen prompts.</li>
+    <li><b>Verify refs.yaml (Section 10.1).</b> Every external number is still unverified. Agreed order: line energies, TRS-398 s_w,air (and whether its 2024 revision uses ICRU 90), I-values, normalisation constants, the rest. Two values are still missing: a published PDD(5) for 10 × 10 cm² at SSD 100 cm, which H3 now waits on (D040), and the NIST μ/ρ and μ_en/ρ at the two lines.</li>
+    <li><b>Paid options, each only with your OK (Section 10.5).</b> Rerun the three compiled conversations without compilers, about $0.10. A second configuration with no tabulated answer to recall (R1), about $8 for the AI side; its Monte Carlo is free. A higher tier of the same providers, about $65; the top tier, about $160 to $240.</li>
     <li><b>Optional.</b> If you can reach NIST, replace the A2 tables with the genuine XCOM and ESTAR downloads (<span class="n">ai/data/README.md</span>).</li>
   </ul>
+</section>
+
+<section id="m4">
+  <h2>AI results at a glance</h2>
+  <p>Median D/Φ₀ error over the repeats, and the breakpoint in A0, A1 and A2: the first layer with a resolved
+  failure. The pre-set shape criterion fails every answer at Layer 1. Under the revised criterion (D038,
+  exploratory) Haiku with tools moves to Layer 2. All figures, the method audit and the events are on the M4
+  results page.</p>
+  <div class="tbl"><table><thead><tr><th>Model</th><th class="nt">D/Φ₀ A0</th><th class="nt">D/Φ₀ A1</th><th class="nt">D/Φ₀ A2</th>
+  <th>Breaks at, pre-set (A0 A1 A2)</th><th>Breaks at, revised</th></tr></thead>
+  <tbody>{''.join(m4_rows)}</tbody></table></div>
+  <ul class="tight">
+    <li><b>The photon field decides the dose.</b> Tool answers built on a photon-transport simulation the model wrote
+      have a median D/Φ₀ error of {100 * d_sim:.1f}%; answers whose scatter was typed or assumed, {100 * d_asm:.0f}%
+      (D036).</li>
+    <li><b>Compiled code.</b> GPT-6 Luna compiled C++ in {len(sens.get("excluded", []))} conversations. Without them no
+      breakpoint changes. Its best dose answer and its only answered events call are among them (D037).</li>
+    <li><b>H3 waits on a published value.</b> The PDD(5) reference is for the idealized source in the prompt, and
+      a measured table includes head scatter (D040).</li>
+  </ul>
+  <p class="note">M4 results page: <a href="https://claude.ai/artifact/Qb7FGhAN7Na6j2YVGSW2J8">claude.ai/artifact/Qb7FGhAN7Na6j2YVGSW2J8</a></p>
 </section>
 
 <section id="d028">
@@ -402,6 +475,12 @@ def main():
   Geant4's (D015), so the comparison tests the transport rather than the data.</p>
   <div class="tbl"><table><thead><tr><th>Quantity</th><th>Geant4 option4</th><th>EGSnrc</th><th>EGSnrc − Geant4</th></tr></thead>
   <tbody>{''.join(b0_rows)}</tbody></table></div>
+  <div class="tbl"><table><thead><tr><th>B0 spectrum, 10 keV bins above 10 keV</th><th class="nt">W1, EGSnrc vs Geant4 (keV)</th>
+  <th class="nt">W1 between half-samples, EGSnrc / Geant4 (keV)</th><th>Mean energy, EGSnrc − Geant4</th><th>Largest bin difference</th></tr></thead>
+  <tbody>{''.join(spec_rows)}</tbody></table></div>
+  <p class="note">The half-sample W1 is each code's own statistical scale. Bin differences count only bins holding at least
+  0.5% of the peak. The largest ones sit at the electron spectrum's upper edge, where EGSnrc's half-samples differ by as
+  much.</p>
 </section>
 
 <section id="fano">
@@ -425,7 +504,7 @@ def main():
   <h2>AI harness</h2>
   <div class="cond">
     <div><b>A0, recall</b><span>Problem statement only, no tools.</span></div>
-    <div><b>A1, compute</b><span>Plus a Python sandbox: numpy and scipy, no network, no transport code, 4 cores, 10 min per call.</span></div>
+    <div><b>A1, compute</b><span>Plus a Python sandbox: numpy and scipy, no network, no transport code, no compiler (from D037), 4 cores, 10 min per call.</span></div>
     <div><b>A2, compute with data</b><span>Plus water XCOM and ESTAR tables as files.</span></div>
   </div>
   <ul class="tight">
@@ -433,8 +512,9 @@ def main():
     <li>A test fails if any number in a prompt, other than the configuration and the bin edges, lies within 0.5% of a Monte Carlo result or a refs.yaml value.</li>
     <li>Model code cannot see the network, the repository, the transport codes or this session's transcripts. It runs in its own network, mount and process namespaces.</li>
     <li>Every request, response and tool call is written once, read-only. A malformed answer gets one logged retry. Refusals, parse failures and API errors are counted.</li>
-    <li>Model slots: {esc(', '.join(s['slot'] for s in models['slots']))}. Identifiers are filled in at launch and recorded per call.</li>
-    <li><b>Cost estimate:</b> {len(plan)} conversations, about ${total:,.0f} at central list prices, about ${3 * total:,.0f} in the high case. Pilot: about ${total_p:,.0f}. The prices are unverified third-party figures and the token counts are assumptions. Both are replaced by official prices and pilot measurements before you approve.</li>
+    <li>Models (D030): {esc(' · '.join(s['model_id'] for s in models['slots']))}. The served model and upstream provider are recorded per call.</li>
+    <li><b>Measured cost:</b> R0 ${cost_r0:.2f} for {n_conv} conversations; the pilot and its tests ${cost_p0:.2f}.</li>
+    <li><b>Compilers.</b> In M4-R0 the sandbox still exposed the container's C and C++ compilers. They are removed for later runs, and a test checks it (D037).</li>
   </ul>
   <details><summary>The frozen R0 prompt (v1) as a model sees it</summary>
   <pre class="prompt">{esc(system_a1)}
@@ -443,12 +523,16 @@ def main():
 </section>
 
 <section id="scoring">
-  <h2>How answers will be scored</h2>
+  <h2>How answers are scored</h2>
   <p>Each quantity is pass, fail, unresolved (outside tolerance but inside the codes' own spread) or missing. A model's
   breakpoint is the first layer with a resolved failure. H1 and H2 compare errors on primary-photon quantities with errors on
   transport quantities; H3 compares the error on PDD(5) with the error on D/Φ₀.</p>
+  <p>Distributions are scored two ways. The pre-set rule (D028) asks for W1 and JSD within 3 × the Monte Carlo's
+  half-sample distance, which only a Monte Carlo of the reference's precision can meet. The revised rule (D038) asks for
+  W1 within 5% of the Monte Carlo mean energy, or 0.1 in cos θ. It was chosen after M4, so it is exploratory for M4-R0
+  and pre-registered for later runs.</p>
   <h3>Controls, scored like a model</h3>
-  <div class="tbl"><table><thead><tr><th>Control</th><th>Expected</th><th>Result</th><th></th></tr></thead>
+  <div class="tbl"><table><thead><tr><th>Control</th><th>Expected</th><th>Pre-set rule</th><th>Revised rule (D038)</th><th></th></tr></thead>
   <tbody>{''.join(ctl_rows)}</tbody></table></div>
   <div class="tbl"><table><thead><tr><th>Events control</th><th>Energy distance</th><th>MC baseline (median, 95th pct)</th><th>Invalid (bound rules)</th></tr></thead>
   <tbody>{''.join(ev_rows)}</tbody></table></div>
@@ -464,7 +548,9 @@ def main():
     <li><b>All external values are unverified.</b> The checks on this page compare against values that only you can sign off.</li>
     <li><b>The A2 tables are reproductions.</b> They are validated against Geant4, but they are not NIST downloads.</li>
     <li><b>The resolution floor rests on three Geant4 lists and one EGSnrc geometry.</b> The lists share the multiple-scattering model, so the floor may understate transport uncertainty for electron-fluence quantities.</li>
-    <li><b>Model choice is time-stamped.</b> "Best available on the access date" makes the results a snapshot; the identifiers and dates are recorded per call.</li>
+    <li><b>Low-cost tier only (D030).</b> The results describe each provider's fast tier on 2026-10-12, not its best model. Identifiers and dates are recorded per call.</li>
+    <li><b>The revised shape rule was chosen after seeing the data (D038).</b> For M4-R0 it is exploratory; the pre-set rule stays the primary analysis.</li>
+    <li><b>Three M4 conversations used compiled C++ (D037).</b> Results are shown with and without them; later runs cannot compile.</li>
   </ul>
 </section>
 <footer class="note">Generated by analysis/study_page.py from analysis/results/ and ai/. Every number is read from a results file.</footer>

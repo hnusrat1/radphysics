@@ -94,6 +94,7 @@ pre.prompt { white-space: pre-wrap; font-family: var(--f-mono); font-size: 12.5p
   <span class="t">Review</span>
   <a href="#state">Where it stands</a>
   <a href="#you">What needs you</a>
+  <a href="#m4">AI results</a>
   <a href="#d028">Choices made for you</a>
   <a href="#reference">MC reference</a>
   <a href="#validation">Code-to-code</a>
@@ -108,10 +109,10 @@ pre.prompt { white-space: pre-wrap; font-family: var(--f-mono); font-size: 12.5p
   <span class="eyebrow">Co-60 reference point · AI against Monte Carlo · review</span>
   <h1>Co-60 Study Review</h1>
   <p class="lede">The Monte Carlo reference is final and validated against two other Geant4 physics lists and EGSnrc.
-  The AI harness is built and tested without any API call. The model runs go through one OpenRouter key (D029) and
-  start in a new session once the key is stored as an environment secret. This page covers each part, the choices
-  I made under your delegation, and what is left for you.</p>
-  <div class="meta"><span>Generated 2026-10-12 03:48 UTC</span><span>commit 8e31645</span><span>R0: Co-60, 5 cm depth, 10 × 10 cm², SSD 100 cm</span>
+  Five low-cost models answered the R0 questions (125 conversations, $7.78), and their answers are scored.
+  This page covers each part, the choices made under your delegation, the fixes after the AI runs (D037–D040), and
+  what is left for you. The full AI results are on the M4 results page.</p>
+  <div class="meta"><span>Generated 2026-10-29 02:14 UTC</span><span>commit cf133bd</span><span>R0: Co-60, 5 cm depth, 10 × 10 cm², SSD 100 cm</span>
   <span>reference final (M2)</span></div>
 </header>
 
@@ -121,9 +122,9 @@ pre.prompt { white-space: pre-wrap; font-family: var(--f-mono); font-size: 12.5p
   <tbody><tr><td class='n'>M0</td><td>Environment</td><td><span class="chip ok">done</span></td><td>Geant4 11.4.3 and EGSnrc v2026 pinned; examples reproduce; Fano test reported.</td></tr>
 <tr><td class='n'>M1</td><td>Monte Carlo at R0, option4</td><td><span class="chip ok">done</span></td><td>All five layers; S1, S2; analytic primary fluence; statistical targets met; boundary-free dose adopted (D027).</td></tr>
 <tr><td class='n'>M2</td><td>Monte Carlo validation</td><td><span class="chip ok">done</span></td><td>Livermore and Penelope at R0, EGSnrc B0 benchmark, M2 stepping (range factor 0.04), published values.</td></tr>
-<tr><td class='n'>M3</td><td>AI harness</td><td><span class="chip warn">built; pilot blocked</span></td><td>Prompts, schema, sandbox, clients, runner, A2 data, cost estimate. The pilot needs API keys and network access.</td></tr>
-<tr><td class='n'>M4</td><td>AI runs at R0</td><td><span class="chip warn">ready to launch</span></td><td>One OpenRouter key (D029); openrouter.ai is reachable. Starts in a new session with the key as an environment secret: pilot first, then the low-cost run under your $10 cap.</td></tr>
-<tr><td class='n'>M5</td><td>Analysis</td><td><span class="chip warn">built; no AI data</span></td><td>Scorer, breakpoints, H1–H3 and event tests are built and pass their controls. Waiting for M4 answers.</td></tr></tbody></table></div>
+<tr><td class='n'>M3</td><td>AI harness</td><td><span class="chip ok">done</span></td><td>Prompts, schema, sandbox, clients, runner, A2 data. P0 pilot run and its fixes (D031). Compilers removed from the sandbox after M4 (D037).</td></tr>
+<tr><td class='n'>M4</td><td>AI runs at R0</td><td><span class="chip ok">done</span></td><td>125 conversations with five low-cost models (D030), measured charge $7.78 under your $10 cap.</td></tr>
+<tr><td class='n'>M5</td><td>Analysis</td><td><span class="chip ok">scored</span></td><td>M4-R0 scored under the pre-set criterion and a revised shape criterion (D038, exploratory). Code audit (D036) and compiler sensitivity (D037).</td></tr></tbody></table></div>
   <details><summary>M2 run queue (each run is kept; resumable after a container restart)</summary>
   <div class="tbl"><table><thead><tr><th>Run</th><th>Code</th><th>Batches or jobs</th></tr></thead><tbody><tr><td class='n'>M2-R0-option4-bf</td><td>Geant4 option4</td><td><span class="chip ok">done</span></td></tr>
 <tr><td class='n'>M2-R0-option4</td><td>Geant4 option4</td><td><span class="chip ok">done</span></td></tr>
@@ -143,11 +144,33 @@ pre.prompt { white-space: pre-wrap; font-family: var(--f-mono); font-size: 12.5p
 <section id="you">
   <h2>What needs you</h2>
   <ul class="tight">
+    <li><b>Review the AI results and the decisions made after them</b> (D030–D040). Two of them change how the results read: the revised shape criterion (D038) and the H3 caveat (D040). Both are marked exploratory.</li>
     <li><b>Confirm or reverse the choices below (D028).</b> Each row says what a reversal would cost. Most are rescoring only.</li>
-    <li><b>Verify refs.yaml (Section 10.1).</b> Every external number is still unverified. Agreed order: line energies, TRS-398 s_w,air (and whether its 2024 revision uses ICRU 90), I-values, normalisation constants, the rest. Two values are still missing: a published PDD(5) for SSD 100 cm, and the NIST μ/ρ and μ_en/ρ at the two lines.</li>
-    <li><b>Launch M4.</b> Store <span class="n">OPENROUTER_API_KEY</span> as a Network secret in the environment settings, then start a new session. It runs the P0 pilot (under $0.50), reports the measured cost, and runs the low-cost R0 matrix if it fits your $10 cap. Current live-price estimate for five low-cost models: about $4. The frontier run can follow later with the same frozen prompts.</li>
+    <li><b>Verify refs.yaml (Section 10.1).</b> Every external number is still unverified. Agreed order: line energies, TRS-398 s_w,air (and whether its 2024 revision uses ICRU 90), I-values, normalisation constants, the rest. Two values are still missing: a published PDD(5) for 10 × 10 cm² at SSD 100 cm, which H3 now waits on (D040), and the NIST μ/ρ and μ_en/ρ at the two lines.</li>
+    <li><b>Paid options, each only with your OK (Section 10.5).</b> Rerun the three compiled conversations without compilers, about $0.10. A second configuration with no tabulated answer to recall (R1), about $8 for the AI side; its Monte Carlo is free. A higher tier of the same providers, about $65; the top tier, about $160 to $240.</li>
     <li><b>Optional.</b> If you can reach NIST, replace the A2 tables with the genuine XCOM and ESTAR downloads (<span class="n">ai/data/README.md</span>).</li>
   </ul>
+</section>
+
+<section id="m4">
+  <h2>AI results at a glance</h2>
+  <p>Median D/Φ₀ error over the repeats, and the breakpoint in A0, A1 and A2: the first layer with a resolved
+  failure. The pre-set shape criterion fails every answer at Layer 1. Under the revised criterion (D038,
+  exploratory) Haiku with tools moves to Layer 2. All figures, the method audit and the events are on the M4
+  results page.</p>
+  <div class="tbl"><table><thead><tr><th>Model</th><th class="nt">D/Φ₀ A0</th><th class="nt">D/Φ₀ A1</th><th class="nt">D/Φ₀ A2</th>
+  <th>Breaks at, pre-set (A0 A1 A2)</th><th>Breaks at, revised</th></tr></thead>
+  <tbody><tr><td>Claude Haiku 5.5</td><td class='n'>-2.6% </td><td class='n'>-0.3% <span class="chip ok">pass</span></td><td class='n'>-0.6% <span class="chip ok">pass</span></td><td class='n'>L1 L1 L1</td><td class='n'>L1 L2 L2</td></tr><tr><td>DeepSeek V4 Flash</td><td class='n'>-18.0% </td><td class='n'>-0.3% <span class="chip ok">pass</span></td><td class='n'>+1.0% <span class="chip ok">pass</span></td><td class='n'>L1 L1 L1</td><td class='n'>L1 L1 L1</td></tr><tr><td>GPT-6 Luna</td><td class='n'>-9.4% </td><td class='n'>-6.7% </td><td class='n'>-10.6% </td><td class='n'>L1 L1 L1</td><td class='n'>L1 L1 L1</td></tr><tr><td>Qwen3.7 Flash</td><td class='n'>+5.1% </td><td class='n'>+17.4% </td><td class='n'>+30.4% </td><td class='n'>L1 L1 L1</td><td class='n'>L1 L1 L1</td></tr><tr><td>Gemini 2.5 Flash-Lite</td><td class='n'>unit error </td><td class='n'>zeros </td><td class='n'>unit error </td><td class='n'>L1 L1 L1</td><td class='n'>L1 L1 L1</td></tr></tbody></table></div>
+  <ul class="tight">
+    <li><b>The photon field decides the dose.</b> Tool answers built on a photon-transport simulation the model wrote
+      have a median D/Φ₀ error of 0.5%; answers whose scatter was typed or assumed, 16%
+      (D036).</li>
+    <li><b>Compiled code.</b> GPT-6 Luna compiled C++ in 3 conversations. Without them no
+      breakpoint changes. Its best dose answer and its only answered events call are among them (D037).</li>
+    <li><b>H3 waits on a published value.</b> The PDD(5) reference is for the idealized source in the prompt, and
+      a measured table includes head scatter (D040).</li>
+  </ul>
+  <p class="note">M4 results page: <a href="https://claude.ai/artifact/Qb7FGhAN7Na6j2YVGSW2J8">claude.ai/artifact/Qb7FGhAN7Na6j2YVGSW2J8</a></p>
 </section>
 
 <section id="d028">
@@ -157,9 +180,9 @@ pre.prompt { white-space: pre-wrap; font-family: var(--f-mono); font-size: 12.5p
   <div class="tbl"><table><thead><tr><th>Decision</th><th>Choice</th><th>Why</th><th>Cost of reversing</th></tr></thead>
   <tbody><tr><td>D027 threshold</td><td>2σ confirmed</td><td>Standard 95% rule; the boundary effect was −2.2σ. M2 re-measures the dose anyway.</td><td>3σ would keep the cylinder dose and carry the 0.24% as a systematic.</td></tr>
 <tr><td>R0 geometry</td><td>SSD 100 cm, vacuum</td><td>Plan defaults; air adds a 0.1%-level term the AI could get wrong outside the physics chain.</td><td>Rerun M1/M2 at SSD 80 or with air.</td></tr>
-<tr><td>Tolerances</td><td>2% dose; max(5%, 0.005) other scalars; 3 × half-sample distance for distributions</td><td>Plan defaults; the absolute floor keeps near-zero fractions testable.</td><td>Rescoring only; no rerun.</td></tr>
+<tr><td>Tolerances</td><td>2% dose; max(5%, 0.005) other scalars; 3 × half-sample distance for distributions</td><td>Plan defaults; the absolute floor keeps near-zero fractions testable. The distribution rule proved too strict after M4; D038 adds W1 within 5% (exploratory here, pre-registered for later runs).</td><td>Rescoring only; no rerun.</td></tr>
 <tr><td>Resolution floor</td><td>Largest list-to-option4 difference + 2σ; EGSnrc via B0</td><td>Differences inside the codes&#x27; own spread cannot be read as AI error.</td><td>Rescoring only.</td></tr>
-<tr><td>Models</td><td>Top model from Anthropic, OpenAI, Google; two open-weight from different labs</td><td>Covers the frontier and open weights; IDs fixed and recorded at launch.</td><td>Edit ai/models.yaml before launch.</td></tr>
+<tr><td>Models (D030, your call)</td><td>Each provider&#x27;s fast, low-cost tier, under a $10 cap</td><td>Replaced D028&#x27;s frontier choice; results are reported as this tier.</td><td>A higher-tier run with the same frozen prompts (paid).</td></tr>
 <tr><td>s_w,air basis</td><td>ICRU 90 primary, ICRU 37 alongside (D024)</td><td>Current data; TRS-398 numbers are ICRU 37.</td><td>Rescoring only.</td></tr>
 <tr><td>M2 stepping</td><td>Range factor 0.04 for all Geant4 lists (D026 as decided)</td><td>Removes the Fano deviation; M1 (0.08) kept as the step-size sensitivity.</td><td>M2 reruns at 0.08.</td></tr>
 <tr><td>A2 data</td><td>XCOM/ESTAR reproductions from EGSnrc-distributed NIST data</td><td>physics.nist.gov unreachable; validated against Geant4.</td><td>Swap in the NIST downloads before M4.</td></tr>
@@ -284,6 +307,12 @@ pre.prompt { white-space: pre-wrap; font-family: var(--f-mono); font-size: 12.5p
   Geant4's (D015), so the comparison tests the transport rather than the data.</p>
   <div class="tbl"><table><thead><tr><th>Quantity</th><th>Geant4 option4</th><th>EGSnrc</th><th>EGSnrc − Geant4</th></tr></thead>
   <tbody><tr><td>D/Φ₀ at 5 cm (boundary-free in Geant4)</td><td class='n'>5.3829 × 10<sup>−12</sup></td><td class='n'>5.3723 × 10<sup>−12</sup></td><td class='n'>-0.20% ± 0.17%</td></tr><tr><td>s_w,air, matched PEGS4 media</td><td class='n'>1.12593</td><td class='n'>1.12602</td><td class='n'>+0.01% ± 0.00%</td></tr></tbody></table></div>
+  <div class="tbl"><table><thead><tr><th>B0 spectrum, 10 keV bins above 10 keV</th><th class="nt">W1, EGSnrc vs Geant4 (keV)</th>
+  <th class="nt">W1 between half-samples, EGSnrc / Geant4 (keV)</th><th>Mean energy, EGSnrc − Geant4</th><th>Largest bin difference</th></tr></thead>
+  <tbody></tbody></table></div>
+  <p class="note">The half-sample W1 is each code's own statistical scale. Bin differences count only bins holding at least
+  0.5% of the peak. The largest ones sit at the electron spectrum's upper edge, where EGSnrc's half-samples differ by as
+  much.</p>
 </section>
 
 <section id="fano">
@@ -310,7 +339,7 @@ pre.prompt { white-space: pre-wrap; font-family: var(--f-mono); font-size: 12.5p
   <h2>AI harness</h2>
   <div class="cond">
     <div><b>A0, recall</b><span>Problem statement only, no tools.</span></div>
-    <div><b>A1, compute</b><span>Plus a Python sandbox: numpy and scipy, no network, no transport code, 4 cores, 10 min per call.</span></div>
+    <div><b>A1, compute</b><span>Plus a Python sandbox: numpy and scipy, no network, no transport code, no compiler (from D037), 4 cores, 10 min per call.</span></div>
     <div><b>A2, compute with data</b><span>Plus water XCOM and ESTAR tables as files.</span></div>
   </div>
   <ul class="tight">
@@ -318,8 +347,9 @@ pre.prompt { white-space: pre-wrap; font-family: var(--f-mono); font-size: 12.5p
     <li>A test fails if any number in a prompt, other than the configuration and the bin edges, lies within 0.5% of a Monte Carlo result or a refs.yaml value.</li>
     <li>Model code cannot see the network, the repository, the transport codes or this session's transcripts. It runs in its own network, mount and process namespaces.</li>
     <li>Every request, response and tool call is written once, read-only. A malformed answer gets one logged retry. Refusals, parse failures and API errors are counted.</li>
-    <li>Model slots: frontier_anthropic, frontier_openai, frontier_google, open_weight_1, open_weight_2. Identifiers are filled in at launch and recorded per call.</li>
-    <li><b>Cost estimate:</b> 125 conversations, about $127 at central list prices, about $381 in the high case. Pilot: about $59. The prices are unverified third-party figures and the token counts are assumptions. Both are replaced by official prices and pilot measurements before you approve.</li>
+    <li>Models (D030): anthropic/claude-haiku-5.5 · openai/gpt-6-luna · google/gemini-2.5-flash-lite · deepseek/deepseek-v4-flash · qwen/qwen3.7-flash. The served model and upstream provider are recorded per call.</li>
+    <li><b>Measured cost:</b> R0 $7.78 for 125 conversations; the pilot and its tests $4.69.</li>
+    <li><b>Compilers.</b> In M4-R0 the sandbox still exposed the container's C and C++ compilers. They are removed for later runs, and a test checks it (D037).</li>
   </ul>
   <details><summary>The frozen R0 prompt (v1) as a model sees it</summary>
   <pre class="prompt">You are an expert in radiation physics and radiation dosimetry. Answer the question you are given. You have a tool, python, that runs Python 3 code and returns its standard output and standard error. numpy and scipy are installed; there is no internet access and no radiation transport code is installed. Each call may run for at most 10 minutes on 4 CPU cores. Files you write in the working directory persist between calls.
@@ -407,13 +437,17 @@ plus &quot;method&quot; and &quot;data_sources&quot;, using the units stated. Th
 </section>
 
 <section id="scoring">
-  <h2>How answers will be scored</h2>
+  <h2>How answers are scored</h2>
   <p>Each quantity is pass, fail, unresolved (outside tolerance but inside the codes' own spread) or missing. A model's
   breakpoint is the first layer with a resolved failure. H1 and H2 compare errors on primary-photon quantities with errors on
   transport quantities; H3 compares the error on PDD(5) with the error on D/Φ₀.</p>
+  <p>Distributions are scored two ways. The pre-set rule (D028) asks for W1 and JSD within 3 × the Monte Carlo's
+  half-sample distance, which only a Monte Carlo of the reference's precision can meet. The revised rule (D038) asks for
+  W1 within 5% of the Monte Carlo mean energy, or 0.1 in cos θ. It was chosen after M4, so it is exploratory for M4-R0
+  and pre-registered for later runs.</p>
   <h3>Controls, scored like a model</h3>
-  <div class="tbl"><table><thead><tr><th>Control</th><th>Expected</th><th>Result</th><th></th></tr></thead>
-  <tbody><tr><td class='n'>positive_livermore</td><td>no breakpoint (pass or unresolved)</td><td>no breakpoint</td><td><span class="chip ok">as expected</span></td></tr><tr><td class='n'>positive_penelope</td><td>no breakpoint (pass or unresolved)</td><td>no breakpoint</td><td><span class="chip ok">as expected</span></td></tr><tr><td class='n'>negative_dose_plus5pct</td><td>breaks at Layer 5</td><td>breaks at Layer 5</td><td><span class="chip ok">as expected</span></td></tr><tr><td class='n'>negative_uniform</td><td>breaks at Layer 1</td><td>breaks at Layer 1</td><td><span class="chip ok">as expected</span></td></tr><tr><td class='n'>identity</td><td>no breakpoint</td><td>no breakpoint</td><td><span class="chip ok">as expected</span></td></tr></tbody></table></div>
+  <div class="tbl"><table><thead><tr><th>Control</th><th>Expected</th><th>Pre-set rule</th><th>Revised rule (D038)</th><th></th></tr></thead>
+  <tbody><tr><td class='n'>positive_livermore</td><td>no breakpoint (pass or unresolved)</td><td>no breakpoint</td><td>no breakpoint</td><td><span class="chip ok">as expected</span></td></tr><tr><td class='n'>positive_penelope</td><td>no breakpoint (pass or unresolved)</td><td>no breakpoint</td><td>no breakpoint</td><td><span class="chip ok">as expected</span></td></tr><tr><td class='n'>negative_dose_plus5pct</td><td>breaks at Layer 5</td><td>breaks at Layer 5</td><td>breaks at Layer 5</td><td><span class="chip ok">as expected</span></td></tr><tr><td class='n'>negative_uniform</td><td>breaks at Layer 1</td><td>breaks at Layer 1</td><td>breaks at Layer 1</td><td><span class="chip ok">as expected</span></td></tr><tr><td class='n'>identity</td><td>no breakpoint</td><td>no breakpoint</td><td>no breakpoint</td><td><span class="chip ok">as expected</span></td></tr></tbody></table></div>
   <div class="tbl"><table><thead><tr><th>Events control</th><th>Energy distance</th><th>MC baseline (median, 95th pct)</th><th>Invalid (bound rules)</th></tr></thead>
   <tbody><tr><td class='n'>positive_mc_resample</td><td class='n'>0.0023</td><td class='n'>0.0016, 0.0036</td><td class='n'>0.0%</td></tr><tr><td class='n'>negative_mock</td><td class='n'>0.7374</td><td class='n'>0.0016, 0.0036</td><td class='n'>100.0%</td></tr></tbody></table></div>
   <details><summary>All 33 quantities: reference, tolerance and resolution floor</summary>
@@ -428,7 +462,9 @@ plus &quot;method&quot; and &quot;data_sources&quot;, using the units stated. Th
     <li><b>All external values are unverified.</b> The checks on this page compare against values that only you can sign off.</li>
     <li><b>The A2 tables are reproductions.</b> They are validated against Geant4, but they are not NIST downloads.</li>
     <li><b>The resolution floor rests on three Geant4 lists and one EGSnrc geometry.</b> The lists share the multiple-scattering model, so the floor may understate transport uncertainty for electron-fluence quantities.</li>
-    <li><b>Model choice is time-stamped.</b> "Best available on the access date" makes the results a snapshot; the identifiers and dates are recorded per call.</li>
+    <li><b>Low-cost tier only (D030).</b> The results describe each provider's fast tier on 2026-10-12, not its best model. Identifiers and dates are recorded per call.</li>
+    <li><b>The revised shape rule was chosen after seeing the data (D038).</b> For M4-R0 it is exploratory; the pre-set rule stays the primary analysis.</li>
+    <li><b>Three M4 conversations used compiled C++ (D037).</b> Results are shown with and without them; later runs cannot compile.</li>
   </ul>
 </section>
 <footer class="note">Generated by analysis/study_page.py from analysis/results/ and ai/. Every number is read from a results file.</footer>

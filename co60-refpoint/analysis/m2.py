@@ -10,7 +10,8 @@ Contents (each part is skipped while its runs are incomplete):
   step_size       M2 option4 (range factor 0.04) over M1 option4 (0.08) for every scalar
   list_spread     Livermore and Penelope against option4 for every scalar, and distribution distances
   half_sample     W1 and JSD between the two halves of the option4 batches, per distribution
-  b0              EGSnrc (DOSRZnrc, FLURZnrc, SPRRZnrc) against Geant4 option4 in geometry B0
+  b0              EGSnrc (DOSRZnrc, FLURZnrc, SPRRZnrc) against Geant4 option4 in geometry B0, with the shape
+                  metrics of the B0 spectra and the check of the s_w,air calculation against SPRRZnrc (D039)
 """
 import json
 import math
@@ -26,7 +27,7 @@ from analysis import m1  # noqa: E402
 from analysis.m1 import (BINS, J_PER_MEV, RUNS, TABLES, analyse_run, combine, load_batches, observables,  # noqa: E402
                          strip, tally, to_jsonable)
 from analysis.scoring import jsd, normalize, wasserstein1  # noqa: E402
-from analysis.stopping import bases  # noqa: E402
+from analysis.stopping import bases, spencer_attix  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "analysis" / "results"
@@ -168,6 +169,89 @@ def batch_mean(vals):
             "n_batches": len(v)}
 
 
+def shape_metrics(a, b, edges):
+    """Shape comparison of spectrum a against b (per bin, same edges): W1 (MeV), JSD, the ratio of mean energies,
+    and the largest bin-ratio deviation over bins holding at least 0.5% of b's peak."""
+    p, q = normalize(a), normalize(b)
+    c = 0.5 * (edges[:-1] + edges[1:])
+    keep = q >= 0.005 * q.max()
+    dev = np.abs(p[keep] / q[keep] - 1)
+    return {"w1_MeV": wasserstein1(p, q, edges), "jsd": jsd(p, q),
+            "mean_energy_ratio": float(np.sum(p * c) / np.sum(q * c)),
+            "max_abs_bin_ratio_dev": float(dev.max()), "at_MeV": float(c[keep][np.argmax(dev)])}
+
+
+def b0_spectra(sp):
+    """EGSnrc (FLURZnrc) against Geant4 option4 spectra in B0 on the common 10 keV grid above 10 keV (both codes'
+    cut-offs): shape metrics, and the same metrics between half-samples of each code as its statistical scale."""
+    jobs = egs_jobs("M2-B0-egsnrc-fluence")
+    egs = [flurz_spectra(f)["total"] for f in jobs]
+    top = egs[0]["bintop"]
+    n = len(top)
+    edges = np.concatenate([[0.0], top])
+    assert np.allclose(np.diff(edges), 0.01)
+    width = np.diff(edges)
+    obs = [observables(b, sp) for b in load_batches("M2-B0-option4")]
+    series = {
+        "photon": ([x["photons"] * width for x in egs],
+                   [np.asarray(o["L1_photon_fluence_10keV"]["total"])[:n] for o in obs]),
+        "electron": ([x["electrons"] * width for x in egs],
+                     [np.asarray(o["L4_electron_fluence_10keV_per_MeV"])[:n] * 0.010 for o in obs]),
+        "electron_linear_estimator": ([x["electrons"] * width for x in egs],
+                                      [np.asarray(o["L4lin_electron_fluence_10keV_per_MeV"])[:n] * 0.010
+                                       for o in obs]),
+    }
+    sel, e_edges = slice(1, n), edges[1:]
+    out = {"grid": "10 keV bins from 0.01 to 1.34 MeV; ratios are EGSnrc over Geant4"}
+    for name, (e_, g_) in series.items():
+        m = shape_metrics(np.mean(e_, 0)[sel], np.mean(g_, 0)[sel], e_edges)
+        for code, x in (("egsnrc", e_), ("geant4", g_)):
+            h = len(x) // 2
+            m[f"half_sample_{code}"] = shape_metrics(np.mean(x[:h], 0)[sel], np.mean(x[h:2 * h], 0)[sel], e_edges)
+        out[name] = m
+    return out
+
+
+def s_w_air_check(sp, spr):
+    """STUDY_PLAN Section 8 required test (DECISIONS D039): our Spencer-Attix calculation on the FLURZnrc electron
+    fluence (2 keV bins; same transport, geometry and PEGS4 stopping powers as SPRRZnrc) against SPRRZnrc; the
+    effect of 2 keV bins, from the Geant4 B0 fluence summed to 2 keV, paired by batch; and Geant4's fluence
+    against EGSnrc's under the same calculation."""
+    peg = sp["pegs4"]
+    out = {}
+    run = "M2-B0-egsnrc-fluence-2keV"
+    spec = yaml.safe_load(open(ROOT / "mc/egsnrc/b0/specs" / f"{run}.yaml"))
+    jobs = egs_jobs(run)
+    if len(jobs) == spec["jobs"]:
+        w = spec["bin_width_MeV"]
+        sa, sa_ep = [], []
+        for f in jobs:
+            t = flurz_spectra(f)["total"]
+            assert np.allclose(np.diff(np.concatenate([[0.0], t["bintop"]])), w)
+            el, pos = t["electrons"] * w, t["positrons"] * w
+            sa.append(spencer_attix(el, 0.010, peg["water"], peg["air"], width=w)["s_w_air"])
+            sa_ep.append(spencer_attix(el + pos, 0.010, peg["water"], peg["air"], width=w)["s_w_air"])
+        out["calc_on_egsnrc_fluence_2keV"] = batch_mean(sa)
+        out["calc_on_egsnrc_fluence_2keV_with_positrons"] = batch_mean(sa_ep)
+    if complete("M2-B0-option4"):
+        s1, s2 = [], []
+        for b in load_batches("M2-B0-option4"):
+            el = strip(tally(b, "electron_fluence_csda"))
+            el2 = el[: el.size // 2 * 2].reshape(-1, 2).sum(1)
+            s1.append(spencer_attix(el, 0.010, peg["water"], peg["air"])["s_w_air"])
+            s2.append(spencer_attix(el2, 0.010, peg["water"], peg["air"], width=0.002)["s_w_air"])
+        out["calc_on_geant4_fluence_1keV"] = batch_mean(s1)
+        out["calc_on_geant4_fluence_2keV"] = batch_mean(s2)
+        out["geant4_2keV_minus_1keV_paired"] = batch_mean(np.array(s2) - np.array(s1))
+    if spr and "calc_on_egsnrc_fluence_2keV" in out:
+        r = ratio(out["calc_on_egsnrc_fluence_2keV"], spr)
+        out["sprrznrc_over_calc_on_egsnrc_fluence"] = dict(r, z=(r["ratio"] - 1) / r["sem"])
+    if "calc_on_egsnrc_fluence_2keV" in out and "calc_on_geant4_fluence_2keV" in out:
+        r = ratio(out["calc_on_egsnrc_fluence_2keV"], out["calc_on_geant4_fluence_2keV"])
+        out["geant4_over_egsnrc_fluence_same_calc"] = dict(r, z=(r["ratio"] - 1) / r["sem"])
+    return out
+
+
 def b0(sp):
     out = {}
     sd = 100.0
@@ -215,6 +299,9 @@ def b0(sp):
         out["D_egsnrc_over_geant4"] = ratio(out["geant4_D_over_phi0_Gy_cm2"], out["egsnrc_D_over_phi0_Gy_cm2"])
     if "egsnrc_s_w_air" in out and "geant4_s_w_air_pegs4" in out:
         out["s_w_air_egsnrc_over_geant4"] = ratio(out["geant4_s_w_air_pegs4"], out["egsnrc_s_w_air"])
+    out["s_w_air_check"] = s_w_air_check(sp, out.get("egsnrc_s_w_air"))
+    if "egsnrc_spectra_10keV" in out and complete("M2-B0-option4"):
+        out["spectra_metrics"] = b0_spectra(sp)
     return out
 
 

@@ -160,16 +160,17 @@ def bases(tables_json, pegs4_dir=None):
     return out
 
 
-def spencer_attix(fluence_1kev, delta_mev, water, air):
+def spencer_attix(fluence_1kev, delta_mev, water, air, width=0.001):
     """Spencer-Attix water-to-air stopping-power ratio with the Nahum track-end term.
 
     fluence_1kev: electron track length per 1 keV bin, bins [0,1), [1,2), ... keV
-    (no under/overflow). water, air: (L(T, cut), S(T)) pairs in MeV cm2/g.
+    (no under/overflow); `width` (MeV) allows another uniform bin width with Delta on a bin edge.
+    water, air: (L(T, cut), S(T)) pairs in MeV cm2/g.
     Returns the ratio and the water and air terms (in fluence units times MeV cm2/g).
     """
     phi = np.asarray(fluence_1kev, dtype=float)
-    width = 0.001
     k = int(round(delta_mev / width))
+    assert abs(k * width - delta_mev) < 1e-9, "Delta must fall on a bin edge"
     e_mid = (np.arange(phi.size) + 0.5) * width
     above = slice(k, phi.size)
     phi_e_at_delta = 0.5 * (phi[k - 1] + phi[k]) / width   # differential fluence at Delta, per MeV

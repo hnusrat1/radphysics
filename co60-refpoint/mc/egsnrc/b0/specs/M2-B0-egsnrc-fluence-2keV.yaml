@@ -1,0 +1,18 @@
+run_id: M2-B0-egsnrc-fluence-2keV
+purpose: >-
+  Check of the s_w,air calculation against SPRRZnrc with the transport code held fixed (STUDY_PLAN Section 8,
+  required test; DECISIONS D039). FLURZnrc electron fluence in r < 1 cm, 4.9-5.1 cm, in 2 keV bins (1 keV would
+  need more than FLURZnrc's 1000 energy bins), same geometry, source and transport as M2-B0-egsnrc-spr. Our
+  Spencer-Attix function applied to this spectrum, with the same PEGS4 stopping powers, must reproduce the
+  SPRRZnrc ratio within the combined statistical uncertainty.
+code: flurznrc
+pegs4_file: water_air_g4_option4
+media: [H2O_G4, AIR_G4]
+geometry: {planes_cm: [0.0, 4.9, 5.1, 30.0], radii_cm: [1.0, 15.0]}
+source: {ssd_cm: 100.0, field_radius_cm: 5.64, spectrum_file: co60_lines.spectrum}
+scoring_region: 3
+bin_width_MeV: 0.002
+parallel: 4
+jobs: 4
+histories_per_job: 60000000
+seed_base: 2301
