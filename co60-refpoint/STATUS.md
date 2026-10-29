@@ -115,14 +115,18 @@ The Monte Carlo reference for the AI comparison is final. It is option4 at msc r
   - **Photon fluence.** Mean energy −0.04% ± 0.03%. W1 is 0.36 keV, against 0.24 to 0.25 keV between half-samples of either code.
   - **Photon bins.** 1 of 116 bins lies beyond 3σ, about what chance gives.
   - **Electron fluence: a resolved shape difference at low energy.**
-    - The mean energy is −0.42% ± 0.08% (EGSnrc lower, 5σ), inside the 0.5% threshold. W1 is 1.8 keV, against 1.1 keV between EGSnrc's half-samples.
+    - The mean energy is −0.41% ± 0.08% (EGSnrc lower, 5σ), inside the 0.5% threshold. W1 is 1.8 keV, against 1.1 keV between EGSnrc's half-samples.
     - 29 of 111 bins lie beyond 3σ. The difference is largest in the lowest bin: EGSnrc has 6.0% ± 0.2% more fluence at 10–20 keV than Geant4's CSDA-weighted estimator (D020), and about 1.7% more at 20–50 keV.
     - Geant4's linear estimator is further off: 17% at 10–20 keV. The CSDA-weighted estimator is the closer of the two, which supports D020 but does not close the gap.
-    - The cause is not identified. EGSnrc stops tracking electrons at 10 keV, while Geant4 follows them further down, and the two codes' fluence estimators differ.
+    - Likely cause: FLURZnrc spreads each step's path length evenly in energy. That gives the low-energy end of each step more path length than Geant4's 1/S(E) weighting does, the direction seen, and it inflates the bin just above EGSnrc's 10 keV cut-off by 16.5% (D039).
   - **Effect on the reference.** Dose and s_w,air in B0 agree regardless (−0.20% and +0.008%).
     - This B0 W1 of 1.8 keV is larger than the resolution floor for the R0 electron spectrum (0.7 keV, from the Geant4 lists).
     - Raising that floor to 1.8 keV would change none of the 62 scored AI answers, so the floor stays as defined.
     - Under D038 the tolerance for that spectrum is 22 keV.
+- **s_w,air calculation against SPRRZnrc (required test, D039; added 2026-10-29).**
+  - With EGSnrc's own fluence (FLURZnrc, 2 keV bins), the same PEGS4 stopping powers, and the track-end fluence extrapolated from 12–30 keV, our calculation reproduces SPRRZnrc to +0.0022% ± 0.0018% (1.2σ). The plan's criterion is met at k = 2.
+  - Reading the track-end fluence from the first bin above the cut-off instead gives −0.0056% (3.0σ); FLURZnrc inflates that bin. The extrapolation was chosen after both were seen, so the 0.008% between them counts as the check's systematic uncertainty.
+  - The reference value, which uses Geant4's fluence, is 0.0079% ± 0.0016% below SPRRZnrc. Every variant agrees within 0.01%, two hundred times below the 2% tolerance on s_w,air.
 - **Published values.**
   - s_w,air on the ICRU 37 basis is 1.1331, against TRS-398's 1.133.
   - Geant4's tracking μ agrees with the XCOM data within 0.03%.
@@ -186,6 +190,11 @@ The plan's M2 gate is: Humza verifies every reference value in `refs.yaml` and a
   - Fix: `phi0_at_r0()` now recomputes Φ₀ at 105 cm from the solid angle. It is checked against the main run, where both are the same.
 - **Queue runner shadowed Python's `queue` module.** I named it `mc/tools/queue.py`. When the queue reached the first EGSnrc run, `run_egsnrc.py` imported `concurrent.futures`, which imports the standard `queue` module, and found mine instead. The runner crashed at 18:21 before any job started, and the empty run directory was reused on relaunch. Renamed to `run_queue.py`. About 20 min lost.
 - **Comparison runs trimmed before they started.** Livermore and Penelope at R0 use 4 × 10⁶ histories per batch, and Geant4 B0 layers 3 × 10⁶, to save about 3 h. The option4 reference keeps 1.2 × 10⁸.
+- **The s_w,air check failed in its first form (2026-10-29, D039).**
+  - Applied to EGSnrc's fluence with the two-sided track-end reading used for Geant4, our calculation came out 0.022% below SPRRZnrc (11σ).
+  - The cause was the reading, not the calculation: EGSnrc has no fluence below its 10 keV cut-off, so averaging the bins on both sides of Δ halved the track-end term.
+- **FLURZnrc parser window (2026-10-29).** `flurz_spectra` read only 20,000 characters after each region header. That holds the 134 rows of a 10 keV spectrum but would have cut a 667-row 2 keV spectrum to about 250 rows without an error. It was found by reading the code before the 2 keV run was analysed, and it now reads to the end of the block. A check that the parsed spectrum reaches 1.3325 MeV guards it.
+- **I misread the B0 electron spectra once (2026-10-29).** I first wrote that Geant4's CSDA-weighted estimator matches FLURZnrc at low energy. The per-bin comparison shows a 6% difference at 10–20 keV, and the STATUS text was corrected before it was committed.
 
 ## M3. AI harness (2026-10-11). Built and tested offline; the P0 pilot and M4 need keys, network access and budget approval.
 

@@ -544,3 +544,72 @@ within 3 × the Monte Carlo's half-sample distances. Those distances measure the
   - **Every other model and condition** still breaks at Layer 1, mostly on the scattered-photon spectrum:
     - DeepSeek A1 and A2: W1 0.032 and 0.034 MeV, against 0.024;
     - GPT-6 Luna, Qwen and Gemini are further off.
+
+## D039. The s_w,air calculation against SPRRZnrc (2026-10-29; required test, STUDY_PLAN Section 8)
+
+The plan requires the s_w,air calculation to reproduce SPRRZnrc on B0 within the combined uncertainty. The only
+comparison so far mixed two differences: the reference value (Geant4's fluence with our calculation) differs from
+SPRRZnrc by −0.0079% ± 0.0016% (5σ), but both the transport code and the calculation differ.
+
+- **Check with the transport code held fixed.**
+  - FLURZnrc scored the electron fluence of the same EGSnrc set-up: `M2-B0-egsnrc-fluence-2keV`, 4 × 6 × 10⁷
+    histories, 2 keV bins, 17 min per job. FLURZnrc allows at most 1,000 energy bins, so 1 keV bins would need a
+    recompile.
+  - Our function (`analysis/stopping.py`) was applied to that fluence with the same PEGS4 stopping powers.
+- **The track-end term.** EGSnrc stops electrons at ECUT = Δ = 10 keV, so its bin below Δ is empty. The two-sided
+  reading of Φ_E(Δ) used for Geant4 therefore halves the track-end term (−0.022%). Two one-sided readings were tried:
+  - **First bin above Δ.** FLURZnrc inflates that bin by 16.5% against its neighbours, while Geant4's CSDA-weighted
+    spectrum is flat there. FLURZnrc spreads each step's path length evenly in energy down to ECUT
+    (`flurznrc.mortran`, lines 3239–3262).
+  - **Extrapolated.** A straight line through the 12–30 keV bins, evaluated at Δ.
+- **Correction for the procedure.** Each reading, with 2 keV bins, was applied to the Geant4 B0 fluence, which
+  continues below Δ, and compared with the 1 keV reference calculation, batch by batch. The effect is +0.0008% for the
+  first-bin reading and −0.0004% for the extrapolated one, and it is subtracted from the EGSnrc results.
+- **Result: SPRRZnrc against our calculation on EGSnrc's fluence.**
+  - Extrapolated reading: +0.0022% ± 0.0018% (1.2σ). The plan's criterion is met at k = 2.
+  - First-bin reading: −0.0056% ± 0.0018% (3.0σ).
+  - The extrapolated reading was chosen after both were seen, on the grounds above. The 0.008% between the two
+    readings is the systematic uncertainty of this check. Each SPRRZnrc and FLURZnrc uncertainty rests on 4 batches.
+- **Tests** (`tests/test_sprrz.py`):
+  - the procedure is unbiased on a spectrum without a cut-off;
+  - with the extrapolated reading, the calculation reproduces SPRRZnrc within 2σ;
+  - both readings, and the reference value itself, agree with SPRRZnrc within 0.05%, one fortieth of the 2%
+    tolerance on s_w,air.
+- **The same allocation is the likely cause of the B0 electron-spectrum difference at low energy** (EGSnrc 6% above
+  Geant4's CSDA-weighted estimator at 10–20 keV).
+  - Spreading a step's path length evenly in energy gives the low-energy end of each step more path length than
+    1/S(E) weighting does, which is the direction seen.
+  - D/Φ₀ and s_w,air from SPRRZnrc do not use FLURZnrc's fluence.
+
+## D040. H3 compares recalled values with an idealized source (2026-10-29)
+
+H3 (STUDY_PLAN Section 2) asks whether models recall the tabulated PDD(5) more accurately than they compute D/Φ₀.
+- **The reference.** PDD(5) = 81.79% ± 0.22% is the Monte Carlo value for the source in the prompt: a point
+  source of the two Co-60 lines, with no head scatter (model A).
+- **A measured table.** A tabulated PDD(5) is measured on a real unit. Its beam includes photons scattered in the
+  source capsule and collimator, which are softer than the primary lines and lower the depth dose.
+- **Consequence.** A model that recalls a measured table correctly can differ from the reference. By how much is
+  not yet known, because the published PDD(5) is still missing from refs.yaml (Section 10.1).
+
+- **Observed (A0, median of the repeats).**
+
+  | Model | PDD(5) answered | Against the reference |
+  |---|---|---|
+  | GPT-6 Luna | 80.5% | −1.6% |
+  | Haiku | 79.5% | −2.8% |
+  | DeepSeek | 86% | +5.2% |
+  | Qwen | 68% | −17% |
+  | Gemini | 55% | −33% |
+
+  The two closest answers lie below the reference, in the direction a measured table would differ. Whether
+  either would pass against a measured value cannot be said until that value is in refs.yaml.
+- **Reading.** H3 is reported as exploratory until a verified published PDD(5) for 10 × 10 cm² at SSD 100 cm is
+  in refs.yaml.
+  - Then each PDD answer is compared with both values. The difference between the published value and the
+    model-A value is reported as the size of this confound.
+  - The H3 numbers in `M5_M4-R0.json` stand as computed against the model-A reference.
+- **s_w,air carries a smaller version of the same issue.** No verdict depends on it.
+  - In A0 four models answered between 1.114 and 1.134; Gemini answered 1.3.
+  - The reference is on the ICRU 90 basis (1.1268). On the ICRU 37 basis, which TRS-398 used, the same fluence
+    gives 1.1331.
+  - The 0.56% basis difference is inside the 2% tolerance.

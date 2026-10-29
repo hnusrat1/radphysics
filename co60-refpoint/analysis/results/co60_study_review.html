@@ -112,7 +112,7 @@ pre.prompt { white-space: pre-wrap; font-family: var(--f-mono); font-size: 12.5p
   Five low-cost models answered the R0 questions (125 conversations, $7.78), and their answers are scored.
   This page covers each part, the choices made under your delegation, the fixes after the AI runs (D037–D040), and
   what is left for you. The full AI results are on the M4 results page.</p>
-  <div class="meta"><span>Generated 2026-10-29 02:21 UTC</span><span>commit f7a5824</span><span>R0: Co-60, 5 cm depth, 10 × 10 cm², SSD 100 cm</span>
+  <div class="meta"><span>Generated 2026-10-29 02:28 UTC</span><span>commit 80e4bad</span><span>R0: Co-60, 5 cm depth, 10 × 10 cm², SSD 100 cm</span>
   <span>reference final (M2)</span></div>
 </header>
 
@@ -306,10 +306,10 @@ pre.prompt { white-space: pre-wrap; font-family: var(--f-mono); font-size: 12.5p
   <p>B0 is a cylindrical phantom (r 15 cm, 30 cm deep) with a circular field of the same area. The water and air are matched to
   Geant4's (D015), so the comparison tests the transport rather than the data.</p>
   <div class="tbl"><table><thead><tr><th>Quantity</th><th>Geant4 option4</th><th>EGSnrc</th><th>EGSnrc − Geant4</th></tr></thead>
-  <tbody><tr><td>D/Φ₀ at 5 cm (boundary-free in Geant4)</td><td class='n'>5.3829 × 10<sup>−12</sup></td><td class='n'>5.3723 × 10<sup>−12</sup></td><td class='n'>-0.20% ± 0.17%</td></tr><tr><td>s_w,air, matched PEGS4 media</td><td class='n'>1.12593</td><td class='n'>1.12602</td><td class='n'>+0.01% ± 0.00%</td></tr></tbody></table></div>
+  <tbody><tr><td>D/Φ₀ at 5 cm (boundary-free in Geant4)</td><td class='n'>5.3829 × 10<sup>−12</sup></td><td class='n'>5.3723 × 10<sup>−12</sup></td><td class='n'>-0.20% ± 0.17%</td></tr><tr><td>s_w,air, matched PEGS4 media</td><td class='n'>1.12593</td><td class='n'>1.12602</td><td class='n'>+0.0079% ± 0.0016%</td></tr><tr><td>s_w,air: our calculation on EGSnrc's own fluence against SPRRZnrc, track-end fluence extrapolated from 12–30 keV (D039)</td><td class='n'>1.125998 (calc.)</td><td class='n'>1.126022</td><td class='n'>+0.0022% ± 0.0018% <span class='z'>(+1.2σ)</span></td></tr><tr><td>s_w,air: our calculation on EGSnrc's own fluence against SPRRZnrc, track-end fluence from the first bin above 10 keV (D039)</td><td class='n'>1.126085 (calc.)</td><td class='n'>1.126022</td><td class='n'>-0.0056% ± 0.0018% <span class='z'>(-3.0σ)</span></td></tr></tbody></table></div>
   <div class="tbl"><table><thead><tr><th>B0 spectrum, 10 keV bins above 10 keV</th><th class="nt">W1, EGSnrc vs Geant4 (keV)</th>
-  <th class="nt">W1 between half-samples, EGSnrc / Geant4 (keV)</th><th>Mean energy, EGSnrc − Geant4</th><th>Lowest bin compared</th><th>Bins beyond 3σ</th></tr></thead>
-  <tbody></tbody></table></div>
+  <th class="nt">W1 between half-samples, EGSnrc / Geant4 (keV)</th><th>Mean energy, EGSnrc − Geant4</th><th>Lowest bin compared</th><th class="nt">Bins beyond 3σ</th></tr></thead>
+  <tbody><tr><td>Photon fluence</td><td class='n'>0.36</td><td class='n'>0.24 / 0.25</td><td class='n'>-0.04% ± 0.03% <span class='z'>(-1.1σ)</span></td><td class='n'>+1.4% ± 3.0% at 30–40 keV</td><td class='n'>1 of 116</td></tr><tr><td>Electron fluence (CSDA-weighted estimator, D020)</td><td class='n'>1.82</td><td class='n'>1.07 / 0.24</td><td class='n'>-0.41% ± 0.08% <span class='z'>(-5.1σ)</span></td><td class='n'>+6.0% ± 0.2% at 10–20 keV</td><td class='n'>29 of 111</td></tr><tr><td>Electron fluence (linear estimator)</td><td class='n'>2.56</td><td class='n'>1.07 / 0.24</td><td class='n'>-0.58% ± 0.08% <span class='z'>(-7.3σ)</span></td><td class='n'>+16.8% ± 0.2% at 10–20 keV</td><td class='n'>31 of 111</td></tr></tbody></table></div>
   <p class="note">The half-sample W1 is each code's own statistical scale. Bins count only where they hold at least 0.5% of
   the peak. The photon spectra agree. The electron spectra differ beyond their statistics at low energy, where EGSnrc
   has 6% more fluence at 10–20 keV than Geant4's CSDA-weighted estimator and 17% more than its linear one. Dose and

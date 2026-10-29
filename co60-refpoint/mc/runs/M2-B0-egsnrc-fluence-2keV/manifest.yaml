@@ -1,0 +1,92 @@
+run_id: M2-B0-egsnrc-fluence-2keV
+purpose: Check of the s_w,air calculation against SPRRZnrc with the transport code held fixed (STUDY_PLAN
+  Section 8, required test; DECISIONS D039). FLURZnrc electron fluence in r < 1 cm, 4.9-5.1 cm, in 2 keV
+  bins (1 keV would need more than FLURZnrc's 1000 energy bins), same geometry, source and transport as
+  M2-B0-egsnrc-spr. Our Spencer-Attix function applied to this spectrum, with the same PEGS4 stopping
+  powers, must reproduce the SPRRZnrc ratio within the combined statistical uncertainty.
+created_utc: '2026-10-29T02:05:08Z'
+git:
+  commit: 396f13473215f3e585ce475d3652e99a48c56a50
+  dirty: true
+machine:
+  hostname: vm
+  platform: Linux-6.18.44-fc-v185-x86_64-with-glibc2.39
+  cpu: Intel(R) Xeon(R) Processor @ 2.10GHz
+  logical_cpus: 4
+  compiler: c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+egsnrc:
+  hen_house: /opt/EGSnrc/HEN_HOUSE/
+  egs_home: /opt/EGSnrc/egs_home/
+  egs_config: /opt/EGSnrc/HEN_HOUSE/specs/linux.conf
+  commit: bd49a47aae3938f49f4100b8e018091861408b19
+  describe: v2026
+spec_file: mc/egsnrc/b0/specs/M2-B0-egsnrc-fluence-2keV.yaml
+spec:
+  run_id: M2-B0-egsnrc-fluence-2keV
+  purpose: Check of the s_w,air calculation against SPRRZnrc with the transport code held fixed (STUDY_PLAN
+    Section 8, required test; DECISIONS D039). FLURZnrc electron fluence in r < 1 cm, 4.9-5.1 cm, in 2
+    keV bins (1 keV would need more than FLURZnrc's 1000 energy bins), same geometry, source and transport
+    as M2-B0-egsnrc-spr. Our Spencer-Attix function applied to this spectrum, with the same PEGS4 stopping
+    powers, must reproduce the SPRRZnrc ratio within the combined statistical uncertainty.
+  code: flurznrc
+  pegs4_file: water_air_g4_option4
+  media:
+  - H2O_G4
+  - AIR_G4
+  geometry:
+    planes_cm:
+    - 0.0
+    - 4.9
+    - 5.1
+    - 30.0
+    radii_cm:
+    - 1.0
+    - 15.0
+  source:
+    ssd_cm: 100.0
+    field_radius_cm: 5.64
+    spectrum_file: co60_lines.spectrum
+  scoring_region: 3
+  bin_width_MeV: 0.002
+  parallel: 4
+  jobs: 4
+  histories_per_job: 60000000
+  seed_base: 2301
+egsnrc_run:
+  hen_house: /opt/EGSnrc/HEN_HOUSE/
+  egs_home: /opt/EGSnrc/egs_home/
+  config: /opt/EGSnrc/HEN_HOUSE/specs/linux.conf
+  pegs4_file: water_air_g4_option4
+  transport_block: mc/egsnrc/b0/inputs/b0_transport.inc
+jobs:
+- job: 0
+  seeds:
+  - 2301
+  - 97
+  exit_code: 0
+  wall_s: 1006.8
+  command: flurznrc -i M2-B0-egsnrc-fluence-2keV_j00 -p water_air_g4_option4
+- job: 1
+  seeds:
+  - 2302
+  - 98
+  exit_code: 0
+  wall_s: 1014.5
+  command: flurznrc -i M2-B0-egsnrc-fluence-2keV_j01 -p water_air_g4_option4
+- job: 2
+  seeds:
+  - 2303
+  - 99
+  exit_code: 0
+  wall_s: 1012.8
+  command: flurznrc -i M2-B0-egsnrc-fluence-2keV_j02 -p water_air_g4_option4
+- job: 3
+  seeds:
+  - 2304
+  - 100
+  exit_code: 0
+  wall_s: 1013.7
+  command: flurznrc -i M2-B0-egsnrc-fluence-2keV_j03 -p water_air_g4_option4
+started_utc: '2026-10-29T02:05:08Z'
+finished_utc: '2026-10-29T02:22:03Z'
+cpu_time_s: 4047.8

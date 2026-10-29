@@ -236,43 +236,64 @@ def b0_spectra(sp):
     return out
 
 
+def phi_e_at_delta(phi, width, how, delta=0.010, top=0.030):
+    """Differential fluence at Delta (per MeV) for a spectrum with no fluence below Delta, as EGSnrc gives with
+    ECUT = Delta. "one_sided": the first bin above Delta. "extrapolated": a straight line through the bins from one
+    bin above Delta to `top`, evaluated at Delta; it avoids the first bin, which FLURZnrc inflates because it spreads
+    each step's path length evenly in energy, down to ECUT (D039)."""
+    k = int(round(delta / width))
+    if how == "one_sided":
+        return float(phi[k] / width)
+    n = int(round(top / width))
+    x = (np.arange(k + 1, n) + 0.5) * width
+    return float(np.polyval(np.polyfit(x, phi[k + 1:n] / width, 1), delta))
+
+
 def s_w_air_check(sp, spr):
     """STUDY_PLAN Section 8 required test (DECISIONS D039): our Spencer-Attix calculation on the FLURZnrc electron
-    fluence (2 keV bins; same transport, geometry and PEGS4 stopping powers as SPRRZnrc) against SPRRZnrc; the
-    effect of 2 keV bins, from the Geant4 B0 fluence summed to 2 keV, paired by batch; and Geant4's fluence
-    against EGSnrc's under the same calculation."""
+    fluence (2 keV bins; same transport, geometry and PEGS4 stopping powers as SPRRZnrc) against SPRRZnrc.
+
+    EGSnrc stops electrons at Delta, so the track-end fluence at Delta is read from above it, two ways (see
+    phi_e_at_delta). What the 2 keV bins and that reading do to the ratio is measured on the Geant4 B0 fluence, whose
+    spectrum continues below Delta: the same procedure against the reference calculation (1 keV, two-sided), paired
+    by batch; it is subtracted from the EGSnrc result."""
     peg = sp["pegs4"]
+    sa = lambda phi, w=0.001, pe=None: spencer_attix(phi, 0.010, peg["water"], peg["air"], width=w,  # noqa: E731
+                                                     phi_e_at_delta=pe)["s_w_air"]
+    ways = ("one_sided", "extrapolated")
     out = {}
     run = "M2-B0-egsnrc-fluence-2keV"
     spec = yaml.safe_load(open(ROOT / "mc/egsnrc/b0/specs" / f"{run}.yaml"))
     jobs = egs_jobs(run)
-    if len(jobs) == spec["jobs"]:
+    if len(jobs) == spec["jobs"] and complete("M2-B0-option4"):
         w = spec["bin_width_MeV"]
-        sa, sa_ep = [], []
+        egs = {k: [] for k in ways + ("two_sided",)}
         for f in jobs:
             t = flurz_spectra(f)["total"]
             assert np.allclose(np.diff(np.concatenate([[0.0], t["bintop"]])), w) and t["bintop"][-1] >= 1.3325, f
-            el, pos = t["electrons"] * w, t["positrons"] * w
-            sa.append(spencer_attix(el, 0.010, peg["water"], peg["air"], width=w)["s_w_air"])
-            sa_ep.append(spencer_attix(el + pos, 0.010, peg["water"], peg["air"], width=w)["s_w_air"])
-        out["calc_on_egsnrc_fluence_2keV"] = batch_mean(sa)
-        out["calc_on_egsnrc_fluence_2keV_with_positrons"] = batch_mean(sa_ep)
-    if complete("M2-B0-option4"):
-        s1, s2 = [], []
+            phi = t["electrons"] * w
+            egs["two_sided"].append(sa(phi, w))
+            for how in ways:
+                egs[how].append(sa(phi, w, phi_e_at_delta(phi, w, how)))
+        out["egsnrc_fluence_2keV"] = {k: batch_mean(v) for k, v in egs.items()}
+        g4 = {k: [] for k in ("1keV_two_sided",) + ways}
         for b in load_batches("M2-B0-option4"):
             el = strip(tally(b, "electron_fluence_csda"))
             el2 = el[: el.size // 2 * 2].reshape(-1, 2).sum(1)
-            s1.append(spencer_attix(el, 0.010, peg["water"], peg["air"])["s_w_air"])
-            s2.append(spencer_attix(el2, 0.010, peg["water"], peg["air"], width=0.002)["s_w_air"])
-        out["calc_on_geant4_fluence_1keV"] = batch_mean(s1)
-        out["calc_on_geant4_fluence_2keV"] = batch_mean(s2)
-        out["geant4_2keV_minus_1keV_paired"] = batch_mean(np.array(s2) - np.array(s1))
-    if spr and "calc_on_egsnrc_fluence_2keV" in out:
-        r = ratio(out["calc_on_egsnrc_fluence_2keV"], spr)
-        out["sprrznrc_over_calc_on_egsnrc_fluence"] = dict(r, z=(r["ratio"] - 1) / r["sem"])
-    if "calc_on_egsnrc_fluence_2keV" in out and "calc_on_geant4_fluence_2keV" in out:
-        r = ratio(out["calc_on_egsnrc_fluence_2keV"], out["calc_on_geant4_fluence_2keV"])
-        out["geant4_over_egsnrc_fluence_same_calc"] = dict(r, z=(r["ratio"] - 1) / r["sem"])
+            g4["1keV_two_sided"].append(sa(el))
+            for how in ways:
+                g4[how].append(sa(el2, 0.002, phi_e_at_delta(el2, 0.002, how)))
+        ref1 = np.array(g4["1keV_two_sided"])
+        out["geant4_fluence"] = {"1keV_two_sided": batch_mean(ref1)}
+        out["procedure_effect_on_geant4"] = {how: batch_mean(np.array(g4[how]) - ref1) for how in ways}
+        if spr:
+            out["sprrznrc"] = spr
+            out["sprrznrc_over_calc"] = {}
+            for how in ways:
+                e_ = out["egsnrc_fluence_2keV"][how]
+                corr = {"mean": e_["mean"] - out["procedure_effect_on_geant4"][how]["mean"], "sem": e_["sem"]}
+                r = ratio(corr, spr)
+                out["sprrznrc_over_calc"][how] = dict(r, z=(r["ratio"] - 1) / r["sem"], calc=corr["mean"])
     return out
 
 

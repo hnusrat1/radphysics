@@ -173,16 +173,20 @@ def main():
             r_ = eb["mean"] / ga["mean"]
             s_ = r_ * math.hypot(ga["sem"] / ga["mean"], eb["sem"] / eb["mean"])
             fmt = (lambda x: sci(x, 5)) if "D" in label else (lambda x: sig(x, 6))
+            dp = 4 if abs(r_ - 1) < 1e-3 else 2
             b0_rows.append(f"<tr><td>{label}</td><td class='n'>{fmt(ga['mean'])}</td><td class='n'>{fmt(eb['mean'])}</td>"
-                           f"<td class='n'>{100 * (r_ - 1):+.2f}% ± {100 * s_:.2f}%</td></tr>")
+                           f"<td class='n'>{100 * (r_ - 1):+.{dp}f}% ± {100 * s_:.{dp}f}%</td></tr>")
         else:
             b0_rows.append(f"<tr><td>{label}</td><td colspan='3'>{chip('run', 'running')}</td></tr>")
     chk = b0.get("s_w_air_check", {})
-    if "sprrznrc_over_calc_on_egsnrc_fluence" in chk:
-        c_, r_ = chk["calc_on_egsnrc_fluence_2keV"], chk["sprrznrc_over_calc_on_egsnrc_fluence"]
-        b0_rows.append(f"<tr><td>s_w,air: our calculation on EGSnrc's own fluence (2 keV bins) against SPRRZnrc (D039)</td>"
-                       f"<td class='n'>{sig(c_['mean'], 6)} (calc.)</td><td class='n'>{sig(b0['egsnrc_s_w_air']['mean'], 6)}</td>"
-                       f"<td class='n'>{100 * (r_['ratio'] - 1):+.4f}% ± {100 * r_['sem']:.4f}% ({r_['z']:+.1f}σ)</td></tr>")
+    for how, label in (("extrapolated", "track-end fluence extrapolated from 12–30 keV"),
+                       ("one_sided", "track-end fluence from the first bin above 10 keV")):
+        r_ = chk.get("sprrznrc_over_calc", {}).get(how)
+        if r_:
+            b0_rows.append(f"<tr><td>s_w,air: our calculation on EGSnrc's own fluence against SPRRZnrc, {label} (D039)</td>"
+                           f"<td class='n'>{sig(r_['calc'], 7)} (calc.)</td><td class='n'>{sig(chk['sprrznrc']['mean'], 7)}</td>"
+                           f"<td class='n'>{100 * (r_['ratio'] - 1):+.4f}% ± {100 * r_['sem']:.4f}% "
+                           f"<span class='z'>({r_['z']:+.1f}σ)</span></td></tr>")
     sm = b0.get("spectra_metrics", {})
     spec_rows = []
     for key, label in (("photon", "Photon fluence"), ("electron", "Electron fluence (CSDA-weighted estimator, D020)"),
@@ -480,7 +484,7 @@ def main():
   <div class="tbl"><table><thead><tr><th>Quantity</th><th>Geant4 option4</th><th>EGSnrc</th><th>EGSnrc − Geant4</th></tr></thead>
   <tbody>{''.join(b0_rows)}</tbody></table></div>
   <div class="tbl"><table><thead><tr><th>B0 spectrum, 10 keV bins above 10 keV</th><th class="nt">W1, EGSnrc vs Geant4 (keV)</th>
-  <th class="nt">W1 between half-samples, EGSnrc / Geant4 (keV)</th><th>Mean energy, EGSnrc − Geant4</th><th>Lowest bin compared</th><th>Bins beyond 3σ</th></tr></thead>
+  <th class="nt">W1 between half-samples, EGSnrc / Geant4 (keV)</th><th>Mean energy, EGSnrc − Geant4</th><th>Lowest bin compared</th><th class="nt">Bins beyond 3σ</th></tr></thead>
   <tbody>{''.join(spec_rows)}</tbody></table></div>
   <p class="note">The half-sample W1 is each code's own statistical scale. Bins count only where they hold at least 0.5% of
   the peak. The photon spectra agree. The electron spectra differ beyond their statistics at low energy, where EGSnrc
