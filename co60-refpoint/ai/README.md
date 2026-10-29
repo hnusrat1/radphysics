@@ -5,7 +5,7 @@
 | `observables.yaml` | The quantities an answer reports, with units, grids, the Monte Carlo key each is scored against, the tolerance class and the hypothesis tags. It is the single source for the prompts, the schema and the scorer. |
 | `configs.yaml` | R0 and the pilot P0, as inputs only |
 | `prompts/v1/` | Frozen prompt files and JSON schemas, built by `harness/build_prompts.py`; `MANIFEST.yaml` holds their SHA-256 |
-| `harness/sandbox.py` | Isolated Python for A1/A2: no network, the repository, transport codes and transcripts hidden, own PID space, 4 cores, 10 min per call |
+| `harness/sandbox.py` | Isolated Python for A1/A2: no network, the repository, transport codes and transcripts hidden, no compilers or other language runtimes (D037, after M4-R0), own PID space, 4 cores, 10 min per call |
 | `harness/providers.py` | Anthropic, OpenAI, Gemini and OpenAI-compatible (open-weight hosts) clients over HTTPS, with one tool loop |
 | `harness/run.py` | The run matrix. Every conversation is written once, read-only, to `raw/<tag>/<slot>/` |
 | `harness/cost.py` | The measured charge of a run (OpenRouter's `usage.cost` per response) and its projection to R0 |
@@ -15,6 +15,7 @@
 
 Rules enforced in code:
 - No reference value in a prompt (`tests/test_ai_prompts.py`).
+- No compiler reachable from the sandbox (`tests/test_ai_harness.py`).
 - Prompts hash-checked before every run.
 - R0 runs refused until `models.yaml` and the prompt manifest are frozen.
 - One logged retry on malformed JSON.

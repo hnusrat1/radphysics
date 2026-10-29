@@ -151,7 +151,7 @@ def flurz_spectra(lst, region=3):
     out = {}
     for label, title in (("total", "Total fluence/(MeV)"), ("primary", "Primary fluence/(MeV)")):
         for m in re.finditer(rf"REGION =\s*{region}\b", txt):
-            seg = txt[m.end():m.end() + 20000]
+            seg = txt[m.end():]
             j = seg.find(title)
             if j < 0 or j > 400:
                 continue
@@ -170,15 +170,33 @@ def batch_mean(vals):
 
 
 def shape_metrics(a, b, edges):
-    """Shape comparison of spectrum a against b (per bin, same edges): W1 (MeV), JSD, the ratio of mean energies,
-    and the largest bin-ratio deviation over bins holding at least 0.5% of b's peak."""
+    """Shape comparison of spectrum a against b (per bin, same edges): W1 (MeV), JSD, the ratio of mean energies."""
     p, q = normalize(a), normalize(b)
     c = 0.5 * (edges[:-1] + edges[1:])
-    keep = q >= 0.005 * q.max()
-    dev = np.abs(p[keep] / q[keep] - 1)
     return {"w1_MeV": wasserstein1(p, q, edges), "jsd": jsd(p, q),
-            "mean_energy_ratio": float(np.sum(p * c) / np.sum(q * c)),
-            "max_abs_bin_ratio_dev": float(dev.max()), "at_MeV": float(c[keep][np.argmax(dev)])}
+            "mean_energy_ratio": float(np.sum(p * c) / np.sum(q * c))}
+
+
+def bin_ratios(a_batches, b_batches, edges):
+    """Per-bin ratio of the shapes (each batch normalized to unit sum), a over b, with standard errors from the batch
+    spread, over bins holding at least 0.5% of b's peak: the lowest bin, the largest deviation and the largest |z|."""
+    pa = np.array([x / x.sum() for x in a_batches])
+    pb = np.array([x / x.sum() for x in b_batches])
+    ma, mb = pa.mean(0), pb.mean(0)
+    keep = mb >= 0.005 * mb.max()
+    r = np.where(keep, ma / np.where(mb > 0, mb, 1), np.nan)
+    s = r * np.hypot(pa.std(0, ddof=1) / np.sqrt(len(pa)) / np.where(ma > 0, ma, 1),
+                     pb.std(0, ddof=1) / np.sqrt(len(pb)) / np.where(mb > 0, mb, 1))
+    z = (r - 1) / s
+    c = 0.5 * (edges[:-1] + edges[1:])
+
+    def at(i):
+        return {"MeV": [float(edges[i]), float(edges[i + 1])], "ratio": float(r[i]), "sem": float(s[i]), "z": float(z[i])}
+    idx = np.flatnonzero(keep)
+    return {"lowest_bin": at(idx[0]), "largest_deviation": at(idx[np.nanargmax(np.abs(r[idx] - 1))]),
+            "largest_z": at(idx[np.nanargmax(np.abs(z[idx]))]),
+            "bins_beyond_3_sigma": int(np.sum(np.abs(z[idx]) > 3)), "bins_compared": int(idx.size),
+            "centres_MeV": c[idx].tolist()}
 
 
 def b0_spectra(sp):
@@ -202,9 +220,15 @@ def b0_spectra(sp):
                                        for o in obs]),
     }
     sel, e_edges = slice(1, n), edges[1:]
+    centres = 0.5 * (e_edges[:-1] + e_edges[1:])
     out = {"grid": "10 keV bins from 0.01 to 1.34 MeV; ratios are EGSnrc over Geant4"}
     for name, (e_, g_) in series.items():
         m = shape_metrics(np.mean(e_, 0)[sel], np.mean(g_, 0)[sel], e_edges)
+        mean_e = [batch_mean([float(np.sum(x[sel] * centres) / np.sum(x[sel])) for x in xs]) for xs in (g_, e_)]
+        r = ratio(*mean_e)
+        m["mean_energy_ratio_batches"] = dict(r, z=(r["ratio"] - 1) / r["sem"])
+        m["bins"] = bin_ratios([x[sel] for x in e_], [x[sel] for x in g_], e_edges)
+        m["bins"].pop("centres_MeV")
         for code, x in (("egsnrc", e_), ("geant4", g_)):
             h = len(x) // 2
             m[f"half_sample_{code}"] = shape_metrics(np.mean(x[:h], 0)[sel], np.mean(x[h:2 * h], 0)[sel], e_edges)
@@ -227,7 +251,7 @@ def s_w_air_check(sp, spr):
         sa, sa_ep = [], []
         for f in jobs:
             t = flurz_spectra(f)["total"]
-            assert np.allclose(np.diff(np.concatenate([[0.0], t["bintop"]])), w)
+            assert np.allclose(np.diff(np.concatenate([[0.0], t["bintop"]])), w) and t["bintop"][-1] >= 1.3325, f
             el, pos = t["electrons"] * w, t["positrons"] * w
             sa.append(spencer_attix(el, 0.010, peg["water"], peg["air"], width=w)["s_w_air"])
             sa_ep.append(spencer_attix(el + pos, 0.010, peg["water"], peg["air"], width=w)["s_w_air"])

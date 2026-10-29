@@ -226,6 +226,10 @@ def sensitivity_table(r):
         for c, without in conds.items():
             for label, crit in (("pre-set", "models"), ("revised", "models_revised")):
                 full, wo = r[crit][slot][c], sens[crit][slot][c]
+                if wo is None:
+                    rows.append(f'<tr><th scope="row">{e(NAMES[slot])}</th><td>{c} observables</td><td>{label}</td>'
+                                f'<td class="n">{full["n"]} → 0</td><td colspan="2" class="muted">no answers left</td></tr>')
+                    continue
                 d, dw = (x["observables"]["L5_D_over_phi0_Gy_cm2"] for x in (full, wo))
                 rows.append(f'<tr><th scope="row">{e(NAMES[slot])}</th><td>{c} observables</td><td>{label}</td>'
                             f'<td class="n">{full["n"]} → {wo["n"]}</td>'

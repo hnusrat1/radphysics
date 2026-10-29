@@ -87,7 +87,8 @@ Done without any API call; nothing was spent.
   - rerun the three compiled conversations without compilers, about $0.10;
   - a second configuration with no tabulated answer to recall (R1), about $8 for the AI side; its Monte Carlo is
     free;
-  - a higher tier of the same providers, about $65; the top tier about $160 to $240.
+  - a higher tier of the same providers, about $65; the top tier about $240 for the full matrix, or about $160 for
+    A0 and A1 only.
 
 ## M2. Monte Carlo validation (2026-10-11 to 12). Complete.
 
@@ -110,6 +111,18 @@ The Monte Carlo reference for the AI comparison is final. It is option4 at msc r
   - β: 1.0053 (option4), 1.0054 (Livermore), 1.0032 (Penelope).
   - Every scalar observable agrees within 0.8%. The resolved differences come from Penelope's stopping power (electron fluence −0.8%) and Livermore's Compton model (interaction shares +0.5%).
 - **EGSnrc in B0.** Dose −0.20% ± 0.17%, s_w,air +0.008%, photon fluence +0.14%, electron fluence +0.46%. All are inside the 0.5% investigation threshold (Section 4.2).
+- **B0 spectrum shapes** (added 2026-10-29; 10 keV bins above 10 keV, EGSnrc against Geant4; `b0.spectra_metrics` in `M2_results.json`):
+  - **Photon fluence.** Mean energy −0.04% ± 0.03%. W1 is 0.36 keV, against 0.24 to 0.25 keV between half-samples of either code.
+  - **Photon bins.** 1 of 116 bins lies beyond 3σ, about what chance gives.
+  - **Electron fluence: a resolved shape difference at low energy.**
+    - The mean energy is −0.42% ± 0.08% (EGSnrc lower, 5σ), inside the 0.5% threshold. W1 is 1.8 keV, against 1.1 keV between EGSnrc's half-samples.
+    - 29 of 111 bins lie beyond 3σ. The difference is largest in the lowest bin: EGSnrc has 6.0% ± 0.2% more fluence at 10–20 keV than Geant4's CSDA-weighted estimator (D020), and about 1.7% more at 20–50 keV.
+    - Geant4's linear estimator is further off: 17% at 10–20 keV. The CSDA-weighted estimator is the closer of the two, which supports D020 but does not close the gap.
+    - The cause is not identified. EGSnrc stops tracking electrons at 10 keV, while Geant4 follows them further down, and the two codes' fluence estimators differ.
+  - **Effect on the reference.** Dose and s_w,air in B0 agree regardless (−0.20% and +0.008%).
+    - This B0 W1 of 1.8 keV is larger than the resolution floor for the R0 electron spectrum (0.7 keV, from the Geant4 lists).
+    - Raising that floor to 1.8 keV would change none of the 62 scored AI answers, so the floor stays as defined.
+    - Under D038 the tolerance for that spectrum is 22 keV.
 - **Published values.**
   - s_w,air on the ICRU 37 basis is 1.1331, against TRS-398's 1.133.
   - Geant4's tracking μ agrees with the XCOM data within 0.03%.

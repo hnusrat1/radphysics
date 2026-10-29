@@ -191,8 +191,12 @@ def main():
         if x:
             spec_rows.append(f"<tr><td>{esc(label)}</td><td class='n'>{1000 * x['w1_MeV']:.2f}</td>"
                              f"<td class='n'>{1000 * x['half_sample_egsnrc']['w1_MeV']:.2f} / {1000 * x['half_sample_geant4']['w1_MeV']:.2f}</td>"
-                             f"<td class='n'>{100 * (x['mean_energy_ratio'] - 1):+.2f}%</td>"
-                             f"<td class='n'>{100 * x['max_abs_bin_ratio_dev']:.1f}% at {1000 * x['at_MeV']:.0f} keV</td></tr>")
+                             f"<td class='n'>{100 * (x['mean_energy_ratio_batches']['ratio'] - 1):+.2f}% ± "
+                             f"{100 * x['mean_energy_ratio_batches']['sem']:.2f}% <span class='z'>"
+                             f"({x['mean_energy_ratio_batches']['z']:+.1f}σ)</span></td>"
+                             f"<td class='n'>{100 * (x['bins']['lowest_bin']['ratio'] - 1):+.1f}% ± {100 * x['bins']['lowest_bin']['sem']:.1f}% "
+                             f"at {1000 * x['bins']['lowest_bin']['MeV'][0]:.0f}–{1000 * x['bins']['lowest_bin']['MeV'][1]:.0f} keV</td>"
+                             f"<td class='n'>{x['bins']['bins_beyond_3_sigma']} of {x['bins']['bins_compared']}</td></tr>")
 
     # ------------------------------------------------ charts (shown once the runs exist)
     from analysis.svgplot import CHART_CSS, spectra_with_ratio
@@ -416,7 +420,7 @@ def main():
     <li><b>Review the AI results and the decisions made after them</b> (D030–D040). Two of them change how the results read: the revised shape criterion (D038) and the H3 caveat (D040). Both are marked exploratory.</li>
     <li><b>Confirm or reverse the choices below (D028).</b> Each row says what a reversal would cost. Most are rescoring only.</li>
     <li><b>Verify refs.yaml (Section 10.1).</b> Every external number is still unverified. Agreed order: line energies, TRS-398 s_w,air (and whether its 2024 revision uses ICRU 90), I-values, normalisation constants, the rest. Two values are still missing: a published PDD(5) for 10 × 10 cm² at SSD 100 cm, which H3 now waits on (D040), and the NIST μ/ρ and μ_en/ρ at the two lines.</li>
-    <li><b>Paid options, each only with your OK (Section 10.5).</b> Rerun the three compiled conversations without compilers, about $0.10. A second configuration with no tabulated answer to recall (R1), about $8 for the AI side; its Monte Carlo is free. A higher tier of the same providers, about $65; the top tier, about $160 to $240.</li>
+    <li><b>Paid options, each only with your OK (Section 10.5).</b> Rerun the three compiled conversations without compilers, about $0.10. A second configuration with no tabulated answer to recall (R1), about $8 for the AI side; its Monte Carlo is free. A higher tier of the same providers, about $65; the top tier, about $240 for the full matrix or about $160 for A0 and A1 only.</li>
     <li><b>Optional.</b> If you can reach NIST, replace the A2 tables with the genuine XCOM and ESTAR downloads (<span class="n">ai/data/README.md</span>).</li>
   </ul>
 </section>
@@ -476,11 +480,12 @@ def main():
   <div class="tbl"><table><thead><tr><th>Quantity</th><th>Geant4 option4</th><th>EGSnrc</th><th>EGSnrc − Geant4</th></tr></thead>
   <tbody>{''.join(b0_rows)}</tbody></table></div>
   <div class="tbl"><table><thead><tr><th>B0 spectrum, 10 keV bins above 10 keV</th><th class="nt">W1, EGSnrc vs Geant4 (keV)</th>
-  <th class="nt">W1 between half-samples, EGSnrc / Geant4 (keV)</th><th>Mean energy, EGSnrc − Geant4</th><th>Largest bin difference</th></tr></thead>
+  <th class="nt">W1 between half-samples, EGSnrc / Geant4 (keV)</th><th>Mean energy, EGSnrc − Geant4</th><th>Lowest bin compared</th><th>Bins beyond 3σ</th></tr></thead>
   <tbody>{''.join(spec_rows)}</tbody></table></div>
-  <p class="note">The half-sample W1 is each code's own statistical scale. Bin differences count only bins holding at least
-  0.5% of the peak. The largest ones sit at the electron spectrum's upper edge, where EGSnrc's half-samples differ by as
-  much.</p>
+  <p class="note">The half-sample W1 is each code's own statistical scale. Bins count only where they hold at least 0.5% of
+  the peak. The photon spectra agree. The electron spectra differ beyond their statistics at low energy, where EGSnrc
+  has 6% more fluence at 10–20 keV than Geant4's CSDA-weighted estimator and 17% more than its linear one. Dose and
+  s<sub>w,air</sub> agree regardless, and no AI verdict depends on the difference.</p>
 </section>
 
 <section id="fano">
